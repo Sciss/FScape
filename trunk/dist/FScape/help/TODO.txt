@@ -1,1 +1,0 @@
-missing: Chebychev, LaguerrePearson, Schizo, seek+destroy sound/image convolution, sound/image conversionSpectral Patcher, Stalker (FILE!), statistics, step back(Sample Synthesis + Chaining -> ProcessWindow derive)Update articles (ProcessWindow, I/O, Installation, Introduction...)

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<classpath>
-	<classpathentry kind="src" output="classes" path="src"/>
-	<classpathentry kind="var" path="JRE_LIB" rootpath="JRE_SRCROOT" sourcepath="JRE_SRC"/>
-	<classpathentry kind="lib" path="/Users/rutz/Documents/workspace/FScape/libraries/MRJAdapter.jar"/>
-	<classpathentry kind="lib" path="/Users/rutz/Documents/workspace/FScape/libraries/NetUtil.jar"/>
-	<classpathentry kind="output" path="bin"/>
-</classpath>
