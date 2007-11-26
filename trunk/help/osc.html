@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>OSC Command Reference</title>
+<LINK REL="stylesheet" TYPE="text/css" HREF="stylesheet.css">
+</head>
+<body>
+<h2>OSC Command Reference</h2>
+<P>as of: 24-jun-06<br>
+<b>warning:</b> OSC command set may be subject to changes.</P>
+<UL>
+<!-- <LI><CODE>/sync &lt;<VAR>id</VAR>&gt;   </CODE>// NOT YET WORKING</LI> -->
+<LI><CODE>/dumpOSC &lt;(int) <VAR>incomingMod</VAR>e&gt; [&lt;(int) <VAR>outgoingMode</VAR>&gt;]</CODE></LI>
+<LI><CODE>/main</CODE>
+<UL>
+<LI><CODE>quit [&lt;(int) <VAR>force</VAR>=(0|1)&gt;]</CODE></LI>
+<LI>query properties:
+<TABLE>
+<TR><TD><CODE>version</CODE></TD><TD>&nbsp;:&nbsp;</TD><TD><CODE>&lt;(float) <VAR>version</VAR>&gt;</CODE></TD></TR>
+</TABLE>
+</LI>
+</UL>
+</LI>
+<LI><CODE>/doc</CODE>
+<UL>
+<LI><CODE>open &lt;(String) <VAR>path</VAR>&gt; [&lt;(int) <VAR>visible</VAR>=(0|1)&gt;]</CODE></LI>
+<LI><CODE>new &lt;(String) <VAR>processName</VAR>&gt;</CODE></LI>
+<LI>query properties:
+<TABLE>
+<TR><TD><CODE>count</CODE></TD><TD>&nbsp;:&nbsp;</TD><TD><CODE>&lt;(int) <VAR>numberOfDocs</VAR>&gt;</CODE></TD></TR>
+</TABLE>
+</LI>
+</UL>
+</LI>
+<LI><CODE>/doc/&lt;<VAR>address</VAR>&gt;</CODE><br>
+<UL>
+<LI>where <CODE>&lt;<VAR>address</VAR>&gt;</CODE> is one of:
+<UL>
+<LI><CODE>active</CODE></LI>
+<LI><CODE>index/&lt;(int) <VAR>idx</VAR>&gt;</CODE></LI>
+<LI><CODE>id/&lt;(int) <VAR>id</VAR>&gt;</CODE></LI>
+</UL>
+</LI>
+<LI><CODE>close [&lt;(int) <VAR>force</VAR>=(0|1)&gt;]</CODE></LI>
+<LI><CODE>start</CODE></LI>
+<LI><CODE>stop</CODE></LI>
+<LI><CODE>pause</CODE></LI>
+<LI><CODE>resume</CODE></LI>
+<LI><CODE>activate</CODE></LI>
+<LI>query properties:
+<TABLE>
+<TR><TD><CODE>id</CODE></TD><TD>&nbsp;:&nbsp;</TD><TD><CODE>&lt;(int) <VAR>id</VAR>&gt;</CODE></TD></TR>
+<TR><TD><CODE>dirty</CODE></TD><TD>&nbsp;:&nbsp;</TD><TD><CODE>&lt;(int) <VAR>isDirty</VAR>=(0|1)&gt;</CODE></TD></TR>
+<!-- <TR><TD><CODE>editMode</CODE></TD><TD>&nbsp;:&nbsp;</TD><TD><CODE>&lt;(String) <VAR>mode</VAR>=("insert"|"overwrite"|"mix")&gt;</CODE></TD></TR> -->
+<TR><TD><CODE>name</CODE></TD><TD>&nbsp;:&nbsp;</TD><TD><CODE>&lt;(String) <VAR>name</VAR>&gt;</CODE></TD></TR>
+<TR><TD><CODE>file</CODE></TD><TD>&nbsp;:&nbsp;</TD><TD><CODE>&lt;(String) <VAR>documentFilePath</VAR>&gt;</CODE></TD></TR>
+<TR><TD><CODE>process</CODE></TD><TD>&nbsp;:&nbsp;</TD><TD><CODE>&lt;(String) <VAR>processName</VAR>&gt;</CODE></TD></TR>
+<TR><TD><CODE>running</CODE></TD><TD>&nbsp;:&nbsp;</TD><TD><CODE>&lt;(int) <VAR>isRunning</VAR>=(0|1)&gt;</CODE></TD></TR>
+<TR><TD><CODE>progression</CODE></TD><TD>&nbsp;:&nbsp;</TD><TD><CODE>&lt;(float) <VAR>progression</VAR>=(0.0...1.0)&gt;</CODE></TD></TR>
+<TR><TD><CODE>error</CODE></TD><TD>&nbsp;:&nbsp;</TD><TD><CODE>&lt;(String) <VAR>errorMessage</VAR>&gt;</CODE></TD></TR>
+</TABLE>
+</LI>
+</UL>
+</LI>
+</UL>
+<h3>querying single values</h3>
+<P>
+<CODE>query &lt;<VAR>id</VAR>&gt; [ &lt;(String) <VAR>property</VAR>&gt; ] * <VAR>N</VAR></CODE>
+</P><P>
+replies with
+</P><P>
+<CODE>/query.reply &lt;<VAR>id</VAR>&gt; [ &lt;(Object) <VAR>value</VAR>&gt; ] * <VAR>N</VAR></CODE>
+</P>
+<h3>getting complex objects</h3>
+<P>
+<CODE>get &lt;<VAR>id</VAR>&gt; &lt;... <VAR>args</VAR>&gt;</CODE>
+</P><P>
+replies with
+</P><P>
+<CODE>/get.reply &lt;<VAR>id</VAR>&gt; &lt;... <VAR>args</VAR>&gt;</CODE>
+</P>
+</body>
+</html>

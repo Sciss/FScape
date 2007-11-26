@@ -1,0 +1,36 @@
+<HTML><HEAD><TITLE>FScape Help : FIR Designer</TITLE></HEAD>
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000"> 
+<TABLE WIDTH="100% BORDER="0" CELLSPACING="0" CELLPADDING="2"><TR>
+<TD WIDTH="20%" BGCOLOR="#EEEEE0"><B>&nbsp;FIR Designer&nbsp;</B></TD>
+<TD COLSPAN="2" BGCOLOR="#EEEEC0">&nbsp;Generates impulse responses for standard filter types&nbsp;</TD></TR>
+<!---
+<TR><TD COLSPAN="3"><HR></TD></TR>
+</!---><TR>
+<TD>&nbsp;</TD><TD><IMG SRC="images/FIRDesignerDlg.gif"></TD><TD VALIGN="TOP" WIDTH="40%">
+<br><BLOCKQUOTE>
+A little patch panel where you can place and connect simple filters for low/high/bandpass and
+bandstop. The output is a finite impulse response file that can be used in the
+<A HREF="ConvolutionDlg.html">Convolution module</A>.
+</BLOCKQUOTE>
+</TD></TR><TR><TD>&nbsp;</TD><TD COLSPAN="2">
+<IMG SRC="images/param1.gif"><B>File name:</B> The FIR Designer creates an ordinary sound file that contains the impulse response of the particular filter. This sound file can be used as the IR in the <A HREF="ConvolutionDlg.html">Convolution module</A>. Since you normally won't listen to it, 32-bit floating point is usually the best choice for output resolution.<p>
+<IMG SRC="images/param2.gif"><B>Circuit panel:</B> The desired filter is built up from elementary sinc-filters (brickwall highpass/lowpass/bandpass/notch). You can assembly any number of those filters in series are parallel to create the desired frequency and phase response.<br>Double click on the panel to add a new basic filter. Double click left or right to an existing filter block the create a serial setting. Double click above or below an existing filter block to create a parallel setting. Very often you only need one filter block. Alt+Click will erase one block. The black line symbolizes the input/output wire. To change the type and settings of a filter block, just click on that block (it turns blue) and adjust the settings on the right (parameters 3 to 6).<p>
+<IMG SRC="images/param3.gif"><B>Type:</B> Basic filter type. 'Allpass' means a flat spectrum (a unit impulse, possibly delayed and attenuated). 'Subtract' means that filter is subtracted from a unit impulse, therefore turning a lowpass into a highpass etc. All filters are windowed sinc-filters as designed by the Kaiser method. No rolloff can be specified at the moment.<p>
+<IMG SRC="images/param4.gif"><B>Cutoff/Bandwidth:</B> Margin from passband to stopband. For bandpasses and notches you also have a gadget for the bandwidth. In that case the cutoff is the middle frequency - e.g. if cutoff is 400 Hz and bandwidth is 200 Hz, the low frequency of the bandpass becomes 300 Hz and the upper frequency becomes 500 Hz. Cutoff becomes a geometric middle frequency (Sqrt(F_upper*F_lower)) when the bandwidth is given in semitones - e.g. if cutoff is 400 Hz and bandwidth is 12 semitones, the low frequency of the bandpass becomes 283 Hz and the upper frequency becomes 566 Hz. This is really awful and should be replaced by a direct parameter for lower/upper cutoff frequency.<p>
+<IMG SRC="images/param5.gif"><B>Gain/Delay:</B> When building a circuit consisting of multiple elementary filter blocks these define the attenuation and delay of each block. You could, for example, place one allpass with zero delay and unity gain in parallel to an attenuated lowpass delayed by 1000 ms to create a tapestyle delay effect IR.<p>
+<IMG SRC="images/param6.gif"><B>Overtones:</B> Following a stupid idea of myself. I wanted to create a filter that removes 50 Hz hum so I thought I'd build it up of a bunch of narrow bandpasses tuned to 50 Hz, 100 Hz, 150 Hz etc. For bandpasses and notches checking this gadget will cause the designer to generate multiple bandpasses with the same settings but each spaced from the fundamental bandpass as given in 'Spacing' parameter until the "overtone" frequency reaches the 'Limit freq'. Well it works but don't expect to be able to remove hum witht this ;-)<p>
+<IMG SRC="images/param7.gif"><B>Filter length/window:</B> In theory the sinc-filters are infinitely long. Therefore to realize them in a computer they have to be truncated at a reasonable number of taps. The higher the quality setting the longer the FIR will be resulting in shorter transition bands. Often, however, it is not desirable to have that narrow transistion widths, so you might choose a low "quality" as well. Besides, the longer the filters gets, the more time smearing is produced by the filtering.<br>After truncation a window (an envelope rising from zero to maximum and ending again at zero) is applied to the filter. The windowing is a compromise between the amount of stopband ripple that results from the truncation and the width of the transition band. Try out different windows and watch the result in the <A HREF="StatisticsDlg.html">Statistics module's</A> spectrum view. Often Blackman is a good choice.<p>
+<IMG SRC="images/param8.gif"><B>Normalize gain:</B> When checked the output file will have 0 dB peak. When not, the filter is just written "as is". That means the filter gain is untouched, so you can subtract for example a sound convolved with say a low pass filter from the wet signal and get exactly the highpass signal. Often desirable when floating point output is written.<p>
+<HR>
+<IMG SRC="images/process1.gif"><B>Toolbar:</B> Popup menus for loading and saving settings, presets and
+options. Refer to a the basic chapter on <A HREF="ProcessWindow.html">process windows</A>.<p>
+<IMG SRC="images/process2.gif"><B>Processbar:</B> Buttons for closing the module, starting and stopping
+processing. Process gauge. Refer to a the basic chapter on <A HREF="ProcessWindow.html">process windows</A>.<p>
+<HR>
+<B>Known bugs:</B> I think so but can't remember. Some bugs in the circuit panel?<p>
+<B>To be done:</B> Yes, this should be completely rewritten. It should include other filters (causal ones; filters with transition band; graphically designed filters etc.)...<p>
+</TD></TR><TR><TD BGCOLOR="#EEEEE0">&nbsp;<A HREF="index.html">Contents</A>&nbsp;</TD>
+<TD ALIGN="RIGHT" COLSPAN="2" BGCOLOR="#EEEEE0">&nbsp;last modified: 03-Aug-02&nbsp;</TD></TR>
+</TABLE>
+</BODY>
+</HTML>

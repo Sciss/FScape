@@ -1,0 +1,13 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN"
+        "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<HTML><HEAD><TITLE>FScape Help : Laguerre Warping</TITLE></HEAD>
+<BODY>
+<A NAME="top"></A><H2>Laguerre Warping</H2>
+<BLOCKQUOTE>
+The socalled Laguerre Transform is used to alter the harmonics of a sound. Individual frequency components are warped to other frequencies based on a mapping curve which can be adjusted by the user. (Based on a paper by F. Evangelista). Here you cannot adjust the curve but it kind of applies a constant factor to most frequencies, thus preserving harmonic spectra usually. The algorithm is related to the discrete fourier or chirp transform as far as I remember, which means it's hell slow. Also because of the chirp property, transients are destroyed (time domain aliasing). For transient sounds small frame sizes are good, for rich harmonic sounds greater frame sizes are good. I found out, that the best results are obtained if you split the sound into two bands (using Band Splitting), where crossover is ca. 250 Hz. For the bass part use 1024 or 2048 samples frame length, for the high passed band use 512 samples; this is a good compromise between frequency distortion and transient preservation, though it slows down the process quite a bit. "Warp amount" is linked to the input/output freq. gadgets beneath. So if you want to see to which frequency 1 kHz gets mapped at a warping of -10%, first specify "-10%", then enter 1000 Hz in the input freq. field. Hit return and the output is shown in "Output freq." (You have to select an input file first because this only works if the sample rate is known). Alternatively, if you want 1 kHz mapped to 1500 Hz, type 1000 Hz in input freq., then 1500 Hz in output freq., hit return and the required warp amount is calculated. "Overlap" is tricky, you have to play around with different values. The problem is because of the stretching of each sound frame, in the recombination of the warped frames comb filter effects occur. They change with different overlap settings but virtually never disappear. This has to be fixed in a future version.
+</BLOCKQUOTE>
+<HR>
+<P><EM>bugs:</EM> ...</P>
+<P><EM>last modified:</EM> 29-Jul-04</P>
+</BODY>
+</HTML>

@@ -1,0 +1,19 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN"
+        "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<HTML><HEAD><TITLE>FScape Help : Recycle Or Die</TITLE></HEAD>
+<BODY>
+<A NAME="top"></A><H2>Recycle Or Die</H2>
+<BLOCKQUOTE>
+Emagic Logic Audio has a very useful function which is called "Optimize sound file". It means, it checks which parts of a sound file are used in a song and then compacts the sound file by rewriting it using only the used parts and an optional safety bound (this process is called "Compact sound file" in ProTools). When you work with very long field recordings and the like, so sometimes like to recycle the recordings, i.e. do exactly the opposite of "optimizing" -- just remove all the parts that have been used and keep the unused sound bits. That's what the Recycle module will do for you. Only you have to provide both the original sound file and the compacted sound file. The output will be the parts that are in the original but not in the compacted sound file.
+</BLOCKQUOTE>
+<HR>
+<P><EM>Min. Matching: </EM> The minimum length of sound chunk that must be identical in the original and compacted sound to be considered used (and be thrown away).</P>
+<P><EM>Compact spacing: </EM> At least in version 4 (don't know if this is still in Logic 6), Logic was putting a few milliseconds gap between the chunks in the optimized file which would confuse my algorithm, thus you can specify a small skip-over chunk that will be ignored between the compacted bits.</P>
+<P><EM>Min. Recycling: </EM> Each chunk not found in the compacted version must be at least as long as specified here to be kept in the output file. Thus, higher values mean "don't recycle small bits".</P>
+<P><EM>Padding:</EM> Same as the safety bounds in "Optimize", only for the recycling.</P>
+<P><EM>Write markers:</EM> If checked, markers will be placed between recycled chunks, so you could split the bits later on in Peak or so.</P>
+<HR>
+<P><EM>bugs:</EM> ...</P>
+<P><EM>last modified:</EM> 29-Jul-04</P>
+</BODY>
+</HTML>

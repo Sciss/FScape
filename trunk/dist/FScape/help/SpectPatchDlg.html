@@ -1,0 +1,16 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN"
+        "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<HTML><HEAD><TITLE>FScape Help : Spectral Patcher</TITLE></HEAD>
+<BODY>
+<A NAME="top"></A><H2>Spectral Patcher</H2>
+<BLOCKQUOTE>
+The core of the original FScape version 0.1. A panel similar to Reactor and the like where you can place spectral processing modules and connect them together. Very basic. Double click to open a popup window showing all available modules. Click+Drag a module to change its position. Alt+Click+Drag on a module to drag a connection line from source module to target module. Alt+Click on the connection line to delete the connection. Double click on the connection line to add a helper breakpoint. Double click on a module to open its settings dialog. Ctrl+Click on a module to bring up a popup menu. The popup menu allows you to delete, rename, copy, paste and duplicate modules. Alias modules cannot be edited but always share their settings with its originators.
+</BLOCKQUOTE>
+<HR>
+<P><EM>Modules very brief:</EM> Input+Output file read and write spectral data files, you cannot load or save sound files with them (use Analysis/Synthesis instead). You can load analysis files from SoundHack or save analysis files for later processing (e.g. using the Convert-Files module). I'm not sure if FScape will accept CSound analysis files?</P>
+<P>Splitter and Unitor will split one input into several outputs and vice versa. Envelope will calculate the spectral envelope of its input. Constrast will emphasize strong partials. Cepstral calculates the cepstrum and high pass filters it, ideally removing the resonances, but I never got it working right. Zoom is nice and will just shrink the spectrum but taking out a specified portion, the output file will be shorter and pitched up just like in resampling. Shrink is similar but "resamples" the spectrum. Flip-Freq will work only with tonal sounds and not noise, it can alter the harmonic relationships by reversing bands and stretching/ shrinking them. Tarnish is very nice and works well with speech, it attenuates harmonics and thus kind of keeps the noisy parts. Convolve: convolution in frequency domain, which is multiplication in time domain, but not necessarily circular convolution. Mindmachine, I cannot remember what the exact algorithm is, but you can create nice spheric sounds. Smear will repeat STFT frames with a given attenuation. Extrapolate doesn't work(?). Percussion is nice: It captures the resonance of each spectral frame. Choose a very high frame size, like 65556 samples; then use the synthesized output sound file as a filter for convolution.</P>
+<HR>
+<P><EM>bugs:</EM> Lot's! Note that the transition from java AWT to Swing was kind of cheesy so there are some display bugs. Resize the window if you get confused. Also note that when you abort the processing, sometimes restarting it is not immediately possible. Simply stop it and restart it again should work. Also note that there's a bug in lot's of modules that keeps them from terminating at the end. Then you'll have to stop the processing manually. All output files should be accessible as normal.</P>
+<P><EM>last modified:</EM> 29-Jul-04</P>
+</BODY>
+</HTML>

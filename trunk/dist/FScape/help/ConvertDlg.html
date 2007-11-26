@@ -1,0 +1,17 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN"
+        "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<HTML><HEAD><TITLE>FScape Help : Convert files</TITLE></HEAD>
+<BODY>
+<A NAME="top"></A><H2>Convert files</H2>
+<BLOCKQUOTE>
+Map data from one medium to another, like convert a sound file to an image etc.
+</BLOCKQUOTE>
+<P><EM>Input / Output:</EM> The Convert-Files module was I think the first one in FScape so it was made I think in 2000 or 2001. I haven't changed it since then and rarely have used it, I'm not sure if it is still working after the migration to MacOS X. The direct conversion from sound file to image file didn't work in my recent test. However what you can do is create a spectral file with the Spectral Patcher (or use Sound Hack), then convert the spectral file to a TIFF image (and back).</P>
+<P><EM>Conversion settings:</EM> So assuming you selected a spectral file as input and a TIFF file as output, you see the following settings: "Seperate colors for each channel" means you can have a mono, stereo or three channel input file, where mono sounds will be converted to grayscale images, stereo and 3-channel will use the R/G/B channels of the image. "Handle overhead", I'm not exactly sure what it was, but I think it asks you how to separate amplitude and phase spectra. In "horizontal tiling" mode, the left half of the image will be the amplitude spectrum, the right half will be the phase spectrum. In "separate files" mode I guess you get two files. Also note that because images files are stored row by row, time elapses from top to bottom of the image, so frequency is spread from left (0 Hz) to right (smprate/2).</p><p>The "Channels" gadget allows you to discard some of the input channels. Usually use "Leave untouched". The "Noisefloor" is important, because most image processing programmes (at least at the time the module was written) could only handle 8-Bit images. So to preserve as much sound quality as possible, the amplitude spectrum is converted to logarithmic scale, whereby the energy at noise floor corresponds to an RGB value of zero. Try playing around with different values to see the effect of the noise floor. Only when going back from image to sound you should take care that you choose the same noise floor again.</P>
+<HR>
+<P><EM>Known bugs:</EM> I guess a lot.</P>
+<P><EM>To be done:</EM> ---</P>
+<HR>
+<P><EM>last modified:</EM> 29-Jul-04</P>
+</BODY>
+</HTML>

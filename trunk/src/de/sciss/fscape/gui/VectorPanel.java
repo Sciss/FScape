@@ -1,0 +1,254 @@
+/*
+ *  VectorPanel.java
+ *  FScape
+ *
+ *  Copyright (c) 2001-2007 Hanns Holger Rutz. All rights reserved.
+ *
+ *	This software is free software; you can redistribute it and/or
+ *	modify it under the terms of the GNU General Public License
+ *	as published by the Free Software Foundation; either
+ *	version 2, june 1991 of the License, or (at your option) any later version.
+ *
+ *	This software is distributed in the hope that it will be useful,
+ *	but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *	General Public License for more details.
+ *
+ *	You should have received a copy of the GNU General Public
+ *	License (gpl.txt) along with this software; if not, write to the Free Software
+ *	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ *
+ *	For further information, please contact Hanns Holger Rutz at
+ *	contact@sciss.de
+ *
+ *
+ *  Changelog:
+ *		05-Mar-05	created
+ */
+
+package de.sciss.fscape.gui;
+
+import java.awt.*;
+import java.awt.event.*;
+import java.beans.*;
+import javax.swing.*;
+import javax.swing.event.*;
+import de.sciss.app.AbstractApplication;
+
+/**
+ *	GUI container with a VectorDisplay,
+ *	axis, and mouse crosshair information features.
+ *
+ *  @author		Hanns Holger Rutz
+ *  @version	0.68, 20-May-05
+ */
+public class VectorPanel
+extends JPanel
+implements TopPainter
+{
+	public static final int	FLAG_HLOG_GADGET	= 0x01;
+	public static final int	FLAG_VLOG_GADGET	= 0x02;
+	public static final int	FLAG_UPDATE_GADGET	= 0x04;
+
+	private static final int GADGET_MASK		= 0x07;
+
+	private final VectorPanel.Client client;
+	private VectorSpace			space			= null;
+
+	// GUI components
+	private final VectorDisplay	ggVectorDisplay;
+	private final Axis			haxis, vaxis;
+	private JCheckBox			ggHLog			= null;
+	private JCheckBox			ggVLog			= null;
+	
+	// mouse listening
+	private FontMetrics			fntMetr;
+	private static final Color	colrCross		= new Color( 0x00, 0x00, 0x00, 0x7F );
+	private static final Color	colrTextBg		= new Color( 0xFF, 0xFF, 0xFF, 0xA0 );
+	private final Cursor		csrCrossHair	= new Cursor( Cursor.CROSSHAIR_CURSOR );
+	private String				lastTxt;
+	private boolean				paintCrossHair	= false;
+	private Point				lastPt			= null;		// X-Hair
+
+	public VectorPanel( VectorPanel.Client client, int flags )
+	{
+		super( new BorderLayout() );
+	
+		JPanel							buttonPane;
+		JButton							ggUpdate;
+		Box								box;
+		ActionListener					actionListener;
+		MouseInputAdapter				mouseListener;
+		final de.sciss.app.Application	app	= AbstractApplication.getApplication();
+	
+		this.client		= client;
+	
+		// ---- create vector display ----
+		ggVectorDisplay	= new VectorDisplay();
+		ggVectorDisplay.addTopPainter( this );
+		ggVectorDisplay.setCursor( csrCrossHair );
+
+		mouseListener	= new MouseInputAdapter() {
+			public void mousePressed( MouseEvent e )
+			{
+				ggVectorDisplay.requestFocus();
+				redrawCrosshair( e );
+			}
+
+//			public void mouseEntered( MouseEvent e )
+//			{
+//				ggVectorDisplay.setCursor( csrCrossHair );
+//			}
+//
+//			public void mouseExited( MouseEvent e )
+//			{
+//				ggVectorDisplay.setCursor( null );
+//			}
+
+			public void mouseDragged( MouseEvent e )
+			{
+				redrawCrosshair( e );
+			}
+		};
+		ggVectorDisplay.addMouseListener( mouseListener );
+		ggVectorDisplay.addMouseMotionListener( mouseListener );
+
+		this.add( ggVectorDisplay, BorderLayout.CENTER );
+
+		// ---- create south button panel gadgets ----
+		if( (flags & GADGET_MASK) != 0 ) {
+			buttonPane		= new JPanel( new FlowLayout( FlowLayout.LEADING, 4, 1 ));
+			actionListener	= new ActionListener() {
+				public void actionPerformed( ActionEvent e )
+				{
+					requestUpdate();
+				}
+			};
+			if( (flags & FLAG_UPDATE_GADGET) != 0 ) {
+				ggUpdate		= new JButton( app.getResourceString( "buttonUpdate" ));
+				ggUpdate.addActionListener( actionListener );
+				buttonPane.add( ggUpdate );
+			}
+			if( (flags & FLAG_HLOG_GADGET) != 0 ) {
+				ggHLog		= new JCheckBox( app.getResourceString( "labelHLog" ));
+				ggHLog.addActionListener( actionListener );
+				buttonPane.add( ggHLog );
+			}
+			if( (flags & FLAG_VLOG_GADGET) != 0 ) {
+				ggVLog		= new JCheckBox( app.getResourceString( "labelVLog" ));
+				ggVLog.addActionListener( actionListener );
+				buttonPane.add( ggVLog );
+			}
+			this.add( buttonPane, BorderLayout.SOUTH );
+		}
+
+		// ---- create axis gadgets ----
+		haxis			= new Axis( Axis.HORIZONTAL );
+		vaxis			= new Axis( Axis.VERTICAL );
+		box				= Box.createHorizontalBox();
+		box.add( Box.createHorizontalStrut( vaxis.getPreferredSize().width ));
+		box.add( haxis );
+		this.add( box, BorderLayout.NORTH );
+		this.add( vaxis, BorderLayout.WEST );
+
+		fntMetr			= getFontMetrics( getFont() );
+		this.addPropertyChangeListener( new PropertyChangeListener() {
+			public void propertyChange( PropertyChangeEvent e )
+			{
+				if( e.getPropertyName().equals( "font" )) {
+					fntMetr = getFontMetrics( (Font) e.getNewValue() );
+				}
+			}
+		});
+	}
+
+	private void redrawCrosshair( MouseEvent e )
+	{
+		Dimension	dim			= ggVectorDisplay.getSize();
+		int			x			= e.getX();
+		int			y			= e.getY();
+		String		xTxt, yTxt;
+		int			dataLen;
+		double		dx, dy;
+		float[]		v;
+		boolean		hlog		= ggHLog != null && ggHLog.isSelected();
+		boolean		vlog		= ggVLog != null && ggVLog.isSelected();
+		
+		paintCrossHair	= false;
+
+		if( (space != null) && !e.isAltDown() ) {
+
+			v		= ggVectorDisplay.getVector();
+			dataLen	= v.length;
+			if( dataLen < 1 ) return;
+
+			if( (x >= 0) && (y >= 0) && (x < dim.width) && (y < dim.height) ) {
+				if( e.isShiftDown() ) {
+					dy	= space.vUnityToSpace( 1.0 - (double) y / (dim.height - 1) );
+					dx	= space.hUnityToSpace( (double) x / (dim.width - 1) );
+				} else {
+					x	= (int) ((double) x / (dim.width - 1) * (dataLen - 1) + 0.5);
+					dy	= v[ x ];
+					dx	= space.hUnityToSpace( (double) x / (dataLen - 1) );
+					y	= (int) ((1.0 - space.vSpaceToUnity( dy )) * (dim.height - 1) + 0.5);
+					x	= e.getX(); // (int) (rec.space.hSpaceToUnity( dx ) * (dim.width - 1) + 0.5);
+				}
+				lastPt	= new Point( x, y );
+
+				yTxt	= client.formatVText( dy, vlog );
+				xTxt	= client.formatHText( dx, hlog );
+				lastTxt	= yTxt + " @ " + xTxt;
+				paintCrossHair	= true;
+			}
+		}
+		ggVectorDisplay.repaint();
+	}
+
+	private void requestUpdate()
+	{
+		boolean	hlog	= ggHLog != null && ggHLog.isSelected();
+		boolean	vlog	= ggVLog != null && ggVLog.isSelected();
+		
+		client.requestUpdate( hlog, vlog );
+	}
+	
+	public void setVector( float[] data )
+	{
+		ggVectorDisplay.setVector( this, data );
+	}
+	
+	public void setSpace( VectorSpace space )
+	{
+		this.space	= space;
+		ggVectorDisplay.setMinMax( (float) space.vmin, (float) space.vmax );
+		haxis.setSpace( space );
+		vaxis.setSpace( space );
+	}
+
+// -------- TopPainter Methoden --------
+
+	public void paintOnTop( Graphics2D g )
+	{
+		Dimension dim = ggVectorDisplay.getSize();
+	
+		if( paintCrossHair ) {
+			g.setColor( colrCross );
+			g.drawLine( 0, lastPt.y, dim.width - 1, lastPt.y );
+			g.drawLine( lastPt.x, 0, lastPt.x, dim.height - 1 );
+			g.setColor( colrTextBg );
+			g.fillRect( 1, 1, fntMetr.stringWidth( lastTxt ) + 6, fntMetr.getHeight() + 4 );
+			g.setColor( Color.blue );
+			g.drawString( lastTxt, 4, fntMetr.getHeight() + 1 );
+		}
+	}
+
+// -------- internal client class --------
+
+	public interface Client
+	{
+		public void requestUpdate( boolean hlog, boolean vlog );
+		public String formatVText( double vvalue, boolean vlog );
+		public String formatHText( double hvalue, boolean hlog );
+	}
+}

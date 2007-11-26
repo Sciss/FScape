@@ -1,0 +1,34 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN"
+        "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<HTML><HEAD><TITLE>FScape Help : ChebychevDlg Waveshaping</TITLE></HEAD>
+<BODY>
+<A NAME="top"></A><H2>ChebychevDlg Waveshaping</H2>
+<BLOCKQUOTE>
+An input file is split into bands which are fed into a waveshaping stage that produces a mix of user adjustable harmonics. (Based on a paper by Fernandez)
+</BLOCKQUOTE>
+<P>
+Waveshaping refers to a process of feeding a wave into a shaper function which can be visualized as a kind of table that maps input values to output values. If the mapping function is a line, the process is linear which means the input signal is not distorted (a sine input will produce a sine output), it's just attenuated or amplified. Any other shape will distort this signal which means it produces a complex mixture of overtones, if your input is a sine signal. If your input then is something different from a sine, you get additional intermodulation distortion, for example if you input a mix of two sines of different frequencies, using a nonlinear waveshaping function will produce both overtones of each of the sines plus those for the sum and the difference of the frequencies of the individual sines.
+</P><P>
+Feeding the input through a filterbank that tries to separate all sine components of the input signal, and then feeding each bandpass filter output into a separate waveshaper, will minimize the intermodulation distortion.
+</P><P>
+Now there is an interesting set of functions which are usefull in waveshaping, the socalled chebychev polynoms. If the input is a pure sine of a normalized amplitude (1.0), feeding this input through a chebychev function will produce an exactly predictable mix of overtones. In this FScape module, instead of dealing with the polynoms directly, you see a graphical representation of the mix of overtones.
+</P><P>
+The mix of overtones is specified separately for low frequencies, mid frequencies and high frequencies on the one hand, one for the beginning of the input sound file, the middle of the sound file and the end of the sound file, on the other hand. Therefore you find nine different panels for adjusting the overtone mix, each allowing to specify the fundamental (red colour, leftmost bar) and the first seven overtones (from left to right). By pressing the mouse-button over the panel and moving it up or down, you can adjust the amount of each generated overtone. The scaling of the overtone strength was intuitively chosen so that a middle position means like &quot;quite reasonably audible&quot;, 25% means &quot;quite weak&quot;, 75% means &quot;quite strong&quot; etc. The buttons on the right allow you to quickly copy the current panel (indicated by a small blue border) to all other times (vertically, i.e. beginning / middle / end of the soundfile) for that frequency part, or to all other frequencies (horizontally, i.e. bass / mids / highs) for that time part.
+</P><P>
+The lowest frequency put in the waveshaper is specified by the &quot;Low Freq&quot; field. Frequencies below this frequency will be copied unmodified to the target soundfile. Note that the lower you set the low frequency, the slower the processing will become, because the bandpass filter for very low frequencies need to be very &quot;long&quot; (in terms of number of filter coefficients). The &quot;Mid Freq&quot; specifies the frequency at which the overtone mix of the three middle column panels are applied. The &quot;High Freq&quot; then specifies the top most bandbass filter frequency for the waveshaping process. Note that everything above this frequency is copied unmodified to the target sound file. Also note that the waveshaping is automatically adjusted so that no frequency aliasing can occur. For example, if your top-most frequency is 11 kHz and your soundfile's sampling rate is 44.1 kHz, frequency aliasing would occur above 22 kHz which is just above the first overtone of 11 kHz. So no matter what overtone mix you choose in the high frequency panels, the output of a bandpass filter at 11 kHz will not be excited with more than the first overtone!
+</P><P>
+While the top row of the panels corresponds to the beginning of the sound file, the middle row corresponds to the time specified in the &quot;Mid Time&quot; gadget. The bottom row corresponds to the end of the soundfile.
+</P><P>
+The overtone mix is automatically interpolated between bass/mid/high frequencies and between beginning/middle/end of the soundfile.
+</P><P>
+The closer the partials are in your input file, the steeper and closer the bandpass filters must be to effectively separate them, i.e. the more filters per octave you need and the longer the filter kernel need to be specified. There is nothing wrong, however, in using a very little number of filters per octave and short filters, only you get must more intermodulation. Also note that due to the nature of noise, using input soundfiles with a lot of noise or transient contents will produce strangely modulated outputs, simply because there are no sine components which can be clearly separated. In this case, try to use only few filters per octave to produce a less artifical sounding output and to just use the module as a brightener or exciter.
+</P><P>
+If this module is new to you, the best practise is to play around with a steady or swept sine input file! Use a sonagramme (for example in AudioSculpt) to review the results for different overtone settings.	
+</P>
+<HR>
+<P><EM>Known bugs:</EM> None</P>
+<P><EM>To be done:</EM> ---</P>
+<HR>
+<P><EM>last modified:</EM> 02-Jun-05</P>
+</BODY>
+</HTML>

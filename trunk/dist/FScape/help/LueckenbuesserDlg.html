@@ -1,0 +1,23 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN"
+        "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<HTML><HEAD><TITLE>FScape Help : Lueckenbuesser</TITLE></HEAD>
+<BODY>
+<A NAME="top"></A><H2>L&uuml;ckenb&uuml;&szlig;er</H2>
+<BLOCKQUOTE>
+Creates a mixture of two sounds by repeatedly crossfading them at each of their zero crossings.
+</BLOCKQUOTE>
+<P>
+i'm not sure i remember this correct: the process starts with input A until a zerocrossing occurs, it then scans input B and finds a zero crossing in B. it writes A up to the crossing and performs a crossfade for the specified lenght. Both zero crossings are chosen to have the same tangent signum. the algorithm gives up after the span specified as &quot;patience&quot; and does a crossfade in this case after the patience span. the process stops when one of the inputs is exhausted.
+</P><P>
+it might also be that the algorithm doesn't look for zero crossings but for intersections between A and B. (have to look at the code to find out).
+</P>
+<P>
+the idea was to create a mixture of two similar (phase correlated) sounds, but they run out of each other very quickly. often not too interesting results. the idea is nice but the algorithm should be modified by introducing &quot;magnetism&quot; between time offsets in A and B.
+</P>
+<HR>
+<P><EM>Known bugs:</EM> ---</P>
+<P><EM>To be done:</EM> ---</P>
+<HR>
+<P><EM>last modified:</EM>04-oct-06</P>
+</BODY>
+</HTML>

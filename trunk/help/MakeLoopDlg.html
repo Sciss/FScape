@@ -1,0 +1,22 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN"
+        "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<HTML><HEAD><TITLE>FScape Help : Make Loop</TITLE></HEAD>
+<BODY>
+<A NAME="top"></A><H2>Make Loop</H2>
+<BLOCKQUOTE>
+Apply a crossfade to a sound so that it can be seemingless played back as a loop
+</BLOCKQUOTE>
+<P>
+this works by creating a crossfaded overlap between the beginning and ending of the sound. either a piece from the beginning is cutted away (= crossfade position &quot;end of loop \ pre loop /&quot;) or the ending is cutted away (= crossfade position &quot;begin of loop \ post loop /&quot;). in the former case the maximum fadelength is determined by the initial skip setting, in the latter case the maximum fadelength is determined by the final skip setting. the actual crossfade length is the minimum of this implicit maximum length and the &quot;crossfade length&quot; setting.
+</P><P>
+for example, with crossfade position &quot;end of loop \ pre loop /&quot;, choosing an initial skip of 2 seconds and a crossfade length of 1 second results in a sound that is 2 seconds shorter than the input sound, starting directly at offset 2 seconds, running right to the end and having a final crossfade of one second at the very end that makes the loop work.
+</P><P>
+for strictly phase correlated signals, an &quot;equal energy&quot; fade type is provided, however usually signals are not correlated and you use &quot;equal power&quot; to approximately maintain original loudness during the crossfade.
+</P>
+<HR>
+<P><EM>Known bugs:</EM> ---</P>
+<P><EM>To be done:</EM> ---</P>
+<HR>
+<P><EM>last modified:</EM>03-oct-06</P>
+</BODY>
+</HTML>

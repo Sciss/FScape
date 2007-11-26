@@ -1,0 +1,33 @@
+<HTML><HEAD><TITLE>FScape Help : Exciter</TITLE></HEAD>
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000"> 
+<TABLE WIDTH="100% BORDER="0" CELLSPACING="0" CELLPADDING="2"><TR>
+<TD WIDTH="20%" BGCOLOR="#EEEEE0"><B>&nbsp;Exciter&nbsp;</B></TD>
+<TD COLSPAN="2" BGCOLOR="#EEEEC0">&nbsp;Generates second harmonics&nbsp;</TD></TR>
+<!---
+<TR><TD COLSPAN="3"><HR></TD></TR>
+</!---><TR>
+<TD>&nbsp;</TD><TD><IMG SRC="images/ExciterDlg.gif"></TD><TD VALIGN="TOP" WIDTH="40%">
+<br><BLOCKQUOTE>
+A frequency exciter that generates a signal that is one octave above
+the input. Very slow but good working for rich harmonic and not too noisy sounds.<br>Nowadays superceded by the <A HREF="ChebychevDlg.html">Chebychev Waveshaping</A>!
+</BLOCKQUOTE>
+</TD></TR><TR><TD>&nbsp;</TD><TD COLSPAN="2">
+<IMG SRC="images/param1.gif"><B>Input/Output files.</B><p>
+<IMG SRC="images/param2.gif"><B>CrossOvers:</B> The frequency band between these margins is split off and taken to the excitation path. Excitation of frequencies above half nyquist (e.g. 11025 Hz for 44.1 kHz samples) is not possible. The smaller the low crossover is the longer the FIRs will get naturally and therefore processing time increases. Besides it hardly makes sense to excite frequencies below 300 or 400 Hz.<p>
+<IMG SRC="images/param3.gif"><B>Rolloff:</B> The part above the low crossover is highpass filtered before taken to the excitation stage. The rolloff specifies the transition bandwidth of this highpass filter. Usually one octave is a good choice (i.e. if low crossover is 400 Hz, then the highpass has full attenuation at 400 Hz and no attenuation at 800 Hz).<p>
+<IMG SRC="images/param4.gif"><B>Bands per octave:</B> The exciter works by splitting up the signal into narrow frequency bands and modulating these bands by themselves (producing second order harmonics and DC which is removed). The bigger the number of bands the longer the filter needs to be (parameter 6) and therefore the worse time smearing becomes (Note that 72 bands per octave are senseless when using a short filter length). The smaller the number of bands the better the attack quality is maintained while interharmonic distortion increases. The number of bands also proportionally influences processing speed.<p>
+<IMG SRC="images/param5.gif"><B>Dry/wet mix:</B> In "normal" excitement applications the newly generated harmonics tend to be much more quiet than the dry signal. In other cases you want to get the "solo" excitation which means you should set the dry mix to 0% and wet mix to 100%.<p>
+<IMG SRC="images/param6.gif"><B>Filter length:</B> The bands are split up using windowed sinc FIR filters. Long FIRs produce a lot of time smearing which means your attacks sound more like waterdrops than like clicks. When the harmonics are well separated you can use a small filter length (or in case you <b>want</b> interharmonic distortion), vice versa. Long filters need much more processing time unfortunately...<p>
+<HR>
+<IMG SRC="images/process1.gif"><B>Toolbar:</B> Popup menus for loading and saving settings, presets and
+options. Refer to a the basic chapter on <A HREF="ProcessWindow.html">process windows</A>.<p>
+<IMG SRC="images/process2.gif"><B>Processbar:</B> Buttons for closing the module, starting and stopping
+processing. Process gauge. Refer to a the basic chapter on <A HREF="ProcessWindow.html">process windows</A>.<p>
+<HR>
+<B>Known bugs:</B> none<p>
+<B>To be done:</B> well, this is somewhat obsolete since Chebychev exists.<p>
+</TD></TR><TR><TD BGCOLOR="#EEEEE0">&nbsp;<A HREF="index.html">Contents</A>&nbsp;</TD>
+<TD ALIGN="RIGHT" COLSPAN="2" BGCOLOR="#EEEEE0">&nbsp;last modified: 03-Aug-02&nbsp;</TD></TR>
+</TABLE>
+</BODY>
+</HTML>

@@ -1,0 +1,31 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>General Prefs : Look-and-Feel</title>
+<LINK REL="stylesheet" TYPE="text/css" HREF="stylesheet.css">
+</head>
+<body>
+<h1>General Prefs : Look-and-Feel</h1>
+<p>
+FScape is written in Java<small>(tm)</small> which is completely platform independant. This raises the need for
+a graphical user interface (GUI) to be independant of the platform's native look-and-feel. For the
+user this may appear to be an inconvenience, however Java allows you to switch to different look-and-feels.
+On MacOS, for example, a very smooth integration into the native Aqua interface is achieved through
+the 'Mac OS X' look-and-feel. Similarily, on Windows and Linux recent versions of Sun's VM include look-and-feels for Windows XP or Gnome.
+</p><p>
+You can easily install other look-and-feels. For example,
+a very nice looking free one is 'Metouia', a sourceforge project located at
+<A HREF="http://mlf.sourceforge.net/index.php?home" CLASS="ext">mlf.sourceforge.net</A>. The .jar file
+needs to be installed somewhere in the classpath, e.g. on Mac OS put it into
+<code>&quot;/System/Library/Java/Extensions&quot;</code>, and two lines need to be added to the file
+<code>&quot;swing.properties&quot;</code> which resides in <code>&quot;$JAVAHOME/lib&quot;</code> (on Mac OS X, <code>$JAVAHOME</code> corresponds to the alias <code>/System/Library/Frameworks/JavaVM.framework/Home</code>):
+</p>
+<pre>
+swing.installedlaf.metouia.name=Metouia
+swing.installedlaf.metouia.class=net.sourceforge.mlf.metouia.MetouiaLookAndFeel
+</pre>
+<p>
+Because switching the look-and-feel would require a lot of internal updates to the application, changes become only effective after quitting and restarting FScape.
+</p>
+</body>
+</html>

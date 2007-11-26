@@ -1,0 +1,56 @@
+<HTML><HEAD><TITLE>FScape Help : Filing</TITLE></HEAD>
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000"> 
+<H3>XXX OBSOLETE XXX OBSOLETE XXX OBSOLETE XXX OBSOLETE</H3>
+<TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="2"><TR>
+<TD WIDTH="20%" BGCOLOR="#EEEEE0"><B>&nbsp;Filing&nbsp;</B></TD>
+<TD COLSPAN="2" BGCOLOR="#EEEEC0">&nbsp;Disk I/O and supported formats&nbsp;
+</TD></TR>
+<TR><TD VALIGN="TOP">&nbsp;<p>&nbsp;Generic&nbsp;</TD><TD COLSPAN="2">&nbsp;<p>
+FScape works with a couple of files on your harddisc. Mainly these are user specified input and output
+files (sounds, spectral data, images, fscape settings) and temporary files. Disk I/O can be speed
+up by choosing a larger buffer in the <A HREF="PrefsDlg.html">preferences</A>. There you can also
+change the default temporary and backup path.<p>FScape creates custom icons for its output files
+using the MRJ Toolkit.<p>Temp files are normally deleted upon exit but sometimes deleting is not
+possible during one session. When FScape is not running you can delete all orphan temp files
+(indicated by a file name "fscXXXXX.tmp").<p>
+<HR></TD></TR>
+<TR><TD VALIGN="TOP">&nbsp;Resolution&nbsp;</TD><TD COLSPAN="2">
+All signal processing is internally performed with 32-bit floating point resolution, sometimes even
+double precision. Multiple modules cannot be directly linked but only be invoked serially (see
+<A HREF="BatchDlg.html">batch processing</A>). Therefore you may sometimes wish to maintain the full
+dynamic of floating point data between adjectant steps. In this case choose 32-bit floating point resolution for output files
+(supported by the IRCAM and NeXT format). If you don't want to work with these files directly you can
+usually omit output normalization because of the huge dynamic of floating point numbers (there's no
+clipping limit or level dependant quantization noise). But be careful when listening to non-normalized
+files with SoundApp etc. because you might hear severe distortion due to DAC clipping.<p>
+FScape will read any integer resolution from 8 bit to 32 bit as well as 32 bit and 64 bit floating
+point. It will accept any sampling rates. Yet your choice of output resolution and sampling rate
+is limited to 16, 24 or 32 bit and a selection of common rates.<p>
+<HR>
+</TD></TR><TR><TD VALIGN="TOP">&nbsp;Supported formats&nbsp;</TD><TD COLSPAN="2">
+Supported sound formats are AIFF uncompressed, NeXT/Sun .snd and IRCAM. SoundDesigner II files are
+not supported at the moment because they require platform specific code (resource forks are not
+supported by Java). Please note that AIFF features markers while IRCAM features regions, .snd
+none of these. FScape sometimes writes markers. Markers and regions are automatically converted into
+each other. However, when writing .snd files these are lost!<p>
+The only supported image format is TIFF uncompressed at the moment.<p>
+Spectral data is written out in the SoundHack/CSound format.<p>
+QuickTime movies will be implemented soon.<p>For more details on how to choose output files read the
+article on <A HREF="PathField.html">PathFields</A>.
+<HR>
+</TD></TR><TR><TD VALIGN="TOP">&nbsp;FScape data files&nbsp;</TD><TD COLSPAN="2">
+FScape writes preferences, presets etc. in its own format. It's basically ASCII text but should not
+be directly edited by you unless you really know what you are doing.<p>&nbsp;
+<HR>
+<B>Known bugs:</B> QT movies do not work.<br>Sound playback is performed via QuickTime, unfortunately
+QT does not understand IRCAM or .snd. Usually you will listen to those files with SoundApp.<br>Multichannel spectral data
+files are written out so SoundHack can read them. There used to be a bug in SoundHack that would
+cause SoundHack to omit the first frame resulting in swapped channels. I don't know if the bug has
+been fixed.<br>IRCAM integer files are not read by SoundApp, my fault?<p>
+<B>To be done:</B> Support AIFF 32-bit floating point via AIFC special compression type.
+Support for SoundDesigner II?<p>
+</TD></TR><TR><TD BGCOLOR="#EEEEE0">&nbsp;<A HREF="index.html">Contents</A>&nbsp;</TD>
+<TD ALIGN="RIGHT" COLSPAN="2" BGCOLOR="#EEEEE0">&nbsp;last modified: 18-Feb-02&nbsp;</TD></TR>
+</TABLE>
+</BODY>
+</HTML>

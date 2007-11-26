@@ -1,0 +1,45 @@
+<HTML><HEAD><TITLE>FScape Help : ParamField gadgets</TITLE></HEAD>
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000"> 
+<TABLE WIDTH="100% BORDER="0" CELLSPACING="0" CELLPADDING="2"><TR>
+<TD WIDTH="20%" BGCOLOR="#EEEEE0"><B>&nbsp;ParamField gadgets&nbsp;</B></TD>
+<TD COLSPAN="2" BGCOLOR="#EEEEC0">&nbsp;Entering numeric parameters&nbsp;</TD></TR>
+<!---
+<TR><TD COLSPAN="3"><HR></TD></TR>
+</!---><TR>
+<TD>&nbsp;</TD><TD><IMG SRC="images/ParamField.gif"></TD><TD VALIGN="TOP" WIDTH="60%">
+<br><BLOCKQUOTE>
+Most numeric parameters are entered using the ParamField gadgets. They consist of a
+dial wheel, a number field and a unit display or gadget.
+</BLOCKQUOTE>
+</TD></TR><TR><TD>&nbsp;<p>&nbsp;</TD><TD COLSPAN="2">
+<p>&nbsp;<p>Numeric parameters can be entered either with the mouse or the keyboard. Use the
+mouse to turn the dial wheel around - clockwise increases the value, counter clockwise decreases.
+Single clicks or shift-clicks increase or decrease the value stepwise. Alt+click resets the value
+(usually to zero). Try to get used to the acceleration function of the wheel turning, it's a bit
+tricky. When you enter values with the keyboard they are immediately fit into a "parameter space",
+i.e. are set back to a minimum or maximum value when exceeding certain limits. Deleting characters
+is sometimes tricky. Try to mark the whole text and overwrite it.<p>
+Next to the number field you see a unit field, either as a fixed label or a choice gadget.
+In the latter case you can switch between different units, e.g. between Hertz and semitones or
+percentage. Some units are relative units, e.g. semitones or percentages. In most cases it should
+be clear to what basis the value relates. For example, in the <A HREF="ResampleDlg.html">resampling
+module</A> the "new rate" field relates to the original sampling rate of the input file. When you
+choose 44.1 kHz input and set "new rate" to +12 semitones, it means your output gets resampled to
+88.2 kHz. Likewise switching the unit to "± %" translates the value to +100 %. Units starting with
+a "±" indicate offsets. E.g. when 44.1 kHz is the reference and 1000 ±Hz is the "new rate" then the
+destination rate will be 44.2 kHz.
+<p>Whenever FScape
+cannot find a reference value the number field entry remains unchanged though it's meaning may
+change, of course.<p>When your text cursor is in a number field, hitting the F1 key brings up the
+<A HREF="ParamSettingsDlg.html">global scale settings dialog</A>. Here you can change the number
+of semitones per octave and the BPM rate that influence how the units "semi" and "beats" are
+translated to Hertz and milliseconds resp.
+<p><HR>
+<B>Known bugs:</B> None<p>
+<B>To be done:</B> Reprogram the dial wheel, better usability. Allow user to change the
+value resolution.<p>
+</TD></TR><TR><TD BGCOLOR="#EEEEE0">&nbsp;<A HREF="index.html">Contents</A>&nbsp;</TD>
+<TD ALIGN="RIGHT" COLSPAN="2" BGCOLOR="#EEEEE0">&nbsp;last modified: 18-Feb-02&nbsp;</TD></TR>
+</TABLE>
+</BODY>
+</HTML>

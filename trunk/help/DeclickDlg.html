@@ -1,0 +1,34 @@
+<HTML><HEAD><TITLE>FScape Help : Declick</TITLE></HEAD>
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000"> 
+<TABLE WIDTH="100% BORDER="0" CELLSPACING="0" CELLPADDING="2"><TR>
+<TD WIDTH="20%" BGCOLOR="#EEEEE0"><B>&nbsp;Declick&nbsp;</B></TD>
+<TD COLSPAN="2" BGCOLOR="#EEEEC0">&nbsp;Detects and/or removes clicks from a recording&nbsp;</TD></TR>
+<!---
+<TR><TD COLSPAN="3"><HR></TD></TR>
+</!---><TR>
+<TD>&nbsp;</TD><TD><IMG SRC="images/DeclickDlg.gif"></TD><TD VALIGN="TOP" WIDTH="40%">
+<br><BLOCKQUOTE>
+Digital click artifacts are detected by a stochastic comparision and/or removed by filling
+in the silence with a short reverberation.
+</BLOCKQUOTE>
+</TD></TR><TR><TD>&nbsp;</TD><TD COLSPAN="2">
+<IMG SRC="images/param1.gif"><B>Input/Output:</B> Input sound containing clicks and declicked output file.<p>
+<IMG SRC="images/param2.gif"><B>Detection sources:</B> 'Let FScape detect' activates this module's own mechanism for finding clicks in the input. Controlled by the parameters 3 (see below).<br>'Read markers' includes clicks located by Markers named "Click" in the sound file (e.g. placed in Peak). Therefore, if FScape fails to find clicks itself, you can place manual markers and then use the Declicker only to repair these ones.<p>
+<IMG SRC="images/param3.gif"><B>Detection settings:</B> Active when 'Let FScape detect' is checked. Detection is based on the assumption of a Gaussian distribution of sample changes (difference between adjectant sample values). Mean and standard deviation are calculated from frames defined by 'Check size'. Then each sample change is threshold by the chosen 'Probability bound' (e.g. if this is set to '1:2000' it means FScape detects a click if there's a sample change in a frame that has a chance of less than 1:2000 to appear in a Gaussian distribution with the calculated mean/stddev). Because such irregularities occur often in very silent regions which are hardly audible as "clicks" you have to choose a resonable noise floor ('Min. amp').<p>
+<IMG SRC="images/param4.gif"><B>Repair modes:</B> 'Let FScape repair' activates this module's own mechanism for repairing clicks in in the input. Controlled by parameters 5 and 6 (see below).<br>'Write markers' inserts Markers named 'Click' in the output file, so when you uncheck 'Let FScape repair' and check 'Write markers' you can manually repair the detected clicks (for example with the click repair function of Peak).<p>
+<IMG SRC="images/param5.gif"><B>X-Fade size:</B> When you choose FScape to repair the clicks, it will fadeout the input just before the click and fade it in after the click. In order to conceal this fadings the last 'X-Fade size' samples before the click are convolved with an IR specified in parameter 6 (see below) and added to the clip location.<p>
+<IMG SRC="images/param6.gif"><B>Impulse response:</B> Normally use the file that comes with FScape ('sounds/declickIR.aif'). Thats the IR of a short reverb. Therefore when a click occurs the portion before the click is reverberated and covers the attenuated click location. Try small delays as well. The IR should have a quite flat spectrum.<p>
+<IMG SRC="images/param7.gif"><B>Click view:</B> A visual feedback while processing. Indicates clicks as red vertical lines whereby the horizontal position corresponds with the timeline position in the input file.<p>
+<HR>
+<IMG SRC="images/process1.gif"><B>Toolbar:</B> Popup menus for loading and saving settings, presets and
+options. Refer to a the basic chapter on <A HREF="ProcessWindow.html">process windows</A>.<p>
+<IMG SRC="images/process2.gif"><B>Processbar:</B> Buttons for closing the module, starting and stopping
+processing. Process gauge. Refer to a the basic chapter on <A HREF="ProcessWindow.html">process windows</A>.<p>
+<HR>
+<B>Known bugs:</B> none<p>
+<B>To be done:</B> Alternative detection (e.g. spectral, maximum likelyhood) and repair (e.g. forward/backward prediction) mechanisms, they don't work very well in many cases ;(<p>
+</TD></TR><TR><TD BGCOLOR="#EEEEE0">&nbsp;<A HREF="index.html">Contents</A>&nbsp;</TD>
+<TD ALIGN="RIGHT" COLSPAN="2" BGCOLOR="#EEEEE0">&nbsp;last modified: 03-Aug-02&nbsp;</TD></TR>
+</TABLE>
+</BODY>
+</HTML>

@@ -1,0 +1,14 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN"
+        "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<HTML><HEAD><TITLE>FScape Help : Sample Synthesis</TITLE></HEAD>
+<BODY>
+<A NAME="top"></A><H2>Sample Synthesis</H2>
+<BLOCKQUOTE>
+One of the first modules in FScape, I don't know if it still works. The idea was taken from a fancy programme which was new at that time, Metasynth, where you could "paint" in the sonagramme of your sound or paste your photoshop images into the sonagramme. Very funny but always sounding "phasy". However, it had a great feature which allowed you to use samples instead of sines for resynthesis. This is what this module does. Take a spectral file as input and synthesize it, but not using sinusodials but different samples. Different samples can be attributed to different frequency bands and different dynamics. The great panel represents the freqency/ dynamic plane. Double-click to create a new sample zone. In synthesis, a (really weak) partial tracking is used and the samples of the appropriate sample zone are resampled just-in-time. So I remember this usually takes hours for even short spectral files. If you think your computer is bored at night you can try to run this module, but as stated above, I don't know if it still works or the results are particularly interesting...
+</BLOCKQUOTE>
+<HR>
+<P>Some hints: The black horizontal line in a sample zone corresponds to the sample's "base frequency", i.e. whenever a partial of that frequency is synthesized, no resampling will be applied to the sample. Thus, the higher the base frequency, the more downward resampling will be applied to the samples (resulting in darker sounds) and vice versa. For simple preview, you can select the "Mono+Linear" quality option which means, all samples are converted to mono (the output will be mono) and linear resampling without antialiasing filter will be used so it's faster than the high quality bandlimited resampling. Also note that the output length needn't be the same as the length of the input spectral file. Use the length gadget to stretch or shorten the output.</P>
+<P><EM>bugs:</EM> i'm not sure this module works at all.</P>
+<P><EM>last modified:</EM> 29-Jul-04</P>
+</BODY>
+</HTML>

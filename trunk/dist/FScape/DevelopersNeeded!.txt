@@ -1,0 +1,34 @@
+FScape needs your help!
+
+unfortunately I don't have enough time to devote to FScape anymore. During
+the course of 2006 and 2007, I need to turn all of my software projects
+into multiple-developers projects to gain resources for new projects.
+
+I'm looking for people who are willing to help and co-develop FScape.
+
+Minimum skills of developers:
+- good experience in java programming
+
+Optimum skills of developers:
+- interest in noise music
+- good experience in music-dsp programming
+
+What i offer:
+- help with all programming questions
+- help with understanding my style of programming
+- help with setting up development mailing lists and resources
+- help with transition to cross-platform IDE (e.g. eclipse)
+- help with initially having a clean + well documented source code
+  (this is currently not the case ;-)
+
+Suggested next development steps:
+- get the OSC implementation fully done
+- completely separate GUI and processes
+- work towards a unified plug-in interface to share with eisenkraut
+
+Long-term goals:
+- work towards a more modular concept where every parameter
+  can be any kind of (dynamic) modulator
+
+
+(oct-2006 sciss)
