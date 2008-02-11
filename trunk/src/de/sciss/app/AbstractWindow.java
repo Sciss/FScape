@@ -2,7 +2,7 @@
  *  AbstractWindow.java
  *  de.sciss.app package
  *
- *  Copyright (c) 2004-2007 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2004-2008 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -25,6 +25,7 @@
  *
  *  Changelog:
  *		19-Aug-06	created
+ *		11-Feb-08	removed setPreferredSize
  */
 
 package de.sciss.app;
@@ -43,6 +44,9 @@ import javax.swing.event.InternalFrameEvent;
 /**
  *	Interface that unites functionality
  *	from inhomogeneous classes such as JFrame, JDialog, JInternalFrame
+ *
+ *	@version	0.11, 11-Feb-08
+ *	@author		Hanns Holger Rutz
  */
 public interface AbstractWindow
 {
@@ -75,24 +79,14 @@ public interface AbstractWindow
 	public boolean isVisible();
 	public void toFront();
 	public boolean isFloating();
-//	public void addWindowFocusListener( WindowFocusListener l );
-//	public void removeWindowFocusListener( WindowFocusListener l );
-//	public void addWindowListener( WindowListener l );
-//	public void removeWindowListener( WindowListener l );
 	public void addListener( Listener l );
 	public void removeListener( Listener l );
-//	public boolean hasFocus();
-//	public boolean isFocused();
-//	public void requestFocus();
 	public boolean isActive();
-//	public int getWidth();
-//	public int getHeight();
 	public Dimension getSize();
 	public Rectangle getBounds();
 	public void setBounds( Rectangle r );
 	public void setSize( Dimension d );
-	public void setPreferredSize( Dimension d );
-//	public void setSize( int width, int height );
+//	public void setPreferredSize( Dimension d );
 	public void setJMenuBar( JMenuBar m );
 	public JMenuBar getJMenuBar();
 	public InputMap getInputMap( int condition );
@@ -101,7 +95,6 @@ public interface AbstractWindow
 	public void setFocusTraversalKeysEnabled( boolean enabled );
 	public void setDirty( boolean dirty );
 	public void setLocationRelativeTo( Component c );
-//	public void setUndecorated( boolean b );
 	public void setResizable( boolean b );
 	public boolean isResizable();
 	
