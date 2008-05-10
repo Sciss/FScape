@@ -384,7 +384,8 @@ topLevel: try {
 			framesWritten	= 0;
 			framesRead		= 0;
 			
-			offStart		= winSizeH;
+//			offStart		= winSizeH;
+			offStart		= 0;
 //			finished		= false;
 
 			while( threadRunning && framesWritten < inLength ) {
