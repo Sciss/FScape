@@ -91,7 +91,9 @@ FScape {
 						
 					isRunning = true;
 						
-					1.wait;	// tricky sync
+//					1.wait;	// tricky sync
+//0.1.wait;
+					this.query( "/main", [ \version ]);
 						
 					while({ isRunning }, {
 						progInterval.wait;
