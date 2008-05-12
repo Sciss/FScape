@@ -48,7 +48,7 @@ import de.sciss.io.IOUtil;
  *	a sample-by-sample basis.
  *
  *  @author		Hanns Holger Rutz
- *  @version	0.71, 14-Nov-07
+ *  @version	0.71, 12-May-08
  */
 public class BinaryOpDlg
 extends DocumentFrame
@@ -576,6 +576,13 @@ topLevel: try {
 			reOutStream	= new AudioFileDescr( reInStream[0] );
 			ggOutput.fillStream( reOutStream );
 			reOutStream.channels = outChanNum;
+			// well, more sophisticated code would
+			// move and truncate the markers...
+			if( (pre[0] == 0) /* && (post[0] == 0) */ ) {
+				reInF[0].readMarkers();
+				reOutStream.setProperty( AudioFileDescr.KEY_MARKERS,
+				    reInStream[0].getProperty( AudioFileDescr.KEY_MARKERS ));
+			}
 			reOutF		= AudioFile.openAsWrite( reOutStream );
 			reOutBuf	= new float[ outChanNum ][ 8192 ];
 			imOutBuf	= new float[ outChanNum ][ 8192 ];

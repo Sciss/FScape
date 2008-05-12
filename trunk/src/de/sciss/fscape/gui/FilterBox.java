@@ -48,7 +48,7 @@ import de.sciss.io.AudioFileDescr;
  *	actual FIR coefficient calculation.
  *
  *  @author		Hanns Holger Rutz
- *  @version	0.71, 14-Nov-07
+ *  @version	0.71, 12-May-08
  *
  *	@todo	windowing should use full windows instead of half wings
  *	@todo	graphical hint for rolloff other than zero
@@ -399,7 +399,8 @@ implements CircuitPanel.Box, javax.swing.Icon
 		return( String.valueOf( filterType ) + ';' + String.valueOf( sign ) + ';' +
 				cutOff.toString() + ';' + bandwidth.toString() + ';' + gain.toString() + ';' +
 				delay.toString() + ';' + String.valueOf( overtones ) + ';' +
-				otLimit.toString() + ';' + otSpacing.toString() );
+				otLimit.toString() + ';' + otSpacing.toString() + ";" +
+				rollOff.toString() );
 	}
 
 	public CircuitPanel.Box fromString( String s )
@@ -416,6 +417,9 @@ implements CircuitPanel.Box, javax.swing.Icon
 		box.overtones	= Boolean.valueOf( strTok.nextToken() ).booleanValue();
 		box.otLimit		= Param.valueOf( strTok.nextToken() );
 		box.otSpacing	= Param.valueOf( strTok.nextToken() );
+		if( strTok.hasMoreTokens() ) { // backwards compatible!
+			box.rollOff	= Param.valueOf( strTok.nextToken() );
+		}
 
 		return box;
 	}

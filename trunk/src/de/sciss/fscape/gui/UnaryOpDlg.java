@@ -51,7 +51,7 @@ import de.sciss.io.IOUtil;
  *	a sample-by-sample basis.
  *
  *  @author		Hanns Holger Rutz
- *  @version	0.71, 15-Nov-07
+ *  @version	0.71, 12-May-08
  */
 public class UnaryOpDlg
 extends DocumentFrame
@@ -564,6 +564,13 @@ topLevel: try {
 			reOutStream	= new AudioFileDescr( reInStream );
 			ggOutput.fillStream( reOutStream );
 			reOutStream.channels = outChanNum;
+			// well, more sophisticated code would
+			// move and truncate the markers...
+			if( (pre == 0) /* && (post == 0) */ ) {
+				reInF.readMarkers();
+				reOutStream.setProperty( AudioFileDescr.KEY_MARKERS,
+				    reInStream.getProperty( AudioFileDescr.KEY_MARKERS ));
+			}
 			reOutF		= AudioFile.openAsWrite( reOutStream );
 			reOutBuf	= new float[ outChanNum ][ 8192 ];
 			imOutBuf	= new float[ outChanNum ][ 8192 ];

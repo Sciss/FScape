@@ -53,7 +53,7 @@ import de.sciss.io.Span;
  *  Processing module for sound file convolution.
  *
  *  @author		Hanns Holger Rutz
- *  @version	0.71, 14-Nov-07
+ *  @version	0.71, 12-May-08
  */
 public class ConvolutionDlg
 extends DocumentFrame
@@ -636,6 +636,7 @@ topLevel: try {
 			}
 
 			// adjust "support"
+			impF.readMarkers();
 			markers = (java.util.List) impStream.getProperty( AudioFileDescr.KEY_MARKERS );
 			regions = (java.util.List) impStream.getProperty( AudioFileDescr.KEY_REGIONS );
 			if( markers != null ) {
