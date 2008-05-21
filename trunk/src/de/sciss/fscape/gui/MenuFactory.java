@@ -87,7 +87,7 @@ import de.sciss.util.Flag;
  *  <code>Main</code> class.
  *
  *  @author		Hanns Holger Rutz
- *  @version	0.71, 15-Nov-07
+ *  @version	0.71, 21-May-08
  *
  *  @see	de.sciss.eisenkraut.Main#menuFactory
  */
@@ -166,6 +166,7 @@ extends BasicMenuFactory
 	private static final String MI_RECYCLE		= "Recycle Or Die";
 	private static final String MI_CONVERT		= "Convert Files";
 	private static final String MI_CDVERIFY		= "CD Verification";
+	private static final String MI_SMPTESYNTH	= "SMPTE Synthesizer";
 	
 	private static final String MI_BATCH		= "Batch Processor";
 	private static final String MI_SPECTPATCH	= "Spectral Patcher";
@@ -225,7 +226,8 @@ extends BasicMenuFactory
 		{ new StringItem( "Sachensucher",	MI_SACHENSUCHER ),	null },
 		{ new StringItem( "Recycle",		MI_RECYCLE ),		null },
 		{ new StringItem( "Convert",		MI_CONVERT ),		null },
-		{ new StringItem( "CDVerify",		MI_CDVERIFY ),		null }
+		{ new StringItem( "CDVerify",		MI_CDVERIFY ),		null },
+		{ new StringItem( "SMPTESynth",		MI_SMPTESYNTH ),	null }
 	},{
 		{ M_MOD_REST },
 		{ new StringItem( "CombFilter",		MI_COMBFLT ),		null },
