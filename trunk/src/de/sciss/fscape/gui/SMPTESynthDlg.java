@@ -263,15 +263,17 @@ extends DocumentFrame
 		final AudioFileDescr	outStream;
 		final PathField			ggOutput;
 		final int				smpsPerHalfbit, smpsPerWord, calcRate;
+		final int				inBufPre		= 2;
 		final double			tau, rf;
 		final float				alpha;
 		final long				outLength;
+		final int				inBufLen;
 		AudioFile				outF			= null;
 		byte					hoursStart, minsStart, secsStart, framesStart;
 		byte					hoursStop, minsStop, secsStop, framesStop, tempB;
 		int						numStartFrames,numStopFrames, frameOffset, tempI;
 		long					progOff, progLen, sampleOffset, sampleOffsetR;
-		int						chunkLen, chunkLen2, chunkLenR, phase, outBufOff;
+		int						chunkLen, outBufOff, phase, outBufPre, inBufOff;
 		float					yold, y0, y1, y2, y3, mu, mu2, a0, a1, a2, a3;
 		double					d1;
 		Object[]				msgArgs;
@@ -364,10 +366,11 @@ topLevel: try {
 			framesPerBuf = 50;
 			yold		= 0f;
 //			buf			= new float[ framesPerBuf * 160 ];
-			buf			= new float[ framesPerBuf * smpsPerWord ];
-			bufR		= new float[ (int) Math.ceil( buf.length / rf )];
+			inBufLen	= framesPerBuf * smpsPerWord + 3;
+			buf			= new float[ inBufLen ];
+			bufR		= new float[ (int) Math.ceil( framesPerBuf * smpsPerWord / rf ) + 1 ];
 			outBuf		= new float[][] { bufR };
-			outBufOff	= 2; // 1;	// delay compensation
+			outBufPre	= 1; // 2; // 1;	// delay compensation
 			
 		// ---- synthesize output ----
 
@@ -402,11 +405,11 @@ topLevel: try {
 			phase			= -1;
 			sampleOffset	= 0;
 			sampleOffsetR	= 0;
-			y1 = 0; y2 = 0; y3 = 0;
+//			y1 = 0; y2 = 0; y3 = 0;
 
 			while( threadRunning && (sampleOffsetR < outLength) ) {
 				chunkLen = (int) Math.min( framesPerBuf, numStopFrames - frameOffset );
-				chunkLen2 = 0;
+				inBufOff = inBufPre;
 				for( int i = 0; i < chunkLen; i++ ) {
 					// if( drop ) ... XXX
 					bcd( framesStart % 10, word, 0 );
@@ -421,9 +424,9 @@ topLevel: try {
 					for( int j = 0; j < 10; j++ ) {
 						for( int m = 0, n = word[ j ]; m < 8; m++, n >>= 1 ) {
 							phase = -phase;
-							for( int p = 0; p < smpsPerHalfbit; p++ ) buf[ chunkLen2++ ] = phase;
+							for( int p = 0; p < smpsPerHalfbit; p++ ) buf[ inBufOff++ ] = phase;
 							if( (n & 1) == 1 ) phase = -phase;
-							for( int p = 0; p < smpsPerHalfbit; p++ ) buf[ chunkLen2++ ] = phase;
+							for( int p = 0; p < smpsPerHalfbit; p++ ) buf[ inBufOff++ ] = phase;
 						}
 					}
 					
@@ -442,54 +445,57 @@ topLevel: try {
 					}
 				}
 
-				for( int i = chunkLen2; i < buf.length; i++ ) {
+				for( int i = inBufOff; i < buf.length; i++ ) {
 					buf[ i ] = 0f;
 				}
 				// low pass filter
-				for( int i = 0; i < buf.length; i++ ) {
+				for( int i = inBufPre; i < buf.length; i++ ) {
 					yold	 = yold + (alpha * (buf[ i ] - yold));
 					buf[ i ] = yold * amp;
 				}
 				
 				// resample using cubic interolation
-				d1	= sampleOffsetR * rf - sampleOffset;
+				d1	= sampleOffsetR * rf - sampleOffset + 1;
 //				d1	= sampleOffset * rf - sampleOffsetR;
-				chunkLenR = 0;
+				outBufOff = 0;
 //				assert ((int) d1) == 0;
-if( (int) d1 != 0 ) {
-	System.out.println( "for sampleOffset " + sampleOffset + "; sampleOffsetR " + sampleOffsetR + "; rf " + rf + "; d1 is " + d1 );
-}
+//if( (int) d1 != 0 ) {
+//	System.out.println( "for sampleOffset " + sampleOffset + "; sampleOffsetR " + sampleOffsetR + "; rf " + rf + "; d1 is " + d1 );
+//}
 				
 //				y1	= buf[ 0 ];
 //				y2	= buf[ 1 ];
 //				y3	= buf[ 2 ];
-				for( int j = (int) d1; j < buf.length; chunkLenR++ ) {
-					y0	= y1; y1 = y2; y2 = y3;
-					y3	= buf[ j ];
+				for( int j = (int) d1; j < inBufLen - inBufPre; outBufOff++ ) {
+					y0	= buf[ j - 1 ];
+					y1	= buf[ j ];
+					y2	= buf[ j + 1];
+					y3	= buf[ j + 2 ];
 					mu	= (float) (d1 % 1.0);
 					mu2	= mu * mu;
 					a0	= y3 - y2 - y0 + y1;
 					a1	= y0 - y1 - a0;
 					a2	= y2 - y0;
 					a3	= y1;
-					bufR[ chunkLenR ] = a0 * mu * mu2 + a1 * mu2 + a2 * mu + a3;
+					bufR[ outBufOff ] = a0 * mu * mu2 + a1 * mu2 + a2 * mu + a3;
+//					bufR[ chunkLenR ] = y0 * (1f - mu) + y1 * mu;
 					d1 += rf;
 					j	= (int) d1;
 				}
-//				// handle overlap
-//				buf[ 0 ] = y1;
-//				buf[ 1 ] = y2;
+				// handle overlap
+				buf[ 0 ] = buf[ inBufLen - 2 ];
+				buf[ 1 ] = buf[ inBufLen - 1 ];
 //				buf[ 2 ] = y3;
 				
 //				sampleOffsetR	+= chunkLenR;
 //				chunkLenR		 = (int) Math.min( chunkLenR - outBufOff, outLength - sampleOffsetR );
-				chunkLenR		 = (int) Math.min( chunkLenR, outLength - sampleOffsetR + outBufOff );
-				outF.writeFrames( outBuf, outBufOff, chunkLenR - outBufOff );
+				outBufOff		 = (int) Math.min( outBufOff, outLength - sampleOffsetR + outBufPre );
+				outF.writeFrames( outBuf, outBufPre, outBufOff - outBufPre );
 				frameOffset		+= chunkLen;
-				sampleOffset	+= chunkLen2;
-				sampleOffsetR	+= chunkLenR;
-				outBufOff		 = 0;
-				progOff			+= chunkLenR;
+				sampleOffset	+= (inBufOff - inBufPre);
+				sampleOffsetR	+= outBufOff;
+				outBufPre		 = 0;
+				progOff			+= outBufOff;
 			// .... progress ....
 				setProgression( (float) progOff / (float) progLen );
 			}
