@@ -96,11 +96,11 @@ extends DocumentFrame
 
 	private static final String[]	prText		= { "", "00:00:00:00", "00:05:00:00" };
 	private static final String[]	prTextName	= { PRN_OUTPUTFILE, PRN_STARTTIME, PRN_STOPTIME };
-	private static final int[]		prIntg		= { 0, 0, 0, FRAMES_30 };
+	private static final int[]		prIntg		= { 0, 0, 1, FRAMES_30 };
 	private static final String[]	prIntgName	= { PRN_OUTPUTTYPE, PRN_OUTPUTRES, PRN_OUTPUTRATE, PRN_FRAMES };
 //	private static final boolean[]	prBool		= { false };
 //	private static final String[]	prBoolName	= { PRN_MINPHASE };
-	private static final Param[]	prPara		= { new Param( -6.0, Param.DECIBEL_AMP )};
+	private static final Param[]	prPara		= { new Param( -18.0, Param.DECIBEL_AMP )};
 	private static final String[]	prParaName	= { PRN_GAIN };
 
 	private static final int GG_OUTPUTFILE		= GG_OFF_PATHFIELD	+ PR_OUTPUTFILE;
@@ -293,7 +293,8 @@ topLevel: try {
 			case FRAMES_29:
 				frames	= 30;
 				drop	= true;
-				break;
+//				break;
+				throw new IllegalArgumentException( "Drop Frame is not supported yet!" );
 			case FRAMES_30:
 				frames	= 30;
 				drop	= false;
