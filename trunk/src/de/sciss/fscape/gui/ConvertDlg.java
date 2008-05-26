@@ -839,6 +839,9 @@ topLevel: try {
 				switch( inType ) {
 				case TYPE_IMAGE:		// ------------------------------ TIFF ==> Spect ------------------------------
 
+//					System.out.println( "reading row " + ((ImageStream) inStream).rowsRead +
+//					                    " of " + ((ImageStream) inStream).width + " x " + ((ImageStream) inStream).height );
+					
 					((ImageFile) inF).readRow( row );
 					switch( pr.intg[ PRS_COLORMODE ]) {
 

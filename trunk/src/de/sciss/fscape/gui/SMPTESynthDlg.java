@@ -56,9 +56,12 @@ import de.sciss.io.AudioFileDescr;
  *
  *	http://www.philrees.co.uk/articles/timecode.htm
  *	http://en.wikipedia.org/wiki/SMPTE_time_code
+ *	http://en.wikipedia.org/wiki/RC_time_constant
+ *	http://en.wikipedia.org/wiki/Low-pass_filter
+ *	http://local.wasp.uwa.edu.au/~pbourke/other/interpolation/
  *
  *  @author		Hanns Holger Rutz
- *  @version	0.71, 21-May-08
+ *  @version	0.71, 26-May-08
  */
 public class SMPTESynthDlg
 extends DocumentFrame
@@ -255,19 +258,22 @@ extends DocumentFrame
 		final int				frames, framesPerBuf;
 		final boolean			drop;
 		final byte[]			word			= new byte[ 10 ];
-		final float[]			buf;
+		final float[]			buf, bufR;
 		final float[][]			outBuf;
 		final AudioFileDescr	outStream;
 		final PathField			ggOutput;
-		final int				smpsPerHalfbit	= 10;
-		final int				smpsPerWord		= 160 * smpsPerHalfbit;
+		final int				smpsPerHalfbit, smpsPerWord, calcRate;
+		final double			tau, rf;
+		final float				alpha;
+		final long				outLength;
 		AudioFile				outF			= null;
 		byte					hoursStart, minsStart, secsStart, framesStart;
 		byte					hoursStop, minsStop, secsStop, framesStop, tempB;
 		int						numStartFrames,numStopFrames, frameOffset, tempI;
-		long					progOff, progLen;
-		int						chunkLen;
-		float					phase;
+		long					progOff, progLen, sampleOffset, sampleOffsetR;
+		int						chunkLen, chunkLen2, chunkLenR, phase, outBufOff;
+		float					yold, y0, y1, y2, y3, mu, mu2, a0, a1, a2, a3;
+		double					d1;
 		Object[]				msgArgs;
 		
 topLevel: try {
@@ -334,18 +340,33 @@ topLevel: try {
 			outStream	= new AudioFileDescr();
 			ggOutput.fillStream( outStream );
 			outStream.channels = 1;
-			outStream.rate = frames * 160 * smpsPerHalfbit;	// XXX
+//			outStream.rate = frames * 160 * smpsPerHalfbit;	// XXX
 			outF		= AudioFile.openAsWrite( outStream );
 		// .... check running ....
 			if( !threadRunning ) break topLevel;
 
+//			smpsPerHalfbit = (int) Math.floor( outStream.rate / (frames * 160) );
+			smpsPerHalfbit = (int) Math.ceil( outStream.rate / (frames * 160) );
+			calcRate	= frames * 160 * smpsPerHalfbit;
+//			System.out.println( "calculation sample rate is " + calcRate );
+			tau			= 25.0e-6 / Math.log( 9 );	// 25µs rise time --> time constant
+			alpha		= (float) (1.0 / (tau * calcRate + 1));
+			rf			= calcRate / outStream.rate; // reciprocal resampling factor
+			
+//			System.out.println( "tau " + tau + "; alpha " + alpha );
+			
+			smpsPerWord	= 160 * smpsPerHalfbit;
 			progOff		= 0;
-			progLen		= numStopFrames - numStartFrames;
+			outLength	= (long) Math.ceil( (long) (numStopFrames - numStartFrames) * smpsPerWord / rf );
+			progLen		= outLength;
 			frameOffset	= numStartFrames;
 			framesPerBuf = 50;
+			yold		= 0f;
 //			buf			= new float[ framesPerBuf * 160 ];
 			buf			= new float[ framesPerBuf * smpsPerWord ];
-			outBuf		= new float[][] { buf };
+			bufR		= new float[ (int) Math.ceil( buf.length / rf )];
+			outBuf		= new float[][] { bufR };
+			outBufOff	= 2; // 1;	// delay compensation
 			
 		// ---- synthesize output ----
 
@@ -374,14 +395,18 @@ topLevel: try {
 			// Bits 64-79 : Sync Word (0011 1111 1111 1101)
 			
 			if( drop ) word[ 1 ] |= (byte) 0x04;
-			word[ 8 ]	= (byte) 0xFC; // NOT: 0x3F;
-			word[ 9 ]	= (byte) 0xBF;
-			amp			= (float) (Param.transform( pr.para[ PR_GAIN ], Param.ABS_AMP, ampRef, null )).val;
-			phase		= -amp;
+			word[ 8 ]		= (byte) 0xFC; // NOT: 0x3F;
+			word[ 9 ]		= (byte) 0xBF;
+			amp				= (float) (Param.transform( pr.para[ PR_GAIN ], Param.ABS_AMP, ampRef, null )).val;
+			phase			= -1;
+			sampleOffset	= 0;
+			sampleOffsetR	= 0;
+			y1 = 0; y2 = 0; y3 = 0;
 
-			while( threadRunning && (frameOffset < numStopFrames) ) {
+			while( threadRunning && (sampleOffsetR < outLength) ) {
 				chunkLen = (int) Math.min( framesPerBuf, numStopFrames - frameOffset );
-				for( int i = 0, k = 0; i < chunkLen; i++ ) {
+				chunkLen2 = 0;
+				for( int i = 0; i < chunkLen; i++ ) {
 					// if( drop ) ... XXX
 					bcd( framesStart % 10, word, 0 );
 					bcd( framesStart / 10, word, 8, 2 );
@@ -395,9 +420,9 @@ topLevel: try {
 					for( int j = 0; j < 10; j++ ) {
 						for( int m = 0, n = word[ j ]; m < 8; m++, n >>= 1 ) {
 							phase = -phase;
-							for( int p = 0; p < smpsPerHalfbit; p++ ) buf[ k++ ] = phase;
+							for( int p = 0; p < smpsPerHalfbit; p++ ) buf[ chunkLen2++ ] = phase;
 							if( (n & 1) == 1 ) phase = -phase;
-							for( int p = 0; p < smpsPerHalfbit; p++ ) buf[ k++ ] = phase;
+							for( int p = 0; p < smpsPerHalfbit; p++ ) buf[ chunkLen2++ ] = phase;
 						}
 					}
 					
@@ -415,10 +440,55 @@ topLevel: try {
 						}
 					}
 				}
+
+				for( int i = chunkLen2; i < buf.length; i++ ) {
+					buf[ i ] = 0f;
+				}
+				// low pass filter
+				for( int i = 0; i < buf.length; i++ ) {
+					yold	 = yold + (alpha * (buf[ i ] - yold));
+					buf[ i ] = yold * amp;
+				}
 				
-				outF.writeFrames( outBuf, 0, chunkLen * smpsPerWord );
+				// resample using cubic interolation
+				d1	= sampleOffsetR * rf - sampleOffset;
+//				d1	= sampleOffset * rf - sampleOffsetR;
+				chunkLenR = 0;
+//				assert ((int) d1) == 0;
+if( (int) d1 != 0 ) {
+	System.out.println( "for sampleOffset " + sampleOffset + "; sampleOffsetR " + sampleOffsetR + "; rf " + rf + "; d1 is " + d1 );
+}
+				
+//				y1	= buf[ 0 ];
+//				y2	= buf[ 1 ];
+//				y3	= buf[ 2 ];
+				for( int j = (int) d1; j < buf.length; chunkLenR++ ) {
+					y0	= y1; y1 = y2; y2 = y3;
+					y3	= buf[ j ];
+					mu	= (float) (d1 % 1.0);
+					mu2	= mu * mu;
+					a0	= y3 - y2 - y0 + y1;
+					a1	= y0 - y1 - a0;
+					a2	= y2 - y0;
+					a3	= y1;
+					bufR[ chunkLenR ] = a0 * mu * mu2 + a1 * mu2 + a2 * mu + a3;
+					d1 += rf;
+					j	= (int) d1;
+				}
+//				// handle overlap
+//				buf[ 0 ] = y1;
+//				buf[ 1 ] = y2;
+//				buf[ 2 ] = y3;
+				
+//				sampleOffsetR	+= chunkLenR;
+//				chunkLenR		 = (int) Math.min( chunkLenR - outBufOff, outLength - sampleOffsetR );
+				chunkLenR		 = (int) Math.min( chunkLenR, outLength - sampleOffsetR + outBufOff );
+				outF.writeFrames( outBuf, outBufOff, chunkLenR - outBufOff );
 				frameOffset		+= chunkLen;
-				progOff			+= chunkLen;
+				sampleOffset	+= chunkLen2;
+				sampleOffsetR	+= chunkLenR;
+				outBufOff		 = 0;
+				progOff			+= chunkLenR;
 			// .... progress ....
 				setProgression( (float) progOff / (float) progLen );
 			}
