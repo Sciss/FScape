@@ -26,22 +26,36 @@
  *  Changelog:
  *		07-Jan-05	uses indicateOutputWrite()
  *		07-Jun-05	printMarkers feature
+ *		25-Aug-08	64bit frames savvy
  */
 
 package de.sciss.fscape.gui;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import java.text.*;
-import java.util.*;
-import javax.swing.*;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.EOFException;
+import java.io.File;
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
-import de.sciss.fscape.io.*;
-import de.sciss.fscape.prop.*;
-import de.sciss.fscape.session.*;
-import de.sciss.fscape.util.*;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
 
+import de.sciss.fscape.io.GenericFile;
+import de.sciss.fscape.prop.Presets;
+import de.sciss.fscape.prop.PropertyArray;
+import de.sciss.fscape.session.DocumentFrame;
+import de.sciss.fscape.util.Constants;
+import de.sciss.fscape.util.Param;
+import de.sciss.fscape.util.Util;
 import de.sciss.gui.PathEvent;
 import de.sciss.gui.PathListener;
 import de.sciss.io.AudioFile;
@@ -53,7 +67,7 @@ import de.sciss.io.Region;
  *  Processing module for querying or changing a sound files volume.
  *
  *  @author		Hanns Holger Rutz
- *  @version	0.71, 14-Nov-07
+ *  @version	0.72, 25-Aug-08
  */
 public class ChangeGainDlg
 extends DocumentFrame
@@ -268,8 +282,7 @@ extends DocumentFrame
 		
 	protected void process()
 	{
-		int					i, j, k;
-		int					len, ch;
+		int					len;
 		long				progOff, progLen;
 		float				f1;
 		boolean				b1;
@@ -288,12 +301,13 @@ extends DocumentFrame
 		Param				ampRef			= new Param( 1.0, Param.ABS_AMP );	// transform-Referenz
 
 		// Smp Init
-		int					inLength;
-		int					framesRead;
+		long				inLength;
+		long				framesRead;
 
 		float				maxAmp;
 		double				energy, power;
-		int					maxChan, maxFrame;
+		int					maxChan;
+		long				maxFrame;
 
 		PathField			ggOutput;
 		boolean				threadJustFind, printMarkers;
@@ -349,27 +363,27 @@ topLevel: try {
 			if( needsRead ) {
 
 				for( framesRead = 0; (framesRead < inLength) && threadRunning; ) {
-					len		= Math.min( 8192, inLength - framesRead );
+					len		= (int) Math.min( 8192, inLength - framesRead );
 					inF.readFrames( inBuf, 0, len );
 
-					for( ch = 0; ch < chanNum; ch++ ) {
+					for( int ch = 0; ch < chanNum; ch++ ) {
 						convBuf1 = inBuf[ ch ];
-						for( i = 0; i < len; i++ ) {
+						for( int i = 0; i < len; i++ ) {
 							f1		= convBuf1[ i ];
 							f1	   *= f1;
 							energy  += f1;
 							if( f1 >= maxAmp ) {
-								j = framesRead + i + 1;
-								k = ch + 1;
+								final long frame	= framesRead + i + 1;
+								final int ch2		= ch + 1;
 								if( f1 > maxAmp ) {
 									maxAmp	= f1;
-									maxFrame= j;
-									maxChan	= k;
+									maxFrame= frame;
+									maxChan	= ch2;
 								} else {
-									if( maxFrame != j ) {
+									if( maxFrame != frame ) {
 										maxFrame = -Math.abs( maxFrame );
 									}
-									if( maxChan != k ) {
+									if( maxChan != ch2 ) {
 										maxChan	= -Math.abs( maxChan );
 									}
 								}
@@ -423,28 +437,28 @@ topLevel: try {
 			// ---- process loop ----
 //t1 = System.currentTimeMillis();	
 				for( framesRead = 0; (framesRead < inLength) && threadRunning; ) {
-					len			= Math.min( 8192, inLength - framesRead );
+					len			= (int) Math.min( 8192, inLength - framesRead );
 					inF.readFrames( inBuf, 0, len );
 
 					if( !peakKnown ) {
-						for( ch = 0; ch < chanNum; ch++ ) {
+						for( int ch = 0; ch < chanNum; ch++ ) {
 							convBuf1 = inBuf[ ch ];
-							for( i = 0; i < len; i++ ) {
+							for( int i = 0; i < len; i++ ) {
 								f1		= convBuf1[ i ];
 								f1	   *= f1;
 								energy  += f1;
 								if( f1 >= maxAmp ) {
-									j = framesRead + i + 1;
-									k = ch + 1;
+									final long	frame	= framesRead + i + 1;
+									final int	ch2		= ch + 1;
 									if( f1 > maxAmp ) {
 										maxAmp	= f1;
-										maxFrame= j;
-										maxChan	= k;
+										maxFrame= frame;
+										maxChan	= ch2;
 									} else {
-										if( maxFrame != j ) {
+										if( maxFrame != frame ) {
 											maxFrame = -Math.abs( maxFrame );
 										}
-										if( maxChan != k ) {
+										if( maxChan != ch2 ) {
 											maxChan	= -Math.abs( maxChan );
 										}
 									}
@@ -468,7 +482,7 @@ topLevel: try {
 					progOff	   += len;
 					
 				// ---- adjust gain + write ----
-					for( ch = 0; ch < chanNum; ch++ ) {
+					for( int ch = 0; ch < chanNum; ch++ ) {
 						Util.mult( inBuf[ ch ], 0, len, gain );
 					}
 					outF.writeFrames( inBuf, 0, len );
@@ -527,11 +541,11 @@ topLevel: try {
 
 	private static void printMarkers( AudioFileDescr afd )
 	{
-		java.util.List			markers	= (java.util.List) afd.getProperty( AudioFileDescr.KEY_MARKERS );
-		java.util.List			regions	= (java.util.List) afd.getProperty( AudioFileDescr.KEY_REGIONS );
-		final java.util.List	empty	= new ArrayList();
-		Marker					mark;
-		Region					region;
+		List			markers	= (List) afd.getProperty( AudioFileDescr.KEY_MARKERS );
+		List			regions	= (List) afd.getProperty( AudioFileDescr.KEY_REGIONS );
+		final List		empty	= new ArrayList();
+		Marker			mark;
+		Region			region;
 		
 		if( markers == null ) markers = empty;
 		if( regions == null ) regions = empty;
@@ -586,7 +600,7 @@ topLevel: try {
 	 *	@param	power		gemessene Durchschnitts-Leistung
 	 *	@param	complete	false wenn noch nicht zu Ende berechnet
 	 */
-	private void showPeak( AudioFileDescr inStream, double maxAmp, int maxFrame, int maxChan,
+	private void showPeak( AudioFileDescr inStream, double maxAmp, long maxFrame, int maxChan,
 						   double power, boolean complete )
 	{
 		String	chanTxt;
@@ -609,7 +623,7 @@ topLevel: try {
 		Double			rmsDB		= new Double( 10 * Math.log( power ) / Constants.ln10 );
 		Integer			cmpJComboBox	= new Integer( complete ? 1 : -1 );
 		Object[]		msgArgs		= { ampDB, rmsDB, cmpJComboBox,
-										new Integer( min ), new Double( absTime ), new Integer( maxFrame ) };
+										new Integer( min ), new Double( absTime ), new Long( maxFrame ) };
 		String			msgPtrn		= new String( "{2,choice,-1#[É|0#}" +
 												  "Max amp {0,number,#,##0.0} dBFS @" +
 												  "{3,number,##0}:{4,number,00.000}" +
