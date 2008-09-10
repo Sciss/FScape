@@ -39,7 +39,7 @@ import de.sciss.fscape.spect.SpectralFile;
 import net.roydesign.mac.MRJAdapter;
 
 /**
- *  @version	0.71, 14-Nov-07
+ *  @version	0.71, 10-Sep-08
  */
 public class GenericFile
 extends RandomAccessFile
@@ -65,11 +65,12 @@ extends RandomAccessFile
 	public static final int MODE_MOV		= 0x0070;
 	public static final int MODE_IRCAM		= 0x0080;
 	public static final int MODE_WAVE		= 0x0090;
+	public static final int MODE_WAVE64		= 0x00A0;
 	public static final int MODE_TYPEMASK	= 0xFFF0;
 
 	public static final int TYPES_IMAGE[]	= { MODE_TIFF };
 	public static final int TYPES_MOVIE[]	= { MODE_MPEG, MODE_MOV };
-	public static final int TYPES_SOUND[]	= { MODE_AIFF, MODE_SND, MODE_IRCAM, MODE_WAVE };
+	public static final int TYPES_SOUND[]	= { MODE_AIFF, MODE_SND, MODE_IRCAM, MODE_WAVE, MODE_WAVE64 };
 	public static final int TYPES_SPECT[]	= { MODE_SPECT };
 
 	public static final int MODE_SPECIALMASK= 0xFF0000;	// individuell AudioFile, ImageFile, ...
@@ -104,15 +105,15 @@ extends RandomAccessFile
 
 	// index corresponds to MODE_TYPE >> TYPESHIFT
 	protected static final int TYPESHIFT		= 4;
-												//  "????"		"TIFF"		"AIFF"		"NeXT"		"DATA"		"FScF"		"MPEG"		"MooV"		"IRCM"        "WAVE"
-	protected static final int FILETYPE[]		= { 0x3F3F3F3F, 0x54494646, 0x41494646, 0x4E655854, 0x44415441, 0x46536346, 0x4D504547, 0x4D6F6F56, 0x4952434D, 0x57415645  };
-	protected static final String FILETYPESTR[]	= { "????"	,	"TIFF"	,	"AIFF"	,	"NeXT"	,	"DATA"	,	"FScF"	,	"MPEG"	,	"MooV"	,	"IRCM",       "WAVE" };
+												//  "????"		"TIFF"		"AIFF"		"NeXT"		"DATA"		"FScF"		"MPEG"      "MooV"     	"IRCM"      "WAVE"      "WAVE"
+	protected static final int FILETYPE[]		= { 0x3F3F3F3F, 0x54494646, 0x41494646, 0x4E655854, 0x44415441, 0x46536346, 0x4D504547, 0x4D6F6F56, 0x4952434D, 0x57415645, 0x57415645  };
+	protected static final String FILETYPESTR[]	= { "????"	,	"TIFF"	,	"AIFF"	,	"NeXT"	,	"DATA"	,	"FScF"	,	"MPEG"	,	   "MooV"	,	   "IRCM",     "WAVE",     "WAVE" };
 	protected static final String EXTSTR[]		= { ".???", ".tif", ".aif", ".snd", ".spc", ".dat", ".mpg",
-													".mov", ".irc", ".wav" };
+													".mov", ".irc", ".wav", ".w64" };
 	protected static final String TYPEDESCR[]	= {	"Unknown type", "Image: TIFF", "Waveform: AIFF",
 													"Waveform: Snd", "Spectral: SndHack/FScape",
 													"Float stream", "Movie: MPEG", "Movie: QuickTime",
-													"Waveform: IRCAM", "Waveform: WAVE" };
+													"Waveform: IRCAM", "Waveform: WAVE", "Waveform: Wave64" };
 												// array-index = MainPrefs.KEY_IOBUFSIZE
 //	private static final int[] BUFSIZE			= { 8192, 32768, 131072 };
 
@@ -227,6 +228,32 @@ extends RandomAccessFile
 		}
 		return MODE_GENERIC;
 	}
+	
+	public static int getAudioFileType( int genericType )
+	{
+		final int audioType;
+		
+		switch( genericType ) {
+		case MODE_AIFF:
+			audioType = AudioFileDescr.TYPE_AIFF;
+			break;
+		case MODE_SND:
+			audioType = AudioFileDescr.TYPE_SND;
+			break;
+		case MODE_IRCAM:
+			audioType = AudioFileDescr.TYPE_IRCAM;
+			break;
+		case MODE_WAVE:
+			audioType = AudioFileDescr.TYPE_WAVE;
+			break;
+		case MODE_WAVE64:
+			audioType = AudioFileDescr.TYPE_WAVE64;
+			break;
+		default:
+			audioType = AudioFileDescr.TYPE_UNKNOWN;
+		}
+		return audioType;
+	}
 
 	/**
 	 *	subclasses MUST override
@@ -254,6 +281,7 @@ extends RandomAccessFile
 		case MODE_SND:
 		case MODE_IRCAM:
 		case MODE_WAVE:
+		case MODE_WAVE64:
 			AudioFile af = AudioFile.openAsRead( file );
 			AudioFileDescr afd = af.getDescr();
 			format = afd.getFormat();
@@ -314,80 +342,78 @@ extends RandomAccessFile
 	private void retrieveType()
 	throws IOException
 	{
-		long		oldpos	= getFilePointer();
-		seek( 0L );
-		int			magic	= readInt();
 		int			type	= MODE_GENERIC;
 		String		osType;
-	
-		switch( magic ) {
-		case TIFF_MAC_MAGIC:		// -------- TIFF image --------
-		case TIFF_IBM_MAGIC:
-			type = MODE_TIFF;
-			break;
-
-		case FORM_MAGIC:			// -------- probably AIFF --------
-			readInt();
-			magic = readInt();
-			switch( magic ) {
-			case AIFC_MAGIC:
-			case AIFF_MAGIC:
+		boolean		done	= false;
+		
+		final int audioType = AudioFile.retrieveType( file );
+		if( audioType != AudioFileDescr.TYPE_UNKNOWN ) { // stupid translation
+			done = true;
+			switch( audioType ) {
+			case AudioFileDescr.TYPE_AIFF:
 				type = MODE_AIFF;
 				break;
-			default:
+			case AudioFileDescr.TYPE_IRCAM:
+				type = MODE_IRCAM;
 				break;
-			}
-			break;
-
-		case SND_MAGIC:				// -------- snd sound --------
-			type = MODE_SND;
-			break;
-
-		case IRCAM_MAGIC:			// -------- IRCAM sound --------
-			type = MODE_IRCAM;
-			break;
-
-		case RIFF_MAGIC:			// -------- probably WAVE --------
-			readInt();
-			magic = readInt();
-			switch( magic ) {
-			case WAVE_MAGIC:
+			case AudioFileDescr.TYPE_SND:
+				type = MODE_SND;
+				break;
+			case AudioFileDescr.TYPE_WAVE:
 				type = MODE_WAVE;
 				break;
+			case AudioFileDescr.TYPE_WAVE64:
+				type = MODE_WAVE64;
+				break;
 			default:
+				done = false;
 				break;
 			}
-			break;
-
-		case SHA_MAGIC:				// -------- spect file --------
-		case CSA_MAGIC:
-			type = MODE_SPECT;
-			break;
-			
-		case FLOAT_MAGIC:			// -------- float file --------
-			type = MODE_FLOAT;
-			break;
-
-		case MPEG_MAGIC1:			// -------- movie --------
-		case MPEG_MAGIC2:
-			type = MODE_MPEG;
-			break;
-
-		default:
-			magic	= readInt();	// offset 4
-			if( magic == MOV_MAGIC ) {
-				type = MODE_MOV;
-			} else {				// QT may use File Resource for Movie Identification
-				osType = MRJAdapter.getFileType( file.getAbsoluteFile() );
-				if( osType.equals( FILETYPESTR[ MODE_MOV >> TYPESHIFT ])) {
-					type = MODE_MOV;
+		}
+		
+		if( !done ) {
+			final long oldpos	= getFilePointer();
+			try {
+				seek( 0L );
+				final int magic	= readInt();
+	
+				switch( magic ) {
+				case TIFF_MAC_MAGIC:		// -------- TIFF image --------
+				case TIFF_IBM_MAGIC:
+					type = MODE_TIFF;
+					break;
+		
+				case SHA_MAGIC:				// -------- spect file --------
+				case CSA_MAGIC:
+					type = MODE_SPECT;
+					break;
+					
+				case FLOAT_MAGIC:			// -------- float file --------
+					type = MODE_FLOAT;
+					break;
+		
+				case MPEG_MAGIC1:			// -------- movie --------
+				case MPEG_MAGIC2:
+					type = MODE_MPEG;
+					break;
+		
+				default:
+					if( readInt() == MOV_MAGIC ) {
+						type = MODE_MOV;
+					} else {				// QT may use File Resource for Movie Identification
+						osType = MRJAdapter.getFileType( file.getAbsoluteFile() );
+						if( osType.equals( FILETYPESTR[ MODE_MOV >> TYPESHIFT ])) {
+							type = MODE_MOV;
+						}
+					}
+					break;
 				}
 			}
-			break;
+			finally {
+				seek( oldpos );
+			}
 		}
-
 		mode = (mode & ~MODE_TYPEMASK) | type;
-		seek( oldpos );
 	}
 }
 // class GenericFile

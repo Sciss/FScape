@@ -57,7 +57,7 @@ import de.sciss.fscape.util.*;
  *	info fields and type selectors.
  *
  *  @author		Hanns Holger Rutz
- *  @version	0.71, 14-Nov-07
+ *  @version	0.71, 10-Sep-08
  */
 public class PathField
 extends JPanel
@@ -292,7 +292,7 @@ implements	ActionListener, ComponentListener, ItemListener, PathListener,
 		afd.file		= getPath();
 	
 		if( ggType != null ) {
-			afd.type	= ggType.getSelectedIndex();
+			afd.type	= GenericFile.getAudioFileType( getType() );
 		}
 		if( ggRes != null ) {
 			ID = ggRes.getSelectedIndex();
