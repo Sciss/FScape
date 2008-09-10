@@ -87,7 +87,7 @@ import de.sciss.util.Flag;
  *  <code>Main</code> class.
  *
  *  @author		Hanns Holger Rutz
- *  @version	0.71, 21-May-08
+ *  @version	0.71, 10-Sep-08
  *
  *  @see	de.sciss.eisenkraut.Main#menuFactory
  */
@@ -95,7 +95,7 @@ public class MenuFactory
 extends BasicMenuFactory
 {
 	// ---- misc actions ----
-	private actionOpenClass				actionOpen;
+	private ActionOpen				actionOpen;
 //	private actionOpenMMClass			actionOpenMM;
 //	private actionNewEmptyClass			actionNewEmpty;
 
@@ -372,7 +372,7 @@ if( doc.getFrame() == null ) {
 //		// --- file menu ---
 //		actionNewEmpty	= new actionNewEmptyClass( getResourceString( "menuNewEmpty" ),
 //												KeyStroke.getKeyStroke( KeyEvent.VK_N, MENU_SHORTCUT ));
-		actionOpen		= new actionOpenClass(  getResourceString( "menuOpen" ),
+		actionOpen		= new ActionOpen(  getResourceString( "menuOpen" ),
 												KeyStroke.getKeyStroke( KeyEvent.VK_O, MENU_SHORTCUT ));
 //		actionOpenMM	= new actionOpenMMClass( getResourceString( "menuOpenMM" ),
 //												KeyStroke.getKeyStroke( KeyEvent.VK_O, MENU_SHORTCUT + KeyEvent.SHIFT_MASK ));
@@ -407,7 +407,7 @@ if( doc.getFrame() == null ) {
 			for( int k = 1; k < mSub[ j ].length; k++ ) {
 //				smg2.add( new JMenuItem( new actionModuleClass( (StringItem) mSub[ j ][ i ][ 0 ], (KeyStroke) mSub[ j ][ i ][ 1 ])));
 				smg2.add( new MenuItem( ((StringItem) mSub[ j ][ k ][ 0 ]).getKey(),
-					new actionModuleClass( (StringItem) mSub[ j ][ k ][ 0 ], (KeyStroke) mSub[ j ][ k ][ 1 ])));
+					new ActionModule( (StringItem) mSub[ j ][ k ][ 0 ], (KeyStroke) mSub[ j ][ k ][ 1 ])));
 			}
 			if( smg2 != smg ) {
 				smg.add( smg2 );
@@ -533,7 +533,7 @@ if( doc.getFrame() == null ) {
 //		mg.add( new MenuItem( "ioSetup", new actionIOSetupClass( getResourceString( "frameIOSetup" ), null )), 0 );
 //		mg.add( new MenuSeparator(), 1 );
 //		mg.add( new MenuItem( "main", new actionShowWindowClass( getResourceString( "frameMain" ), null, Main.COMP_MAIN )), 2 );
-mg.add( new MenuItem( "main", new actionShowWindowClass( getResourceString( "frameMain" ), null, Main.COMP_MAIN )), 0 );
+mg.add( new MenuItem( "main", new ActionShowWindow( getResourceString( "frameMain" ), null, Main.COMP_MAIN )), 0 );
 // FFFF
 //		mg.add( new MenuItem( "observer", new actionObserverClass( getResourceString( "paletteObserver" ), KeyStroke.getKeyStroke( KeyEvent.VK_NUMPAD3, MENU_SHORTCUT ))), 3 );
 //		mg.add( new MenuItem( "ctrlRoom", new actionCtrlRoomClass( getResourceString( "paletteCtrlRoom" ), KeyStroke.getKeyStroke( KeyEvent.VK_NUMPAD2, MENU_SHORTCUT ))), 4 );
@@ -568,7 +568,7 @@ mg.add( new MenuItem( "main", new actionShowWindowClass( getResourceString( "fra
 	
 	public void showPreferences()
 	{
-		PrefsFrame prefsFrame = (PrefsFrame) root.getComponent( Main.COMP_PREFS );
+		PrefsFrame prefsFrame = (PrefsFrame) getApplication().getComponent( Main.COMP_PREFS );
 	
 		if( prefsFrame == null ) {
 			prefsFrame = new PrefsFrame();
@@ -618,7 +618,7 @@ mg.add( new MenuItem( "main", new actionShowWindowClass( getResourceString( "fra
 //			cons	= clz.getConstructor( new Class[] { Main.class });
 //			procWin	= (DocumentFrame) cons.newInstance( new Object[] { root });
 			procWin	= (DocumentFrame) clz.newInstance();
-			root.getDocumentHandler().addDocument( this, procWin.getDocument() );
+			getApplication().getDocumentHandler().addDocument( this, procWin.getDocument() );
 			procWin.setVisible( true );
 			procWin.toFront();
 		} catch( Exception e1 ) {
@@ -742,11 +742,11 @@ if( f.equals( doc.getFile() )) return doc;
 //	}
 	
 	// action for the Open-Session menu item
-	private class actionOpenClass
+	private class ActionOpen
 	extends MenuAction
 	implements ProcessingThread.Client
 	{
-		private actionOpenClass( String text, KeyStroke shortcut )
+		private ActionOpen( String text, KeyStroke shortcut )
 		{
 			super( text, shortcut );
 			
@@ -769,7 +769,7 @@ if( f.equals( doc.getFile() )) return doc;
 		{
 			FileDialog  fDlg;
 			String		strFile, strDir;
-			final		Component	ownerF	= ((AbstractWindow) root.getComponent( Main.COMP_MAIN )).getWindow();
+			final		Component	ownerF	= ((AbstractWindow) getApplication().getComponent( Main.COMP_MAIN )).getWindow();
 			final		boolean		makeF	= !(ownerF instanceof Frame);
 			final		Frame		f		= makeF ? new Frame() : (Frame) ownerF;
 
@@ -1044,12 +1044,12 @@ if( result == DONE ) {
 //		}
 //	}
 
-	private class actionModuleClass
+	private class ActionModule
 	extends MenuAction
 	{
 		private final String className;
 	
-		private actionModuleClass( StringItem module, KeyStroke shortcut )
+		private ActionModule( StringItem module, KeyStroke shortcut )
 		{
 			super( module.toString(), shortcut );
 			

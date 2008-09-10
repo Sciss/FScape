@@ -70,7 +70,7 @@ import de.sciss.fscape.util.*;
  *	management and has some utility methods such as sound file normalization.
  *
  *  @author		Hanns Holger Rutz
- *  @version	0.71, 14-Nov-07
+ *  @version	0.71, 10-Sep-08
  */
 public abstract class DocumentFrame
 extends AppWindow
@@ -377,6 +377,11 @@ implements Processor, EventManager.Processor, ProgressComponent
 	protected boolean alwaysPackSize()
 	{
 		return false;
+	}
+	
+	protected boolean autoUpdatePrefs()
+	{
+		return true;
 	}
 	
 	public Session getDocument()
