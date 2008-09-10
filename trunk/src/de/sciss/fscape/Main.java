@@ -56,7 +56,7 @@ import de.sciss.util.Flag;
  *  creates a new instance of <code>Main</code>.
  *
  *  @author		Hanns Holger Rutz
- *  @version	0.71, 14-Nov-07
+ *  @version	0.72, 10-Sep-08
  */
 public class Main
 extends BasicApplication
@@ -70,7 +70,7 @@ implements OSCRouter
 	 *
 	 *  @todo   should be saved in the session file as well
 	 */
-	private static final double APP_VERSION		= 0.71;
+	private static final double APP_VERSION		= 0.72;
 
 	/*
 	 *  The MacOS file creator string.
