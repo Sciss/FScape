@@ -84,6 +84,7 @@ extends DocumentFrame
 	private static final int PR_TIMESCALE			= 3;
 	private static final int PR_MINGRAINLEN			= 4;
 	private static final int PR_MAXGRAINLEN			= 5;
+	private static final int PR_CLUMP				= 6;
 
 	private static final String PRN_INPUTFILE		= "InputFile";
 	private static final String PRN_OUTPUTFILE		= "OutputFile";
@@ -96,6 +97,7 @@ extends DocumentFrame
 	private static final String PRN_CHANTYPE		= "ChanType";
 	private static final String PRN_MINGRAINLEN		= "MinGrainLen";
 	private static final String PRN_MAXGRAINLEN		= "MaxGrainLen";
+	private static final String PRN_CLUMP			= "Clump";
 		
 	private static final int	CHAN_MIN			= 0;
 	private static final int	CHAN_MAX			= 1;
@@ -104,8 +106,8 @@ extends DocumentFrame
 	private static final String	prTextName[]	= { PRN_INPUTFILE, PRN_PATTERNFILE, PRN_OUTPUTFILE };
 	private static final int	prIntg[]		= { 0, 0, GAIN_UNITY, CHAN_MAX };
 	private static final String	prIntgName[]	= { PRN_OUTPUTTYPE, PRN_OUTPUTRES, PRN_GAINTYPE, PRN_CHANTYPE };
-	private static final Param	prPara[]		= { null, null, null, null, null, null };
-	private static final String	prParaName[]	= { PRN_GAIN, PRN_WINSIZE, PRN_MAXBOOST, PRN_TIMESCALE, PRN_MINGRAINLEN, PRN_MAXGRAINLEN };
+	private static final Param	prPara[]		= { null, null, null, null, null, null, null };
+	private static final String	prParaName[]	= { PRN_GAIN, PRN_WINSIZE, PRN_MAXBOOST, PRN_TIMESCALE, PRN_MINGRAINLEN, PRN_MAXGRAINLEN, PRN_CLUMP };
 
 	private static final int GG_INPUTFILE		= GG_OFF_PATHFIELD	+ PR_INPUTFILE;
 	private static final int GG_OUTPUTFILE		= GG_OFF_PATHFIELD	+ PR_OUTPUTFILE;
@@ -120,6 +122,7 @@ extends DocumentFrame
 	private static final int GG_TIMESCALE		= GG_OFF_PARAMFIELD	+ PR_TIMESCALE;
 	private static final int GG_MINGRAINLEN		= GG_OFF_PARAMFIELD	+ PR_MINGRAINLEN;
 	private static final int GG_MAXGRAINLEN		= GG_OFF_PARAMFIELD	+ PR_MAXGRAINLEN;
+	private static final int GG_CLUMP			= GG_OFF_PARAMFIELD	+ PR_CLUMP;
 
 	private static	PropertyArray	static_pr		= null;
 	private static	Presets			static_presets	= null;
@@ -159,6 +162,7 @@ extends DocumentFrame
 			static_pr.para[ PR_TIMESCALE ]		= new Param(  100.0, Param.FACTOR_TIME );
 			static_pr.para[ PR_MINGRAINLEN ]	= new Param(  100.0, Param.ABS_MS );
 			static_pr.para[ PR_MAXGRAINLEN ]	= new Param( 1000.0, Param.ABS_MS );
+			static_pr.para[ PR_CLUMP ]			= new Param(    1.0, Param.NONE );
 			static_pr.paraName	= prParaName;
 			static_pr.superPr	= DocumentFrame.static_pr;
 		}
@@ -177,7 +181,7 @@ extends DocumentFrame
 		PathField[]			ggInputs;
 		JComboBox			ggChanType;
 		Component[]			ggGain;
-		ParamField			ggWinSize, ggMaxBoost, ggTimeScale, ggMinGrainLen, ggMaxGrainLen;
+		ParamField			ggWinSize, ggMaxBoost, ggTimeScale, ggMinGrainLen, ggMaxGrainLen, ggClump;
 		ParamSpace[]		spcGrain;
 
 		gui				= new GUISupport();
@@ -261,12 +265,15 @@ extends DocumentFrame
 		con.gridwidth	= 1;
 		gui.addLabel( new JLabel( "Time scale", JLabel.RIGHT ));
 		con.weightx		= 0.4;
-//		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggTimeScale, GG_TIMESCALE, null );
-		con.gridwidth	= GridBagConstraints.REMAINDER;
-		con.weightx		= 0.0;
-		gui.addLabel( new JLabel( "" ));
 
+		ggClump			= new ParamField( new ParamSpace( 1, 65536, 1, Param.NONE ));
+		con.weightx		= 0.1;
+		gui.addLabel( new JLabel( "Clump", JLabel.RIGHT ));
+		con.weightx		= 0.4;
+		con.gridwidth	= GridBagConstraints.REMAINDER;
+		gui.addParamField( ggClump, GG_CLUMP, null );
+		
 		spcGrain		= new ParamSpace[ 2 ];
 		spcGrain[0]		= Constants.spaces[ Constants.absMsSpace ];
 		spcGrain[1]		= Constants.spaces[ Constants.absBeatsSpace ];
@@ -357,12 +364,12 @@ extends DocumentFrame
 		final long				inLength, outLength, ptrnLength;
 		
 		// buffers
-		final float[][]			inBuf, ptrnBuf, ptrnFFTBuf;
+		final float[][]			inBuf;
 		float[]					convBuf1;
 		float[]					win;
 
 		final int				maxGrainLength, maxFFTLength, inBufSize;
-		int						grainLength, grainLengthH, grainFFTLength, winLen, winLenH, len, len2;
+		int						grainLength, grainLengthH, grainFFTLength, winLen, winLenH;
 		long					framesRead, framesRead2, framesWritten, inOff;
 
 		final Param				ampRef			= new Param( 1.0, Param.ABS_AMP );			// transform-Referenz
@@ -380,15 +387,26 @@ extends DocumentFrame
 
 		final PathField			ggOutput;
 
-		float					totalCorrAbsMax, corrAbsMax, totalCorrAbsMaxRMS, corrAbsMaxRMS, ptrnRMS;
-		long					totalCorrAbsMaxPos, corrAbsMaxPos;
-		boolean					totalCorrAbsMaxInv, corrAbsMaxInv;
-		final float[]			corrAbsMaxs;
-		final long[]			corrAbsMaxPoss;
-		final boolean[]			corrAbsMaxInvs;
+		float					corrAbsMaxRMS;
 		int						idx;
 		boolean					inv;
 		long					maxPos;
+		
+		final float[]			ptrnRMS;
+		final float[][][]		ptrnBuf, ptrnFFTBuf;
+		final float[][]			corrAbsMaxs;
+		final float[]			corrFFTBuf;
+		final float[]			totalCorrAbsMaxRMS;
+		final long[][]			corrAbsMaxPoss;
+		final boolean[][]		corrAbsMaxInvs;
+		final float[]			corrAbsMax;
+		final long[]			corrAbsMaxPos;
+		final boolean[]			corrAbsMaxInv;
+		final float[]			totalCorrAbsMax;
+		final long[]			totalCorrAbsMaxPos;
+		final boolean[]			totalCorrAbsMaxInv;
+		int						clump, chunkLen;
+		final int				numClump;	//		= 10
 		
 		final Random			rnd				= new Random();
 
@@ -433,22 +451,32 @@ topLevel: try {
 
 			// ---- further inits ----
 			
-			corrAbsMaxs			= new float[ inChanNum ];
-			corrAbsMaxPoss		= new long[ inChanNum ];
-			corrAbsMaxInvs		= new boolean[ inChanNum ];
+			numClump			= (int) pr.para[ PR_CLUMP ].val;
+			corrAbsMaxs			= new float[ numClump ][ inChanNum ];
+			corrAbsMaxPoss		= new long[ numClump ][ inChanNum ];
+			corrAbsMaxInvs		= new boolean[ numClump ][ inChanNum ];
 			
 			maxGrainLength		= (int) (AudioFileDescr.millisToSamples( inStream, maxGrainLen ) + 0.5);
 			maxFFTLength		= Util.nextPowerOfTwo( maxGrainLength + maxGrainLength - 1 );
 			
 			inBufSize			= Math.max( 8192, maxFFTLength + 2 );
 			inBuf				= new float[ inChanNum ][ inBufSize ];
-			ptrnFFTBuf			= new float[ inChanNum ][ maxFFTLength + 2 ];
-			ptrnBuf				= new float[ inChanNum ][ maxGrainLength ];
+			ptrnFFTBuf			= new float[ numClump ][ inChanNum ][ maxFFTLength + 2 ];
+			ptrnBuf				= new float[ numClump ][ inChanNum ][ maxGrainLength ];
+			corrAbsMax			= new float[ numClump ];
+			corrAbsMaxInv		= new boolean[ numClump ];
+			corrAbsMaxPos		= new long[ numClump ];
+			ptrnRMS				= new float[ numClump ];
+			totalCorrAbsMax		= new float[ numClump ];
+			totalCorrAbsMaxInv	= new boolean[ numClump ];
+			totalCorrAbsMaxPos	= new long[ numClump ];
+			totalCorrAbsMaxRMS	= new float[ numClump ];
+			corrFFTBuf			= new float[ maxFFTLength + 2 ];
 			
 			outLength			= (long) (inLength * timeScale + 0.5) + maxGrainLength;
 			
 //			progLen				= ptrnLength + inLength + (outLength * 3);
-			progLen				= (ptrnLength << 4) + (outLength * 3);
+			progLen				= (ptrnLength << 4) + (outLength * 4);
 			progOff				= 0;
 
 			framesWritten		= 0;
@@ -469,60 +497,59 @@ if( verbose ) System.err.println( "ptrnLoop " + framesRead );
 				winLen		= Math.max( 2, (int) (grainLength * winSizeFactor + 0.5) & ~1 );
 				winLenH		= winLen >> 1;
 				win			= Filter.createFullWindow( winLen, winType );
-				len			= (int) Math.min( ptrnLength - framesRead, grainLength );
-				ptrnF.readFrames( ptrnBuf, 0, len );
-				framesRead += len;
-				// zero padding
-				if( len < grainLength ) {
-					Util.clear( ptrnBuf, len, grainLength - len );
-				}
-				// apply window
-				Util.mult( win, 0, ptrnBuf, 0, winLenH );
-				Util.mult( win, winLenH, ptrnBuf, grainLength - winLenH, winLenH );
-				
-				// copy to fft buffer
-				Util.copy( ptrnBuf, 0, ptrnFFTBuf, 0, len );
-				Util.clear( ptrnFFTBuf, len, grainFFTLength - len );
-				
-				// reverse
-				Util.reverse( ptrnFFTBuf, 0, grainLength );
+				clump		= 0;
 
-				// remove DC
-				// ... normalize RMS (so we do not need the rms-division in the original pearson's formula!)
-				// ... and transform to fourier domain
-				ptrnRMS = 0f;
-				for( int ch = 0; ch < ptrnChanNum; ch++ ) {
-					Util.removeDC( ptrnFFTBuf[ ch ], 0, grainLength );
-					d1 = Math.sqrt( Filter.calcEnergy( ptrnFFTBuf[ ch ], 0, len ));		// i.e. sqrt( sum(y^2) )
+				for( int clumpIdx = 0; threadRunning && (clumpIdx < numClump) && (framesRead < ptrnLength); clumpIdx++, clump++ ) {
+					chunkLen = (int) Math.min( ptrnLength - framesRead, grainLength );
+					ptrnF.readFrames( ptrnBuf[ clumpIdx ], 0, chunkLen);
+					framesRead += chunkLen;
+					// zero padding
+					if( chunkLen < grainLength ) {
+						Util.clear( ptrnBuf[ clumpIdx ], chunkLen, grainLength - chunkLen);
+					}
+					// apply window
+					Util.mult( win, 0, ptrnBuf[ clumpIdx ], 0, winLenH );
+					Util.mult( win, winLenH, ptrnBuf[ clumpIdx ], grainLength - winLenH, winLenH );
+				
+					// copy to fft buffer
+					Util.copy( ptrnBuf[ clumpIdx ], 0, ptrnFFTBuf[ clumpIdx ], 0, chunkLen );
+					Util.clear( ptrnFFTBuf[ clumpIdx ], chunkLen, grainFFTLength - chunkLen );
+				
+					// reverse
+					Util.reverse( ptrnFFTBuf[ clumpIdx ], 0, grainLength );
+
+					// remove DC
+					// ... normalize RMS (so we do not need the rms-division in the original pearson's formula!)
+					// ... and transform to fourier domain
+					ptrnRMS[ clumpIdx ] = 0f;
+					for( int ch = 0; ch < ptrnChanNum; ch++ ) {
+						Util.removeDC( ptrnFFTBuf[ clumpIdx ][ ch ], 0, grainLength );
+						d1 = Math.sqrt( Filter.calcEnergy( ptrnFFTBuf[ clumpIdx ][ ch ], 0, chunkLen ));		// i.e. sqrt( sum(y^2) )
 // too small values produce inf values in the below Util.mult !!!
-d1 = d1 * (1000 * len);
+d1 = d1 * (1000 * grainLength);
 
-					if( d1 > 0.0 ) {						// (double) fftLength
-						Util.mult( ptrnFFTBuf[ ch ], 0, len, (float) (1.0 / d1) );
-					} else continue ptrnLoop;
-					Fourier.realTransform( ptrnFFTBuf[ ch ], grainFFTLength, Fourier.FORWARD );
-					ptrnRMS += (float) d1;
+					    if( d1 > 0.0 ) {						// (double) fftLength
+					    	Util.mult( ptrnFFTBuf[ clumpIdx ][ ch ], 0, chunkLen, (float) (1.0 / d1) );
+					    } else continue ptrnLoop;
+					    Fourier.realTransform( ptrnFFTBuf[ clumpIdx ][ ch ], grainFFTLength, Fourier.FORWARD );
+					    ptrnRMS[ clumpIdx ] += (float) d1;
+					}
+					totalCorrAbsMax[ clumpIdx ]	= 0f;
+					totalCorrAbsMaxPos[ clumpIdx ]	= 0;
+					totalCorrAbsMaxInv[ clumpIdx ]	= false;
+					totalCorrAbsMaxRMS[ clumpIdx ]	= ptrnRMS[ clumpIdx ];
 
-//for( int i = 0; i < grainFFTLength + 2; i++ ) {
-//	if( Float.isNaN( ptrnFFTBuf[ ch ][ i ])) {
-//		System.err.println( "isNaN ! ch = "+ch+"; i = "+i+"; framesRead = "+framesRead + "; len = "+len );
-//	}
-//}
-				}
-
-				progOff		+= (len << 4);
-			// .... progress ....
-				setProgression( (float) progOff / (float) progLen );
-
+					progOff		+= (chunkLen << 4);
+					// .... progress ....
+					setProgression( (float) progOff / (float) progLen );
+				} // for clumpIdx
+				if( !threadRunning ) break topLevel;
+				
 				/////////////////// read through input and calc best correlation
 
-				totalCorrAbsMax		= 0f;
-				totalCorrAbsMaxPos	= 0;
-				totalCorrAbsMaxInv	= false;
-				totalCorrAbsMaxRMS	= ptrnRMS;
 				inOff				= 0;
 
-//System.err.println( "readInput " + grainLength );
+System.err.println( "readInput " + grainLength + "; clump = " + clump );
 //System.gc();
 
 readInput:		for( framesRead2 = 0; threadRunning && (framesRead2 < inLength); ) {
@@ -531,13 +558,13 @@ readInput:		for( framesRead2 = 0; threadRunning && (framesRead2 < inLength); ) {
 //Thread.sleep( 1 );
 //} catch( InterruptedException e1 ) {}
 
-					len2	= (int) Math.min( inLength - framesRead2, grainLength );
-//System.err.println( "  len2 = " + len2 );
+					chunkLen	= (int) Math.min( inLength - framesRead2, grainLength );
+//System.err.println( "  chunkLen = " + chunkLen );
 //System.err.println( "  framesRead2 = " + framesRead2 );
 					inF.seekFrame( inOff );
-					inF.readFrames( inBuf, 0, len2 );
-					if( len2 < grainLength ) {
-						Util.clear( inBuf, len2, grainLength - len2 );
+					inF.readFrames( inBuf, 0, chunkLen );
+					if( chunkLen < grainLength ) {
+						Util.clear( inBuf, chunkLen, grainLength - chunkLen );
 					}
 					// apply window
 					Util.mult( win, 0, inBuf, 0, winLenH );
@@ -549,88 +576,96 @@ readInput:		for( framesRead2 = 0; threadRunning && (framesRead2 < inLength); ) {
 					// ... convolve with revsere-pattern FFT (= convolution in time domain)
 					// ... go back to time domain
 					// ... find position of abs max
-					corrAbsMaxRMS	= 0f;
-					corrAbsMax		= 0f;
-					corrAbsMaxPos	= 0;
-					corrAbsMaxInv	= false;
+ 				  	for( int clumpIdx = 0; clumpIdx < clump; clumpIdx++ ) {
+ 				  		corrAbsMax[ clumpIdx ]		= 0f;
+ 				  		corrAbsMaxPos[ clumpIdx ]	= 0;
+ 				  		corrAbsMaxInv[ clumpIdx ]	= false;
+ 				  	}
+ 				  	corrAbsMaxRMS	= 0f;
 					
 					for( int ch = 0; ch < inChanNum; ch++ ) {
 //System.err.println( "  chan loop " + ch );
 						convBuf1 = inBuf[ ch ];
-						Util.removeDC( convBuf1, 0, len2 );
-						d1 = Math.sqrt( Filter.calcEnergy( convBuf1, 0, len2 ));		// i.e. sqrt( sum(y^2) )
+						Util.removeDC( convBuf1, 0, chunkLen );
+						d1 = Math.sqrt( Filter.calcEnergy( convBuf1, 0, chunkLen ));		// i.e. sqrt( sum(y^2) )
 if( checkNaN ) checkForNaN( convBuf1, "A" );
 // too small values produce inf values in the below Util.mult !!!
-d1 = d1 * (1000 * len);
+d1 = d1 * (1000 * grainLength);
 						if( d1 > 0.0 ) {
-							Util.mult( convBuf1, 0, len2, (float) (1.0 / d1) );
+							Util.mult( convBuf1, 0, chunkLen, (float) (1.0 / d1) );
 if( checkNaN ) checkForNaN( convBuf1, "B" );
 						} else {
-							framesRead2  = inOff + len2;
+							framesRead2  = inOff + chunkLen;
 							inOff		 = Math.min( inOff + grainLengthH, inLength );	// i.e. overlap
 							continue readInput;
 						}
 						corrAbsMaxRMS += (float) d1;
 						Fourier.realTransform( convBuf1, grainFFTLength, Fourier.FORWARD );
 if( checkNaN ) checkForNaN( convBuf1, "C" );
-						Fourier.complexMult( ptrnFFTBuf[ ch ], 0, convBuf1, 0, convBuf1, 0, grainFFTLength + 2 );
+	 				  	for( int clumpIdx = 0; clumpIdx < clump; clumpIdx++ ) {
+	 				  		Fourier.complexMult( ptrnFFTBuf[ clumpIdx ][ ch ], 0, convBuf1, 0, corrFFTBuf, 0, grainFFTLength + 2 );
 if( checkNaN ) checkForNaN( convBuf1, "D" );
-						Fourier.realTransform( convBuf1, grainFFTLength, Fourier.INVERSE );
+							Fourier.realTransform( corrFFTBuf, grainFFTLength, Fourier.INVERSE );
 if( checkNaN ) checkForNaN( convBuf1, "E" ); // XXX inf at 0 !!!
 						
-						f2 = 0.0f;
-						inv = false;
-						maxPos = inOff;
-						for( int i = 0; i < len2; i++ ) {
-							f1 = convBuf1[ i ];
-							if( f1 < 0f ) {
-								if( -f1 > f2 ) {
-									f2 = -f1;
-									inv = true;
-									maxPos = inOff + i;
-								}
-							} else {
-								if( f1 > f2 ) {
-									f2 = f1;
-									inv = false;
-									maxPos = inOff + i;
-								}
-							}
-						}
-						corrAbsMaxs[ ch ] = f2;
-						corrAbsMaxPoss[ ch ] = maxPos;
-						corrAbsMaxInvs[ ch ] = inv;
+						    f2 = 0.0f;
+						    inv = false;
+						    maxPos = inOff;
+						    for( int i = 0; i < chunkLen; i++ ) {
+						    	f1 = corrFFTBuf[ i ];
+						    	if( f1 < 0f ) {
+						    		if( -f1 > f2 ) {
+						    			f2 = -f1;
+						    			inv = true;
+						    			maxPos = inOff + i;
+						    		}
+						    	} else {
+						    		if( f1 > f2 ) {
+						    			f2 = f1;
+						    			inv = false;
+						    			maxPos = inOff + i;
+						    		}
+						    	}
+						    }
+						    corrAbsMaxs[ clumpIdx ][ ch ]		= f2;
+						    corrAbsMaxPoss[ clumpIdx ][ ch ]	= maxPos;
+						    corrAbsMaxInvs[ clumpIdx ][ ch ]	= inv;
+	 				  	}
 					}
 
 //System.err.println( "  chanType" );
 					switch( chanType ) {
 					case CHAN_MIN:
-						f1 = corrAbsMaxs[ 0 ];
-						idx = 0;
-						for( int ch = 1; ch < inChanNum; ch++ ) {
-							f2 = corrAbsMaxs[ ch ];
-							if( f2 < f1 ) {
-								f1 = f2;
-								idx = ch;
+						for( int clumpIdx = 0; clumpIdx < clump; clumpIdx++ ) {
+							f1 = corrAbsMaxs[ clumpIdx ][ 0 ];
+							idx = 0;
+							for( int ch = 1; ch < inChanNum; ch++ ) {
+								f2 = corrAbsMaxs[ clumpIdx ][ ch ];
+								if( f2 < f1 ) {
+									f1 = f2;
+									idx = ch;
+								}
 							}
+							corrAbsMax[ clumpIdx ]		= corrAbsMaxs[ clumpIdx ][ idx ];
+							corrAbsMaxPos[ clumpIdx ]	= corrAbsMaxPoss[ clumpIdx ][ idx ];
+							corrAbsMaxInv[ clumpIdx ]	= corrAbsMaxInvs[ clumpIdx ][ idx ];
 						}
-						corrAbsMax		= corrAbsMaxs[ idx ];
-						corrAbsMaxPos	= corrAbsMaxPoss[ idx ];
-						corrAbsMaxInv	= corrAbsMaxInvs[ idx ];
 						break;
 					case CHAN_MAX:
-						f1 = corrAbsMaxs[ 0 ];
-						idx = 0;
-						for( int ch = 1; ch < inChanNum; ch++ ) {
-							f2 = corrAbsMaxs[ ch ];
-							if( f2 > f1 ) {
-								f1 = f2;
-								idx = ch;
+						for( int clumpIdx = 0; clumpIdx < clump; clumpIdx++ ) {
+							f1 = corrAbsMaxs[ clumpIdx ][ 0 ];
+							idx = 0;
+							for( int ch = 1; ch < inChanNum; ch++ ) {
+								f2 = corrAbsMaxs[ clumpIdx ][ ch ];
+								if( f2 > f1 ) {
+									f1 = f2;
+									idx = ch;
+								}
 							}
+							corrAbsMax[ clumpIdx ]		= corrAbsMaxs[ clumpIdx ][ idx ];
+							corrAbsMaxPos[ clumpIdx ]	= corrAbsMaxPoss[ clumpIdx ][ idx ];
+							corrAbsMaxInv[ clumpIdx ]	= corrAbsMaxInvs[ clumpIdx ][ idx ];
 						}
-						corrAbsMax		= corrAbsMaxs[ idx ];
-						corrAbsMaxPos	= corrAbsMaxPoss[ idx ];
-						corrAbsMaxInv	= corrAbsMaxInvs[ idx ];
 						break;
 //					case CHAN_AVG:
 //						break;
@@ -639,15 +674,17 @@ if( checkNaN ) checkForNaN( convBuf1, "E" ); // XXX inf at 0 !!!
 						break;
 					}
 					
-					if( corrAbsMax > totalCorrAbsMax ) {
-						totalCorrAbsMax		= corrAbsMax;
-						totalCorrAbsMaxPos	= (long) (corrAbsMaxPos * timeScale + 0.5);
-						totalCorrAbsMaxInv	= corrAbsMaxInv;
-						totalCorrAbsMaxRMS	= corrAbsMaxRMS;
+					for( int clumpIdx = 0; clumpIdx < clump; clumpIdx++ ) {
+						if( corrAbsMax[ clumpIdx ] > totalCorrAbsMax[ clumpIdx ]) {
+							totalCorrAbsMax	[ clumpIdx ]	= corrAbsMax[ clumpIdx ];
+							totalCorrAbsMaxPos[ clumpIdx ]	= (long) (corrAbsMaxPos[ clumpIdx ] * timeScale + 0.5);
+							totalCorrAbsMaxInv[ clumpIdx ]	= corrAbsMaxInv[ clumpIdx ];
+							totalCorrAbsMaxRMS[ clumpIdx ]	= corrAbsMaxRMS;
+						}
 					}
 					
 //					n			 = framesRead2;
-					framesRead2  = inOff + len2;
+					framesRead2  = inOff + chunkLen;
 					inOff		 = Math.min( inOff + grainLengthH, inLength );	// i.e. overlap
 //					progOff     += inOff - n;
 				// .... progress ....
@@ -660,47 +697,51 @@ if( checkNaN ) checkForNaN( convBuf1, "E" ); // XXX inf at 0 !!!
 				
 if( verbose ) System.err.println( "plot" );
 
-				// adjust gain
-				f1 = Math.min( maxBoost, totalCorrAbsMaxRMS / ptrnRMS ) * (totalCorrAbsMaxInv ? -1 : 1);
-				Util.mult( ptrnBuf, 0, grainLength, f1 );
-				
-				// zero padding output file
-				if( framesWritten < totalCorrAbsMaxPos ) {
-					Util.clear( inBuf );
-					tmpF.seekFrame( framesWritten );
-					while( threadRunning && (framesWritten < totalCorrAbsMaxPos) ) {
-						len = (int) Math.min( inBufSize, totalCorrAbsMaxPos - framesWritten );
-						tmpF.writeFrames( inBuf, 0, len );
-						framesWritten += len;
-						progOff += len;
-					// .... progress ....
-						setProgression( (float) progOff / (float) progLen );
+	 			for( int clumpIdx = 0; threadRunning && (clumpIdx < clump); clumpIdx++ ) {
+					// adjust gain
+					f1 = Math.min( maxBoost, totalCorrAbsMaxRMS[ clumpIdx ] / ptrnRMS[ clumpIdx ]) *
+							(totalCorrAbsMaxInv[ clumpIdx ] ? -1 : 1);
+					Util.mult( ptrnBuf[ clumpIdx ], 0, grainLength, f1 );
+					
+					// zero padding output file
+					if( framesWritten < totalCorrAbsMaxPos[ clumpIdx ]) {
+						Util.clear( inBuf );
+						tmpF.seekFrame( framesWritten );
+						while( threadRunning && (framesWritten < totalCorrAbsMaxPos[ clumpIdx ])) {
+							chunkLen = (int) Math.min( inBufSize, totalCorrAbsMaxPos[ clumpIdx ] - framesWritten );
+							tmpF.writeFrames( inBuf, 0, chunkLen );
+							framesWritten += chunkLen;
+							progOff += chunkLen;
+						// .... progress ....
+							setProgression( (float) progOff / (float) progLen );
+						}
+					// .... check running ....
+						if( !threadRunning ) break topLevel;
+					} else {
+						tmpF.seekFrame( totalCorrAbsMaxPos[ clumpIdx ]);
 					}
-				// .... check running ....
-					if( !threadRunning ) break topLevel;
-				} else {
-					tmpF.seekFrame( totalCorrAbsMaxPos );
-				}
-				
-				// mix with previous content
-				len = (int) Math.min( framesWritten - totalCorrAbsMaxPos, grainLength );
-				if( len > 0 ) {
-					tmpF.readFrames( inBuf, 0, len );
-					Util.add( inBuf, 0, ptrnBuf, 0, len );
-					tmpF.seekFrame( totalCorrAbsMaxPos );
-				}
-				
-				tmpF.writeFrames( ptrnBuf, 0, grainLength );
-				len = (int) Math.max( 0, totalCorrAbsMaxPos + grainLength - framesWritten );
-				framesWritten += len;
-				progOff += len;
-			// .... progress ....
-				setProgression( (float) progOff / (float) progLen );
+					
+					// mix with previous content
+					chunkLen = (int) Math.min( framesWritten - totalCorrAbsMaxPos[ clumpIdx ], grainLength );
+					if( chunkLen > 0 ) {
+						tmpF.readFrames( inBuf, 0, chunkLen );
+						Util.add( inBuf, 0, ptrnBuf[ clumpIdx ], 0, chunkLen );
+						tmpF.seekFrame( totalCorrAbsMaxPos[ clumpIdx ]);
+					}
+					
+					tmpF.writeFrames( ptrnBuf[ clumpIdx ], 0, grainLength );
+					chunkLen = (int) Math.max( 0, totalCorrAbsMaxPos[ clumpIdx ] + grainLength - framesWritten );
+					framesWritten += chunkLen;
+					progOff += chunkLen;
+				// .... progress ....
+					setProgression( (float) progOff / (float) progLen );
+				} // for clumpIdx
+ 			// .... check running ....
+				if( !threadRunning ) break topLevel;
 			} // ptrnLoop
-		// .... check running ....
-			if( !threadRunning ) break topLevel;
 			
-			progOff = ptrnLength + inLength + outLength;
+//			progOff = ptrnLength + inLength + outLength;
+			progOff = (ptrnLength << 4) + (outLength * 2);
 		// .... progress ....
 			setProgression( (float) progOff / (float) progLen );
 
@@ -710,10 +751,10 @@ if( verbose ) System.err.println( "zero pad" );
 			Util.clear( inBuf );
 			tmpF.seekFrame( framesWritten );
 			while( threadRunning && (framesWritten < outLength) ) {
-				len = (int) Math.min( inBufSize, outLength - framesWritten );
-				tmpF.writeFrames( inBuf, 0, len );
-				framesWritten += len;
-				progOff += len;
+				chunkLen = (int) Math.min( inBufSize, outLength - framesWritten );
+				tmpF.writeFrames( inBuf, 0, chunkLen );
+				framesWritten += chunkLen;
+				progOff += chunkLen;
 			// .... progress ....
 				setProgression( (float) progOff / (float) progLen );
 			}
@@ -725,11 +766,11 @@ if( verbose ) System.err.println( "calc max" );
 			// calc max amp
 			tmpF.seekFrame( 0L );
 			for( framesRead = 0; threadRunning && (framesRead < outLength); ) {
-				len = (int) Math.min( inBufSize, outLength - framesRead );
-				tmpF.readFrames( inBuf, 0, len );
-				maxAmp = Math.max( maxAmp, Util.maxAbs( inBuf, 0, len ));
-				framesRead += len;
-				progOff += len;
+				chunkLen = (int) Math.min( inBufSize, outLength - framesRead );
+				tmpF.readFrames( inBuf, 0, chunkLen );
+				maxAmp = Math.max( maxAmp, Util.maxAbs( inBuf, 0, chunkLen ));
+				framesRead += chunkLen;
+				progOff += chunkLen;
 			// .... progress ....
 				setProgression( (float) progOff / (float) progLen );
 			}
