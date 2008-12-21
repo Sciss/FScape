@@ -131,7 +131,7 @@ extends DocumentFrame
 
 	// debuggingdorfer
 	private static final boolean checkNaN = false;
-	private static final boolean verbose = false;
+	private static final boolean verbose = true;
 
 // -------- public Methoden --------
 
@@ -405,8 +405,17 @@ extends DocumentFrame
 		final float[]			totalCorrAbsMax;
 		final long[]			totalCorrAbsMaxPos;
 		final boolean[]			totalCorrAbsMaxInv;
+		// the idea of caching the forward FFTs doesn't work,
+		// because the input is windowed according to grainLength
+		// which can fluctuate despite FFTsize remaining the same ... ;-/
+//		final int				minGrainLength, minFFTLength;
+//		final boolean[]			fftDone;
+//		final float[][]			offBuf;
+//		final int				numFFTs;
 		int						clump, chunkLen;
+//		int						fftIdx;
 		final int				numClump;	//		= 10
+//		AudioFile[]				fftF			= null;
 		
 		final Random			rnd				= new Random();
 
@@ -456,8 +465,19 @@ topLevel: try {
 			corrAbsMaxPoss		= new long[ numClump ][ inChanNum ];
 			corrAbsMaxInvs		= new boolean[ numClump ][ inChanNum ];
 			
+//			minGrainLength		= (int) (AudioFileDescr.millisToSamples( inStream, minGrainLen ) + 0.5);
 			maxGrainLength		= (int) (AudioFileDescr.millisToSamples( inStream, maxGrainLen ) + 0.5);
+//			minFFTLength		= Util.nextPowerOfTwo( minGrainLength + minGrainLength - 1 );
 			maxFFTLength		= Util.nextPowerOfTwo( maxGrainLength + maxGrainLength - 1 );
+//			{
+//				int testNumFFTs = 1;
+//				for( int i = minFFTLength; i < maxFFTLength; i <<= 1, testNumFFTs++ ) ;
+//				numFFTs			= testNumFFTs;
+//				if( verbose ) System.out.println( "numFFTs = " + numFFTs );
+//			}
+//			fftDone				= new boolean[ numFFTs ];
+//			fftF				= new AudioFile[ numFFTs ];
+//			offBuf				= new float[ inChanNum ][ 4 ];
 			
 			inBufSize			= Math.max( 8192, maxFFTLength + 2 );
 			inBuf				= new float[ inChanNum ][ inBufSize ];
@@ -494,6 +514,8 @@ if( verbose ) System.err.println( "ptrnLoop " + framesRead );
 				grainLength	= Math.max( 2, (int) (AudioFileDescr.millisToSamples( inStream, Math.pow( factorGrainLen, rnd.nextFloat() ) * minGrainLen ) + 0.5) & ~1 );
 				grainLengthH = grainLength >> 1;
 				grainFFTLength = Util.nextPowerOfTwo( grainLength + grainLength - 1 );
+//				fftIdx = 0;
+//				for( int i = minFFTLength; i < grainFFTLength; i <<= 1, fftIdx ++ ) ;
 				winLen		= Math.max( 2, (int) (grainLength * winSizeFactor + 0.5) & ~1 );
 				winLenH		= winLen >> 1;
 				win			= Filter.createFullWindow( winLen, winType );
@@ -549,26 +571,69 @@ d1 = d1 * (1000 * grainLength);
 
 				inOff				= 0;
 
-System.err.println( "readInput " + grainLength + "; clump = " + clump );
+if( verbose ) System.err.println( "readInput " + grainLength + "; clump = " + clump );
 //System.gc();
+			
+//				if( fftF[ fftIdx ] == null ) {
+//					fftF[ fftIdx ] = createTempFile( inChanNum, inStream.rate );
+//				} else {
+//					fftF[ fftIdx ].seekFrame(  0L );
+//				}
 
 readInput:		for( framesRead2 = 0; threadRunning && (framesRead2 < inLength); ) {
 
-//try {
-//Thread.sleep( 1 );
-//} catch( InterruptedException e1 ) {}
-
 					chunkLen	= (int) Math.min( inLength - framesRead2, grainLength );
-//System.err.println( "  chunkLen = " + chunkLen );
-//System.err.println( "  framesRead2 = " + framesRead2 );
-					inF.seekFrame( inOff );
-					inF.readFrames( inBuf, 0, chunkLen );
-					if( chunkLen < grainLength ) {
-						Util.clear( inBuf, chunkLen, grainLength - chunkLen );
-					}
-					// apply window
-					Util.mult( win, 0, inBuf, 0, winLenH );
-					Util.mult( win, winLenH, inBuf, grainLength - winLenH, winLenH );
+					
+//					if( fftDone[ fftIdx ]) {
+//						fftF[ fftIdx ].readFrames( offBuf, 0, 4 );
+//						fftF[ fftIdx ].readFrames( inBuf, 0, grainFFTLength + 2 );
+////						inOff = (((long) Float.floatToRawIntBits( offBuf[ 0 ][ 0 ])) << 32) |
+////							    (((long) Float.floatToRawIntBits( offBuf[ 0 ][ 1 ])) & 0xFFFFFFFF );
+////						corrAbsMaxRMS = offBuf[ 0 ][ 2 ];
+//						inOff = (((long) offBuf[ 0 ][ 0 ]) << 48) |
+//								(((long) offBuf[ 0 ][ 1 ]) << 24) |
+//								 ((long) offBuf[ 0 ][ 2 ]);
+//						corrAbsMaxRMS = offBuf[ 0 ][ 3 ];
+//						if( verbose ) System.err.println( "fftIdx = " + fftIdx + "; read off " + inOff );
+//						
+//					} else {
+						inF.seekFrame( inOff );
+						inF.readFrames( inBuf, 0, chunkLen );
+						if( chunkLen < grainLength ) {
+							Util.clear( inBuf, chunkLen, grainLength - chunkLen );
+						}
+						// apply window
+						Util.mult( win, 0, inBuf, 0, winLenH );
+						Util.mult( win, winLenH, inBuf, grainLength - winLenH, winLenH );
+
+	 				  	corrAbsMaxRMS	= 0f;
+						for( int ch = 0; ch < inChanNum; ch++ ) {
+							Util.removeDC( inBuf[ ch ], 0, chunkLen );
+							d1 = Math.sqrt( Filter.calcEnergy( inBuf[ ch ], 0, chunkLen ));		// i.e. sqrt( sum(y^2) )
+if( checkNaN ) checkForNaN( inBuf[ ch ], "A" );
+//too small values produce inf values in the below Util.mult !!!
+d1 = d1 * (1000 * grainLength);
+							if( d1 > 0.0 ) {
+								Util.mult( inBuf[ ch ], 0, chunkLen, (float) (1.0 / d1) );
+if( checkNaN ) checkForNaN( inBuf[ ch ], "B" );
+							} else {
+								framesRead2  = inOff + chunkLen;
+								inOff		 = Math.min( inOff + grainLengthH, inLength );	// i.e. overlap
+								continue readInput;
+							}
+							
+							corrAbsMaxRMS += (float) d1;
+							Fourier.realTransform( inBuf[ ch ], grainFFTLength, Fourier.FORWARD );
+if( checkNaN ) checkForNaN( convBuf1, "C" );
+						} // for ch
+//						offBuf[ 0 ][ 0 ] = (float) ((inOff >> 48) & 0x00FFFFFF);
+//						offBuf[ 0 ][ 1 ] = (float) ((inOff >> 24) & 0x00FFFFFF);
+//						offBuf[ 0 ][ 2 ] = (float) (inOff & 0x00FFFFFF);
+//						offBuf[ 0 ][ 3 ] = corrAbsMaxRMS;
+//						fftF[ fftIdx ].writeFrames( offBuf, 0, 4 );
+//						fftF[ fftIdx ].writeFrames( inBuf, 0, grainFFTLength + 2 );
+//						if( verbose ) System.err.println( "fftIdx = " + fftIdx + "; wrote off " + inOff );
+//					}
 					
 					// remove DC
 					// ... normalize RMS (so we do not need the rms-division in the original pearson's formula!)
@@ -581,29 +646,10 @@ readInput:		for( framesRead2 = 0; threadRunning && (framesRead2 < inLength); ) {
  				  		corrAbsMaxPos[ clumpIdx ]	= 0;
  				  		corrAbsMaxInv[ clumpIdx ]	= false;
  				  	}
- 				  	corrAbsMaxRMS	= 0f;
 					
 					for( int ch = 0; ch < inChanNum; ch++ ) {
-//System.err.println( "  chan loop " + ch );
-						convBuf1 = inBuf[ ch ];
-						Util.removeDC( convBuf1, 0, chunkLen );
-						d1 = Math.sqrt( Filter.calcEnergy( convBuf1, 0, chunkLen ));		// i.e. sqrt( sum(y^2) )
-if( checkNaN ) checkForNaN( convBuf1, "A" );
-// too small values produce inf values in the below Util.mult !!!
-d1 = d1 * (1000 * grainLength);
-						if( d1 > 0.0 ) {
-							Util.mult( convBuf1, 0, chunkLen, (float) (1.0 / d1) );
-if( checkNaN ) checkForNaN( convBuf1, "B" );
-						} else {
-							framesRead2  = inOff + chunkLen;
-							inOff		 = Math.min( inOff + grainLengthH, inLength );	// i.e. overlap
-							continue readInput;
-						}
-						corrAbsMaxRMS += (float) d1;
-						Fourier.realTransform( convBuf1, grainFFTLength, Fourier.FORWARD );
-if( checkNaN ) checkForNaN( convBuf1, "C" );
 	 				  	for( int clumpIdx = 0; clumpIdx < clump; clumpIdx++ ) {
-	 				  		Fourier.complexMult( ptrnFFTBuf[ clumpIdx ][ ch ], 0, convBuf1, 0, corrFFTBuf, 0, grainFFTLength + 2 );
+	 				  		Fourier.complexMult( ptrnFFTBuf[ clumpIdx ][ ch ], 0, inBuf[ ch ], 0, corrFFTBuf, 0, grainFFTLength + 2 );
 if( checkNaN ) checkForNaN( convBuf1, "D" );
 							Fourier.realTransform( corrFFTBuf, grainFFTLength, Fourier.INVERSE );
 if( checkNaN ) checkForNaN( convBuf1, "E" ); // XXX inf at 0 !!!
@@ -693,6 +739,8 @@ if( checkNaN ) checkForNaN( convBuf1, "E" ); // XXX inf at 0 !!!
 			// .... check running ....
 				if( !threadRunning ) break topLevel;
 				
+//				fftDone[ fftIdx ] = true;
+				
 				/////////////////// plot
 				
 if( verbose ) System.err.println( "plot" );
@@ -746,6 +794,13 @@ if( verbose ) System.err.println( "plot" );
 			setProgression( (float) progOff / (float) progLen );
 
 if( verbose ) System.err.println( "zero pad" );
+
+//			for( int i = 0; i < numFFTs; i++ ) {
+//				if( fftF[ i ] != null ) {
+//					deleteTempFile( fftF[ i ]);
+//					fftF[ i ] = null;
+//				}
+//			}
 
 			// zero padding output file
 			Util.clear( inBuf );
