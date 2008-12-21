@@ -29,18 +29,29 @@
 
 package de.sciss.fscape.gui;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import java.util.*;
-import javax.swing.*;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.io.EOFException;
+import java.io.File;
+import java.io.IOException;
+import java.util.Random;
 
-import de.sciss.fscape.io.*;
-import de.sciss.fscape.prop.*;
-import de.sciss.fscape.session.*;
-import de.sciss.fscape.spect.*;
-import de.sciss.fscape.util.*;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
 
+import de.sciss.fscape.io.GenericFile;
+import de.sciss.fscape.prop.Presets;
+import de.sciss.fscape.prop.PropertyArray;
+import de.sciss.fscape.session.DocumentFrame;
+import de.sciss.fscape.spect.Fourier;
+import de.sciss.fscape.util.Constants;
+import de.sciss.fscape.util.Filter;
+import de.sciss.fscape.util.Param;
+import de.sciss.fscape.util.ParamSpace;
+import de.sciss.fscape.util.Util;
 import de.sciss.io.AudioFile;
 import de.sciss.io.AudioFileDescr;
 
@@ -52,7 +63,7 @@ import de.sciss.io.AudioFileDescr;
  *	sound is plotted to the output file. Never really worked.
  *
  *  @author		Hanns Holger Rutz
- *  @version	0.71, 17-Jun-07
+ *  @version	0.71, 21-Dec-08
  */
 public class SedimentDlg
 extends DocumentFrame
@@ -388,7 +399,7 @@ topLevel: try {
 			inF				= AudioFile.openAsRead( new File( pr.text[ PR_INPUTFILE ]));
 			inStream		= inF.getDescr();
 			inChanNum		= inStream.channels;
-			inLength		= (int) inStream.length;
+			inLength		= inStream.length;
 			// this helps to prevent errors from empty files!
 			if( (inLength < 1) || (inChanNum < 1) ) throw new EOFException( ERR_EMPTY );
 		// .... check running ....
@@ -398,7 +409,7 @@ topLevel: try {
 			ptrnF			= AudioFile.openAsRead( new File( pr.text[ PR_PATTERNFILE ]));
 			ptrnStream		= ptrnF.getDescr();
 			ptrnChanNum		= ptrnStream.channels;
-			ptrnLength		= (int) ptrnStream.length;
+			ptrnLength		= ptrnStream.length;
 			// this helps to prevent errors from empty files!
 			if( (ptrnLength < 1) || (ptrnChanNum < 1) ) throw new EOFException( ERR_EMPTY );
 		// .... check running ....

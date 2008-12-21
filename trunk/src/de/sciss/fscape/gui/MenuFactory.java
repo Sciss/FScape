@@ -155,6 +155,7 @@ extends BasicMenuFactory
 	private static final String MI_NEEDLEHOLE	= "Needlehole Cherry Blossom";
 	private static final String MI_ROTATION		= "Rotation";
 	private static final String MI_SEEKDESTROY	="Seek + Destroy";
+	private static final String MI_BLUNDERFINGER ="BlunderFinger";
 	
 	private static final String M_MOD_REST		= "Restauration";
 	private static final String MI_COMBFLT		= "Comb Filter";
@@ -241,7 +242,8 @@ extends BasicMenuFactory
 		{ new StringItem( "Snd2Img",		MI_SND2IMG ),		null },
 		{ new StringItem( "Stalker",		MI_STALKER ),		null },
 		{ new StringItem( "TransientExtr",	MI_TRANSEXTR ),		null },
-		{ new StringItem( "LPFilter",		MI_LPFILTER ),		null }
+		{ new StringItem( "LPFilter",		MI_LPFILTER ),		null },
+		{ new StringItem( "BlunderFinger",	MI_BLUNDERFINGER ),	null }
 	},{
 		{},
 		{ new StringItem( "Batch",			MI_BATCH ),			KeyStroke.getKeyStroke( KeyEvent.VK_9, PROC_MODIF ) },
