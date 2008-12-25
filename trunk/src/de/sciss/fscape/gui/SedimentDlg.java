@@ -63,7 +63,7 @@ import de.sciss.io.AudioFileDescr;
  *	sound is plotted to the output file. Never really worked.
  *
  *  @author		Hanns Holger Rutz
- *  @version	0.71, 21-Dec-08
+ *  @version	0.71, 25-Dec-08
  */
 public class SedimentDlg
 extends DocumentFrame
@@ -130,8 +130,8 @@ extends DocumentFrame
 	private static final String	ERR_CHANNELS		= "Input + pattern must share\nsame # of channels!";
 
 	// debuggingdorfer
-	private static final boolean checkNaN = false;
-	private static final boolean verbose = true;
+	private static final boolean checkNaN	= false;
+	private static final boolean verbose	= false;
 
 // -------- public Methoden --------
 
@@ -365,7 +365,6 @@ extends DocumentFrame
 		
 		// buffers
 		final float[][]			inBuf;
-		float[]					convBuf1;
 		float[]					win;
 
 		final int				maxGrainLength, maxFFTLength, inBufSize;
@@ -405,6 +404,7 @@ extends DocumentFrame
 		final float[]			totalCorrAbsMax;
 		final long[]			totalCorrAbsMaxPos;
 		final boolean[]			totalCorrAbsMaxInv;
+//		final long[]			ptrnRead;
 		// the idea of caching the forward FFTs doesn't work,
 		// because the input is windowed according to grainLength
 		// which can fluctuate despite FFTsize remaining the same ... ;-/
@@ -416,6 +416,7 @@ extends DocumentFrame
 //		int						fftIdx;
 		final int				numClump;	//		= 10
 //		AudioFile[]				fftF			= null;
+		long					progDelta, progOff2;
 		
 		final Random			rnd				= new Random();
 
@@ -491,12 +492,14 @@ topLevel: try {
 			totalCorrAbsMaxInv	= new boolean[ numClump ];
 			totalCorrAbsMaxPos	= new long[ numClump ];
 			totalCorrAbsMaxRMS	= new float[ numClump ];
+//			ptrnRead			= new long[ numClump ];
 			corrFFTBuf			= new float[ maxFFTLength + 2 ];
 			
 			outLength			= (long) (inLength * timeScale + 0.5) + maxGrainLength;
 			
 //			progLen				= ptrnLength + inLength + (outLength * 3);
-			progLen				= (ptrnLength << 4) + (outLength * 4);
+//			progLen				= (ptrnLength << 2) + (inLength * inChanNum) + (outLength * 4);
+			progLen				= ptrnLength + (ptrnLength * inLength) + (outLength * 3);
 			progOff				= 0;
 
 			framesWritten		= 0;
@@ -520,10 +523,12 @@ if( verbose ) System.err.println( "ptrnLoop " + framesRead );
 				winLenH		= winLen >> 1;
 				win			= Filter.createFullWindow( winLen, winType );
 				clump		= 0;
+				
+				progDelta	= 0;
 
 				for( int clumpIdx = 0; threadRunning && (clumpIdx < numClump) && (framesRead < ptrnLength); clumpIdx++, clump++ ) {
 					chunkLen = (int) Math.min( ptrnLength - framesRead, grainLength );
-					ptrnF.readFrames( ptrnBuf[ clumpIdx ], 0, chunkLen);
+					ptrnF.readFrames( ptrnBuf[ clumpIdx ], 0, chunkLen );
 					framesRead += chunkLen;
 					// zero padding
 					if( chunkLen < grainLength ) {
@@ -560,8 +565,11 @@ d1 = d1 * (1000 * grainLength);
 					totalCorrAbsMaxPos[ clumpIdx ]	= 0;
 					totalCorrAbsMaxInv[ clumpIdx ]	= false;
 					totalCorrAbsMaxRMS[ clumpIdx ]	= ptrnRMS[ clumpIdx ];
+//					ptrnRead[ clumpIdx ] = chunkLen;
 
-					progOff		+= (chunkLen << 4);
+//					progOff		+= (chunkLen << 2);
+					progOff		+= chunkLen;
+					progDelta	+= chunkLen;
 					// .... progress ....
 					setProgression( (float) progOff / (float) progLen );
 				} // for clumpIdx
@@ -580,9 +588,13 @@ if( verbose ) System.err.println( "readInput " + grainLength + "; clump = " + cl
 //					fftF[ fftIdx ].seekFrame(  0L );
 //				}
 
+				progOff2 = progOff;
+
 readInput:		for( framesRead2 = 0; threadRunning && (framesRead2 < inLength); ) {
 
 					chunkLen	= (int) Math.min( inLength - framesRead2, grainLength );
+
+if( verbose ) System.out.println( "framesRead2 = " + framesRead2 );
 					
 //					if( fftDone[ fftIdx ]) {
 //						fftF[ fftIdx ].readFrames( offBuf, 0, 4 );
@@ -599,9 +611,10 @@ readInput:		for( framesRead2 = 0; threadRunning && (framesRead2 < inLength); ) {
 //					} else {
 						inF.seekFrame( inOff );
 						inF.readFrames( inBuf, 0, chunkLen );
-						if( chunkLen < grainLength ) {
-							Util.clear( inBuf, chunkLen, grainLength - chunkLen );
-						}
+//						if( chunkLen < grainLength ) {
+//							Util.clear( inBuf, chunkLen, grainLength - chunkLen );
+//						}
+						Util.clear( inBuf, chunkLen, grainFFTLength - chunkLen );
 						// apply window
 						Util.mult( win, 0, inBuf, 0, winLenH );
 						Util.mult( win, winLenH, inBuf, grainLength - winLenH, winLenH );
@@ -619,12 +632,13 @@ if( checkNaN ) checkForNaN( inBuf[ ch ], "B" );
 							} else {
 								framesRead2  = inOff + chunkLen;
 								inOff		 = Math.min( inOff + grainLengthH, inLength );	// i.e. overlap
+								progOff += (chunkLen * progDelta);
 								continue readInput;
 							}
 							
 							corrAbsMaxRMS += (float) d1;
 							Fourier.realTransform( inBuf[ ch ], grainFFTLength, Fourier.FORWARD );
-if( checkNaN ) checkForNaN( convBuf1, "C" );
+if( checkNaN ) checkForNaN( inBuf[ ch ], "C" );
 						} // for ch
 //						offBuf[ 0 ][ 0 ] = (float) ((inOff >> 48) & 0x00FFFFFF);
 //						offBuf[ 0 ][ 1 ] = (float) ((inOff >> 24) & 0x00FFFFFF);
@@ -650,9 +664,9 @@ if( checkNaN ) checkForNaN( convBuf1, "C" );
 					for( int ch = 0; ch < inChanNum; ch++ ) {
 	 				  	for( int clumpIdx = 0; clumpIdx < clump; clumpIdx++ ) {
 	 				  		Fourier.complexMult( ptrnFFTBuf[ clumpIdx ][ ch ], 0, inBuf[ ch ], 0, corrFFTBuf, 0, grainFFTLength + 2 );
-if( checkNaN ) checkForNaN( convBuf1, "D" );
+if( checkNaN ) checkForNaN( corrFFTBuf, "D" );
 							Fourier.realTransform( corrFFTBuf, grainFFTLength, Fourier.INVERSE );
-if( checkNaN ) checkForNaN( convBuf1, "E" ); // XXX inf at 0 !!!
+if( checkNaN ) checkForNaN( corrFFTBuf, "E" ); // XXX inf at 0 !!!
 						
 						    f2 = 0.0f;
 						    inv = false;
@@ -677,6 +691,10 @@ if( checkNaN ) checkForNaN( convBuf1, "E" ); // XXX inf at 0 !!!
 						    corrAbsMaxPoss[ clumpIdx ][ ch ]	= maxPos;
 						    corrAbsMaxInvs[ clumpIdx ][ ch ]	= inv;
 	 				  	}
+//						progOff	+= chunkLen * progDelta; // ptrnRead[ clumpIdx ];
+	 				  	progOff = progOff2 + progDelta * framesRead2 / inChanNum;
+						// .... progress ....
+						setProgression( (float) progOff / (float) progLen );
 					}
 
 //System.err.println( "  chanType" );
@@ -733,6 +751,7 @@ if( checkNaN ) checkForNaN( convBuf1, "E" ); // XXX inf at 0 !!!
 					framesRead2  = inOff + chunkLen;
 					inOff		 = Math.min( inOff + grainLengthH, inLength );	// i.e. overlap
 //					progOff     += inOff - n;
+//					progOff		+= chunkLen;
 				// .... progress ....
 					setProgression( (float) progOff / (float) progLen );
 				} // readInput
@@ -740,7 +759,10 @@ if( checkNaN ) checkForNaN( convBuf1, "E" ); // XXX inf at 0 !!!
 				if( !threadRunning ) break topLevel;
 				
 //				fftDone[ fftIdx ] = true;
-				
+
+//				progOff2 = progOff + (inLength * ptrnDelta);
+				progOff = progOff2 + (inLength * progDelta); // ??? korekt
+
 				/////////////////// plot
 				
 if( verbose ) System.err.println( "plot" );
@@ -753,30 +775,36 @@ if( verbose ) System.err.println( "plot" );
 					
 					// zero padding output file
 					if( framesWritten < totalCorrAbsMaxPos[ clumpIdx ]) {
+						
+if( verbose ) System.err.println( "clumpIdx = " + clumpIdx + " padding from " + framesWritten + " to " + totalCorrAbsMaxPos[ clumpIdx ]);
+						
 						Util.clear( inBuf );
 						tmpF.seekFrame( framesWritten );
 						while( threadRunning && (framesWritten < totalCorrAbsMaxPos[ clumpIdx ])) {
 							chunkLen = (int) Math.min( inBufSize, totalCorrAbsMaxPos[ clumpIdx ] - framesWritten );
 							tmpF.writeFrames( inBuf, 0, chunkLen );
 							framesWritten += chunkLen;
-							progOff += chunkLen;
+//							progOff += chunkLen;
 						// .... progress ....
 							setProgression( (float) progOff / (float) progLen );
 						}
 					// .... check running ....
 						if( !threadRunning ) break topLevel;
 					} else {
+if( verbose ) System.err.println( "clumpIdx = " + clumpIdx + " jumping to " + totalCorrAbsMaxPos[ clumpIdx ]);
 						tmpF.seekFrame( totalCorrAbsMaxPos[ clumpIdx ]);
 					}
 					
 					// mix with previous content
 					chunkLen = (int) Math.min( framesWritten - totalCorrAbsMaxPos[ clumpIdx ], grainLength );
 					if( chunkLen > 0 ) {
+if( verbose ) System.err.println( "...mixing " + chunkLen + " frames" );
 						tmpF.readFrames( inBuf, 0, chunkLen );
 						Util.add( inBuf, 0, ptrnBuf[ clumpIdx ], 0, chunkLen );
 						tmpF.seekFrame( totalCorrAbsMaxPos[ clumpIdx ]);
 					}
 					
+if( verbose ) System.err.println( "...writing " + grainLength + " frames" );
 					tmpF.writeFrames( ptrnBuf[ clumpIdx ], 0, grainLength );
 					chunkLen = (int) Math.max( 0, totalCorrAbsMaxPos[ clumpIdx ] + grainLength - framesWritten );
 					framesWritten += chunkLen;
@@ -786,10 +814,11 @@ if( verbose ) System.err.println( "plot" );
 				} // for clumpIdx
  			// .... check running ....
 				if( !threadRunning ) break topLevel;
-			} // ptrnLoop
+			}
+// ------------------------------------ END ptrnLoop ------------------------------------
 			
 //			progOff = ptrnLength + inLength + outLength;
-			progOff = (ptrnLength << 4) + (outLength * 2);
+//			progOff = (ptrnLength << 4) + (outLength * 2);
 		// .... progress ....
 			setProgression( (float) progOff / (float) progLen );
 
