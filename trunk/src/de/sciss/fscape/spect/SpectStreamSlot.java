@@ -272,6 +272,7 @@ public class SpectStreamSlot
 			try {
 				while( fr == null ) {
 					try {
+//						System.out.println( "framesReadable : " + stream.framesReadable() );
 						if( stream.framesReadable() != 0 ) {	// auch -1, lšst ja EOFException aus
 							fr = stream.readFrame();
 							if( linked.state == STATE_WAITING ) {

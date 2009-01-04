@@ -28,15 +28,30 @@
 
 package de.sciss.fscape.op;
 
-import java.awt.*;
-import java.io.*;
+import java.awt.Component;
+import java.awt.FileDialog;
+import java.awt.Frame;
+import java.io.File;
+import java.io.IOException;
 import java.rmi.AlreadyBoundException;
 
-import de.sciss.fscape.gui.*;
-import de.sciss.fscape.prop.*;
-import de.sciss.fscape.spect.*;
-import de.sciss.fscape.util.*;
-
+import de.sciss.fscape.gui.GroupLabel;
+import de.sciss.fscape.gui.OpIcon;
+import de.sciss.fscape.gui.PathField;
+import de.sciss.fscape.gui.PropertyGUI;
+import de.sciss.fscape.prop.OpPrefs;
+import de.sciss.fscape.prop.Prefs;
+import de.sciss.fscape.prop.Presets;
+import de.sciss.fscape.prop.PropertyArray;
+import de.sciss.fscape.spect.Fourier;
+import de.sciss.fscape.spect.SpectFrame;
+import de.sciss.fscape.spect.SpectStream;
+import de.sciss.fscape.spect.SpectStreamSlot;
+import de.sciss.fscape.util.Constants;
+import de.sciss.fscape.util.Filter;
+import de.sciss.fscape.util.Param;
+import de.sciss.fscape.util.Slots;
+import de.sciss.fscape.util.Util;
 import de.sciss.io.AudioFile;
 import de.sciss.io.AudioFileDescr;
 
@@ -356,17 +371,6 @@ for( i = 0; i <= Filter.WIN_MAX; i++ ) {
 					m-=3;
 				}
 
-//				for( j = -bands + 1; i < fullFFTlength; j++ ) {		// M ² n ² N + M - 2
-//					k					= j*j;
-//					d1					= Math.pow( d3, k );
-//					d2					= d4 * k;				// d1*exp(j d2) = W^(-n^2/2) = h(n)
-//					chirpImpulse[ i ]	= 1.0 / d1;				// chirpImpulse stores 1/h(n)
-//					fftBuf2[ i++ ]		= (float) (d1 * Math.cos( d2 ));	// prepare to FFT h(n)
-//					chirpImpulse[ i ]	= -d2;
-//					fftBuf2[ i++ ]		= (float) (d1 * Math.sin( d2 ));
-//				}
-//				fftBuf2[ fullFFTlength-1 ] = 0.0f;
-//				fftBuf2[ fullFFTlength-2 ] = 0.0f;
 				Fourier.complexTransform( fftBuf2, fftLength, Fourier.FORWARD );
 // Debug.view( fftBuf2, "linear filter" );
 

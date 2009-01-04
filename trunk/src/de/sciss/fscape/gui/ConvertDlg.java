@@ -53,7 +53,7 @@ import de.sciss.io.AudioFileDescr;
  *	spectral file, image file.
  *
  *  @author		Hanns Holger Rutz
- *  @version	0.71, 14-Nov-07
+ *  @version	0.71, 04-Jan-09
  */
 public class ConvertDlg
 extends DocumentFrame
@@ -335,7 +335,7 @@ extends DocumentFrame
 							  "itFast Fourier,itDiscrete Fourier (log. Scale),itFast Wavelet\n"+
 							  "lbFilter;ch,id21,pr"+PRN_FILTER+",itDaubechies 4\n";
 		String	window		= "lbWindow;ch,pr"+PRN_WINDOW+",itHamming,itBlackman,itKaiser §=4,itKaiser §=5,itKaiser §=6,itKaiser §=8\n";
-		String	overlap		= "lbOverlap;ch,pr"+PRN_OVERLAP+",it400%,it200%,it100%,it50%\n";
+		String	overlap		= "lbOverlap;ch,pr"+PRN_OVERLAP+",it1x,it2x,it4x,it8x,it16x\n";
 		String	bands		= "lbBands;ch,pr"+PRN_BANDS+",it4096,it2048,it1024,it512,it256,it128,it64,it32\n"+
 							  "lbBandwidth [semi];ch,id22,pr"+PRN_BANDWIDTH+",it1/16,it1/12,it1/8,it1/4,it1/2,it1/1\n"+
 							  "lbFrame length;ch,id23,pr"+PRN_FRAMELEN+",it4096,it2048,it1024,it512,it256,it128,it64,it32\n";
@@ -545,19 +545,19 @@ extends DocumentFrame
 		int					overlap			= pr.intg[ PRS_OVERLAP ];
 		float				loFreq			= 0.0f;
 		float				hiFreq;
-		float				masterTune		= 440.0f;		// XXX let user pick it
+		final float			masterTune		= 440.0f;		// XXX let user pick it
 		int					shorty;
 		float				floaty;
 		float				gain			= 1.0f;			// gain abs amp
-		Param				ampRef			= new Param( 1.0, Param.ABS_AMP );	// transform-Referenz
+		final Param			ampRef			= new Param( 1.0, Param.ABS_AMP );	// transform-Referenz
 		
 		// Image conversion
 		byte[]				row				= null;
 		int					tile;
-		float				PhasePerByte	= (float) (Constants.PI2 / 255.0);
-		float				PhasePerWord	= (float) (Constants.PI2 / 65535.0);
-		float				AmpPerByte		= (float) ((20.0 * 255.0 / pr.para[ PRS_NOISEFLOOR ].val) / Constants.ln10);
-		float				AmpPerWord		= (float) ((20.0 * 65535.0 / pr.para[ PRS_NOISEFLOOR ].val) / Constants.ln10);
+		final float			phasePerByte	= (float) (Constants.PI2 / 255.0);
+		final float			phasePerWord	= (float) (Constants.PI2 / 65535.0);
+		final float			ampPerByte		= (float) ((20.0 * 255.0 / pr.para[ PRS_NOISEFLOOR ].val) / Constants.ln10);
+		final float			ampPerWord		= (float) ((20.0 * 65535.0 / pr.para[ PRS_NOISEFLOOR ].val) / Constants.ln10);
 		int					smpPerPixel		= 1;	// will be filled with ImageStream-value!
 		
 		// FFT, DFT, FWT
@@ -699,7 +699,10 @@ topLevel: try {
 
 				((SpectStream) outStream).setChannels( chanNum );
 // XXX smpPerFrame = bands * (1 - overlap) ?!
-				((SpectStream) outStream).setRate( smpRate, (bands - 1) >> overlap );
+//				final int smpPerFrame = (bands - 1) << Math.max(  0, 2 - overlap ) >> Math.max( 0, overlap - 2 );
+final int smpPerFrame = (bands - 1) >> overlap;
+//System.out.println( "(bands - 1) = " + (bands - 1) + "; (overlap - 2) = " + (overlap - 2) + "; smpPerFrame = " + smpPerFrame );
+				((SpectStream) outStream).setRate( smpRate, smpPerFrame );
 //					((SpectStream) outStream).setRate( smpRate, bands - 1 );
 				((SpectStream) outStream).setEstimatedLength( frames );
 				((SpectStream) outStream).setBands( loFreq, hiFreq, bands,
@@ -850,8 +853,8 @@ topLevel: try {
 							for( int ch = 0; ch < chanNum; ch++ ) {
 								for( int band = 0, bandD = 0; band < bands; band++, bandD += 2 ) {
 									frame.data[ ch ][ bandD + SpectFrame.AMP ] = (float) Math.exp( (float)
-										(255 - ((int) row[ band * smpPerPixel + ch ] & 0xFF)) / AmpPerByte );
-									frame.data[ ch ][ bandD + SpectFrame.PHASE ] = PhasePerByte * (float) ((int)
+										(255 - ((int) row[ band * smpPerPixel + ch ] & 0xFF)) / ampPerByte );
+									frame.data[ ch ][ bandD + SpectFrame.PHASE ] = phasePerByte * (float) ((int)
 										row[ (bands + band) * smpPerPixel + ch ] & 0xFF) - (float) Math.PI;
 								}
 							}
@@ -861,11 +864,11 @@ topLevel: try {
 									shorty = (((int) row[ band * smpPerPixel + ch ] & 0xFF) << 8) |
 											 ((int) row[ band * smpPerPixel + ch+1 ] & 0xFF);
 									frame.data[ ch ][ band + SpectFrame.AMP ] = (float) Math.exp( (float)
-										(65535 - shorty) / AmpPerWord );
+										(65535 - shorty) / ampPerWord );
 
 									shorty = (((int) row[ (bandsD + band) * smpPerPixel + ch ] & 0xFF) << 8) |
 											 ((int) row[ (bandsD + band) * smpPerPixel + ch+1 ] & 0xFF);
-									frame.data[ ch ][ band + SpectFrame.PHASE ] = PhasePerWord *
+									frame.data[ ch ][ band + SpectFrame.PHASE ] = phasePerWord *
 										(float) shorty - (float) Math.PI;
 								}
 							}
@@ -878,8 +881,8 @@ topLevel: try {
 								for( int ch = 0; ch < chanNum; ch++ ) {
 									for( int band = 0, bandD = 0; band < bands; band++, bandD += 2 ) {
 										frame.data[ ch ][ bandD + SpectFrame.AMP ] = (float) Math.exp( (float)
-											(255 - ((int) row[ (band + bands * ch) * smpPerPixel + ch ] & 0xFF)) / AmpPerByte );
-										frame.data[ ch ][ bandD + SpectFrame.PHASE ] = PhasePerByte * (float) ((int)
+											(255 - ((int) row[ (band + bands * ch) * smpPerPixel + ch ] & 0xFF)) / ampPerByte );
+										frame.data[ ch ][ bandD + SpectFrame.PHASE ] = phasePerByte * (float) ((int)
 											row[ (band + bands * ch) * smpPerPixel + ch+1 ] & 0xFF) - (float) Math.PI;
 									}
 								}
@@ -887,7 +890,7 @@ topLevel: try {
 								for( int ch = 0; ch < chanNum; ch++ ) {
 									for( int band = 0, bandD = 0; band < bands; band++, bandD += 2 ) {
 										frame.data[ ch ][ bandD + SpectFrame.AMP ] = (float) Math.exp( (float)
-											(255 - ((int) row[ (band + bands * ch) * smpPerPixel + ch ] & 0xFF)) / AmpPerByte );
+											(255 - ((int) row[ (band + bands * ch) * smpPerPixel + ch ] & 0xFF)) / ampPerByte );
 										frame.data[ ch ][ bandD + SpectFrame.PHASE ] = 0.0f;
 									}
 								}
@@ -899,11 +902,11 @@ topLevel: try {
 										shorty = (((int) row[ (band + bandsD * ch) * smpPerPixel + ch ] & 0xFF) << 8) |
 												 ((int) row[ (band + bandsD * ch) * smpPerPixel + ch+1 ] & 0xFF);
 										frame.data[ ch ][ band + SpectFrame.AMP ] = (float) Math.exp( (float)
-											(65535 - shorty) / AmpPerWord );
+											(65535 - shorty) / ampPerWord );
 
 										shorty = (((int) row[ (band + bandsD * ch) * smpPerPixel + ch+2 ] & 0xFF) << 8) |
 												 ((int) row[ (band + bandsD * ch) * smpPerPixel + ch+3 ] & 0xFF);
-										frame.data[ ch ][ band + SpectFrame.PHASE ] = PhasePerWord *
+										frame.data[ ch ][ band + SpectFrame.PHASE ] = phasePerWord *
 											(float) shorty - (float) Math.PI;
 									}
 								}
@@ -913,7 +916,7 @@ topLevel: try {
 										shorty = (((int) row[ (band + bandsD * ch) * smpPerPixel + ch ] & 0xFF) << 8) |
 												 ((int) row[ (band + bandsD * ch) * smpPerPixel + ch+1 ] & 0xFF);
 										frame.data[ ch ][ band + SpectFrame.AMP ] = (float) Math.exp( (float)
-											(65535 - shorty) / AmpPerWord );
+											(65535 - shorty) / ampPerWord );
 
 										frame.data[ ch ][ band + SpectFrame.PHASE ] = 0.0f;
 									}
@@ -949,21 +952,21 @@ topLevel: try {
 								for( int ch = 0; ch < chanNum; ch++ ) {
 									for( int band = 0, bandD = 0; band < bands; band++, bandD += 2 ) {
 										row[ band * smpPerPixel + ch ] = (byte) Math.max( 0, Math.min( 255, 255 - (int) Math.rint(
-											AmpPerByte * Math.log( frame.data[ ch ][ bandD + SpectFrame.AMP ]))));
+											ampPerByte * Math.log( frame.data[ ch ][ bandD + SpectFrame.AMP ]))));
 										row[ (bands + band) * smpPerPixel + ch ] = (byte) Math.rint(
-											((frame.data[ ch ][ bandD + SpectFrame.PHASE ] + Math.PI) % Constants.PI2) / PhasePerByte);
+											((frame.data[ ch ][ bandD + SpectFrame.PHASE ] + Math.PI) % Constants.PI2) / phasePerByte);
 									}
 								}
 							} else {	// 16 bit
 								for( int ch = 0; ch < chanNum; ch++ ) {
 									for( int band = 0; band < bandsD; band += 2 ) {
 										shorty = Math.max( 0, Math.min( 65535, 65535 - (int) Math.rint(
-											AmpPerWord * Math.log( frame.data[ ch ][ band + SpectFrame.AMP ]))));
+											ampPerWord * Math.log( frame.data[ ch ][ band + SpectFrame.AMP ]))));
 										row[ band * smpPerPixel + ch ] = (byte) ((shorty & 0xFF00) >> 8);
 										row[ band * smpPerPixel + ch+1 ] = (byte) (shorty & 0x00FF);
 
 										shorty = (int) Math.rint( ((frame.data[ ch ][ band + SpectFrame.PHASE ] + Math.PI) %
-											Constants.PI2) / PhasePerWord);
+											Constants.PI2) / phasePerWord);
 										row[ (bandsD + band) * smpPerPixel + ch ] = (byte) ((shorty & 0xFF00) >> 8);
 										row[ (bandsD + band) * smpPerPixel + ch+1 ] = (byte) (shorty & 0x00FF);
 									}
@@ -976,21 +979,21 @@ topLevel: try {
 								for( int ch = 0; ch < chanNum; ch++ ) {
 									for( int band = 0; band < bands; band++ ) {
 										row[ (band + bands * ch) * smpPerPixel + ch ] = (byte) Math.max( 0, Math.min( 255, 255 - (int) Math.rint(
-											AmpPerByte * Math.log( frame.data[ ch ][ (band << 1) + SpectFrame.AMP ]))));
+											ampPerByte * Math.log( frame.data[ ch ][ (band << 1) + SpectFrame.AMP ]))));
 										row[ (band + bands * ch) * smpPerPixel + ch+1 ] = (byte) Math.rint(
-											((frame.data[ ch ][ (band << 1) + SpectFrame.PHASE ] + Math.PI) % Constants.PI2) / PhasePerByte);
+											((frame.data[ ch ][ (band << 1) + SpectFrame.PHASE ] + Math.PI) % Constants.PI2) / phasePerByte);
 									}
 								}
 							} else {	// 16 bit
 								for( int ch = 0; ch < chanNum; ch++ ) {
 									for( int band = 0; band < bandsD; band += 2 ) {
 										shorty = Math.max( 0, Math.min( 65535, 65535 - (int) Math.rint(
-											AmpPerWord * Math.log( frame.data[ ch ][ band + SpectFrame.AMP ]))));
+											ampPerWord * Math.log( frame.data[ ch ][ band + SpectFrame.AMP ]))));
 										row[ (band + bandsD * ch) * smpPerPixel + ch ] = (byte) ((shorty & 0xFF00) >> 8);
 										row[ (band + bandsD * ch) * smpPerPixel + ch+1 ] = (byte) (shorty & 0x00FF);
 
 										shorty = (int) Math.rint( ((frame.data[ ch ][ band + SpectFrame.PHASE ] + Math.PI) %
-											Constants.PI2) / PhasePerWord);
+											Constants.PI2) / phasePerWord);
 										row[ (band + bandsD * ch) * smpPerPixel + ch+2 ] = (byte) ((shorty & 0xFF00) >> 8);
 										row[ (band + bandsD * ch) * smpPerPixel + ch+3 ] = (byte) (shorty & 0x00FF);
 									}
