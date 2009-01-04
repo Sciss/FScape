@@ -2,7 +2,7 @@
  *  OpPanel.java
  *  FScape
  *
- *  Copyright (c) 2001-2008 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2009 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -28,21 +28,39 @@
 
 package de.sciss.fscape.gui;
 
-import java.awt.*;
-import java.awt.datatransfer.*;
-import java.awt.event.*;
-import java.io.*;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.Transferable;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.io.SyncFailedException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.NotBoundException;
-import java.util.*;
-import javax.swing.*;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Vector;
+
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 import de.sciss.app.AbstractApplication;
+import de.sciss.fscape.op.Operator;
+import de.sciss.fscape.spect.SpectStreamSlot;
+import de.sciss.fscape.util.Slots;
 import de.sciss.gui.GUIUtil;
-
-import de.sciss.fscape.op.*;
-import de.sciss.fscape.spect.*;
-import de.sciss.fscape.util.*;
 
 /**
  *  GUI panel hosting the spectral
@@ -50,7 +68,7 @@ import de.sciss.fscape.util.*;
  *	to drag them around and wire them together.
  *
  *  @author		Hanns Holger Rutz
- *  @version	0.68, 20-May-05
+ *  @version	0.72, 04-Jan-09
  */
 public class OpPanel
 extends JPanel
@@ -122,8 +140,8 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
 	{
 		super();
 		
-		Hashtable	ops;
-		Enumeration	opNames;
+		Map			ops;
+		Iterator	opNames;
 		
 		vIcon	= new Vector();
 		hCon 	= new Hashtable();
@@ -136,13 +154,13 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
 
 		// Popup-Menüs
 		ops = Operator.getOperators();
-		opNames = ops.keys();
+		opNames = ops.keySet().iterator();
 		
 		mPanel[ 0 ]	= new String[ 1 + ops.size() ];
 		mNew		= new String[ ops.size() ][ 1 ];
 		mPanel[ 0 ][ 0 ] = MI_NEW;
-		for( int i = 1; opNames.hasMoreElements(); i++ ) {
-			mPanel[ 0 ][ i ] = (String) opNames.nextElement();
+		for( int i = 1; opNames.hasNext(); i++ ) {
+			mPanel[ 0 ][ i ] = (String) opNames.next();
 			mNew[ i-1 ][ 0 ] = mPanel[ 0 ][ i ];
 		}
 		popPanel	= new PopupStrip( mPanel, this );
@@ -526,7 +544,7 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
 	{
 //		PromptDlg		pDlg;
 		String			action	= e.getActionCommand();
-		Hashtable		ops;
+		Map				ops;
 		String			opName;
 		Operator		op, op2;
 		Operator		newOp	= null;	// duplicate, make alias, new op ...

@@ -2,7 +2,7 @@
  *  Operator.java
  *  FScape
  *
- *  Copyright (c) 2001-2008 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2009 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -28,22 +28,36 @@
 
 package de.sciss.fscape.op;
 
-import java.awt.*;
-import java.awt.datatransfer.*;
-import java.io.*;
-import java.rmi.*;
-import java.util.*;
+import java.awt.Component;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.IOException;
+import java.io.SyncFailedException;
+import java.rmi.AlreadyBoundException;
+import java.rmi.NotBoundException;
+import java.util.Enumeration;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Properties;
+import java.util.TreeMap;
+import java.util.Vector;
 
-import de.sciss.fscape.gui.*;
-import de.sciss.fscape.prop.*;
+import de.sciss.fscape.gui.OpIcon;
+import de.sciss.fscape.gui.PropertyGUI;
+import de.sciss.fscape.prop.OpPrefs;
+import de.sciss.fscape.prop.Prefs;
+import de.sciss.fscape.prop.Presets;
+import de.sciss.fscape.prop.PropertyArray;
 import de.sciss.fscape.session.SpectPatch;
-import de.sciss.fscape.spect.*;
-import de.sciss.fscape.util.*;
+import de.sciss.fscape.spect.SpectFrame;
+import de.sciss.fscape.spect.SpectStreamSlot;
+import de.sciss.fscape.util.Slots;
 
 /**
  *	Operator mit Basisfunktionen
  *
- *  @version	0.71, 14-Nov-07
+ *  @version	0.72, 04-Jan-09
  */
 public class Operator
 implements Runnable, Slots, Cloneable, Transferable
@@ -101,7 +115,7 @@ implements Runnable, Slots, Cloneable, Transferable
 	protected static final String	ERR_ALIASSYNC	= "Original is of different type";
 	protected static final String	ERR_ALREADYALIAS= "Object is already an alias";
 
-	private	static Hashtable OPERATORS;			// values sind alle Op-Klassennamen, keys deren "echte" Namen (String)
+	private	static TreeMap OPERATORS;			// values sind alle Op-Klassennamen, keys deren "echte" Namen (String)
 	private static DataFlavor flavors[] = null;	// alle erlaubten DataFlavors
 
 	protected 			   boolean	disposed		= false;
@@ -149,7 +163,7 @@ implements Runnable, Slots, Cloneable, Transferable
 // -------- Klassenkonstruktor --------
 
 	static {
-		OPERATORS	= new Hashtable();
+		OPERATORS	= new TreeMap();
 	}
 
 // -------- public Methoden --------
@@ -197,7 +211,7 @@ implements Runnable, Slots, Cloneable, Transferable
 	 *
 	 *	@return	 keys = "richtige" Namen; values = Klassennamen
 	 */
-	public static Hashtable getOperators()
+	public static Map getOperators()
 	{
 		if( OPERATORS.isEmpty() ) {		// XXX spaeter die Liste extern nachladen!
 			OPERATORS.put( "Input file", "InputOp" );
@@ -205,6 +219,7 @@ implements Runnable, Slots, Cloneable, Transferable
 			OPERATORS.put( "Analyse", "AnalysisOp" );
 			OPERATORS.put( "Synthesize", "SynthesisOp" );
 			OPERATORS.put( "Flip freq", "FlipFreqOp" );
+			OPERATORS.put( "Log freq", "LogFreqOp" );
 			OPERATORS.put( "Splitter", "SplitterOp" );
 			OPERATORS.put( "Unitor", "UnitorOp" );
 			OPERATORS.put( "Mono2Stereo", "Mono2StereoOp" );

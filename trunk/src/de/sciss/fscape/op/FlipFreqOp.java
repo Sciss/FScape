@@ -2,7 +2,7 @@
  *  FlipFreqOp.java
  *  FScape
  *
- *  Copyright (c) 2001-2008 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2009 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -384,7 +384,7 @@ mainLoop:	while( !threadDead ) {
 				}
 				
 			// ---------- Process: Ziel-Frame berechnen ----------
-				for( int band = 0; band < runInStream.bands; band++ ) {
+bandLp:			for( int band = 0; band < runInStream.bands; band++ ) {
 
 					// unterstes + oberstes Band; Gewichtung
 					srcFloorBand		= srcBands[ band ];
@@ -408,7 +408,7 @@ mainLoop:	while( !threadDead ) {
 								runOutFr.data[ ch ][ (band << 1) + SpectFrame.AMP ] = 0.0f;
 								runOutFr.data[ ch ][ (band << 1) + SpectFrame.PHASE ] = 0.0f;
 							}
-							break;
+							continue bandLp;
 						}
 					}
 					if( srcCeilBand >= runInStream.bands ) {
@@ -421,7 +421,7 @@ mainLoop:	while( !threadDead ) {
 								runOutFr.data[ ch ][ (band << 1) + SpectFrame.AMP ] = 0.0f;
 								runOutFr.data[ ch ][ (band << 1) + SpectFrame.PHASE ] = 0.0f;
 							}
-							break;
+							continue bandLp;
 						}
 					}
 
