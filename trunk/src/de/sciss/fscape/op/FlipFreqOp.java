@@ -425,6 +425,12 @@ bandLp:			for( int band = 0; band < runInStream.bands; band++ ) {
 						}
 					}
 
+					if( srcFloorBand == srcCeilBand ) {
+						srcFloorWeight = srcCeilWeight - (1.0f - srcFloorWeight);
+						srcCeilWeight  = 0.0f;
+//						assert( srcFloorWeight >= 0f );
+					}
+					
 					for( int ch = 0; ch < runInStream.chanNum; ch++ ) {		// alle Kanaele
 					
 						// unterstes Band berechnen
