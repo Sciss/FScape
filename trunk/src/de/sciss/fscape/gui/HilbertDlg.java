@@ -437,11 +437,9 @@ topLevel: try {
 			fftBuf2			= new float[ fftLength << 1 ];
 			reBuf			= new float[ inChanNum ][ fftLength + 2 ];
 			reOverBuf		= new float[ inChanNum ][ fftLength - inputLen ];
-			Util.clear( reOverBuf );
 			if( imOutF != null ) {
 				imBuf		= new float[ inChanNum ][ fftLength ];
 				imOverBuf	= new float[ inChanNum ][ fftLength - inputLen ];
-				Util.clear( imOverBuf );
 			}
 			
 			// we design a half-nyquist lp filter and shift it up by that freq. to have a real=>analytic filter

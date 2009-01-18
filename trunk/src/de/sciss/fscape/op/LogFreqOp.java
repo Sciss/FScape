@@ -387,17 +387,6 @@ mainLoop:	while( !threadDead ) {
 		
 		runQuit( null );
 	}
-
-//	private static double linexp( double x, double inLo, double inHi, double outLo, double outHi )
-//	{
-//		final double norm = (x - inLo) / (inHi - inLo);
-//		return Math.pow( outHi / outLo, norm ) * outLo;
-//	}
-	
-//	private static double explin( double x, double inLo, double inHi, double outLo, double outHi )
-//	{
-//		return Math.log( x / inLo ) / Math.log( inHi / inLo ) * (outHi - outLo) + outLo;
-//	}
 	
 // -------- GUI Methoden --------
 

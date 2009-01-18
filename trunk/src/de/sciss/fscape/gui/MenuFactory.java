@@ -132,6 +132,7 @@ extends BasicMenuFactory
 	private static final String MI_LUECKENBUESSER = "L\u00FCckenb\u00FC\u00DFer";
 	private static final String MI_PEARSONPLOT	="Pearson Plotter";
 	private static final String MI_SEDIMENT		="Sediment";
+	private static final String MI_MOSAIC		="Mosaic";
 	
 	private static final String M_MOD_BETA		= "Unfinished";
 	private static final String MI_SMPSYN		= "Sample Synthesis";
@@ -214,6 +215,7 @@ extends BasicMenuFactory
 		{ new StringItem( "Lueckenbuesser", MI_LUECKENBUESSER ),null },
 		{ new StringItem( "PearsonPlot",	MI_PEARSONPLOT ),	null },
 		{ new StringItem( "Sediment",		MI_SEDIMENT ),		null }
+//		{ new StringItem( "Mosaic",			MI_MOSAIC ),		null }
 	},{
 		{ M_MOD_DIST },
 		{ new StringItem( "FreqMod",		MI_FREQMOD ),		KeyStroke.getKeyStroke( KeyEvent.VK_M, PROC_MODIF ) },
@@ -221,7 +223,8 @@ extends BasicMenuFactory
 		{ new StringItem( "Ichneumon",		MI_ICHNEUMON ),		KeyStroke.getKeyStroke( KeyEvent.VK_U, PROC_MODIF ) },
 		{ new StringItem( "Needlehole",		MI_NEEDLEHOLE ),	null },
 		{ new StringItem( "Rotation",		MI_ROTATION ),		null },
-		{ new StringItem( "SeekDestroy",	MI_SEEKDESTROY ),	null }
+		{ new StringItem( "SeekDestroy",	MI_SEEKDESTROY ),	null },
+		{ new StringItem( "BlunderFinger",	MI_BLUNDERFINGER ),	null }
 	},{
 		{ M_MOD_MISC },
 		{ new StringItem( "Sachensucher",	MI_SACHENSUCHER ),	null },
@@ -243,7 +246,7 @@ extends BasicMenuFactory
 		{ new StringItem( "Stalker",		MI_STALKER ),		null },
 		{ new StringItem( "TransientExtr",	MI_TRANSEXTR ),		null },
 		{ new StringItem( "LPFilter",		MI_LPFILTER ),		null },
-		{ new StringItem( "BlunderFinger",	MI_BLUNDERFINGER ),	null }
+		{ new StringItem( "Mosaic",			MI_MOSAIC ),		null }
 	},{
 		{},
 		{ new StringItem( "Batch",			MI_BATCH ),			KeyStroke.getKeyStroke( KeyEvent.VK_9, PROC_MODIF ) },

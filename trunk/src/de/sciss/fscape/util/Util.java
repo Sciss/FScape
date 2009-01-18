@@ -35,7 +35,7 @@ import java.util.List;
 
 /**
  *  @author		Hanns Holger Rutz
- *  @version	0.71, 17-Jun-07
+ *  @version	0.71, 18-Jan-09
  */
 public class Util
 {
@@ -385,6 +385,22 @@ public class Util
 		return (float) d;
 	}
 	
+	public static float meanSquare( float[] a, int off, int length )
+	{
+		double d = 0.0, d1;
+		final int stop = off + length;
+		while( off < stop ) {
+			d1 = a[ off++ ];
+			d += d1 * d1;
+		}
+		return (float) (d / length);
+	}
+	
+	public static float mean( float[] a, int off, int length )
+	{
+		return sum( a, off, length ) / length;
+	}
+	
 	public static float maxAbs( float[] a, int off, int length )
 	{
 		final int stop = off + length;
@@ -468,6 +484,16 @@ public class Util
 //		}
 //		return array;
 //	}
+
+	public static double linexp( double x, double inLo, double inHi, double outLo, double outHi )
+	{
+		return Math.pow( outHi / outLo, (x - inLo) / (inHi - inLo) ) * outLo;
+	}
+	
+	public static double explin( double x, double inLo, double inHi, double outLo, double outHi )
+	{
+		return Math.log( x / inLo ) / Math.log( inHi / inLo ) * (outHi - outLo) + outLo;
+	}
 
 	/*
 	 *	Sorts an array data[0...len-1] into ascending order using Quicksort, while making the corresponding
@@ -764,6 +790,105 @@ public class Util
 				}
 			}
 		}
+	}
+
+	/*
+	 * 	The below sort algorithm is a modification of the Arrays.sort
+	 * 	method of OpenJDK 7 which is (C)opyright 1997-2007 by Sun
+	 * 	Microsystems, Inc., and covered by the GNU General Public
+	 * 	License v2.
+	 * 	
+	 *	The modification made is the additional corr argument which
+	 *	is an arbitrary array that gets sorted along with the x vector. 	
+	 */
+
+	/*
+	 * Sorts the specified sub-array of doubles into ascending order.
+	 */
+	public static void sort( double x[], Object[] corr, int off, int len )
+	{
+		// Insertion sort on smallest arrays
+		if( len < 7 ) {
+			for( int i = off; i < len + off; i++ ) {
+				for( int j = i; (j > off) && (x[ j - 1 ] > x[ j ]); j-- ) {
+					swap( x, corr, j, j - 1 );
+				}
+			}
+			return;
+		}
+
+		// Choose a partition element, v
+		int m = off + (len >> 1); // Small arrays, middle element
+		if( len > 7 ) {
+			int l = off;
+			int n = off + len - 1;
+			if( len > 40 ) { // Big arrays, pseudomedian of 9
+				final int s = len / 8;
+				l = med3( x, l, l + s, l + 2 * s );
+				m = med3( x, m - s, m, m + s );
+				n = med3( x, n - 2 * s, n - s, n );
+			}
+			m = med3( x, l, m, n ); // Mid-size, med of 3
+		}
+		final double v = x[ m ];
+
+		// Establish Invariant: v* (<v)* (>v)* v*
+		int a = off, b = a, c = off + len - 1, d = c;
+		while( true ) {
+			while( (b <= c) && (x[ b ] <= v) ) {
+				if( x[ b ] == v ) swap( x, corr, a++, b );
+				b++;
+			}
+			while( c >= b && x[ c ] >= v ) {
+				if( x[ c ] == v ) swap( x, corr, c, d-- );
+				c--;
+			}
+			if( b > c ) break;
+			swap( x, corr, b++, c-- );
+		}
+
+		// Swap partition elements back to middle
+		int s, n = off + len;
+		s = Math.min( a - off, b - a );
+		vecswap( x, corr, off, b - s, s );
+		s = Math.min( d - c, n - d - 1 );
+		vecswap( x, corr, b, n - s, s );
+
+		// Recursively sort non-partition-elements
+		if( (s = b - a) > 1 ) sort( x, corr, off, s );
+		if( (s = d - c) > 1 ) sort( x, corr, n - s, s );
+	}
+
+	/*
+	 * Swaps x[a] with x[b].
+	 */
+	private static void swap( double x[], Object[] corr, int a, int b )
+	{
+		final double tmpX = x[ a ];
+		x[ a ] = x[ b ];
+		x[ b ] = tmpX;
+		final Object tmpCorr = corr[ a ];
+		corr[ a ] = corr[ b ];
+		corr[ b ] = tmpCorr;
+	}
+
+	/*
+	 * Swaps x[a .. (a+n-1)] with x[b .. (b+n-1)].
+	 */
+	private static void vecswap( double x[], Object[] corr, int a, int b, int n )
+	{
+		for( int i = 0; i < n; i++, a++, b++ ) {
+			swap( x, corr, a, b );
+		}
+	}
+
+	/**
+	 * Returns the index of the median of the three indexed doubles.
+	 */
+	private static int med3( double x[], int a, int b, int c )
+	{
+		return(x[ a ] < x[ b ] ? (x[ b ] < x[ c ] ? b : x[ a ] < x[ c ] ? c : a) : (x[ b ] > x[ c ] ? b
+		: x[ a ] > x[ c ] ? c : a));
 	}
 }
 // class Util
