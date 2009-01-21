@@ -87,7 +87,7 @@ import de.sciss.util.Flag;
  *  <code>Main</code> class.
  *
  *  @author		Hanns Holger Rutz
- *  @version	0.71, 10-Sep-08
+ *  @version	0.71, 21-Jan-09
  *
  *  @see	de.sciss.eisenkraut.Main#menuFactory
  */
@@ -199,7 +199,8 @@ extends BasicMenuFactory
 		{ new StringItem( "ComplexConv",	MI_COMPLEXCONV ),	null },
 		{ new StringItem( "Fourier",		MI_FOURIER ),		KeyStroke.getKeyStroke( KeyEvent.VK_F, PROC_MODIF ) },
 		{ new StringItem( "Wavelet",		MI_TRANSL ),		KeyStroke.getKeyStroke( KeyEvent.VK_W, PROC_MODIF ) },
-		{ new StringItem( "Hilbert",		MI_HILBERT ),		KeyStroke.getKeyStroke( KeyEvent.VK_H, PROC_MODIF ) }
+		{ new StringItem( "Hilbert",		MI_HILBERT ),		KeyStroke.getKeyStroke( KeyEvent.VK_H, PROC_MODIF ) },
+		{ new StringItem( "Mosaic",			MI_MOSAIC ),		null }
 	},{
 		{ M_MOD_BANDS },
 		{ new StringItem( "BandSplit",		MI_BANDSPLIT ),		KeyStroke.getKeyStroke( KeyEvent.VK_S, PROC_MODIF ) },
@@ -215,7 +216,6 @@ extends BasicMenuFactory
 		{ new StringItem( "Lueckenbuesser", MI_LUECKENBUESSER ),null },
 		{ new StringItem( "PearsonPlot",	MI_PEARSONPLOT ),	null },
 		{ new StringItem( "Sediment",		MI_SEDIMENT ),		null }
-//		{ new StringItem( "Mosaic",			MI_MOSAIC ),		null }
 	},{
 		{ M_MOD_DIST },
 		{ new StringItem( "FreqMod",		MI_FREQMOD ),		KeyStroke.getKeyStroke( KeyEvent.VK_M, PROC_MODIF ) },
@@ -245,8 +245,7 @@ extends BasicMenuFactory
 		{ new StringItem( "Snd2Img",		MI_SND2IMG ),		null },
 		{ new StringItem( "Stalker",		MI_STALKER ),		null },
 		{ new StringItem( "TransientExtr",	MI_TRANSEXTR ),		null },
-		{ new StringItem( "LPFilter",		MI_LPFILTER ),		null },
-		{ new StringItem( "Mosaic",			MI_MOSAIC ),		null }
+		{ new StringItem( "LPFilter",		MI_LPFILTER ),		null }
 	},{
 		{},
 		{ new StringItem( "Batch",			MI_BATCH ),			KeyStroke.getKeyStroke( KeyEvent.VK_9, PROC_MODIF ) },

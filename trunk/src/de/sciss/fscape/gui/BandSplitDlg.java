@@ -431,9 +431,9 @@ topLevel: try {
 			fftBuf2			= new float[ fftLength + 2 ];
 			inBuf			= new float[ inChanNum ][ inputLen ];
 			overBuf			= new float[ inChanNum ][ numBands ][ overLen ];
-			for( i = 0; i < inChanNum; i++ ) {
-				Util.clear( overBuf[ i ]);
-			}
+//			for( i = 0; i < inChanNum; i++ ) {
+//				Util.clear( overBuf[ i ]);
+//			}
 
 			// LP = +1.0 fc  -1.0 Zero
 			// HP = +1.0 ¹/2 -1.0 fc
