@@ -28,17 +28,32 @@
 
 package de.sciss.fscape.gui;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import javax.swing.*;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import java.awt.Point;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.io.EOFException;
+import java.io.File;
+import java.io.IOException;
 
-import de.sciss.fscape.io.*;
-import de.sciss.fscape.prop.*;
-import de.sciss.fscape.session.*;
-import de.sciss.fscape.spect.*;
-import de.sciss.fscape.util.*;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
 
+import de.sciss.fscape.io.FloatFile;
+import de.sciss.fscape.io.GenericFile;
+import de.sciss.fscape.prop.Presets;
+import de.sciss.fscape.prop.PropertyArray;
+import de.sciss.fscape.session.DocumentFrame;
+import de.sciss.fscape.spect.Fourier;
+import de.sciss.fscape.util.Constants;
+import de.sciss.fscape.util.Envelope;
+import de.sciss.fscape.util.Filter;
+import de.sciss.fscape.util.Param;
+import de.sciss.fscape.util.ParamSpace;
+import de.sciss.fscape.util.Util;
 import de.sciss.io.AudioFile;
 import de.sciss.io.AudioFileDescr;
 import de.sciss.io.IOUtil;
@@ -52,7 +67,7 @@ import de.sciss.io.IOUtil;
  *	calculation.
  *
  *  @author		Hanns Holger Rutz
- *  @version	0.71, 14-Nov-07
+ *  @version	0.72, 21-Jan-09
  */
 public class HilbertDlg
 extends DocumentFrame
@@ -517,7 +532,7 @@ topLevel: try {
 				for( off = 0; threadRunning && (off < chunkLength); ) {
 					len	= Math.min( 8192, chunkLength - off );
 					inF.readFrames( reBuf, off, len );
-					framesRead	+= len;
+//					framesRead	+= len;
 					progOff		+= len;
 					off			+= len;
 				// .... progress ....
@@ -554,13 +569,13 @@ topLevel: try {
 				// ---- post proc ----
 					switch( pr.intg[ PR_MODE ]) {
 					case MODE_UPSHIFT:
-						for( i = 0, j = 0, k = framesWritten; i < fftLength; i++ ) {
+						for( i = 0, j = 0, k = framesRead; i < fftLength; i++ ) {
 							d1				= shiftFreq * k++;
 							convBuf1[ i ]	= (float) (fftBuf2[ j++ ] * Math.cos( d1 ) + fftBuf2[ j++ ] * Math.sin( d1 ));
 						}
 						break;
 					case MODE_DOWNSHIFT:
-						for( i = 0, j = 0, k = framesWritten; i < fftLength; i++ ) {
+						for( i = 0, j = 0, k = framesRead; i < fftLength; i++ ) {
 							d1				= shiftFreq * k++;
 							convBuf1[ i ]	= (float) (fftBuf2[ j++ ] * Math.cos( d1 ) - fftBuf2[ j++ ] * Math.sin( d1 ));
 						}
@@ -582,13 +597,15 @@ topLevel: try {
 					}
 				} // for channels
 
+				framesRead	+= chunkLength;
+
 			// ---- handle overlaps ----
 				for( ch = 0; ch < inChanNum; ch++ ) {
 					Util.add( reOverBuf[ ch ], 0, reBuf[ ch ], 0, fftLength - inputLen );
-					System.arraycopy( reBuf[ ch ], inputLen, reOverBuf[ ch ], 0, fftLength - inputLen );
+					System.arraycopy( reBuf[ ch ], chunkLength, reOverBuf[ ch ], 0, fftLength - inputLen );
 					if( imBuf != null ) {
 						Util.add( imOverBuf[ ch ], 0, imBuf[ ch ], 0, fftLength - inputLen );
-						System.arraycopy( imBuf[ ch ], inputLen, imOverBuf[ ch ], 0, fftLength - inputLen );
+						System.arraycopy( imBuf[ ch ], chunkLength, imOverBuf[ ch ], 0, fftLength - inputLen );
 					}
 				}
 				

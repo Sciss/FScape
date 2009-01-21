@@ -470,7 +470,6 @@ extends DocumentFrame
 		float					f1, f2, f3, chunkGain;
 		int						i1, i2, rgb, percentile, idx, bestIdx;
 		double					midMatFreq, midImgFreq;
-		float[]					convBuf1;
 		long					outOff;
 		float					brightness;
 		
@@ -479,8 +478,9 @@ extends DocumentFrame
 		FilterBox				hlbFltBox;
 		Point					hlbFltLen;
 		int						hlbSkip, hlbFFTLen, hlbInputLen, hlbChunkLen;
+		int						hlbChunkLen2, hlbOverLen;
 		float[]					hlbFFTBuf1, hlbFFTBuf2;
-		float[][]				hlbReBuf, hlbReOverBuf;
+		float[][]				hlbOverBuf;
 		long					hlbTotalInLen, hlbFramesRead, hlbFramesWritten, hlbFramePos;
 		
 		// karlheinz filter
@@ -675,7 +675,11 @@ lpY:			for( int y = 0; threadRunning && (y < height); y++ ) {
 					// =================================================================
 					// =============== here comes the hilbert shift part ===============
 					// =================================================================
-					
+
+//if( x == 8 && y == 12 ) {
+//	Debug.view( inBuf[ 0 ], 0, 1000, "In x = " + x + "; y = " + y, true, false );
+//}
+
 					hlbFltFreq		= inMatDescr.rate * 0.245;					// account for lp transition band
 					hlbFltShift		= hlbFltFreq;
 					hlbFltShift	   *= Constants.PI2 / inMatDescr.rate;		// normalized freq ready for Math.cos/sin
@@ -693,8 +697,9 @@ lpY:			for( int y = 0; threadRunning && (y < height); y++ ) {
 
 					hlbFFTBuf1		= new float[ hlbFFTLen << 1 ];
 					hlbFFTBuf2		= new float[ hlbFFTLen << 1 ];
-					hlbReBuf		= new float[ inChanNum ][ hlbFFTLen + 2 ];
-					hlbReOverBuf	= new float[ inChanNum ][ hlbFFTLen - hlbInputLen ];
+//					hlbReBuf		= new float[ inChanNum ][ hlbFFTLen + 2 ];
+					hlbOverLen		= hlbFFTLen - hlbInputLen;
+					hlbOverBuf		= new float[ inChanNum ][ hlbOverLen ];
 					
 					// we design a half-nyquist lp filter and shift it up by that freq. to have a real=>analytic filter
 					// see comp.dsp algorithms-faq Q2.10
@@ -711,7 +716,7 @@ lpY:			for( int y = 0; threadRunning && (y < height); y++ ) {
 					// ---- real=>complex + modulation with exp(ismpRate/4 ± antialias) ----
 					// k is chosen so that the filter-centre is zero degrees, otherwise we introduce phase shift
 					for( int i = hlbFFTLen - 1, k = i - hlbFltLen.x, j = hlbFFTBuf1.length - 1; i >= 0; i--, k-- ) {
-						d1				= -hlbFltShift * k;
+						d1					= -hlbFltShift * k;
 						hlbFFTBuf1[ j-- ]	= (float) (hlbFFTBuf1[ i ] * Math.sin( d1 ));		// img
 						hlbFFTBuf1[ j-- ]	= (float) (hlbFFTBuf1[ i ] * Math.cos( d1 ));		// real
 					}
@@ -721,61 +726,72 @@ lpY:			for( int y = 0; threadRunning && (y < height); y++ ) {
 					hlbFramesWritten	= 0;
 					
 					while( threadRunning && (hlbFramesWritten < hlbTotalInLen) ) {
-						hlbChunkLen = (int) Math.min( hlbInputLen, hlbTotalInLen - hlbFramesRead );
+						hlbChunkLen  = (int) Math.min( hlbInputLen, hlbTotalInLen - hlbFramesRead );
+						hlbChunkLen2 = (int) Math.min( hlbInputLen, hlbTotalInLen - hlbFramesWritten );
 						
-						// fake read in
+//						// fake read in
+//						for( int ch = 0; ch < inChanNum; ch++ ) {
+//							convBuf1 = hlbReBuf[ ch ];
+//							System.arraycopy( inBuf[ ch ], (int) hlbFramesRead, convBuf1, 0, hlbChunkLen );
+//							for( int i = hlbChunkLen; i < convBuf1.length; i++ ) {
+//								convBuf1[ i ] = 0f;
+//							}
+//						}
+						
 						for( int ch = 0; ch < inChanNum; ch++ ) {
-							convBuf1 = hlbReBuf[ ch ];
-							System.arraycopy( inBuf[ ch ], (int) hlbFramesRead, convBuf1, 0, hlbChunkLen );
-							for( int i = hlbChunkLen; i < convBuf1.length; i++ ) {
-								convBuf1[ i ] = 0f;
+							// fake read
+//if( x == 8 && y == 12 ) {
+//	System.out.println( "ch = " + ch + "; copying from inBuf (" + hlbFramesRead + ") to fftBuf (0), len = " + hlbChunkLen );
+//}
+							System.arraycopy( inBuf[ ch ], (int) hlbFramesRead, hlbFFTBuf2, 0, hlbChunkLen );
+															
+							for( int i = hlbChunkLen; i < hlbFFTLen; i++ ) {
+								hlbFFTBuf2[ i ] = 0.0f;
 							}
-						}
-						hlbFramesRead += hlbChunkLen;
-						
-						for( int ch = 0; ch < inChanNum; ch++ ) {
-							convBuf1 = hlbReBuf[ ch ];
+							
 						// ---- real fft input + convert to complex + convolve with filter + ifft ----
-							Fourier.realTransform( convBuf1, hlbFFTLen, Fourier.FORWARD );
-							System.arraycopy( convBuf1, 0, hlbFFTBuf2, 0, hlbFFTLen );			// pos.freq. via real transform
+							Fourier.realTransform( hlbFFTBuf2, hlbFFTLen, Fourier.FORWARD );
 							for( int i = hlbFFTLen, j = hlbFFTLen; i > 0; i -= 2, j += 2 ) {	// neg.freq. complex conjugate
-								hlbFFTBuf2[ j ]	= hlbFFTBuf2[ i ];
+								hlbFFTBuf2[ j ]		= hlbFFTBuf2[ i ];
 								hlbFFTBuf2[ j+1 ]	= -hlbFFTBuf2[ i+1 ];
 							}
 							Fourier.complexMult( hlbFFTBuf1, 0, hlbFFTBuf2, 0, hlbFFTBuf2, 0, hlbFFTLen << 1 );
 							Fourier.complexTransform( hlbFFTBuf2, hlbFFTLen, Fourier.INVERSE );
 	
 						// ---- post proc ----
-							hlbFramePos = hlbFramesWritten;
+							hlbFramePos = hlbFramesRead; // hlbFramesWritten;
 							for( int i = 0, j = 0; i < hlbFFTLen; i++ ) {
 								d1				= hlbShiftFreq * hlbFramePos++;
-								convBuf1[ i ]	= (float) (hlbFFTBuf2[ j++ ] * Math.cos( d1 ) + hlbFFTBuf2[ j++ ] * Math.sin( d1 ));
+								hlbFFTBuf2[ i ]	= (float) (hlbFFTBuf2[ j++ ] * Math.cos( d1 ) + hlbFFTBuf2[ j++ ] * Math.sin( d1 ));
 							}
+							
+						// ---- handle overlaps ----
+							Util.add( hlbOverBuf[ ch ], 0, hlbFFTBuf2, 0, hlbOverLen );
+//							System.arraycopy( hlbReBuf[ ch ], hlbInputLen, hlbOverBuf[ ch ], 0, hlbFFTLen - hlbInputLen );
+							System.arraycopy( hlbFFTBuf2, hlbChunkLen, hlbOverBuf[ ch ], 0, hlbOverLen );
+
+							// fake write
+							System.arraycopy( hlbFFTBuf2, hlbSkip, inBuf[ ch ], (int) hlbFramesWritten, Math.max( 0, hlbChunkLen2 - hlbSkip ));
+
 						} // for channels
 	
-					// ---- handle overlaps ----
-						for( int ch = 0; ch < inChanNum; ch++ ) {
-							Util.add( hlbReOverBuf[ ch ], 0, hlbReBuf[ ch ], 0, hlbFFTLen - hlbInputLen );
-							System.arraycopy( hlbReBuf[ ch ], hlbInputLen, hlbReOverBuf[ ch ], 0, hlbFFTLen - hlbInputLen );
-						}
+//						// fake write out
+//						for( int ch = 0; ch < inChanNum; ch++ ) {
+//							convBuf1 = hlbReBuf[ ch ];
+//							System.arraycopy( convBuf1, hlbSkip, inBuf[ ch ], (int) hlbFramesWritten, hlbChunkLen2 - hlbSkip );
+//						}
 						
-						hlbChunkLen = (int) Math.min( hlbInputLen, hlbTotalInLen - hlbFramesWritten );
-
-						// fake write out
-						for( int ch = 0; ch < inChanNum; ch++ ) {
-							convBuf1 = hlbReBuf[ ch ];
-							System.arraycopy( convBuf1, hlbSkip, inBuf[ ch ], (int) hlbFramesWritten, hlbChunkLen - hlbSkip );
-						}
-						hlbFramesWritten += hlbChunkLen - hlbSkip ;
+						hlbFramesRead    += hlbChunkLen;
+						hlbFramesWritten += Math.max( 0, hlbChunkLen2 - hlbSkip );
 						
 						if( hlbSkip > 0 ) {
-							hlbSkip = Math.max( 0, hlbSkip - hlbChunkLen );
+							hlbSkip = Math.max( 0, hlbSkip - hlbChunkLen2 );
 						}
 						
 					} // until framesWritten == outLength
 
 //if( x == 8 && y == 12 ) {
-//	Debug.view( inBuf[ 0 ], 0, chunkLen, "Hlb x = " + x + "; y = " + y, true, false );
+//	Debug.view( inBuf[ 0 ], 0, 1000, "Hlb x = " + x + "; y = " + y, true, false );
 //}
 
 					fltTotalInLen	= chunkLen;
@@ -945,13 +961,15 @@ lpY:			for( int y = 0; threadRunning && (y < height); y++ ) {
 					           Math.min( rlsLen, chunkLen ));
 					
 //if( x == 8 && y == 12 ) {
-////	Debug.view( inBuf[ 0 ], 0, chunkLen, "Out x = " + x + "; y = " + y, true, false );
-//	Debug.view( inBuf[ 0 ], 5600, 300, "Out x = " + x + "; y = " + y, true, false );
+//	Debug.view( inBuf[ 0 ], 0, 1000, "Out x = " + x + "; y = " + y, true, false );
 //}
 					
 					// apply gain
 					chunkGain = gain * (float) Math.min( maxBoost,
 					    (Util.linexp( brightness, 0.0, 1.0, noiseFloor, 1.0 ) / Math.sqrt( bestRMS / rmsCount )));
+					
+//if( x != 8 ) chunkGain = 0.0f;
+					
 					Util.mult( inBuf, 0, chunkLen, chunkGain );
 
 					outOff = Math.max( 0, (long) (x * framesPerPixel + ((rnd.nextDouble() * 2 - 1) * timeJitter * framesPerPixel) + 0.5) );
