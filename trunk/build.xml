@@ -70,19 +70,19 @@
 
 		<!-- BINARY MAC VERSION -->
 		<zip destfile="${dist.dir}/${ant.project.name}-mac-${version}.zip">
-			<zipfileset dir="${parent.dir}" includes="${folder.name}/${ant.project.name}.app/**, ${folder.name}/help/**, ${folder.name}/licenses/**, ${folder.name}/readme.html, ${folder.name}/SuperCollider/**" excludes="${folder.name}/${ant.project.name}.app/Contents/MacOS/${ant.project.name}"/>
+			<zipfileset dir="${parent.dir}" includes="${folder.name}/${ant.project.name}.app/**, ${folder.name}/help/**, ${folder.name}/licenses/**, ${folder.name}/readme.html, ${folder.name}/sounds**, ${folder.name}/SuperCollider/**" excludes="${folder.name}/${ant.project.name}.app/Contents/MacOS/${ant.project.name}"/>
 			<zipfileset dir="${parent.dir}" includes="${folder.name}/${ant.project.name}.app/Contents/MacOS/${ant.project.name}" filemode="775"/>
 		</zip>
 
 		<!-- BINARY WINDOWS VERSION -->
 		<zip destfile="${dist.dir}/${ant.project.name}-win-${version}.zip">
-			<zipfileset dir="${parent.dir}" includes="${folder.name}/${jar.file}, ${folder.name}/help/**, ${folder.name}/licenses/**, ${folder.name}/readme.html, ${folder.name}/SuperCollider/**"/>
+			<zipfileset dir="${parent.dir}" includes="${folder.name}/${jar.file}, ${folder.name}/help/**, ${folder.name}/licenses/**, ${folder.name}/readme.html, ${folder.name}/sounds**, ${folder.name}/SuperCollider/**"/>
 		</zip>
 
 		<!-- BINARY LINUX VERSION -->
 		<!-- same as windows but use tar/gzip -->
 		<tar destfile="${dist.dir}/${ant.project.name}-linux-${version}.tar.gz" compression="gzip">
-			<tarfileset dir="${parent.dir}" includes="${folder.name}/${jar.file}, ${folder.name}/help/**, ${folder.name}/licenses/**, ${folder.name}/readme.html, ${folder.name}/SuperCollider/**"/>
+			<tarfileset dir="${parent.dir}" includes="${folder.name}/${jar.file}, ${folder.name}/help/**, ${folder.name}/licenses/**, ${folder.name}/readme.html, ${folder.name}/sounds**, ${folder.name}/SuperCollider/**"/>
 		</tar>
 	</target>
 </project>

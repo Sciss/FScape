@@ -28,26 +28,35 @@
 
 package de.sciss.fscape.gui;
 
-import java.awt.*;
-import java.awt.datatransfer.*;
-import java.awt.event.*;
-import java.io.*;
+import java.awt.AWTEvent;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.FocusEvent;
+import java.awt.event.MouseEvent;
+import java.io.IOException;
 
-import de.sciss.fscape.op.*;
+import de.sciss.fscape.op.Operator;
 
 /**
  *  GUI element representing a spectral
  *	operator's icon.
  *
  *  @author		Hanns Holger Rutz
- *  @version	0.64, 24-Jun-06
+ *  @version	0.72, 21-Jan-09
  */
 public class OpIcon
 extends IconicComponent
 {
 // -------- private Klassenvariablen --------
 
-	private static final String ibName	= "images" + File.separator + "op.gif";		// IconBitmap
+//	private static final String ibName	= "images" + File.separator + "op.gif";		// IconBitmap
 	private static final int ibWidth	= 45;			// Breite der Icons
 	private static final int ibHeight	= 45;			// Hšhe der Icons	
 
@@ -132,8 +141,8 @@ extends IconicComponent
 		setLocation( 0, 0 );
 		
 		// Event handling
-		enableEvents(AWTEvent.FOCUS_EVENT_MASK);
-		enableEvents(AWTEvent.MOUSE_EVENT_MASK);
+		enableEvents( AWTEvent.FOCUS_EVENT_MASK );
+		enableEvents( AWTEvent.MOUSE_EVENT_MASK );
 	}
 	
 	public OpIcon( Operator op )
@@ -145,7 +154,9 @@ extends IconicComponent
 	protected synchronized static IconBitmap getIconBitmap()
 	{
 		if( opib == null ) {
-			opib = new IconBitmap( ibName, ibWidth, ibHeight );
+			final Image imgOp = Toolkit.getDefaultToolkit().getImage(
+				OpIcon.class.getResource( "op.gif" ));
+			opib = new IconBitmap( imgOp, ibWidth, ibHeight );
 			basicIcons = new IconicComponent[ 5 ];
 			for( int i = 0; i < basicIcons.length; i++ ) {
 				basicIcons[ i ] = new IconicComponent( opib, i );
@@ -166,9 +177,9 @@ extends IconicComponent
 	 */
 	public Rectangle getUnionBounds()
 	{
-		Rectangle	iconBnd	= getBounds();
-		Rectangle	labBnd	= lab.getBounds();
-		Rectangle	union;
+		final Rectangle	iconBnd	= getBounds();
+		final Rectangle	labBnd	= lab.getBounds();
+		final Rectangle	union;
 		
 		union	= new Rectangle( Math.min( iconBnd.x, labBnd.x ), iconBnd.y,
 								 Math.max( iconBnd.width, labBnd.width ),
@@ -261,12 +272,9 @@ extends IconicComponent
 	 */
 	public void paintProgress( Graphics g )
 	{
-		Graphics	g2		= g;
-		int			prog	= (int) (op.getProgress() * 360);
-	
-		if( g2 == null ) {
-			g2 = getGraphics();
-		}
+		final int		prog	= (int) (op.getProgress() * 360);
+		final Graphics	g2		= g != null ? g : getGraphics();
+
 		g2.setColor( progColor );
 		g2.drawArc( 1, 1, ICON_WIDTH - 2, ICON_HEIGHT - 2, 90, prog );
 		g2.drawArc( 2, 2, ICON_WIDTH - 4, ICON_HEIGHT - 4, 90, prog );
@@ -282,12 +290,12 @@ extends IconicComponent
 	 *	@param state	neuer Status wie STATE_ERROR
 	 *	@return	vorheriger Status
 	 */
-	public int setSelected( int state )
+	public int setSelected( int newState )
 	{
-		int lastState	= this.state;
-		this.state		= state;
+		final int lastState	= state;
+		state				= newState;
 
-		if( lastState != state ) {
+		if( lastState != newState ) {
 			repaint();
 			lab.repaint();
 		}
@@ -327,8 +335,8 @@ extends IconicComponent
 	 */
 	public void paintScheme( Graphics g, int x, int y, boolean mode )
 	{
-		int			top	= y - (OpIcon.ICON_HEIGHT>>1);
-		Dimension	dim	= lab.getSize();
+		final int			top	= y - (OpIcon.ICON_HEIGHT>>1);
+		final Dimension		dim	= lab.getSize();
 	
 		g.drawOval( x - (OpIcon.ICON_WIDTH>>1), top, OpIcon.ICON_WIDTH - 1, OpIcon.ICON_HEIGHT - 1 );
 		g.drawRect( x - (dim.width>>1), top + OpIcon.ICON_HEIGHT, dim.width - 1, dim.height - 1 );
@@ -339,7 +347,7 @@ extends IconicComponent
 	public DataFlavor[] getTransferDataFlavors()
 	{
 		if( flavors == null ) {
-			DataFlavor iconFlavors[] = super.getTransferDataFlavors();
+			final DataFlavor iconFlavors[] = super.getTransferDataFlavors();
 			flavors			= new DataFlavor[ iconFlavors.length + 1 ];
 			flavors[ 0 ]	= OpIcon.flavor;
 			for( int i = 0; i < iconFlavors.length; i++ ) {
@@ -351,7 +359,7 @@ extends IconicComponent
 
 	public boolean isDataFlavorSupported( DataFlavor flavor )
 	{
-		DataFlavor flavors[] = getTransferDataFlavors();
+		final DataFlavor flavors[] = getTransferDataFlavors();
 		for( int i = 0; i < flavors.length; i++ ) {
 			if( flavors[ i ].equals( flavor )) return true;
 		}

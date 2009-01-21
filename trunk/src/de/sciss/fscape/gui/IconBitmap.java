@@ -28,23 +28,30 @@
 
 package de.sciss.fscape.gui;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.MediaTracker;
+import java.awt.Point;
+import java.awt.Toolkit;
 
 /**
  *  Wrapper class for a bitmap image
  *	that gets sectioned into small icons.
  *
  *  @author		Hanns Holger Rutz
- *  @version	0.71, 14-Nov-07
+ *  @version	0.72, 21-Jan-0
  */
 public class IconBitmap
 extends Component
 {
 // -------- private Variablen --------
 
-	private Image img;
-	private Dimension d;
-	private int rows, cols;
+	private final Image		img;
+	private final Dimension d;
+	private final int		rows, cols;
 
 // -------- public Methoden --------
 	// public Dimension getDimension();
@@ -55,9 +62,9 @@ extends Component
 	 *		arg:	fname = Dateiname des Bildes
 	 *				width, height = Breite und Hšhe der Icons in Pixels
 	 */
-	public IconBitmap( String fname, int width, int height )
+	public IconBitmap( Image img, int width, int height )
 	{
-		img = getToolkit().getImage( fname );
+		this.img = img;
 		d = new Dimension( width, height );
 		MediaTracker mt = new MediaTracker( this );
 		mt.addImage( img, 0 );
@@ -68,6 +75,11 @@ extends Component
 		}
 		cols = img.getWidth( this ) / d.width;
 		rows = img.getHeight( this ) / d.height;
+	}
+	
+	public IconBitmap( String fname, int width, int height )
+	{
+		this( Toolkit.getDefaultToolkit().getImage( fname ), width, height );
 	}
 	
 	/*		Breite und Hšhe der Icons ermitteln
@@ -85,7 +97,7 @@ extends Component
 	 */
 	public void paint( Graphics g, int ID, int x, int y )
 	{
-		Point src = getOffset( ID );
+		final Point src = getOffset( ID );
 		if( src != null )
 		{
 			g.drawImage( img, x, y, x + d.width, y + d.height,		// destination
@@ -93,7 +105,7 @@ extends Component
 				this
 			);
 		} else {								// wrong ID, just draw a bevel box
-			Color c = g.getColor();
+			final Color c = g.getColor();
 			g.setColor( Color.red );
 			g.fill3DRect( x, y, d.width, d.height, true );
 			g.setColor( c );

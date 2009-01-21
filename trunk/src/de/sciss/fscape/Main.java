@@ -56,7 +56,7 @@ import de.sciss.util.Flag;
  *  creates a new instance of <code>Main</code>.
  *
  *  @author		Hanns Holger Rutz
- *  @version	0.72, 10-Sep-08
+ *  @version	0.72, 21-Jan-09
  */
 public class Main
 extends BasicApplication

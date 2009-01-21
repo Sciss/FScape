@@ -28,24 +28,40 @@
 
 package de.sciss.fscape.gui;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.io.File;
-import java.util.*;
-import javax.swing.*;
+import java.awt.AWTEvent;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.SystemColor;
+import java.awt.Toolkit;
+import java.awt.event.FocusEvent;
+import java.awt.event.MouseEvent;
+import java.util.Vector;
+
+import javax.swing.JPanel;
 
 import de.sciss.app.AbstractApplication;
 import de.sciss.app.GraphicsHandler;
-import de.sciss.fscape.op.*;
-import de.sciss.fscape.spect.*;
-import de.sciss.fscape.util.*;
+import de.sciss.fscape.op.Operator;
+import de.sciss.fscape.spect.SpectStreamSlot;
+import de.sciss.fscape.util.Constants;
+import de.sciss.fscape.util.Slots;
 
 /**
  *  GUI component representing the wire
  *	connection between two spectral operators.
  *
  *  @author		Hanns Holger Rutz
- *  @version	0.71, 15-Nov-07
+ *  @version	0.72, 21-Jan-09
  */
 public class OpConnector
 extends JPanel // JComponent
@@ -53,7 +69,7 @@ implements Dragable
 {
 // -------- private Klassenvariablen --------
 
-	private static final String ibName	= "images" + File.separator + "arrows.gif";	// IconBitmap
+//	private static final String ibName	= "images" + File.separator + "arrows.gif";	// IconBitmap
 	private static final int ibWidth	= 19;			// Breite der Icons
 	private static final int ibHeight	= 19;			// Hšhe der Icons	
 
@@ -73,7 +89,9 @@ implements Dragable
 
 	static	// Icon-Bitmap laden
 	{
-		arrowib = new IconBitmap( ibName, ibWidth, ibHeight );
+		final Image imgArrows = Toolkit.getDefaultToolkit().getImage(
+		    OpConnector.class.getResource( "arrows.gif" ));
+		arrowib = new IconBitmap( imgArrows, ibWidth, ibHeight );
 	}
 
 // -------- private Variablen --------
@@ -203,13 +221,13 @@ newVisualProps();
 	 *
 	 *	@return vorheriger Status
 	 */
-	public int setSelected( int state )
+	public int setSelected( int newState )
 	{
-		int lastState	= this.state;
-		this.state		= state;
+		final int lastState	= state;
+		state				= newState;
 
-		if( lastState != state ) {
-			if( state == CurvePanel.CP_STATE_NORMAL ) {
+		if( lastState != newState ) {
+			if( newState == CurvePanel.CP_STATE_NORMAL ) {
 				setForeground( SystemColor.control );
 				setBackground( SystemColor.control );
 			} else {
@@ -250,9 +268,9 @@ newVisualProps();
 
 	public void adjustLocation()
 	{
-		Point	newThis	= getLocation();
-		Point	newSrc	= srcIcon.getLocation();
-		Point	newDest	= destIcon.getLocation();
+		final Point	newThis	= getLocation();
+		final Point	newSrc	= srcIcon.getLocation();
+		final Point	newDest	= destIcon.getLocation();
 
 		switch( anchor ) {
 		case -1:
@@ -279,9 +297,10 @@ newVisualProps();
 		super.paintComponent( g );
 //System.err.println( "paintComponent" );
 	
-		Dimension d = getSize();
+		final int w = getWidth();
+		final int h = getHeight();
 	
-		g.clearRect( 0, 0, d.width, d.height );
+		g.clearRect( 0, 0, w, h );
 		g.draw3DRect( 1, 1, width - 3, height - 3, true );
 		g.setColor( Color.black );
 		g.drawRect( 0, 0, width - 1, height - 1 );
@@ -300,9 +319,9 @@ newVisualProps();
 	 */	 
 	public void drawArrow( boolean mode )
 	{
-		Container	c = getParent();
-		Graphics2D	g;
-		Point		tempP;
+		final Container		c = getParent();
+		Graphics2D			g;
+		Point				tempP;
 
 		if( c != null ) {
 			g	= (Graphics2D) c.getGraphics();
@@ -381,13 +400,13 @@ newVisualProps();
 	public static void calcArrow( Component src, Component dest, Point srcLoc, Point destLoc,
 								  int srcDist, int destDist )
 	{
-		Rectangle	srcB	= src.getBounds();
-		Rectangle	destB	= dest.getBounds();
-		double		arc;
-		double		dist;
-		double		cos, sin;
-		String		name;
-		Rectangle	labB;
+		final Rectangle	srcB	= src.getBounds();
+		final Rectangle	destB	= dest.getBounds();
+		final double	arc;
+		final double	cos, sin;
+		final Rectangle	labB;
+		double			dist;
+		String			name;
 
 		srcLoc.setLocation( srcB.x + (srcB.width >> 1),			// Mittelpunkt
 							srcB.y + (srcB.height >> 1) );
@@ -459,14 +478,14 @@ dest:	if( destDist > 0 ) {
 	 */
 	public static int getDistance( OpConnector con, int x, int y ) 
 	{
-		int			x1, y1, x2, y2;
-		double		projectX, projectY;
-		int			dist	= -1;
-		double		offset;
-		double		arc;
-		Rectangle	rect	= new Rectangle();
-		Point		startP[];
-		Point		endP[];
+		final Rectangle	rect	= new Rectangle();
+		final Point		startP[];
+		final Point		endP[];
+		int				x1, y1, x2, y2;
+		double			projectX, projectY;
+		int				dist	= -1;
+		double			offset;
+		double			arc;
 		
 		if( con.isVisible() ) {
 		

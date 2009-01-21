@@ -29,18 +29,19 @@
 
 package de.sciss.fscape.gui;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.AWTEvent;
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
 
 /**
  *	Icon subclass for tool icons such
  *	as 'add' or 'delete preset'.
  *
  *  @author		Hanns Holger Rutz
- *  @version	0.68, 21-May-05
+ *  @version	0.72, 21-Jan-09
  */
 public class ToolIcon
 extends IconicComponent
@@ -82,11 +83,13 @@ extends IconicComponent
 
 // -------- private Klassenvariablen und -konstruktor --------
 
-	private static final String ibName	= "images" + File.separator + "tools.png";	// IconBitmap
+//	private static final String ibName	= "images" + File.separator + "tools.png";	// IconBitmap
 
 	static	// Icon-Bitmap laden
 	{
-		toolib = new IconBitmap( ibName, ibWidth, ibHeight );
+		final Image imgTools = Toolkit.getDefaultToolkit().getImage(
+		    ToolIcon.class.getResource( "tools.png" ));
+		toolib = new IconBitmap( imgTools, ibWidth, ibHeight );
 	}
 
 // -------- public Methoden --------
@@ -100,7 +103,7 @@ extends IconicComponent
 		setToolTipText( toolTip );
 		
 		// Event handling
-		enableEvents(AWTEvent.MOUSE_EVENT_MASK);
+		enableEvents( AWTEvent.MOUSE_EVENT_MASK );
 		
 		addPropertyChangeListener( "enabled", new PropertyChangeListener() {
 			public void propertyChange( PropertyChangeEvent e )
