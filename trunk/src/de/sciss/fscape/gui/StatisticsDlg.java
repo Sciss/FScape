@@ -30,19 +30,42 @@
 
 package de.sciss.fscape.gui;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import java.util.*;
-import java.text.*;
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.FontMetrics;
+import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import java.awt.Point;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.MouseEvent;
+import java.io.EOFException;
+import java.io.File;
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.Locale;
+
+import javax.swing.Box;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.event.MouseInputAdapter;
 
-import de.sciss.fscape.io.*;
-import de.sciss.fscape.prop.*;
-import de.sciss.fscape.session.*;
+import de.sciss.fscape.io.FloatFile;
+import de.sciss.fscape.io.GenericFile;
+import de.sciss.fscape.prop.Presets;
+import de.sciss.fscape.prop.PropertyArray;
+import de.sciss.fscape.session.DocumentFrame;
 import de.sciss.fscape.spect.Fourier;
-import de.sciss.fscape.util.*;
+import de.sciss.fscape.util.Constants;
+import de.sciss.fscape.util.Filter;
+import de.sciss.fscape.util.Util;
+import de.sciss.gui.Axis;
+import de.sciss.gui.VectorSpace;
 
 import de.sciss.app.AbstractApplication;
 import de.sciss.app.GraphicsHandler;
@@ -56,7 +79,7 @@ import de.sciss.io.Marker;
  *	such as amplitude or power spectrum. Only mono at the moment.
  *
  *  @author		Hanns Holger Rutz
- *  @version	0.71, 14-Nov-07
+ *  @version	0.72, 21-Jan-09
  */
 public class StatisticsDlg
 extends DocumentFrame

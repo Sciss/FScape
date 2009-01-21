@@ -64,7 +64,7 @@ import de.sciss.io.AudioFileDescr;
  *	throw evolution using a genetic algorithm.
  *
  *  @author		Hanns Holger Rutz
- *  @version	0.71, 19-Jan-09
+ *  @version	0.72, 21-Jan-09
  */
 public class MosaicDlg
 extends DocumentFrame
@@ -576,6 +576,10 @@ topLevel: try {
 			Util.reverse( atkWin, 0, atkLen );
 			rlsWin				= Filter.createWindow( rlsLen, Filter.WIN_HANNING );
 
+//System.out.println( "atkLen " + atkLen + "; rlsLen " + rlsLen + "; winSize " + winSize );
+//Debug.view( atkWin, 0, atkLen, "Atk", true, false );
+//Debug.view( rlsWin, 0, rlsLen, "Rls", true, false );
+			
 			nyquist				= (inMatDescr.rate/2);
 			fltFreqNorm			= Math.PI / nyquist;
 			fltCosineNorm		= 4.0 / (Math.PI*Math.PI);
@@ -770,6 +774,10 @@ lpY:			for( int y = 0; threadRunning && (y < height); y++ ) {
 						
 					} // until framesWritten == outLength
 
+//if( x == 8 && y == 12 ) {
+//	Debug.view( inBuf[ 0 ], 0, chunkLen, "Hlb x = " + x + "; y = " + y, true, false );
+//}
+
 					fltTotalInLen	= chunkLen;
 					// ============================================================
 					// =============== here comes the bandpass part ===============
@@ -823,6 +831,11 @@ lpY:			for( int y = 0; threadRunning && (y < height); y++ ) {
 						for( fltFFTLen = 2; fltFFTLen < i1; fltFFTLen <<= 1 ) ;
 						fltInputLen		= fltFFTLen - fltLength + 1;
 						fltOverLen		= fltFFTLen - fltInputLen;
+						
+//if( x == 8 && y == 12 ) {
+//	System.out.println( "Filter: loFreq " + fltLowFreq + "; hiFreq " + fltHighFreq + "; loCosFreq " + fltLowCosFreq + "; hiCosFreq " + fltHighCosFreq );
+//	System.out.println( "        fltHalfWinSize " + fltHalfWinSize + "; fltFFTLen " + fltFFTLen + "; fltInputLen " + fltInputLen + "; fltOverLen " + fltOverLen + "; fltTotalInLen " + fltTotalInLen );
+//}
 	
 //						fltFFTBuf		= new float[ numBands ][ fltFFTLen + 2 ];
 						fltFFTBuf1		= new float[ fltFFTLen + 2 ];
@@ -864,6 +877,10 @@ lpY:			for( int y = 0; threadRunning && (y < height); y++ ) {
 						}
 						// windowing
 						Util.mult( fltWin, 0, fltFFTBuf1, 0, fltLength );
+						
+//if( x == 8 && y == 12 ) {
+//	Debug.view( fltFFTBuf1, 0, fltLength, "Filter Time Signal", true, false );
+//}
 
 						Fourier.realTransform( fltFFTBuf1, fltFFTLen, Fourier.FORWARD );
 												
@@ -876,9 +893,16 @@ lpY:			for( int y = 0; threadRunning && (y < height); y++ ) {
 							fltChunkLen = (int) Math.min( fltInputLen, fltTotalInLen - fltFramesRead );
 							fltChunkLen2 = (int) Math.min( fltInputLen, fltTotalInLen - fltFramesWritten );
 	
+//if( x == 8 && y == 12 ) {
+//	System.out.println( "fltChunkLen = " + fltChunkLen + " ; fltChunkLen2 = " + fltChunkLen2 + "; fltFramesRead = " + fltFramesRead + "; fltFramesWritten " + fltFramesWritten );
+//}
+							
 						// ---- channels loop -----------------------------------------------------------------------
 							for( int ch = 0; threadRunning && (ch < inChanNum); ch++ ) {
 								// fake read
+//if( x == 8 && y == 12 ) {
+//	System.out.println( "ch = " + ch + "; copying from inBuf (" + fltFramesRead + ") to fftBuf (0), len = " + fltChunkLen );
+//}
 								System.arraycopy( inBuf[ ch ], (int) fltFramesRead, fltFFTBuf2, 0, fltChunkLen );
 								
 								for( int i = fltChunkLen; i < fltFFTLen; i++ ) {
@@ -887,8 +911,13 @@ lpY:			for( int y = 0; threadRunning && (y < height); y++ ) {
 								Fourier.realTransform( fltFFTBuf2, fltFFTLen, Fourier.FORWARD );
 								Fourier.complexMult( fltFFTBuf2, 0, fltFFTBuf1, 0, fltFFTBuf2, 0, fltFFTBuf1.length );
 								Fourier.realTransform( fltFFTBuf2, fltFFTLen, Fourier.INVERSE );
+//if( x == 8 && y == 12 ) {
+//	System.out.println( "adding from fltOverBuf (0) to fftBuf (0), len = " + fltOverLen );
+//	System.out.println( "copying from fftBuf (" + fltChunkLen + ") to fltOverBuf( 0 ), len = " + fltOverLen );
+//	System.out.println( "copying from fftBuf (" + fltSkip + ") to inBuf( " + fltFramesWritten + " ), len = " + Math.max( 0, fltChunkLen2 - fltSkip ) );
+//}
 								Util.add( fltOverBuf[ ch ], 0, fltFFTBuf2, 0, fltOverLen );
-								System.arraycopy( fltFFTBuf2, fltInputLen, fltOverBuf[ ch ], 0, fltOverLen );
+								System.arraycopy( fltFFTBuf2, fltChunkLen, fltOverBuf[ ch ], 0, fltOverLen );
 	
 								// fake write
 								System.arraycopy( fltFFTBuf2, fltSkip, inBuf[ ch ], (int) fltFramesWritten, Math.max( 0, fltChunkLen2 - fltSkip ));
@@ -914,6 +943,11 @@ lpY:			for( int y = 0; threadRunning && (y < height); y++ ) {
 					Util.mult( rlsWin, Math.max( 0, rlsLen - chunkLen ),
 					           inBuf,  Math.max( 0, chunkLen - rlsLen ),
 					           Math.min( rlsLen, chunkLen ));
+					
+//if( x == 8 && y == 12 ) {
+////	Debug.view( inBuf[ 0 ], 0, chunkLen, "Out x = " + x + "; y = " + y, true, false );
+//	Debug.view( inBuf[ 0 ], 5600, 300, "Out x = " + x + "; y = " + y, true, false );
+//}
 					
 					// apply gain
 					chunkGain = gain * (float) Math.min( maxBoost,

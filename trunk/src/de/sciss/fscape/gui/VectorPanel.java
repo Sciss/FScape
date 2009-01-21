@@ -29,11 +29,29 @@
 
 package de.sciss.fscape.gui;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.beans.*;
-import javax.swing.*;
-import javax.swing.event.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JPanel;
+import javax.swing.event.MouseInputAdapter;
+
+import de.sciss.gui.Axis;
+import de.sciss.gui.VectorSpace;
 import de.sciss.app.AbstractApplication;
 
 /**
@@ -41,7 +59,7 @@ import de.sciss.app.AbstractApplication;
  *	axis, and mouse crosshair information features.
  *
  *  @author		Hanns Holger Rutz
- *  @version	0.68, 20-May-05
+ *  @version	0.72, 21-Jan-09
  */
 public class VectorPanel
 extends JPanel

@@ -28,17 +28,29 @@
 
 package de.sciss.fscape.gui;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import javax.swing.*;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.io.EOFException;
+import java.io.File;
+import java.io.IOException;
 
-import de.sciss.fscape.io.*;
-import de.sciss.fscape.prop.*;
-import de.sciss.fscape.session.*;
-import de.sciss.fscape.spect.*;
-import de.sciss.fscape.util.*;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
 
+import de.sciss.fscape.io.FloatFile;
+import de.sciss.fscape.io.GenericFile;
+import de.sciss.fscape.prop.Presets;
+import de.sciss.fscape.prop.PropertyArray;
+import de.sciss.fscape.session.DocumentFrame;
+import de.sciss.fscape.spect.Fourier;
+import de.sciss.fscape.util.Constants;
+import de.sciss.fscape.util.Filter;
+import de.sciss.fscape.util.Param;
+import de.sciss.fscape.util.Util;
 import de.sciss.io.AudioFile;
 import de.sciss.io.AudioFileDescr;
 import de.sciss.io.IOUtil;
@@ -48,7 +60,7 @@ import de.sciss.io.IOUtil;
  *	a number of adjectant frequency bands.
  *
  *  @author		Hanns Holger Rutz
- *  @version	0.71, 14-Nov-07
+ *  @version	0.72, 21-Jan-09
  */
 public class BandSplitDlg
 extends DocumentFrame
@@ -546,7 +558,8 @@ topLevel: try {
 						Fourier.complexMult( fftBuf1, 0, fftBuf[ band ], 0, fftBuf2, 0, fftBuf1.length );
 						Fourier.realTransform( fftBuf2, fftLength, Fourier.INVERSE );
 						Util.add( overBuf[ ch ][ band ], 0, fftBuf2, 0, overLen );
-						System.arraycopy( fftBuf2, inputLen, overBuf[ ch ][ band ], 0, overLen );
+//						System.arraycopy( fftBuf2, inputLen, overBuf[ ch ][ band ], 0, overLen );
+						System.arraycopy( fftBuf2, chunkLength, overBuf[ ch ][ band ], 0, overLen );
 
 						for( off = skip; threadRunning && (off < chunkLength2); ) {
 							len			   = Math.min( 8192, chunkLength2 - off );

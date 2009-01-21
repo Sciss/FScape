@@ -45,6 +45,7 @@ import de.sciss.fscape.prop.*;
 import de.sciss.fscape.session.*;
 import de.sciss.fscape.spect.Fourier;
 import de.sciss.fscape.util.*;
+import de.sciss.gui.VectorSpace;
 
 import de.sciss.io.AudioFile;
 import de.sciss.io.AudioFileDescr;
