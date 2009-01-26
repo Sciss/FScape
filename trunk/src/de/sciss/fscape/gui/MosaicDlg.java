@@ -39,9 +39,12 @@ import java.awt.image.BufferedImage;
 import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 
@@ -58,13 +61,14 @@ import de.sciss.fscape.util.ParamSpace;
 import de.sciss.fscape.util.Util;
 import de.sciss.io.AudioFile;
 import de.sciss.io.AudioFileDescr;
+import de.sciss.io.Marker;
 
 /**
  *	Processing module for approaching a file (fit input)
  *	throw evolution using a genetic algorithm.
  *
  *  @author		Hanns Holger Rutz
- *  @version	0.72, 21-Jan-09
+ *  @version	0.72, 26-Jan-09
  */
 public class MosaicDlg
 extends DocumentFrame
@@ -91,7 +95,7 @@ extends DocumentFrame
 	private static final int PR_MAXBOOST			= 9;
 	private static final int PR_ATTACK				= 10;
 	private static final int PR_RELEASE				= 11;
-//	private static final int PR_ELITISM				= 0;		// pr.bool
+	private static final int PR_READMARKERS			= 0;		// pr.bool
 
 	private static final String PRN_INIMGFILE		= "InImgFile";
 	private static final String PRN_OUTPUTFILE		= "OutputFile";
@@ -110,7 +114,7 @@ extends DocumentFrame
 	private static final String PRN_MAXBOOST		= "MaxBoost";
 	private static final String PRN_ATTACK			= "Attack";
 	private static final String PRN_RELEASE			= "Release";
-//	private static final String PRN_ELITISM			= "Elitism";
+	private static final String PRN_READMARKERS		= "ReadMarkers";
 
 	private static final int	FILTER_NONE			= 0;
 	private static final int	FILTER_HIGHPASS		= 1;
@@ -127,8 +131,8 @@ extends DocumentFrame
 	private static final String	prParaName[]	= { PRN_GAIN, PRN_MINFREQ, PRN_MAXFREQ, PRN_DURATION, PRN_TIMEOVERLAP,
 													PRN_TIMEJITTER, PRN_FREQOVERLAP, PRN_FREQJITTER, PRN_NOISEFLOOR, PRN_MAXBOOST,
 													PRN_ATTACK, PRN_RELEASE };
-//	private static final boolean prBool[]		= { true };
-//	private static final String	prBoolName[]	= { PRN_ELITISM };
+	private static final boolean prBool[]		= { false };
+	private static final String	prBoolName[]	= { PRN_READMARKERS };
 
 	private static final int GG_INIMGFILE		= GG_OFF_PATHFIELD	+ PR_INIMGFILE;
 	private static final int GG_OUTPUTFILE		= GG_OFF_PATHFIELD	+ PR_OUTPUTFILE;
@@ -149,7 +153,7 @@ extends DocumentFrame
 	private static final int GG_MAXBOOST		= GG_OFF_PARAMFIELD	+ PR_MAXBOOST;
 	private static final int GG_ATTACK			= GG_OFF_PARAMFIELD	+ PR_ATTACK;
 	private static final int GG_RELEASE			= GG_OFF_PARAMFIELD	+ PR_RELEASE;
-//	private static final int GG_ELITISM			= GG_OFF_CHECKBOX	+ PR_ELITISM;
+	private static final int GG_READMARKERS		= GG_OFF_CHECKBOX	+ PR_READMARKERS;
 
 	private static	PropertyArray	static_pr		= null;
 	private static	Presets			static_presets	= null;
@@ -176,8 +180,8 @@ extends DocumentFrame
 			static_pr.textName	= prTextName;
 			static_pr.intg		= prIntg;
 			static_pr.intgName	= prIntgName;
-//			static_pr.bool		= prBool;
-//			static_pr.boolName	= prBoolName;
+			static_pr.bool		= prBool;
+			static_pr.boolName	= prBoolName;
 			static_pr.para		= prPara;
 			static_pr.para[ PR_GAIN ]			= new Param(     0.0, Param.DECIBEL_AMP );
 			static_pr.para[ PR_MINFREQ ]		= new Param(    32.0, Param.ABS_HZ );
@@ -211,6 +215,7 @@ extends DocumentFrame
 		final ParamField			ggFreqOverlap, ggFreqJitter, ggMaxBoost, ggNoiseFloor;
 		final ParamField			ggTimeJitter, ggAttack, ggRelease;
 		final JComboBox				ggFilterType;
+		final JCheckBox				ggReadMarkers;
 		final ParamSpace[]			spcAtkRls;
 
 		gui				= new GUISupport();
@@ -220,14 +225,14 @@ extends DocumentFrame
 		final ItemListener il = new ItemListener() {
 			public void itemStateChanged( ItemEvent e )
 			{
-//				int	ID = gui.getItemID( e );
-//
-//				switch( ID ) {
-//				case GG_CHROMOLEN:
-//					pr.intg[ ID - GG_OFF_CHOICE ] = ((JComboBox) e.getSource()).getSelectedIndex();
-//					reflectPropertyChanges();
-//					break;
-//				}
+				int	ID = gui.getItemID( e );
+
+				switch( ID ) {
+				case GG_READMARKERS:
+					pr.bool[ ID - GG_OFF_CHECKBOX ] = ((JCheckBox) e.getSource()).isSelected();
+					reflectPropertyChanges();
+					break;
+				}
 			}
 		};
 
@@ -291,7 +296,7 @@ extends DocumentFrame
 		ggDuration		= new ParamField( Constants.spaces[ Constants.absMsSpace ]);
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Nominal duration", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Nominal Duration", JLabel.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggDuration, GG_DURATION, null );
 
@@ -321,6 +326,14 @@ extends DocumentFrame
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggMaxFreq, GG_MAXFREQ, null );
 
+		ggReadMarkers	= new JCheckBox();
+		con.weightx		= 0.1;
+		con.gridwidth	= 1;
+		gui.addLabel( new JLabel( "Read Markers", JLabel.RIGHT ));
+		con.weightx		= 0.4;
+		con.gridwidth	= GridBagConstraints.REMAINDER;
+		gui.addCheckbox( ggReadMarkers, GG_READMARKERS, il );
+		
 		ggTimeOverlap	= new ParamField( Constants.spaces[ Constants.factorTimeSpace ]);
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
@@ -445,16 +458,16 @@ extends DocumentFrame
 		final double			timeOverlap	= pr.para[ PR_TIMEOVERLAP ].val / 100;
 		final double			freqOverlap	= pr.para[ PR_FREQOVERLAP ].val / 100;
 		final int				fltType		= pr.intg[ PR_FILTERTYPE ];
-		final int				winSize;
+		final boolean			readMarkers	= pr.bool[ PR_READMARKERS ];
+		final int				inBufSize, largestWinSize;
 		final float[][]			inBuf, mixBuf;
 		final int				fftSize;
 		final float[][]			kernels;
 		final float				timeRes		= 20.0f;	// ... subject to configuration?
 		final int				stepSize;
-		final int				numSteps;
 		final int				numKernels, kernelsPerPixel;
 		final float[]			tmpKernel;
-		final int				numRMS, numRMS10, numRMS90, rmsCount;
+		final int				numRMS, numRMS10, numRMS90;
 		final double[]			rmss, vars;
 		final Integer[]			indices, sortedIndices;
 		final float[]			hsb	= new float[ 3 ];
@@ -463,15 +476,21 @@ extends DocumentFrame
 		final double			maxBoost	= (Param.transform( pr.para[ PR_MAXBOOST ], Param.ABS_AMP, ampRef, null )).val;
 		final double			noiseFloor	= (Param.transform( pr.para[ PR_NOISEFLOOR ], Param.ABS_AMP, ampRef, null )).val;
 		final double			nyquist;
-		final Param				pWinSize;
-		final int				atkLen, rlsLen;
-		final float[]			atkWin, rlsWin;
+		final List				markers;
+		final int				largestNumSteps;
+		Param					pWinSize;
+		int						atkLen		= -1;
+		int						rlsLen		= -1;
+		float[]					atkWin		= null;
+		float[]					rlsWin		= null;
 		double					d1, d2, bestVar, bestRMS;
 		float					f1, f2, f3, chunkGain;
 		int						i1, i2, rgb, percentile, idx, bestIdx;
+		int						winSize, markIdx, numSteps;
 		double					midMatFreq, midImgFreq;
-		long					outOff;
+		long					outOff, lastMarkPos, n1, n2;
 		float					brightness;
+		Marker					mark;
 		
 		// karlheinz hilbert
 		double					hlbFltFreq, hlbFltShift, hlbShiftFreq;
@@ -549,12 +568,34 @@ topLevel: try {
 			height				= img.getHeight();
 //			framesPerPixel		= (double) inMatDescr.length / width;
 			framesPerPixel		= AudioFileDescr.millisToSamples( inMatDescr, duration ) / width;
-			winSize				= (int) (framesPerPixel * timeOverlap + 0.5);
-			inBuf				= new float[ inChanNum ][ winSize ];
-			mixBuf				= new float[ inChanNum ][ winSize ];
+			
+			if( readMarkers ) {
+				inMatF.readMarkers();
+				markers			= (List) inMatDescr.getProperty( AudioFileDescr.KEY_MARKERS );
+				if( markers == null || markers.isEmpty() ) throw new IOException( "Soundfile does not contain markers" );
+				Collections.sort( markers );
+				mark			= (Marker) markers.get( 0 );
+				if( mark.pos == 0 ) markers.remove( 0 );
+				mark			= (Marker) markers.get( markers.size() - 1 );
+				if( mark.pos < inMatLength ) markers.add( new Marker( inMatLength, "End" ));
+				i1				= 0;
+				lastMarkPos		= 0;
+				for( int i = 0; i < markers.size(); i++ ) {
+					n2	= ((Marker) markers.get( i )).pos;
+					i1	= Math.max( i1, (int) (n2 - lastMarkPos) );
+					lastMarkPos	= n2;
+				}
+				largestWinSize	= i1;
+			} else {
+				largestWinSize	= (int) (framesPerPixel * timeOverlap + 0.5);
+				markers			= null;
+			}
+			inBufSize			= Math.max( 8192, largestWinSize );
 			stepSize			= (int) (AudioFileDescr.millisToSamples( inMatDescr, timeRes ) + 0.5);
-			numSteps			= Math.max( 0, winSize - fftSize ) / stepSize + 1;
-			kernels				= new float[ numSteps ][ numKernels ];
+			largestNumSteps		= Math.max( 0, largestWinSize - fftSize ) / stepSize + 1;
+			inBuf				= new float[ inChanNum ][ inBufSize ];
+			mixBuf				= new float[ inChanNum ][ inBufSize ];
+			kernels				= new float[ largestNumSteps ][ numKernels ];
 			tmpKernel			= new float[ numKernels ];
 			kernelsPerPixel		= (int) ((double) numKernels / height + 0.5);
 			numRMS				= Math.max( 0, numKernels - kernelsPerPixel ) + 1;
@@ -567,14 +608,13 @@ topLevel: try {
 				sortedIndices[ i ] = new Integer( i );
 			}
 			indices				= new Integer[ numRMS ];
-			rmsCount			= numSteps * numRMS;
 
-			pWinSize			= new Param( AudioFileDescr.samplesToMillis( outStream, winSize ), Param.ABS_MS );
-			atkLen				= Math.min( winSize, (int) (AudioFileDescr.millisToSamples( outStream, Param.transform( pr.para[ PR_ATTACK ], Param.ABS_MS, pWinSize, null ).val ) + 0.5) );
-			rlsLen				= Math.min( winSize - atkLen, (int) (AudioFileDescr.millisToSamples( outStream, Param.transform( pr.para[ PR_RELEASE ], Param.ABS_MS, pWinSize, null ).val ) + 0.5) );
-			atkWin				= Filter.createWindow( atkLen, Filter.WIN_HANNING );
-			Util.reverse( atkWin, 0, atkLen );
-			rlsWin				= Filter.createWindow( rlsLen, Filter.WIN_HANNING );
+//			pWinSize			= new Param( AudioFileDescr.samplesToMillis( outStream, winSize ), Param.ABS_MS );
+//			atkLen				= Math.min( winSize, (int) (AudioFileDescr.millisToSamples( outStream, Param.transform( pr.para[ PR_ATTACK ], Param.ABS_MS, pWinSize, null ).val ) + 0.5) );
+//			rlsLen				= Math.min( winSize - atkLen, (int) (AudioFileDescr.millisToSamples( outStream, Param.transform( pr.para[ PR_RELEASE ], Param.ABS_MS, pWinSize, null ).val ) + 0.5) );
+//			atkWin				= Filter.createWindow( atkLen, Filter.WIN_HANNING );
+//			Util.reverse( atkWin, 0, atkLen );
+//			rlsWin				= Filter.createWindow( rlsLen, Filter.WIN_HANNING );
 
 //System.out.println( "atkLen " + atkLen + "; rlsLen " + rlsLen + "; winSize " + winSize );
 //Debug.view( atkWin, 0, atkLen, "Atk", true, false );
@@ -584,8 +624,11 @@ topLevel: try {
 			fltFreqNorm			= Math.PI / nyquist;
 			fltCosineNorm		= 4.0 / (Math.PI*Math.PI);
 
-			progLen				= ((width + 1) * height * winSize);
+			progLen				= ((width + 1) * height * inBufSize);
 			progOff				= 0;
+			lastMarkPos			= 0;
+			markIdx				= 0;
+			winSize				= largestWinSize;
 
 		// ----==================== processing loop ====================----
 		
@@ -598,11 +641,16 @@ lpY:			for( int y = 0; threadRunning && (y < height); y++ ) {
 					Color.RGBtoHSB( (rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF, hsb );
 					brightness = hsb[ 2 ];
 					if( brightness == 0f ) {
-						progOff += winSize;
+						progOff += inBufSize;
 						continue lpY;
 					}
 					
 //					inMatF.seekFrame( (long) (x * framesPerPixel + 0.5) );
+					if( readMarkers ) {
+						n1 = ((Marker) markers.get( Math.min( markIdx++, markers.size() - 1 ))).pos;
+						winSize = (int) (n1 - lastMarkPos);
+						lastMarkPos = n1;
+					}
 					chunkLen = (int) Math.min( inMatLength - inMatF.getFramePosition(), winSize );
 					inMatF.readFrames( inBuf, 0, chunkLen );
 	//				if( chunkLen < winSize ) {
@@ -617,7 +665,9 @@ lpY:			for( int y = 0; threadRunning && (y < height); y++ ) {
 						rmss[ i ] = 0.0;
 						vars[ i ] = 0.0;
 					}
-					
+
+					numSteps = Math.max( 0, winSize - fftSize ) / stepSize + 1;
+
 					for( int step = 0, stepOff = 0; step < numSteps; step++, stepOff += stepSize ) {
 						chunkLen2 = Math.max( 0, Math.min( fftSize, chunkLen - stepOff ));
 						constQ.transform( inBuf[ 0 ], stepOff, chunkLen2, kernels[ step ], 0 );
@@ -953,6 +1003,19 @@ lpY:			for( int y = 0; threadRunning && (y < height); y++ ) {
 					// =================================================
 					// =============== writing out chunk ===============
 					// =================================================
+
+					pWinSize			= new Param( AudioFileDescr.samplesToMillis( outStream, winSize ), Param.ABS_MS );
+					i1					= Math.min( winSize, (int) (AudioFileDescr.millisToSamples( outStream, Param.transform( pr.para[ PR_ATTACK ], Param.ABS_MS, pWinSize, null ).val ) + 0.5) );
+					if( i1 != atkLen ) {
+						atkLen			= i1;
+						atkWin			= Filter.createWindow( atkLen, Filter.WIN_HANNING );
+						Util.reverse( atkWin, 0, atkLen );
+					}
+					i1					= Math.min( winSize - atkLen, (int) (AudioFileDescr.millisToSamples( outStream, Param.transform( pr.para[ PR_RELEASE ], Param.ABS_MS, pWinSize, null ).val ) + 0.5) );
+					if( i1 != rlsLen ) {
+						rlsLen			= i1;
+						rlsWin			= Filter.createWindow( rlsLen, Filter.WIN_HANNING );
+					}
 					
 					// apply envelope
 					Util.mult( atkWin, 0, inBuf, 0, atkLen );
@@ -965,8 +1028,8 @@ lpY:			for( int y = 0; threadRunning && (y < height); y++ ) {
 //}
 					
 					// apply gain
-					chunkGain = gain * (float) Math.min( maxBoost,
-					    (Util.linexp( brightness, 0.0, 1.0, noiseFloor, 1.0 ) / Math.sqrt( bestRMS / rmsCount )));
+					chunkGain	= gain * (float) Math.min( maxBoost,
+					    (Util.linexp( brightness, 0.0, 1.0, noiseFloor, 1.0 ) / Math.sqrt( bestRMS / (numSteps * numRMS) )));
 					
 //if( x != 8 ) chunkGain = 0.0f;
 					
@@ -986,7 +1049,7 @@ lpY:			for( int y = 0; threadRunning && (y < height); y++ ) {
 					}
 					tmpF.writeFrames( inBuf, 0, chunkLen );
 					
-					progOff			+= winSize;
+					progOff			+= inBufSize;
 					// .... progress ....
 					setProgression( (float) progOff / (float) progLen );
 				} // for y
@@ -1000,7 +1063,7 @@ lpY:			for( int y = 0; threadRunning && (y < height); y++ ) {
 			// adjust gain
 			tmpF.seekFrame( 0 );
 			for( long framesRead = 0; threadRunning && (framesRead < tmpF.getFrameNum()); ) {
-				chunkLen = (int) Math.min( winSize, tmpF.getFrameNum() - framesRead );
+				chunkLen = (int) Math.min( inBufSize, tmpF.getFrameNum() - framesRead );
 				tmpF.readFrames( inBuf, 0, chunkLen );
 				maxAmp = Math.max( maxAmp, Util.maxAbs( inBuf, 0, chunkLen ));
 				framesRead += chunkLen;
@@ -1041,5 +1104,19 @@ lpY:			for( int y = 0; threadRunning && (y < height); y++ ) {
 		if( outF != null ) outF.cleanUp();
 		if( inMatF != null ) inMatF.cleanUp();
 	} // process()
+
+// -------- private Methoden --------
+	
+	protected void reflectPropertyChanges()
+	{
+		super.reflectPropertyChanges();
+	
+		Component c;
+		
+		c = gui.getItemObj( GG_TIMEOVERLAP );
+		if( c != null ) {
+			c.setEnabled( !pr.bool[ PR_READMARKERS ]);
+		}
+	}
 }
 // class MosaicDlg

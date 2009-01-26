@@ -28,33 +28,65 @@
 
 package de.sciss.fscape.gui;
 
-import java.awt.*;
-import java.awt.datatransfer.*;
-import java.awt.event.*;
-import java.io.*;
-import java.text.*;
-import java.util.*;
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
-import javax.swing.text.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Properties;
+
+import javax.swing.AbstractCellEditor;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
+import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JToolBar;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableColumn;
+import javax.swing.text.DefaultFormatter;
 
 import de.sciss.app.AbstractApplication;
 import de.sciss.app.DocumentHandler;
 import de.sciss.gui.GUIUtil;
 
-import de.sciss.fscape.proc.*;
-import de.sciss.fscape.prop.*;
+import de.sciss.fscape.proc.ProcessorEvent;
+import de.sciss.fscape.proc.ProcessorListener;
+import de.sciss.fscape.prop.Presets;
+import de.sciss.fscape.prop.PropertyArray;
 import de.sciss.fscape.session.DocumentFrame;
 import de.sciss.fscape.session.Session;
-import de.sciss.fscape.util.*;
+import de.sciss.fscape.util.Util;
 
 /**
  *  Module for batch processing
  *	a list of other modules.
  *
  *  @author		Hanns Holger Rutz
- *  @version	0.71, 14-Nov-07
+ *  @version	0.72, 26-Jan-09
  */
 public class BatchDlg
 extends DocumentFrame
@@ -85,7 +117,7 @@ extends DocumentFrame
 	private static final int GG_CMDCUT			= GG_OFF_OTHER		+ 1;
 	private static final int GG_CMDCOPY			= GG_OFF_OTHER		+ 2;
 	private static final int GG_CMDPASTE		= GG_OFF_OTHER		+ 3;
-	private static final int GG_CMDEDIT			= GG_OFF_OTHER		+ 4;
+	private static final int GG_CMDOPEN			= GG_OFF_OTHER		+ 4;
 	private static final int GG_CMDADD			= GG_OFF_OTHER		+ 5;
 //	private static final int GG_CMDS			= GG_OFF_OTHER		+ 8;
 //	private static final int GG_ERROR			= GG_OFF_OTHER		+ 9;
@@ -113,7 +145,7 @@ extends DocumentFrame
 	private   BatchCellRenderer		batchCR;
 	private   JTable				batchTable;
     private   JTable				paramTable;
-	private   Vector				batchVector;
+	private   List					batchVector;
 //	private   Vector				paramVector;
 	
 	private TableModelListener		tml;
@@ -157,7 +189,7 @@ extends DocumentFrame
 
 	// -------- other init --------
 
-		batchVector		= new Vector();
+		batchVector		= new ArrayList();
 //		paramVector		= new Vector();
 		new BatchObjectArray(); // need to initialize DataFlavor (getClass() doesn't work in static initializer ??)
 		
@@ -208,9 +240,9 @@ extends DocumentFrame
 				BatchObject		bObj;
 
 				switch( ID ) {
-				case GG_CMDEDIT:
+				case GG_CMDOPEN:
 					if( batchTable.getSelectedRowCount() != 1 ) break;
-					bObj = (BatchObject) batchVector.elementAt( batchTable.getSelectedRow() );
+					bObj = (BatchObject) batchVector.get( batchTable.getSelectedRow() );
 					if( bObj.command != BatchObject.CMD_MODULE ) break;
 
 					DocumentFrame procWin;
@@ -228,7 +260,7 @@ extends DocumentFrame
 					i = batchTable.getSelectedRow() + 1;
 					i = i == 0 ? batchVector.size() : i;
 					batchTable.clearSelection();
-					batchVector.insertElementAt( new BatchObject(), i );
+					batchVector.add( i, new BatchObject() );
 					batchTM.fireTableRowsInserted( i, i );
 					batchTable.setRowSelectionInterval( i, i );
 					break;
@@ -239,7 +271,7 @@ extends DocumentFrame
 					if( rows.length > 0 ) {
 						dup = new BatchObject[ rows.length ];
 						for( i = 0; i < rows.length; i++ ) {
-							dup[i] = new BatchObject( (BatchObject) batchVector.elementAt( rows[i] ));
+							dup[i] = new BatchObject( (BatchObject) batchVector.get( rows[i] ));
 						}
 						AbstractApplication.getApplication().getClipboard().setContents(
 							new BatchObjectArray( dup ), cbo );
@@ -253,7 +285,7 @@ extends DocumentFrame
 									}
 								}
 								if( j >= 0 ) {
-									batchVector.removeElementAt( j );
+									batchVector.remove( j );
 									rows[k] = -1;
 									batchTM.fireTableRowsDeleted( j, j );
 								} else {
@@ -276,7 +308,7 @@ extends DocumentFrame
 								if( dup.length > 0 ) {
 									batchTable.clearSelection();
 									for( j = 0, k = i; j < dup.length; j++, k++ ) {
-										batchVector.insertElementAt( dup[j], k );
+										batchVector.add( k, dup[j] );
 									}
 									batchTM.fireTableRowsInserted( i, k - 1 );
 									batchTable.setRowSelectionInterval( i, k - 1 );
@@ -302,7 +334,7 @@ extends DocumentFrame
 					if( e.getType() == TableModelEvent.DELETE ) return;
 					k = e.getFirstRow();
 					if( k >= 0 && !batchVector.isEmpty() ) {
-						bObj = (BatchObject) batchVector.elementAt( k );
+						bObj = (BatchObject) batchVector.get( k );
 						if( (bObj.command == BatchObject.CMD_MODULE) && (bObj.modObj.modClass == null) ) {
 
 //							Iterator		winIter		= MainMenu.getWindows();
@@ -318,7 +350,7 @@ for( int m = 0; m < modules.length; m++ ) {
 							PropertyArray	pa;
 							String			str;
 							int				winNum		= modules.length;
-							Vector			v;
+							List			v;
 							
 							for( i = 0; i < winNum; i++ ) {
 								str = modules[ i ].getClass().getName();
@@ -352,10 +384,10 @@ for( int m = 0; m < modules.length; m++ ) {
 							pa						= ((DocumentFrame) modules[ i ]).getPropertyArray();
 							bObj.modObj.prParam		= pa.toProperties( true );
 							bObj.modObj.modClass	= modules[ i ].getClass().getName();
-							v = new Vector();
+							v = new ArrayList();
 							for( int j = 0; j < pa.text.length; j++ ) {
 								if( pa.textName[ j ].indexOf( "File" ) >= 0 ) {
-									v.addElement( new Integer(j) );
+									v.add( new Integer(j) );
 								}
 							}
 							bObj.modObj.modParam	= new String[ v.size() ][ 2 ];
@@ -421,9 +453,9 @@ tb.setFloatable( false );
 		gui.registerGadget( ggCmd, GG_CMDPASTE );
 		tb.add( ggCmd );
 		ggCmd.addActionListener( al );
-		ggCmd			= new JButton( " Edit " );
-ggCmd.setEnabled( false );
-		gui.registerGadget( ggCmd, GG_CMDEDIT );
+		ggCmd			= new JButton( " Open " );
+//ggCmd.setEnabled( false );
+		gui.registerGadget( ggCmd, GG_CMDOPEN );
 		tb.add( ggCmd );
 		ggCmd.addActionListener( al );
 		con.gridwidth	= GridBagConstraints.REMAINDER;
@@ -481,7 +513,7 @@ ggCmd.setEnabled( false );
 		
 		for( i = 0; i < num; i++ ) {
 			bObj = BatchObject.valueOf( (String) p.get( String.valueOf( i )));
-			batchVector.addElement( bObj );
+			batchVector.add( bObj );
 		}
 		
 		batchTM.fireTableDataChanged();
@@ -499,7 +531,7 @@ ggCmd.setEnabled( false );
 		super.fillPropertyArray( gui );
 		
 		for( int i = 0; i < num; i++ ) {
-			p.put( String.valueOf( i ), ((BatchObject) batchVector.elementAt( i )).toString() );
+			p.put( String.valueOf( i ), ((BatchObject) batchVector.get( i )).toString() );
 		}
 		getPropertyArray().text[ PR_BATCH ] = Presets.propertiesToValue( p );
 	}
@@ -589,7 +621,7 @@ ggCmd.setEnabled( false );
 		int				progGoal;
 //		float			modProg;
 		
-		Vector			loops		= new Vector();
+		List			loops		= new ArrayList();
 		int				line;
 		int				lines		= batchVector.size();
 		BatchObject		bObj, bObj2;
@@ -607,7 +639,7 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 			// ============================== recalc progress weights ==============================
 			// ============================== execute command ==============================
 
-				bObj		= (BatchObject) batchVector.elementAt( line );
+				bObj		= (BatchObject) batchVector.get( line );
 				batchTable.clearSelection();
 				batchTable.setRowSelectionInterval( line, line );
 				batchTable.scrollRectToVisible( batchTable.getCellRect( line, 0, true ));
@@ -703,12 +735,12 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 				case  BatchObject.CMD_BEGLOOP:							// -------------------- loop start --------------------
 				
 					bObj.loopObj.processIdx = bObj.loopObj.startIdx;
-					loops.addElement( bObj );
+					loops.add( bObj );
 					break;
 
 				case  BatchObject.CMD_ENDLOOP:							// -------------------- loop end --------------------
 					for( i = loops.size() - 1; i >= 0; i-- ) {
-						bObj2 = (BatchObject) loops.elementAt( i );
+						bObj2 = (BatchObject) loops.get( i );
 						if( bObj.loopObj.variable == bObj2.loopObj.variable ) {
 							if( ++bObj2.loopObj.processIdx <= bObj2.loopObj.stopIdx ) {
 								line = batchVector.indexOf( bObj2 );
@@ -806,7 +838,7 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 		int i;
 	
 		for( i = 0; i < batchVector.size(); i++ ) {
-			bObj = (BatchObject) batchVector.elementAt( i );
+			bObj = (BatchObject) batchVector.get( i );
 			if( (bObj.command == BatchObject.CMD_LABEL) && (bObj.labelObj.equals( label ))) break;
 		}
 		return i;
@@ -823,7 +855,7 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 		BatchObject bObj;
 		
 		if( batchTable.getSelectedRowCount() == 1 ) {
-			bObj = (BatchObject) batchVector.elementAt( batchTable.getSelectedRow() );
+			bObj = (BatchObject) batchVector.get( batchTable.getSelectedRow() );
 			if( bObj.command == BatchObject.CMD_MODULE ) {
 				modParam = bObj.modObj.modParam;
 			}
@@ -831,7 +863,7 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 		paramTM.setParam( modParam );
 	}
 	
-	private DocumentFrame getProcInstance( BatchObject bObj, Vector loops )
+	private DocumentFrame getProcInstance( BatchObject bObj, List loops )
 	throws ClassNotFoundException, InstantiationException, IllegalAccessException
 	{
 		DocumentFrame procWin;
@@ -852,7 +884,7 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 		return procWin;
 	}
 	
-	private String replaceLoopVars( String pattern, Vector loops )
+	private String replaceLoopVars( String pattern, List loops )
 	{
 		if( (loops == null) || (loops.isEmpty()) || (pattern.indexOf( "$" ) == -1) ) return pattern;
 	
@@ -862,7 +894,7 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 		int				i, j;
 		
 		for( i = loops.size() - 1; i >= 0; i-- ) {
-			lObj = ((BatchObject) loops.elementAt( i )).loopObj;
+			lObj = ((BatchObject) loops.get( i )).loopObj;
 			searchStr = "$" + lObj.variable;
 			while( (j = sb.indexOf( searchStr )) >= 0 ) {
 				sb.replace( j, j + 2, "0000".substring( 0, lObj.stopIdx/10 - lObj.processIdx/10 ) + String.valueOf(  lObj.processIdx ));
@@ -879,11 +911,11 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 	{
 		private static final String[] columnNames = { "Line", "Command", "Object", "On Error", "Error Label" };
 		
-		private Vector  batchVector;
+		private List		   batchVector;
 		private static Class   integerClass		= Integer.class;
 		private static Class   batchObjectClass    = BatchObject.class;
 		
-		private BatchTableModel( Vector batchVector )
+		private BatchTableModel( List batchVector )
 		{
 			this.batchVector = batchVector;
 		}
@@ -907,7 +939,7 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 		{
 			switch( column ) {
 			case 0:     return new Integer( row + 1 );
-			default:    return batchVector.elementAt( row );
+			default:    return batchVector.get( row );
 		}
 		}
 
@@ -937,21 +969,21 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 				if( !(value instanceof String) ) break;
 				for( i = 0; i < BatchCellRenderer.CMD_NAMES.length; i++ ) {
 					if( value.equals( BatchCellRenderer.CMD_NAMES[i] )) {
-						((BatchObject) batchVector.elementAt( row )).command = i;
+						((BatchObject) batchVector.get( row )).command = i;
 						break;
 					}
 				}
 				break;
 				
 			case 2:
-				batchVector.setElementAt( value, row );
+				batchVector.set( row, value );
 				break;
 				
 			case 3:
 				if( !(value instanceof String) ) break;
 				for( i = 0; i < BatchCellRenderer.ERR_NAMES.length; i++ ) {
 					if( value.equals( BatchCellRenderer.ERR_NAMES[i] )) {
-						((BatchObject) batchVector.elementAt( row )).errorCmd = i;
+						((BatchObject) batchVector.get( row )).errorCmd = i;
 						break;
 					}
 				}
