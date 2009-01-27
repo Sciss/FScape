@@ -889,17 +889,22 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 		if( (loops == null) || (loops.isEmpty()) || (pattern.indexOf( "$" ) == -1) ) return pattern;
 	
 		StringBuffer	sb = new StringBuffer( pattern );
-		String			searchStr;
+		String			searchStr, procStr;
 		LoopObject		lObj;
-		int				i, j;
+		int				i, j, numZeros;
 		
 		for( i = loops.size() - 1; i >= 0; i-- ) {
 			lObj = ((BatchObject) loops.get( i )).loopObj;
 			searchStr = "$" + lObj.variable;
+//System.out.println( "searchStr '" + searchStr + "' stopIdx " + lObj.stopIdx + "; processIdx " + lObj.processIdx );
 			while( (j = sb.indexOf( searchStr )) >= 0 ) {
-				sb.replace( j, j + 2, "0000".substring( 0, lObj.stopIdx/10 - lObj.processIdx/10 ) + String.valueOf(  lObj.processIdx ));
+				procStr	 = String.valueOf( lObj.processIdx );
+				numZeros = String.valueOf( lObj.stopIdx ).length() - procStr.length(); 
+				sb.replace( j, j + 2, "000000".substring( 0, numZeros ) + procStr );
 			}
 		}
+		
+//System.out.println( "Yuhuuu '" + sb.toString() + "'" );
 		
 		return sb.toString();
 	}
