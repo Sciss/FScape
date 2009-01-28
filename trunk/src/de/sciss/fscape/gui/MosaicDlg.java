@@ -55,6 +55,7 @@ import de.sciss.fscape.session.DocumentFrame;
 import de.sciss.fscape.spect.ConstQ;
 import de.sciss.fscape.spect.Fourier;
 import de.sciss.fscape.util.Constants;
+import de.sciss.fscape.util.Debug;
 import de.sciss.fscape.util.Filter;
 import de.sciss.fscape.util.Param;
 import de.sciss.fscape.util.ParamSpace;
@@ -726,7 +727,7 @@ lpY:			for( int y = 0; threadRunning && (y < height); y++ ) {
 					// =============== here comes the hilbert shift part ===============
 					// =================================================================
 
-//if( x == 8 && y == 12 ) {
+//if( x == 51 && y == 23 ) {
 //	Debug.view( inBuf[ 0 ], 0, 1000, "In x = " + x + "; y = " + y, true, false );
 //}
 
@@ -793,32 +794,38 @@ lpY:			for( int y = 0; threadRunning && (y < height); y++ ) {
 //if( x == 8 && y == 12 ) {
 //	System.out.println( "ch = " + ch + "; copying from inBuf (" + hlbFramesRead + ") to fftBuf (0), len = " + hlbChunkLen );
 //}
-							System.arraycopy( inBuf[ ch ], (int) hlbFramesRead, hlbFFTBuf2, 0, hlbChunkLen );
-															
-							for( int i = hlbChunkLen; i < hlbFFTLen; i++ ) {
-								hlbFFTBuf2[ i ] = 0.0f;
+							if( hlbChunkLen > 0 ) {
+								System.arraycopy( inBuf[ ch ], (int) hlbFramesRead, hlbFFTBuf2, 0, hlbChunkLen );
+																
+								for( int i = hlbChunkLen; i < hlbFFTLen; i++ ) {
+									hlbFFTBuf2[ i ] = 0.0f;
+								}
+								
+							// ---- real fft input + convert to complex + convolve with filter + ifft ----
+								Fourier.realTransform( hlbFFTBuf2, hlbFFTLen, Fourier.FORWARD );
+								for( int i = hlbFFTLen, j = hlbFFTLen; i > 0; i -= 2, j += 2 ) {	// neg.freq. complex conjugate
+									hlbFFTBuf2[ j ]		= hlbFFTBuf2[ i ];
+									hlbFFTBuf2[ j+1 ]	= -hlbFFTBuf2[ i+1 ];
+								}
+								Fourier.complexMult( hlbFFTBuf1, 0, hlbFFTBuf2, 0, hlbFFTBuf2, 0, hlbFFTLen << 1 );
+								Fourier.complexTransform( hlbFFTBuf2, hlbFFTLen, Fourier.INVERSE );
+		
+							// ---- post proc ----
+								hlbFramePos = hlbFramesRead; // hlbFramesWritten;
+								for( int i = 0, j = 0; i < hlbFFTLen; i++ ) {
+									d1				= hlbShiftFreq * hlbFramePos++;
+									hlbFFTBuf2[ i ]	= (float) (hlbFFTBuf2[ j++ ] * Math.cos( d1 ) + hlbFFTBuf2[ j++ ] * Math.sin( d1 ));
+								}
+								
+							} else {
+								Util.clear( hlbFFTBuf2 );
 							}
-							
-						// ---- real fft input + convert to complex + convolve with filter + ifft ----
-							Fourier.realTransform( hlbFFTBuf2, hlbFFTLen, Fourier.FORWARD );
-							for( int i = hlbFFTLen, j = hlbFFTLen; i > 0; i -= 2, j += 2 ) {	// neg.freq. complex conjugate
-								hlbFFTBuf2[ j ]		= hlbFFTBuf2[ i ];
-								hlbFFTBuf2[ j+1 ]	= -hlbFFTBuf2[ i+1 ];
-							}
-							Fourier.complexMult( hlbFFTBuf1, 0, hlbFFTBuf2, 0, hlbFFTBuf2, 0, hlbFFTLen << 1 );
-							Fourier.complexTransform( hlbFFTBuf2, hlbFFTLen, Fourier.INVERSE );
-	
-						// ---- post proc ----
-							hlbFramePos = hlbFramesRead; // hlbFramesWritten;
-							for( int i = 0, j = 0; i < hlbFFTLen; i++ ) {
-								d1				= hlbShiftFreq * hlbFramePos++;
-								hlbFFTBuf2[ i ]	= (float) (hlbFFTBuf2[ j++ ] * Math.cos( d1 ) + hlbFFTBuf2[ j++ ] * Math.sin( d1 ));
-							}
-							
+								
 						// ---- handle overlaps ----
 							Util.add( hlbOverBuf[ ch ], 0, hlbFFTBuf2, 0, hlbOverLen );
-//							System.arraycopy( hlbReBuf[ ch ], hlbInputLen, hlbOverBuf[ ch ], 0, hlbFFTLen - hlbInputLen );
-							System.arraycopy( hlbFFTBuf2, hlbChunkLen, hlbOverBuf[ ch ], 0, hlbOverLen );
+////						System.arraycopy( hlbReBuf[ ch ], hlbInputLen, hlbOverBuf[ ch ], 0, hlbFFTLen - hlbInputLen );
+//							System.arraycopy( hlbFFTBuf2, hlbChunkLen, hlbOverBuf[ ch ], 0, hlbOverLen );
+							System.arraycopy( hlbFFTBuf2, hlbChunkLen2, hlbOverBuf[ ch ], 0, hlbOverLen );
 
 							// fake write
 							System.arraycopy( hlbFFTBuf2, hlbSkip, inBuf[ ch ], (int) hlbFramesWritten, Math.max( 0, hlbChunkLen2 - hlbSkip ));
@@ -840,7 +847,7 @@ lpY:			for( int y = 0; threadRunning && (y < height); y++ ) {
 						
 					} // until framesWritten == outLength
 
-//if( x == 8 && y == 12 ) {
+//if( x == 51 && y == 23 ) {
 //	Debug.view( inBuf[ 0 ], 0, 1000, "Hlb x = " + x + "; y = " + y, true, false );
 //}
 
@@ -898,7 +905,7 @@ lpY:			for( int y = 0; threadRunning && (y < height); y++ ) {
 						fltInputLen		= fltFFTLen - fltLength + 1;
 						fltOverLen		= fltFFTLen - fltInputLen;
 						
-//if( x == 8 && y == 12 ) {
+//if( x == 51 && y == 23 ) {
 //	System.out.println( "Filter: loFreq " + fltLowFreq + "; hiFreq " + fltHighFreq + "; loCosFreq " + fltLowCosFreq + "; hiCosFreq " + fltHighCosFreq );
 //	System.out.println( "        fltHalfWinSize " + fltHalfWinSize + "; fltFFTLen " + fltFFTLen + "; fltInputLen " + fltInputLen + "; fltOverLen " + fltOverLen + "; fltTotalInLen " + fltTotalInLen );
 //}
@@ -944,7 +951,7 @@ lpY:			for( int y = 0; threadRunning && (y < height); y++ ) {
 						// windowing
 						Util.mult( fltWin, 0, fltFFTBuf1, 0, fltLength );
 						
-//if( x == 8 && y == 12 ) {
+//if( x == 51 && y == 23 ) {
 //	Debug.view( fltFFTBuf1, 0, fltLength, "Filter Time Signal", true, false );
 //}
 
@@ -959,31 +966,38 @@ lpY:			for( int y = 0; threadRunning && (y < height); y++ ) {
 							fltChunkLen = (int) Math.min( fltInputLen, fltTotalInLen - fltFramesRead );
 							fltChunkLen2 = (int) Math.min( fltInputLen, fltTotalInLen - fltFramesWritten );
 	
-//if( x == 8 && y == 12 ) {
+//if( x == 51 && y == 23 ) {
 //	System.out.println( "fltChunkLen = " + fltChunkLen + " ; fltChunkLen2 = " + fltChunkLen2 + "; fltFramesRead = " + fltFramesRead + "; fltFramesWritten " + fltFramesWritten );
 //}
 							
 						// ---- channels loop -----------------------------------------------------------------------
 							for( int ch = 0; threadRunning && (ch < inChanNum); ch++ ) {
 								// fake read
-//if( x == 8 && y == 12 ) {
+//if( x == 51 && y == 23 ) {
 //	System.out.println( "ch = " + ch + "; copying from inBuf (" + fltFramesRead + ") to fftBuf (0), len = " + fltChunkLen );
 //}
-								System.arraycopy( inBuf[ ch ], (int) fltFramesRead, fltFFTBuf2, 0, fltChunkLen );
-								
-								for( int i = fltChunkLen; i < fltFFTLen; i++ ) {
-									fltFFTBuf2[ i ] = 0.0f;
+								if( fltChunkLen > 0 ) {
+									System.arraycopy( inBuf[ ch ], (int) fltFramesRead, fltFFTBuf2, 0, fltChunkLen );
+									
+									for( int i = fltChunkLen; i < fltFFTLen; i++ ) {
+										fltFFTBuf2[ i ] = 0.0f;
+									}
+									Fourier.realTransform( fltFFTBuf2, fltFFTLen, Fourier.FORWARD );
+									Fourier.complexMult( fltFFTBuf2, 0, fltFFTBuf1, 0, fltFFTBuf2, 0, fltFFTBuf1.length );
+									Fourier.realTransform( fltFFTBuf2, fltFFTLen, Fourier.INVERSE );
+	//if( x == 51 && y == 23 ) {
+	//	System.out.println( "adding from fltOverBuf (0) to fftBuf (0), len = " + fltOverLen );
+	////	System.out.println( "copying from fftBuf (" + fltChunkLen + ") to fltOverBuf( 0 ), len = " + fltOverLen );
+	//	System.out.println( "copying from fftBuf (" + fltChunkLen2 + ") to fltOverBuf( 0 ), len = " + fltOverLen );
+	//	System.out.println( "copying from fftBuf (" + fltSkip + ") to inBuf( " + fltFramesWritten + " ), len = " + Math.max( 0, fltChunkLen2 - fltSkip ) );
+	//}
+								} else {
+									Util.clear( fltFFTBuf2 );
 								}
-								Fourier.realTransform( fltFFTBuf2, fltFFTLen, Fourier.FORWARD );
-								Fourier.complexMult( fltFFTBuf2, 0, fltFFTBuf1, 0, fltFFTBuf2, 0, fltFFTBuf1.length );
-								Fourier.realTransform( fltFFTBuf2, fltFFTLen, Fourier.INVERSE );
-//if( x == 8 && y == 12 ) {
-//	System.out.println( "adding from fltOverBuf (0) to fftBuf (0), len = " + fltOverLen );
-//	System.out.println( "copying from fftBuf (" + fltChunkLen + ") to fltOverBuf( 0 ), len = " + fltOverLen );
-//	System.out.println( "copying from fftBuf (" + fltSkip + ") to inBuf( " + fltFramesWritten + " ), len = " + Math.max( 0, fltChunkLen2 - fltSkip ) );
-//}
+								
 								Util.add( fltOverBuf[ ch ], 0, fltFFTBuf2, 0, fltOverLen );
-								System.arraycopy( fltFFTBuf2, fltChunkLen, fltOverBuf[ ch ], 0, fltOverLen );
+//								System.arraycopy( fltFFTBuf2, fltChunkLen, fltOverBuf[ ch ], 0, fltOverLen );
+								System.arraycopy( fltFFTBuf2, fltChunkLen2, fltOverBuf[ ch ], 0, fltOverLen );
 	
 								// fake write
 								System.arraycopy( fltFFTBuf2, fltSkip, inBuf[ ch ], (int) fltFramesWritten, Math.max( 0, fltChunkLen2 - fltSkip ));
@@ -1004,6 +1018,10 @@ lpY:			for( int y = 0; threadRunning && (y < height); y++ ) {
 					// =============== writing out chunk ===============
 					// =================================================
 
+//if( x == 51 && y == 23 ) {
+//	Debug.view( inBuf[ 0 ], 0, 1000, "Flt x = " + x + "; y = " + y, true, false );
+//}
+					
 					pWinSize			= new Param( AudioFileDescr.samplesToMillis( outStream, winSize ), Param.ABS_MS );
 					i1					= Math.min( winSize, (int) (AudioFileDescr.millisToSamples( outStream, Param.transform( pr.para[ PR_ATTACK ], Param.ABS_MS, pWinSize, null ).val ) + 0.5) );
 					if( i1 != atkLen ) {
@@ -1023,7 +1041,7 @@ lpY:			for( int y = 0; threadRunning && (y < height); y++ ) {
 					           inBuf,  Math.max( 0, chunkLen - rlsLen ),
 					           Math.min( rlsLen, chunkLen ));
 					
-//if( x == 8 && y == 12 ) {
+//if( x == 51 && y == 23 ) {
 //	Debug.view( inBuf[ 0 ], 0, 1000, "Out x = " + x + "; y = " + y, true, false );
 //}
 					
