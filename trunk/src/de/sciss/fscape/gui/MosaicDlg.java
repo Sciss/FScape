@@ -1,4 +1,5 @@
 /*
+ *  MosaicDlg.java
  *  FScape
  *
  *  Copyright (c) 2001-2009 Hanns Holger Rutz. All rights reserved.

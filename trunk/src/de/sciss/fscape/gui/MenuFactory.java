@@ -123,6 +123,8 @@ extends BasicMenuFactory
 	private static final String MI_FOURIER		= "Fourier Translation";
 	private static final String MI_TRANSL		= "Wavelet Translation";
 	private static final String MI_HILBERT		= "Hilbert Filter";
+	private static final String MI_MOSAIC		="Mosaic";
+	private static final String MI_SONAGRAMEXP	= "Sonagram Export";
 	
 	private static final String M_MOD_TIME		= "Time Domain";
 	private static final String MI_STEPBACK		= "Step Back";
@@ -132,7 +134,6 @@ extends BasicMenuFactory
 	private static final String MI_LUECKENBUESSER = "L\u00FCckenb\u00FC\u00DFer";
 	private static final String MI_PEARSONPLOT	="Pearson Plotter";
 	private static final String MI_SEDIMENT		="Sediment";
-	private static final String MI_MOSAIC		="Mosaic";
 	
 	private static final String M_MOD_BETA		= "Unfinished";
 	private static final String MI_SMPSYN		= "Sample Synthesis";
@@ -200,7 +201,8 @@ extends BasicMenuFactory
 		{ new StringItem( "Fourier",		MI_FOURIER ),		KeyStroke.getKeyStroke( KeyEvent.VK_F, PROC_MODIF ) },
 		{ new StringItem( "Wavelet",		MI_TRANSL ),		KeyStroke.getKeyStroke( KeyEvent.VK_W, PROC_MODIF ) },
 		{ new StringItem( "Hilbert",		MI_HILBERT ),		KeyStroke.getKeyStroke( KeyEvent.VK_H, PROC_MODIF ) },
-		{ new StringItem( "Mosaic",			MI_MOSAIC ),		null }
+		{ new StringItem( "Mosaic",			MI_MOSAIC ),		null },
+		{ new StringItem( "SonagramExport",	MI_SONAGRAMEXP ),	null }
 	},{
 		{ M_MOD_BANDS },
 		{ new StringItem( "BandSplit",		MI_BANDSPLIT ),		KeyStroke.getKeyStroke( KeyEvent.VK_S, PROC_MODIF ) },

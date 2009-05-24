@@ -407,7 +407,7 @@ topLevel: try {
 			imgBuf					= new float[ outChanNum ][ frameSize + 1];
 			inBuf1					= new float[ inChanNum1 ][ 8192 ];
 			inBuf2					= new float[ inChanNum2 ][ 8192 ];
-			Util.clear( imgBuf );
+//			Util.clear( imgBuf );
 
 		// .... check running ....
 			if( !threadRunning ) break topLevel;
