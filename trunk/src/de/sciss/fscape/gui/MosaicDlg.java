@@ -55,7 +55,7 @@ import de.sciss.fscape.session.DocumentFrame;
 import de.sciss.fscape.spect.ConstQ;
 import de.sciss.fscape.spect.Fourier;
 import de.sciss.fscape.util.Constants;
-import de.sciss.fscape.util.Debug;
+//import de.sciss.fscape.util.Debug;
 import de.sciss.fscape.util.Filter;
 import de.sciss.fscape.util.Param;
 import de.sciss.fscape.util.ParamSpace;
