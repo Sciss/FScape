@@ -1,0 +1,21 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN"
+        "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<HTML><HEAD><TITLE>FScape Help : Mosaic</TITLE></HEAD>
+<BODY>
+<H2>Mosaic</H2>
+<BLOCKQUOTE>
+A technique that tries to imitate photo-mosaicing on the auditory level. Given a visual template of the desired sound (essentially a sonogramme) and some input sounds, try to spread chunks of the input sound across the time-frequency plane of the template.
+</BLOCKQUOTE>
+<P>This algorithm is inspired by the idea of Synthrumentation by Klarenz Barlow. It was developed for the piece &quot;Achrostichon&quot; dedicated to Folkmar Hein.</P>
+<P>The template time-frequency plane is given by a black-and-white sonagramme <I>Image input</I> file. Frequency is considered logarithmically spaced! Small number of bands (e.g. 1 to 3 per octave) usually produce more interesting results than a literal sonagramme. The sound material used to &quot;paint&quot; the template is given by the <I>Audio input</I> field. Note that this file must be a magnitude longer than the target sound file's duration. If necessary, use a sound editor to concatenate the sound material to itself a couple of times to produce the necessary length.</P>
+<P>The target duration is given by <I>Nominal duration</I>. It is called &quot;nominal&quot; because the actual duration may differ a little bit due to the randomization processes. The time resolution of the input image is automatically derived from the nominal duration, e.g. when the image has a width of 100 pixels and the nominal duration is 10 seconds, each pixel corresponds to 100 ms.</P>
+<P>The frequency span of the input image is given by <I>Min freq.</I> and <I>Max freq.</I>, the bands per octave are automatically derived from these settings and the input image's height.</P>
+<P>If you take the photo-mosaic metaphor, the algorithm now reads in chunks from the input sound file as &quot;photos&quot; and places them on the time-frequency canvas. The overlapping in the time-frequency plane is specified by <I>Time Spacing</I> and <I>Freq Spacing</I> (where 100% means dense packing without overlap, 50% means 1x overlap etc.). To produce less regular rhythmic and harmonic output, use some <I>Time Jitter</I> and <I>Freq Jitter</I> which is a ratio of the time chunk length and frequency band coverage in percent, by which the &quot;photo&quot; maybe moved from the nominal position.</P>
+<P>The smoothness of the &quot;grains&quot; or &quot;photos&quot; depends on the fade-in and fade-out of the chunks, as given by <I>Attack</I> and <I>Release</I>.</P>
+<P>White pixels in the input image constitute the loud parts, black pixels the silent parts. The corresponding minimum volume is given by the <I>Noise Floor</I> parameter. The parameter <I>Max Boost</I> specifies the maximum gain that can be applied to each &quot;photo&quot; to make it match the template pixel's volume.</P>
+<P>Finally, if your input sound material has already been segmented, you can use markers to choose the photo-boundaries instead of the fixed-size time windows resulting from nominal duration divided by image-width. Each new marker in the input sound file marks the beginning of the next photo chunk. To use this approach, check the <I>Read Markers</I> option.
+</P>
+<HR>
+<P><EM>last modified:</EM> 10-Jun-09</P>
+</BODY>
+</HTML>

@@ -1,0 +1,43 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN"
+        "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<HTML><HEAD><TITLE>FScape Help : BlunderFinger</TITLE></HEAD>
+<BODY>
+<H2>Blunder Finger</H2>
+<BLOCKQUOTE>
+This module applies a basic genetic algorithms on the sample level. The basic ideas are described here: <A HREF="http://www.obitko.com/tutorials/genetic-algorithms" CLASS="ext" TARGET="_blank">www.obitko.com/tutorials/genetic-algorithms/</A>
+</BLOCKQUOTE>
+<P>The general algorithm follows the pattern:</P>
+<UL>
+<LI>1. [Start] Generate a random population of chromosomes (possible solutions)</LI>
+<LI>2. [Fitness] Calculate the fitness f(x) of each of the chromosomes x of the population</LI>
+<LI>3. [New population] Use the following steps to generate a new population:
+<UL>
+<LI>a. [Selection] Choose two parent chromosomes, by weighting their chance of getting selected with the fitness (the better the fitness, the greater the chance to be selected)</LI>
+<LI>b. [Crossover] According to a probability of crossover, mix the genes. It is possible that the offspring is a 1:1 copy of one parent.</LI>
+<LI>c. [Mutation] According to a probability of mutation, mutate the genes at each defined Locus</LI>
+<LI>d. [Accepting] Add the offspring to the new population</LI>
+</UL>
+<LI>4. [Replace] Use the new population as the base population of the next iteration.</LI>
+<LI>5. [Test] If a condition for stopping the algorithm has been defined, check the condition and stop if necessary, return the solution.</LI>
+<LI>6. [Loop] Otherwise, go back to step 2</LI>
+</LI>
+</UL>
+<P>
+In FScape, the algorithm is interpreted as follows:</P>
+<UL>
+<LI>A chromosome consists of a time window of a given number of samples (<I>Chromosome length</I>).</LI>
+<LI>The original population is created by reading a corresponding time window from an input sound (<I>Population input</I>). For a given size of population (parameter <I>Population</I>), the time window in the input sound is shifted sample-frame by sample-frame. E.g. if chromosome length is 32 and population is 8, the first individual is read from sample frames (0...31), the second individual from (1...32), etc., the eighth individual from (7...38).</LI>
+<LI>A number of iterations of breeding is carried out (<I>Iterations</I>), consisting of:
+<UL>
+<LI>Calculating the fitness of each indivdual of the current input population, by comparing it with a corresponding time window in a fitting sound (<I>Fit input</I>), and calculating the root-mean-error. This is performed in the time domain sample-by-sample, or, if <I>Domain</I> is set to &quot;Wavelet&quot; by transforming both population and fitness sound chunk into the wavelet domain.</LI>
+<LI>For multichannel sounds, according to the parameter <I>Multichannel fitness</I>, either the worst-case the best-case or the mean of all the channel fitnesses are taken.</LI>
+<LI>Generate the next output population by choosing <I>Population</I> parents from the input generation, with a probability depending on their fitness, and breeding each offspring. To breed offspring, the chromosomes of the two parents are cut at <I>Crossing points</I> positions and mixed. Afterwards, with a probability given by <I>Mutation probability</I>, the resulting offspring is mutated. Mutation is performed, by the noise amount given by <I>Mutation amount</I> to the chromosome.</LI>
+<LI>The output population of the iteration is used as input population of the next iteration</LI>
+</UL>
+<LI>The resulting population of these iterations is written out to the target sound file. Each chromosome is first highpass filtered by differentiating, the concatenated output stream lowpass filtered by integration, to prevent clicking at chromosome borders.</LI>
+<LI>If <I>Elitism</I> is checked, incest is introduced in the iterations, by copying directly the &quot;best&quot; two parents from one population to the next.</LI>
+</LI>
+<HR>
+<P><EM>last modified:</EM> 10-Jun-09</P>
+</BODY>
+</HTML>
