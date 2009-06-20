@@ -59,6 +59,8 @@ import de.sciss.io.AudioFileDescr;
  *
  *  @author		Hanns Holger Rutz
  *  @version	0.73, 24-May-09
+ *  
+ *  @todo		image resolution (8-bit vs 16-bit) is not saved
  */
 public class SonagramExportDlg
 extends DocumentFrame
@@ -218,7 +220,7 @@ extends DocumentFrame
 		con.weightx		= 0.4;
 		gui.addParamField( ggMinFreq, GG_MINFREQ, null );
 
-		ggBandsPerOct	= new ParamField( new ParamSpace( 1, 96, 1, Param.NONE ));
+		ggBandsPerOct	= new ParamField( new ParamSpace( 1, /* 96 */ 32768, 1, Param.NONE ));
 		con.weightx		= 0.1;
 		gui.addLabel( new JLabel( "Bands Per Octave:", JLabel.RIGHT ));
 		con.weightx		= 0.4;
@@ -402,6 +404,10 @@ if( inChanNum != 1 ) throw new EOFException( ERR_MONO );
 //final java.util.Random rnd = new java.util.Random();
 			
 			for( int y = 0; y < height; y++ ) {
+				if( inOff < 0 ) {
+					inF.seekFrame( Math.min( inF.getFrameNum(), inF.getFramePosition() - inOff ));
+					inOff = 0;
+				}
 				// read
 				chunkLen = (int) Math.min( inLength - framesRead, winSize - inOff );
 
@@ -448,7 +454,8 @@ if( inChanNum != 1 ) throw new EOFException( ERR_MONO );
 				outF.writeRow( row );
 			
 				// handle overlap
-				Util.copy( inBuf, stepSize, inBuf, 0, overlapSize );
+//System.out.println( "inBuf : " + inBuf[0].length + "; stepSize = " + stepSize + "; overlap = " + overlapSize );
+				if( overlapSize > 0 ) Util.copy( inBuf, stepSize, inBuf, 0, overlapSize );
 				inOff = overlapSize;
 				
 				framesRead += chunkLen;

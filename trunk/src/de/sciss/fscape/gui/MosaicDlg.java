@@ -25,6 +25,7 @@
  *
  *  Changelog:
  *		20-Dec-08	created
+ *		20-Jun-09	audio input loops
  */
 
 package de.sciss.fscape.gui;
@@ -70,7 +71,7 @@ import de.sciss.io.Marker;
  *	throw evolution using a genetic algorithm.
  *
  *  @author		Hanns Holger Rutz
- *  @version	0.72, 26-Jan-09
+ *  @version	0.72, 20-Jun-09
  */
 public class MosaicDlg
 extends DocumentFrame
@@ -490,7 +491,7 @@ extends DocumentFrame
 		int						i1, i2, rgb, percentile, idx, bestIdx;
 		int						winSize, markIdx, numSteps;
 		double					midMatFreq, midImgFreq;
-		long					outOff, lastMarkPos, n1, n2;
+		long					outOff, lastMarkPos, n1, n2, framePos;
 		float					brightness;
 		Marker					mark;
 		
@@ -648,12 +649,18 @@ lpY:			for( int y = 0; threadRunning && (y < height); y++ ) {
 					}
 					
 //					inMatF.seekFrame( (long) (x * framesPerPixel + 0.5) );
+					framePos = inMatF.getFramePosition();
+					if( framePos == inMatLength ) {
+						inMatF.seekFrame( 0L );
+						markIdx = 0;
+						lastMarkPos = 0L;
+					}
 					if( readMarkers ) {
 						n1 = ((Marker) markers.get( Math.min( markIdx++, markers.size() - 1 ))).pos;
 						winSize = (int) (n1 - lastMarkPos);
 						lastMarkPos = n1;
 					}
-					chunkLen = (int) Math.min( inMatLength - inMatF.getFramePosition(), winSize );
+					chunkLen = (int) Math.min( inMatLength - framePos, winSize );
 					inMatF.readFrames( inBuf, 0, chunkLen );
 	//				if( chunkLen < winSize ) {
 	//					Util.clear( inBuf, chunkLen, winSize - chunkLen );
