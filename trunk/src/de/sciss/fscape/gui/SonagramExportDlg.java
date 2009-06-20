@@ -451,6 +451,8 @@ if( inChanNum != 1 ) throw new EOFException( ERR_MONO );
 				Util.copy( inBuf, stepSize, inBuf, 0, overlapSize );
 				inOff = overlapSize;
 				
+				framesRead += chunkLen;
+				
 				progOff++;
 				setProgression( (float) progOff / (float) progLen );
 			// .... check running ....
