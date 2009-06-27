@@ -72,6 +72,7 @@ import javax.swing.text.DefaultFormatter;
 import de.sciss.app.AbstractApplication;
 import de.sciss.app.DocumentHandler;
 import de.sciss.gui.GUIUtil;
+import de.sciss.util.Flag;
 
 import de.sciss.fscape.proc.ProcessorEvent;
 import de.sciss.fscape.proc.ProcessorListener;
@@ -86,7 +87,7 @@ import de.sciss.fscape.util.Util;
  *	a list of other modules.
  *
  *  @author		Hanns Holger Rutz
- *  @version	0.72, 26-Jan-09
+ *  @version	0.73, 27-Jun-09
  */
 public class BatchDlg
 extends DocumentFrame
@@ -887,28 +888,42 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 	private String replaceLoopVars( String pattern, List loops )
 	{
 		if( (loops == null) || (loops.isEmpty()) || (pattern.indexOf( "$" ) == -1) ) return pattern;
-	
-		StringBuffer	sb = new StringBuffer( pattern );
-		String			searchStr, procStr;
-		LoopObject		lObj;
-		int				i, j, numZeros;
 		
-		for( i = loops.size() - 1; i >= 0; i-- ) {
-			lObj = ((BatchObject) loops.get( i )).loopObj;
-			searchStr = "$" + lObj.variable;
-//System.out.println( "searchStr '" + searchStr + "' stopIdx " + lObj.stopIdx + "; processIdx " + lObj.processIdx );
-			while( (j = sb.indexOf( searchStr )) >= 0 ) {
-				procStr	 = String.valueOf( lObj.processIdx );
-				numZeros = String.valueOf( lObj.stopIdx ).length() - procStr.length(); 
-				sb.replace( j, j + 2, "000000".substring( 0, numZeros ) + procStr );
-			}
-		}
-		
-//System.out.println( "Yuhuuu '" + sb.toString() + "'" );
-		
-		return sb.toString();
+		return replaceLoopVars( pattern, loops, loops.size() - 1, new Flag( false ));
 	}
-
+	
+	private String replaceLoopVars( String s, List loops, int idx, Flag exists )
+	{
+		final LoopObject	lObj		= ((BatchObject) loops.get( idx )).loopObj;
+		final String		searchStr	= "$" + lObj.variable;
+		int					j;
+		String				result		= null;
+		
+		for( int k = 0; k < 2; k++ ) {
+			final StringBuffer	sb			= new StringBuffer( s );
+			final boolean		useZeros	= k == 1; // this way the "failing" case is with all zero-padded (original behaviour)
+			while( (j = sb.indexOf( searchStr )) >= 0 ) {
+				final String	procStr	 = String.valueOf( lObj.processIdx );
+				final int		numZeros = String.valueOf( lObj.stopIdx ).length() - procStr.length();
+				final String	replc;
+				if( useZeros ) {
+					replc	= "000000".substring( 0, numZeros ) + procStr;
+				} else {
+					replc	= procStr;
+				}
+				sb.replace( j, j + 2, replc );
+			}
+			result = sb.toString();
+			if( idx > 0 ) {
+				result = replaceLoopVars( result, loops, idx - 1, exists );
+			} else {
+				exists.set( new File( result ).exists() );
+			}
+			if( exists.isSet() ) return result;
+		}
+		return result;
+	}
+	
 // -------------- internal classes --------------
 
 	private static class BatchTableModel
