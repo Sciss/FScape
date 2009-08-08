@@ -508,7 +508,7 @@ extends AbstractRenderPlugIn
 	private static class CenterClippingFilter
 	implements RunningWindowFilter
 	{
-		final int			winSize;
+//		final int			winSize;
 		final int			channels;
 		final int			winSizeM1;
 		final int[][]		histogram;
@@ -517,7 +517,7 @@ extends AbstractRenderPlugIn
 	
 		public CenterClippingFilter( int winSize, int channels, double threshAmp )
 		{
-			this.winSize	= winSize;
+//			this.winSize	= winSize;
 			this.channels   = channels;
 			winSizeM1		= winSize - 1;
 			histogram		= new int[ channels ][ 16384 ];

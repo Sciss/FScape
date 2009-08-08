@@ -773,7 +773,7 @@ topLevel: try {
 	private class CenterClippingFilter
 	extends RunningWindowFilter
 	{
-		final int			winSize;
+//		final int			winSize;
 		final int			channels;
 		final int			winSizeM1;
 		final int[][]		histogram;
@@ -782,7 +782,7 @@ topLevel: try {
 	
 		public CenterClippingFilter( int winSize, int channels )
 		{
-			this.winSize	= winSize;
+//			this.winSize	= winSize;
 			this.channels   = channels;
 			winSizeM1		= winSize - 1;
 			histogram		= new int[ channels ][ 16384 ];

@@ -173,6 +173,16 @@ public class Util
 	}
 
 	/**
+	 *	Eindimensionales Array loeschen
+	 */
+	public static void clear( double[] a )
+	{
+		for( int i = 0; i < a.length; i++ ) {
+			a[ i ] = 0.0;
+		}
+	}
+
+	/**
 	 *	Eindimensionales Array zu einem zweiten addieren
 	 */
 	public static void add( float[] src, int srcOff, float[] dest, int destOff, int length )

@@ -768,7 +768,7 @@ topLevel: try {
 				chebyTrk			= new ChebyTracker();
 				f1					= (float) inStream.rate / crossFreqs[ band ]; // period [smp]
 				chbPeakScope		= Math.max( 64, (int) (f1 * 1.5f + 0.5f) );	// scope 1.5 periods
-				chbPeakBufLen		= dropEnv ? 1 : (chbPeakScope << 1);
+				chbPeakBufLen		= /* dropEnv ? 1 :*/ (chbPeakScope << 1);
 				chebyTrk.peakBufLen	= chbPeakBufLen;
 				chebyTrk.peakScope	= chbPeakScope;
 				chebyTrk.peakBuf	= new float[ chbPeakBufLen ];

@@ -384,7 +384,7 @@ if( inChanNum != 1 ) throw new EOFException( ERR_MONO );
 			ggOutput.fillStream( imgStream );
 			imgStream.width			= width;
 			imgStream.height		= height;
-			imgStream.smpPerPixel	= color ? 3 : 1;
+			imgStream.smpPerPixel	= /* color ? 3 :*/ 1;
 			bitsPerSmp				= imgStream.bitsPerSmp;
 			outF.initWriter( imgStream );
 			row						= outF.allocRow();
