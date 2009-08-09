@@ -51,6 +51,7 @@ import de.sciss.fscape.prop.Presets;
 import de.sciss.fscape.prop.PropertyArray;
 import de.sciss.fscape.session.DocumentFrame;
 import de.sciss.fscape.util.Constants;
+import de.sciss.fscape.util.Filter;
 import de.sciss.fscape.util.Param;
 import de.sciss.fscape.util.ParamSpace;
 import de.sciss.fscape.util.Util;
@@ -58,9 +59,6 @@ import de.sciss.io.AudioFile;
 import de.sciss.io.AudioFileDescr;
 
 /**
- *	Processing module for approaching a file (fit input)
- *	throw evolution using a genetic algorithm.
- *
  *  @author		Hanns Holger Rutz
  *  @version	0.72, 08-Aug-09
  */
@@ -86,17 +84,17 @@ extends DocumentFrame
 	//   [8,] -0.1384280 -0.2721599  0.33783778  0.29312535  0.11633231 -0.160790254
 	//   [9,] -0.1248940 -0.2571250  0.36542543  0.43884649  0.46496714  0.434599540
 
-	private static final double[][] testMatrix = new double[][] {
-		{ 1.0000000, 0.5000000, 0.3333333, 0.25000000, 0.20000000, 0.16666667 },
-		{ 0.5000000, 0.3333333, 0.2500000, 0.20000000, 0.16666667, 0.14285714 },
-		{ 0.3333333, 0.2500000, 0.2000000, 0.16666667, 0.14285714, 0.12500000 },
-      	{ 0.2500000, 0.2000000, 0.1666667, 0.14285714, 0.12500000, 0.11111111 },
-      	{ 0.2000000, 0.1666667, 0.1428571, 0.12500000, 0.11111111, 0.10000000 },
-      	{ 0.1666667, 0.1428571, 0.1250000, 0.11111111, 0.10000000, 0.09090909 },
-      	{ 0.1428571, 0.1250000, 0.1111111, 0.10000000, 0.09090909, 0.08333333 },
-      	{ 0.1250000, 0.1111111, 0.1000000, 0.09090909, 0.08333333, 0.07692308 },
-      	{ 0.1111111, 0.1000000, 0.0909091, 0.08333333, 0.07692308, 0.07142857 }
-	};
+//	private static final float[][] testMatrix = new float[][] {
+//		{ 1.0000000, 0.5000000, 0.3333333, 0.25000000, 0.20000000, 0.16666667 },
+//		{ 0.5000000, 0.3333333, 0.2500000, 0.20000000, 0.16666667, 0.14285714 },
+//		{ 0.3333333, 0.2500000, 0.2000000, 0.16666667, 0.14285714, 0.12500000 },
+//      	{ 0.2500000, 0.2000000, 0.1666667, 0.14285714, 0.12500000, 0.11111111 },
+//      	{ 0.2000000, 0.1666667, 0.1428571, 0.12500000, 0.11111111, 0.10000000 },
+//      	{ 0.1666667, 0.1428571, 0.1250000, 0.11111111, 0.10000000, 0.09090909 },
+//      	{ 0.1428571, 0.1250000, 0.1111111, 0.10000000, 0.09090909, 0.08333333 },
+//      	{ 0.1250000, 0.1111111, 0.1000000, 0.09090909, 0.08333333, 0.07692308 },
+//      	{ 0.1111111, 0.1000000, 0.0909091, 0.08333333, 0.07692308, 0.07142857 }
+//	};
 
 	// Properties (defaults)
 	private static final int PR_INIMGFILE			= 0;		// pr.text
@@ -107,11 +105,9 @@ extends DocumentFrame
 	private static final int PR_SCANDIR				= 3;
 	private static final int PR_CLPSEDIR			= 4;
 	private static final int PR_GAIN				= 0;		// pr.para
-	private static final int PR_NUMCHUNKS			= 1;
-	private static final int PR_CHUNKSIZE			= 2;
-	private static final int PR_DURATION			= 3;
-	private static final int PR_CHUNKOVERLAP		= 4;
-	private static final int PR_TIMEJITTER			= 5;
+	private static final int PR_CHUNKSIZE			= 1;
+	private static final int PR_SPACEOVERLAP		= 2;
+	private static final int PR_TIMEOVERLAP			= 3;
 //	private static final int PR_READMARKERS			= 0;		// pr.bool
 
 	private static final String PRN_INIMGFILE		= "InImgFile";
@@ -120,10 +116,9 @@ extends DocumentFrame
 	private static final String PRN_OUTPUTRES		= "OutputReso";
 	private static final String PRN_SCANDIR			= "ScanDir";
 	private static final String PRN_CLPSEDIR		= "CollapseDir";
-	private static final String PRN_NUMCHUNKS		= "NumChunks";
 	private static final String PRN_CHUNKSIZE		= "ChunkSize";
-	private static final String PRN_DURATION		= "Duration";
-	private static final String PRN_CHUNKOVERLAP	= "ChunkOverlap";
+	private static final String PRN_SPACEOVERLAP	= "SpaceOverlap";
+	private static final String PRN_TIMEOVERLAP		= "TimeOverlap";
 
 	private static final int	DIR_VERT		= 0;
 	private static final int	DIR_HORIZ		= 1;
@@ -132,8 +127,8 @@ extends DocumentFrame
 	private static final String	prTextName[]	= { PRN_INIMGFILE, PRN_OUTPUTFILE };
 	private static final int	prIntg[]		= { 0, 0, GAIN_UNITY, DIR_VERT, DIR_VERT };
 	private static final String	prIntgName[]	= { PRN_OUTPUTTYPE, PRN_OUTPUTRES, PRN_GAINTYPE, PRN_SCANDIR, PRN_CLPSEDIR };
-	private static final Param	prPara[]		= { null, null, null, null, null };
-	private static final String	prParaName[]	= { PRN_GAIN, PRN_NUMCHUNKS, PRN_CHUNKSIZE, PRN_DURATION, PRN_CHUNKOVERLAP };
+	private static final Param	prPara[]		= { null, null, null, null };
+	private static final String	prParaName[]	= { PRN_GAIN, PRN_CHUNKSIZE, PRN_SPACEOVERLAP, PRN_TIMEOVERLAP };
 //	private static final boolean prBool[]		= { false };
 //	private static final String	prBoolName[]	= { PRN_READMARKERS };
 
@@ -145,11 +140,9 @@ extends DocumentFrame
 	private static final int GG_SCANDIR			= GG_OFF_CHOICE		+ PR_SCANDIR;
 	private static final int GG_CLPSEDIR		= GG_OFF_CHOICE		+ PR_CLPSEDIR;
 	private static final int GG_GAIN			= GG_OFF_PARAMFIELD	+ PR_GAIN;
-	private static final int GG_NUMCHUNKS		= GG_OFF_PARAMFIELD	+ PR_NUMCHUNKS;
 	private static final int GG_CHUNKSIZE		= GG_OFF_PARAMFIELD	+ PR_CHUNKSIZE;
-	private static final int GG_DURATION		= GG_OFF_PARAMFIELD	+ PR_DURATION;
-	private static final int GG_CHUNKOVERLAP	= GG_OFF_PARAMFIELD	+ PR_CHUNKOVERLAP;
-	private static final int GG_TIMEJITTER		= GG_OFF_PARAMFIELD	+ PR_TIMEJITTER;
+	private static final int GG_SPACEOVERLAP	= GG_OFF_PARAMFIELD	+ PR_SPACEOVERLAP;
+	private static final int GG_TIMEOVERLAP		= GG_OFF_PARAMFIELD	+ PR_TIMEOVERLAP;
 
 	private static	PropertyArray	static_pr		= null;
 	private static	Presets			static_presets	= null;
@@ -180,11 +173,9 @@ extends DocumentFrame
 //			static_pr.boolName	= prBoolName;
 			static_pr.para		= prPara;
 			static_pr.para[ PR_GAIN ]			= new Param(     0.0, Param.DECIBEL_AMP );
-			static_pr.para[ PR_NUMCHUNKS ]		= new Param(   100.0, Param.NONE );
 			static_pr.para[ PR_CHUNKSIZE ]		= new Param(   256.0, Param.NONE );
-			static_pr.para[ PR_DURATION ]		= new Param( 60000.0, Param.ABS_MS );
-			static_pr.para[ PR_CHUNKOVERLAP ]	= new Param(   100.0, Param.FACTOR_TIME );
-			static_pr.para[ PR_TIMEJITTER ]		= new Param(    50.0, Param.FACTOR_TIME );
+			static_pr.para[ PR_SPACEOVERLAP ]	= new Param(    75.0, Param.FACTOR_TIME );
+			static_pr.para[ PR_TIMEOVERLAP ]	= new Param(    25.0, Param.FACTOR_TIME );
 			static_pr.paraName	= prParaName;
 			static_pr.superPr	= DocumentFrame.static_pr;
 		}
@@ -201,8 +192,7 @@ extends DocumentFrame
 		final PathField				ggInImgFile, ggOutputFile;
 		final PathField[]			ggInputs;
 		final Component[]			ggGain;
-		final ParamField			ggDuration, ggChunkOverlap, ggNumChunks, ggChunkSize;
-		final ParamField			ggTimeJitter;
+		final ParamField			ggSpaceOverlap, ggTimeOverlap, ggChunkSize;
 		final ParamSpace			spcChunk;
 		final JComboBox				ggScanDir, ggClpseDir;
 
@@ -270,21 +260,7 @@ extends DocumentFrame
 	gui.addLabel( new GroupLabel( "Settings", GroupLabel.ORIENT_HORIZONTAL,
 								  GroupLabel.BRACE_NONE ));
 	
-		ggDuration		= new ParamField( Constants.spaces[ Constants.absMsSpace ]);
-		con.weightx		= 0.1;
-		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Nominal Duration", JLabel.RIGHT ));
-		con.weightx		= 0.4;
-		gui.addParamField( ggDuration, GG_DURATION, null );
-
 		spcChunk	= new ParamSpace( 1, Integer.MAX_VALUE, 1, Param.NONE );
-		ggNumChunks		= new ParamField( spcChunk );
-		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Num Chunks", JLabel.RIGHT ));
-		con.weightx		= 0.4;
-		con.gridwidth	= GridBagConstraints.REMAINDER;
-		gui.addParamField( ggNumChunks, GG_NUMCHUNKS, null );
-
 		ggScanDir	= new JComboBox();
 		ggScanDir.addItem( "Vertical" );
 		ggScanDir.addItem( "Horizontal" );
@@ -296,7 +272,6 @@ extends DocumentFrame
 
 		ggChunkSize		= new ParamField( spcChunk );
 		con.weightx		= 0.1;
-		con.gridwidth	= 1;
 		gui.addLabel( new JLabel( "Chunk Size", JLabel.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
@@ -311,38 +286,41 @@ extends DocumentFrame
 		con.weightx		= 0.2;
 		gui.addChoice( ggClpseDir, GG_CLPSEDIR, il );
 		
-		ggChunkOverlap	= new ParamField( Constants.spaces[ Constants.ratioTimeSpace ]);
+		ggSpaceOverlap	= new ParamField( Constants.spaces[ Constants.ratioTimeSpace ]);
 		con.weightx		= 0.1;
-		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Chunk Overlap", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Space Overlap", JLabel.RIGHT ));
 		con.weightx		= 0.4;
-		gui.addParamField( ggChunkOverlap, GG_CHUNKOVERLAP, null );
+		con.gridwidth	= GridBagConstraints.REMAINDER;
+		gui.addParamField( ggSpaceOverlap, GG_SPACEOVERLAP, null );
 
-		ggTimeJitter = new ParamField( Constants.spaces[ Constants.factorTimeSpace ]);
 		con.weightx		= 0.1;
-		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Time Jitter", JLabel.RIGHT ));
+		con.gridwidth	= 2;
+		gui.addLabel( new JLabel() );
+
+		ggTimeOverlap	= new ParamField( Constants.spaces[ Constants.ratioTimeSpace ]);
+		con.weightx		= 0.1;
+		gui.addLabel( new JLabel( "Time Overlap", JLabel.RIGHT ));
 		con.weightx		= 0.4;
-		gui.addParamField( ggTimeJitter, GG_TIMEJITTER, null );
+		gui.addParamField( ggTimeOverlap, GG_TIMEOVERLAP, null );
 
 		initGUI( this, FLAGS_PRESETS | FLAGS_PROGBAR, gui );
 		
 //		test();
 	}
 	
-	protected void test()
-	{
-		final int m = testMatrix.length;
-		final int n = testMatrix[ 0 ].length;
-		final double[][] u = new double[ m ][ n ];
-		final double[][] v = new double[ n ][ n ];
-		final double[] s = new double[ n ];
-		svd( testMatrix, s, u, v, 1f, true );
-		printVector( s, "s" );
-		printMatrix( u, "u" );
-	}
+//	protected void test()
+//	{
+//		final int m = testMatrix.length;
+//		final int n = testMatrix[ 0 ].length;
+//		final float[][] u = new float[ m ][ n ];
+//		final float[][] v = new float[ n ][ n ];
+//		final float[] s = new float[ n ];
+//		svd( testMatrix, s, u, v, 1f, true );
+//		printVector( s, "s" );
+//		printMatrix( u, "u" );
+//	}
 	
-	private void printVector( double[] v, String name )
+	protected void printVector( float[] v, String name )
 	{
 		final DecimalFormat fmt = getDecimalFormat();
 		System.out.println( "Vector '" + name + "':" );
@@ -365,7 +343,7 @@ extends DocumentFrame
 		return fmt;
 	}
 
-	private void printMatrix( double[][] m, String name )
+	protected void printMatrix( float[][] m, String name )
 	{
 		final DecimalFormat fmt = getDecimalFormat();
 		System.out.println( "Matrix '" + name + "':" );
@@ -423,19 +401,25 @@ extends DocumentFrame
 		final PathField			ggOutput;
 		final int				scanDir			= pr.intg[ PR_SCANDIR ];
 		final int				clpseDir		= pr.intg[ PR_CLPSEDIR ];
-		int						numChunks		= (int) pr.para[ PR_NUMCHUNKS ].val;
+//		int						numChunks		= (int) pr.para[ PR_NUMCHUNKS ].val;
+		int						chunkSize		= (int) pr.para[ PR_CHUNKSIZE ].val;
+		final double			spaceOverlap	= pr.para[ PR_SPACEOVERLAP ].val / 100;
+		final double			timeOverlap		= pr.para[ PR_TIMEOVERLAP ].val / 100;
+		final int				numChunks, winSize, winSizeH, overLen, timeStep;
 
 		final int				width, height, ns, m, n, procNum;
 		final int				cellWidth, cellHeight, cellStepX, cellStepY;
 		final float[]			hsb	= new float[ 3 ];
 		final float[][]			outBuf;
-		final double[]			s;
-		final double[][]		mat, u;
-//		final double[][] 		v;
+		final float[]			s, win, overBuf;
+		final float[][]			mat, u;
+//		final float[][] 		v;
 
-		float[]					convBuf1;
-		int						rgb, xOff, yOff;
-		double					gain2, d1, d2, dcMem0 = 0.0, dcMem1 = 0.0;
+		float[]					chunkBuf;
+//		float[]					convBuf1;
+		int						rgb, xOff, yOff, writeLen;
+		float					gain2;
+		double					d1, d2, dcMem0 = 0.0, dcMem1 = 0.0;
 
 topLevel: try {
 
@@ -464,18 +448,20 @@ topLevel: try {
 			switch( scanDir ) {
 			case DIR_VERT:
 				cellWidth		= width;
-				cellHeight		= Math.max( 1, height / numChunks );
-				numChunks 		= height / cellHeight;
+//				cellHeight		= Math.max( 1, height / numChunks );
+				cellHeight		= Math.min( height, chunkSize );
 				cellStepX		= 0;
-				cellStepY		= cellHeight;
+				cellStepY		= Math.max( 1, (int) (cellHeight * (1.0 - spaceOverlap) + 0.5) );
+				numChunks 		= (height - cellHeight) / cellStepY + 1;
 				break;
 				
 			case DIR_HORIZ:
-				cellWidth		= Math.max( 1, width / numChunks );
-				numChunks		= width / cellWidth;
+//				cellWidth		= Math.max( 1, width / numChunks );
+				cellWidth		= Math.min( width, chunkSize );
 				cellHeight		= height;
-				cellStepX		= cellWidth;
+				cellStepX		= Math.max( 1, (int) (cellWidth * (1.0 - spaceOverlap) + 0.5) );;
 				cellStepY		= 0;
+				numChunks		= (width - cellWidth) / cellStepX + 1;
 				break;
 				
 			default:
@@ -497,6 +483,12 @@ topLevel: try {
 				throw new IllegalArgumentException( String.valueOf( clpseDir ));
 			}
 			
+			overLen  = Math.min( m - 1, (int) (m * timeOverlap + 0.5) );
+			timeStep = m - overLen;
+			winSizeH = Math.min( m >> 1, overLen ) & ~1;
+			winSize  = winSizeH << 1;
+			win		 = Filter.createFullWindow( winSize, Filter.WIN_HANNING );
+			overBuf  = new float[ overLen ];
 
 			// normalization requires temp files
 			if( pr.intg[ PR_GAINTYPE ] == GAIN_UNITY ) {
@@ -510,15 +502,17 @@ topLevel: try {
 		// .... check running ....
 			if( !threadRunning ) break topLevel;
 
-			mat					= new double[ m ][ n ];
+			mat					= new float[ m ][ n ];
 			ns					= Math.min( m + 1, n );
-			s					= new double[ ns ];
-			u					= new double[ m ][ Math.min( m, n )];
-//			v					= new double[ n ][ n ];
+			s					= new float[ ns ];
+			u					= new float[ m ][ Math.min( m, n )];
+//			v					= new float[ n ][ n ];
 			xOff				= 0;
 			yOff				= 0;
+//			chunkBuf			= new float[ m ];
 			outBuf				= new float[ 1 ][ Math.max( 8192, m )];
-			convBuf1 			= outBuf[ 0 ];
+//			convBuf1 			= outBuf[ 0 ];
+			chunkBuf 			= outBuf[ 0 ];
 
 			for( int chunkIdx = 0; chunkIdx < numChunks; chunkIdx++ ) {
 				switch( clpseDir ) {
@@ -567,23 +561,46 @@ topLevel: try {
 				
 				// ---- remove DC ----
 				gain2 = gain * s[ 0 ];
-				if( chunkIdx == 0 ) {
-					dcMem0 = u[ 0 ][ 0 ] * gain2;
-				}
+//				for( int i = 0; i < m; i++ ) {
+//					chunkBuf[ i ]	= (float) u[ i ][ 0 ] * gain2;
+//				}
+				dcMem0 = u[ 0 ][ 0 ] * gain2;
 				for( int i = 0; i < m; i++ ) {
 					d1				= u[ i ][ 0 ] * gain2;
 					d2				= d1 - dcMem0 + 0.99 * dcMem1;
-					convBuf1[ i ]	= (float) d2;
+					chunkBuf[ i ]	= (float) d2;
 					dcMem0			= d1;
 					dcMem1			= d2;
 				}
+				
+				// overlapping
+				Util.mult( win, 0, chunkBuf, 0, winSizeH );
+				Util.mult( win, winSizeH, chunkBuf, m - winSizeH, winSizeH );
+				Util.add( overBuf, 0, chunkBuf, 0, overLen );
+//				System.arraycopy( overBuf, timeStep, overBuf, 0, overLen );
+//				Util.clear( overBuf, overLen, timeStep );
+//				Util.add( convBuf1, timeStep, overBuf, 0, overLen );
+				System.arraycopy( chunkBuf, timeStep, overBuf, 0, overLen );
+				
+				writeLen = (chunkIdx < numChunks - 1) ? timeStep : m;
+				
+//				if( chunkIdx == 0 ) {
+//					dcMem0 = u[ 0 ][ 0 ] * gain2;
+//				}
+//				for( int i = 0; i < writeLen; i++ ) {
+//					d1				= chunkBuf[ i ];
+//					d2				= d1 - dcMem0 + 0.99 * dcMem1;
+//					convBuf1[ i ]	= (float) d2;
+//					dcMem0			= d1;
+//					dcMem1			= d2;
+//				}
 					
 				if( tmpF == null ) {
-					outF.writeFrames( outBuf, 0, m );
+					outF.writeFrames( outBuf, 0, writeLen );
 				} else {
-					tmpF.writeFrames( outBuf, 0, m );
+					tmpF.writeFrames( outBuf, 0, writeLen );
 				}
-				maxAmp = Math.max( maxAmp, Util.maxAbs( convBuf1, 0, m ));
+				maxAmp = Math.max( maxAmp, Util.maxAbs( chunkBuf, 0, m ));
 				xOff += cellStepX;
 				yOff += cellStepY;
 			}			
@@ -626,8 +643,8 @@ topLevel: try {
 	// more ore less directly taken from JAMA
 	// (http://math.nist.gov/javanumerics/jama)
 	// which is released in the public domain.
-	private void svd( double[][] mat, double[] s, double[][] u,
-					  double[][] v, float progStop, boolean noProg )
+	private void svd( float[][] mat, float[] s, float[][] u,
+					  float[][] v, float progStop, boolean noProg )
 	{
 		// Derived from LINPACK code.
 		// Initialize.
@@ -648,14 +665,14 @@ topLevel: try {
 		// if (m<n) {
 		// throw new IllegalArgumentException("Jama SVD only works for m >= n"); }
 
-		// final double[] s = new double [Math.min(m+1,n)];
-		// final double[][] u = new double [m][nu];
-		// final double[][] v = new double [n][n];
+		// final float[] s = new float [Math.min(m+1,n)];
+		// final float[][] u = new float [m][nu];
+		// final float[][] v = new float [n][n];
 
-		final double[]	e		= new double[ n ];
-		final double[]	work	= new double[ m ];
-		final double	eps		= Math.pow( 2.0, -52.0 );
-		final double	tiny	= Math.pow( 2.0, -966.0 );
+		final float[]	e		= new float[ n ];
+		final float[]	work	= new float[ m ];
+		final float	eps		= (float) Math.pow( 2.0, -48.0 );	// -52
+		final float	tiny	= (float) Math.pow( 2.0, -120.0 );	// -966
 
 		// Reduce A to bidiagonal form, storing the diagonal elements
 		// in s and the super-diagonal elements in e.
@@ -687,22 +704,22 @@ topLevel: try {
 				for( int i = k; i < m; i++ ) {
 					s[ k ] = hypot( s[ k ], mat[ i ][ k ]);
 				}
-				if( s[ k ] != 0.0 ) {
-					if( mat[ k ][ k ] < 0.0 ) {
+				if( s[ k ] != 0.0f ) {
+					if( mat[ k ][ k ] < 0.0f ) {
 						s[ k ] = -s[ k ];
 					}
 					for( int i = k; i < m; i++ ) {
 						mat[ i ][ k ] /= s[ k ];
 					}
-					mat[ k ][ k ] += 1.0;
+					mat[ k ][ k ] += 1.0f;
 				}
 				s[ k ] = -s[ k ];
 			}
 
 			for( int j = k + 1; j < n; j++ ) {
-				if( (k < nct) && (s[ k ] != 0.0) ) {
+				if( (k < nct) && (s[ k ] != 0.0f) ) {
 					// Apply the transformation.
-					double t = 0;
+					float t = 0;
 					for( int i = k; i < m; i++ ) {
 						t += mat[ i ][ k ] * mat[ i ][ j ];
 					}
@@ -732,20 +749,20 @@ topLevel: try {
 				for( int i = k + 1; i < n; i++ ) {
 					e[ k ] = hypot( e[ k ], e[ i ]);
 				}
-				if( e[ k ] != 0.0 ) {
-					if( e[ k + 1 ] < 0.0 ) {
+				if( e[ k ] != 0.0f ) {
+					if( e[ k + 1 ] < 0.0f ) {
 						e[ k ] = -e[ k ];
 					}
 					for( int i = k + 1; i < n; i++ ) {
 						e[ i ] /= e[ k ];
 					}
-					e[ k + 1 ] += 1.0;
+					e[ k + 1 ] += 1.0f;
 				}
 				e[ k ] = -e[ k ];
-				if( ((k + 1) < m) && (e[ k ] != 0.0) ) {
+				if( ((k + 1) < m) && (e[ k ] != 0.0f) ) {
 					// Apply the transformation.
 					for( int i = k + 1; i < m; i++ ) {
-						work[ i ] = 0.0;
+						work[ i ] = 0.0f;
 					}
 					for( int j = k + 1; j < n; j++ ) {
 						for( int i = k + 1; i < m; i++ ) {
@@ -753,7 +770,7 @@ topLevel: try {
 						}
 					}
 					for( int j = k + 1; j < n; j++ ) {
-						final double t = -e[ j ] / e[ k + 1 ];
+						final float t = -e[ j ] / e[ k + 1 ];
 						for( int i = k + 1; i < m; i++ ) {
 							mat[ i ][ j ] += t * work[ i ];
 						}
@@ -783,25 +800,25 @@ topLevel: try {
 			s[ nct ] = mat[ nct ][ nct ];
 		}
 		if( m < p ) {
-			s[ p - 1 ] = 0.0;
+			s[ p - 1 ] = 0.0f;
 		}
 		if( (nrt + 1) < p ) {
 			e[ nrt ] = mat[ nrt ][ p - 1 ];
 		}
-		e[ p - 1 ] = 0.0;
+		e[ p - 1 ] = 0.0f;
 
 		// If required, generate U.
 		if( wantu ) {
 			for( int j = nct; j < nu; j++ ) {
 				for( int i = 0; i < m; i++ ) {
-					u[ i ][ j ] = 0.0;
+					u[ i ][ j ] = 0.0f;
 				}
-				u[ j ][ j ] = 1.0;
+				u[ j ][ j ] = 1.0f;
 			}
 			for( int k = nct - 1; k >= 0; k-- ) {
-				if( s[ k ] != 0.0 ) {
+				if( s[ k ] != 0.0f ) {
 					for( int j = k + 1; j < nu; j++ ) {
-						double t = 0;
+						float t = 0;
 						for( int i = k; i < m; i++ ) {
 							t += u[ i ][ k ] * u[ i ][ j ];
 						}
@@ -813,15 +830,15 @@ topLevel: try {
 					for( int i = k; i < m; i++ ) {
 						u[ i ][ k ] = -u[ i ][ k ];
 					}
-					u[ k ][ k ] = 1.0 + u[ k ][ k ];
+					u[ k ][ k ] = 1.0f + u[ k ][ k ];
 					for( int i = 0; i < k - 1; i++ ) {
-						u[ i ][ k ] = 0.0;
+						u[ i ][ k ] = 0.0f;
 					}
 				} else {
 					for( int i = 0; i < m; i++)  {
-						u[ i ][ k ] = 0.0;
+						u[ i ][ k ] = 0.0f;
 					}
-					u[ k ][ k ] = 1.0;
+					u[ k ][ k ] = 1.0f;
 				}
 //				progC++;
 				progC += (nct - k);
@@ -832,9 +849,9 @@ topLevel: try {
 		// If required, generate V.
 		if( wantv ) {
 			for( int k = n - 1; k >= 0; k-- ) {
-				if( (k < nrt) && (e[ k ] != 0.0) ) {
+				if( (k < nrt) && (e[ k ] != 0.0f) ) {
 					for( int j = k + 1; j < nu; j++ ) {
-						double t = 0;
+						float t = 0;
 						for( int i = k + 1; i < n; i++ ) {
 							t += v[ i ][ k ] * v[ i ][ j ];
 						}
@@ -845,9 +862,9 @@ topLevel: try {
 					}
 				}
 				for( int i = 0; i < n; i++ ) {
-					v[ i ][ k ] = 0.0;
+					v[ i ][ k ] = 0.0f;
 				}
-				v[ k ][ k ] = 1.0;
+				v[ k ][ k ] = 1.0f;
 				
 				progC++;
 //				progC += n;
@@ -880,7 +897,7 @@ topLevel: try {
 				if( Math.abs( e[ k ]) <=
 					tiny + eps * (Math.abs( s[ k ]) + Math.abs( s[ k + 1 ]))) {
 					
-					e[ k ] = 0.0;
+					e[ k ] = 0.0f;
 					break;
 				}
 			}
@@ -890,10 +907,10 @@ topLevel: try {
 				int ks;
 				for( ks = p - 1; ks >= k; ks-- ) {
 					if( ks == k ) break;
-					final double t = (ks != p ? Math.abs( e[ ks ]) : 0.0) + 
-									 (ks != k + 1 ? Math.abs( e[ ks - 1 ]) : 0.0);
+					final float t = (ks != p ? Math.abs( e[ ks ]) : 0.0f) + 
+									 (ks != k + 1 ? Math.abs( e[ ks - 1 ]) : 0.0f);
 					if( Math.abs( s[ ks ]) <= tiny + eps * t)  {
-						s[ ks ] = 0.0;
+						s[ ks ] = 0.0f;
 						break;
 					}
 				}
@@ -913,12 +930,12 @@ topLevel: try {
 
 			// Deflate negligible s(p).
 			case 1: {
-				double f = e[ p - 2 ];
-				e[ p - 2 ] = 0.0;
+				float f = e[ p - 2 ];
+				e[ p - 2 ] = 0.0f;
 				for( int j = p - 2; j >= k; j-- ) {
-					final double t = hypot( s[ j ], f );
-					final double cs = s[ j ] / t;
-					final double sn = f / t;
+					final float t = hypot( s[ j ], f );
+					final float cs = s[ j ] / t;
+					final float sn = f / t;
 					s[ j ] = t;
 					if( j != k ) {
 						f			= -sn * e[ j - 1 ];
@@ -926,7 +943,7 @@ topLevel: try {
 					}
 					if( wantv ) {
 						for( int i = 0; i < n; i++ ) {
-							final double tt = cs * v[ i ][ j ] + sn * v[ i ][ p - 1 ];
+							final float tt = cs * v[ i ][ j ] + sn * v[ i ][ p - 1 ];
 							v[ i ][ p - 1 ] = -sn * v[ i ][ j ] + cs * v[ i ][ p - 1 ];
 							v[ i ][ j ]     = tt;
 						}
@@ -937,18 +954,18 @@ topLevel: try {
 
 			// Split at negligible s(k).
 			case 2: {
-				double f = e[ k - 1 ];
-				e[ k - 1 ] = 0.0;
+				float f = e[ k - 1 ];
+				e[ k - 1 ] = 0.0f;
 				for( int j = k; j < p; j++ ) {
-					final double t	= hypot( s[ j ], f );
-					final double cs = s[ j ] / t;
-					final double sn = f / t;
+					final float t	= hypot( s[ j ], f );
+					final float cs = s[ j ] / t;
+					final float sn = f / t;
 					s[ j ] = t;
 					f = -sn * e[ j ];
 					e[ j ] = cs * e[ j ];
 					if( wantu ) {
 						for( int i = 0; i < m; i++ ) {
-							final double tt = cs * u[ i ][ j ] + sn * u[ i ][ k - 1 ];
+							final float tt = cs * u[ i ][ j ] + sn * u[ i ][ k - 1 ];
 							u[ i ][ k - 1 ] = -sn * u[ i ][ j ] + cs * u[ i ][ k - 1 ];
 							u[ i ][ j ]     = tt;
 						}
@@ -960,36 +977,36 @@ topLevel: try {
 			// Perform one qr step.
 			case 3: {
 				// Calculate the shift.
-				final double scale = Math.max( Math.max( Math.max( Math.max(
+				final float scale = Math.max( Math.max( Math.max( Math.max(
 				    Math.abs( s[ p - 1 ]), Math.abs( s[ p - 2 ])), Math.abs( e[ p - 2 ])), 
 				    Math.abs( s[ k ])), Math.abs( e[ k ]));
-				final double sp		= s[ p - 1 ] / scale;
-				final double spm1	= s[ p - 2 ] / scale;
-				final double epm1	= e[ p - 2 ] / scale;
-				final double sk		= s[ k ] / scale;
-				final double ek		= e[ k ] / scale;
-				final double b		= ((spm1 + sp) * (spm1 - sp) + epm1 * epm1) / 2.0;
-				final double c		= (sp * epm1) * (sp * epm1);
-				final double shift;
-				if( (b != 0.0) || (c != 0.0) ) {
-					final double t;
-					if( b >= 0.0 ) {
-						t = Math.sqrt(b*b + c);	
+				final float sp		= s[ p - 1 ] / scale;
+				final float spm1	= s[ p - 2 ] / scale;
+				final float epm1	= e[ p - 2 ] / scale;
+				final float sk		= s[ k ] / scale;
+				final float ek		= e[ k ] / scale;
+				final float b		= ((spm1 + sp) * (spm1 - sp) + epm1 * epm1) / 2.0f;
+				final float c		= (sp * epm1) * (sp * epm1);
+				final float shift;
+				if( (b != 0.0f) || (c != 0.0f) ) {
+					final float t;
+					if( b >= 0.0f ) {
+						t = (float) Math.sqrt(b*b + c);	
 					} else {
-						t = -Math.sqrt(b*b + c);	
+						t = (float) -Math.sqrt(b*b + c);	
 					}
 					shift = c / (b + t);
 				} else {
-					shift = 0.0;
+					shift = 0.0f;
 				}
-				double f = (sk + sp) * (sk - sp) + shift;
-				double g = sk * ek;
+				float f = (sk + sp) * (sk - sp) + shift;
+				float g = sk * ek;
 
 				// Chase zeros.
 				for( int j = k; j < (p - 1); j++ ) {
-					double t	= hypot( f, g );
-					double cs	= f / t;
-					double sn	= g / t;
+					float t	= hypot( f, g );
+					float cs	= f / t;
+					float sn	= g / t;
 					if( j != k ) {
 						e[ j - 1 ] = t;
 					}
@@ -999,7 +1016,7 @@ topLevel: try {
 					s[ j + 1 ]	= cs * s[ j + 1 ];
 					if( wantv ) {
 						for( int i = 0; i < n; i++ ) {
-							final double tt = cs * v[ i ][ j ] + sn * v[ i ][ j + 1 ];
+							final float tt = cs * v[ i ][ j ] + sn * v[ i ][ j + 1 ];
 							v[ i ][ j + 1 ] = -sn * v[ i ][ j ] + cs * v[ i ][ j + 1 ];
 							v[ i ][ j ]     = tt;
 						}
@@ -1014,7 +1031,7 @@ topLevel: try {
 					e[ j + 1 ]	=  cs * e[ j + 1 ];
 					if( wantu && (j < (m - 1)) ) {
 						for( int i = 0; i < m; i++ ) {
-							final double tt = cs * u[ i ][ j ] + sn * u[ i ][ j + 1 ];
+							final float tt = cs * u[ i ][ j ] + sn * u[ i ][ j + 1 ];
 							u[ i ][ j + 1 ] = -sn * u[ i ][ j ] + cs * u[ i ][ j + 1 ];
 							u[ i ][ j ]     = tt;
 						}
@@ -1028,8 +1045,8 @@ topLevel: try {
 			// Convergence.
 			case 4: {
 				// Make the singular values positive.
-				if( s[ k ] <= 0.0 ) {
-					s[ k ] = (s[ k ] < 0.0 ? -s[ k ] : 0.0);
+				if( s[ k ] <= 0.0f ) {
+					s[ k ] = (s[ k ] < 0.0f ? -s[ k ] : 0.0f);
 					if( wantv ) {
 						for( int i = 0; i <= pp; i++ ) {
 							v[ i ][ k ] = -v[ i ][ k ];
@@ -1040,7 +1057,7 @@ topLevel: try {
 				// Order the singular values.
 				while( k < pp ) {
 					if( s[ k ] >= s[ k + 1 ]) break;
-					double t	= s[ k ];
+					float t	= s[ k ];
 					s[ k ]		= s[ k + 1 ];
 					s[ k + 1 ]	= t;
 					if( wantv && (k < (n - 1)) ) {
@@ -1073,16 +1090,16 @@ topLevel: try {
 	}
 
 	// sqrt(a^2 + b^2) without under/overflow.
-	private static double hypot( double a, double b )
+	private static float hypot( float a, float b )
 	{
 		if( Math.abs( a ) > Math.abs( b )) {
-			final double div = b / a;
-			return( Math.abs( a ) * Math.sqrt( 1 + div * div ));
+			final float div = b / a;
+			return( (float) (Math.abs( a ) * Math.sqrt( 1 + div * div )));
 		} else if( b != 0 ) {
-			final double div = a / b;
-			return( Math.abs( b ) * Math.sqrt( 1 + div * div ));
+			final float div = a / b;
+			return( (float) (Math.abs( b ) * Math.sqrt( 1 + div * div )));
 		} else {
-			return 0.0;
+			return 0.0f;
 		}
 	}
 
