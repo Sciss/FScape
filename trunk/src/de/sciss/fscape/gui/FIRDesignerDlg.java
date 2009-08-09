@@ -104,12 +104,12 @@ implements VectorPanel.Client
 
 	private static final String[]	prText		= { "", "03{1;false;1000.0,3;250.0,35;0.0,785;0.0,2;false;5000.0,3;1000.0,35}" };
 	private static final String[]	prTextName	= { PRN_OUTPUTFILE, PRN_CIRCUIT };
-	private static final int[]		prIntg		= { 0, 0, 0, QUAL_GOOD, 0, GAIN_UNITY };
+	private static final int[]		prIntg		= { 0, PathField.SNDRES_32F, 0, QUAL_GOOD, 0, GAIN_UNITY };
 	private static final String[]	prIntgName	= { PRN_OUTPUTTYPE, PRN_OUTPUTRES, PRN_OUTPUTRATE, PRN_QUALITY,
 													PRN_WINDOW, PRN_GAINTYPE };
 	private static final boolean[]	prBool		= { false };
 	private static final String[]	prBoolName	= { PRN_MINPHASE };
-	private static final Param[]	prPara		= { new Param( 0.0, Param.DECIBEL_AMP )};
+	private static final Param[]	prPara		= { null };
 	private static final String[]	prParaName	= { PRN_GAIN };
 
 	private static final int GG_OUTPUTFILE		= GG_OFF_PATHFIELD	+ PR_OUTPUTFILE;
@@ -181,9 +181,9 @@ implements VectorPanel.Client
 			static_pr.paraName	= prParaName;
 
 			static_pr.superPr	= DocumentFrame.static_pr;
-		}
-		// default preset
-		if( static_presets == null ) {
+
+			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, -1, PR_OUTPUTRATE );
+			fillDefaultGain( static_pr.para, PR_GAIN );
 			static_presets = new Presets( getClass(), static_pr.toProperties( true ));
 		}
 		presets	= static_presets;

@@ -148,7 +148,6 @@ extends DocumentFrame
 			static_pr.intg		= prIntg;
 			static_pr.intgName	= prIntgName;
 			static_pr.para		= prPara;
-			static_pr.para[ PR_GAIN ]			= new Param(    0.0, Param.DECIBEL_AMP );
 			static_pr.para[ PR_LOFREQ ]			= new Param(  400.0, Param.ABS_HZ );
 			static_pr.para[ PR_HIFREQ ]			= new Param( 9000.0, Param.ABS_HZ );
 			static_pr.para[ PR_DRYMIX ]			= new Param(  100.0, Param.FACTOR_AMP );
@@ -157,9 +156,9 @@ extends DocumentFrame
 			static_pr.para[ PR_BANDSPEROCT ]	= new Param(   12.0, Param.NONE );
 			static_pr.paraName	= prParaName;
 			static_pr.superPr	= DocumentFrame.static_pr;
-		}
-		// default preset
-		if( static_presets == null ) {
+
+			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
+			fillDefaultGain( static_pr.para, PR_GAIN );
 			static_presets = new Presets( getClass(), static_pr.toProperties( true ));
 		}
 		presets	= static_presets;

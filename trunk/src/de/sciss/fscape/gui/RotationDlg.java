@@ -85,11 +85,11 @@ extends DocumentFrame
 
 	private static final String	prText[]			= { "", "" };
 	private static final String	prTextName[]		= { PRN_INPUTFILE, PRN_OUTPUTFILE };
-	private static final int	prIntg[]			= { 0, 0, MODE_ROTATION, GAIN_ABSOLUTE };
+	private static final int	prIntg[]			= { 0, 0, MODE_ROTATION, GAIN_UNITY };
 	private static final String	prIntgName[]		= { PRN_OUTPUTTYPE, PRN_OUTPUTRES, PRN_MODE, PRN_GAINTYPE };
 	private static final Param	prPara[]			= { new Param( 2.0, Param.NONE ),
-														new Param(    0.0, Param.DECIBEL_AMP )};
-	private static final String	prParaName[]		= { PRN_REPEATS };
+														null };
+	private static final String	prParaName[]		= { PRN_REPEATS, PRN_GAINTYPE };
 	private static final boolean prBool[]			= { false };
 	private static final String	prBoolName[]		= { PRN_SUBDRY };
 
@@ -131,9 +131,9 @@ extends DocumentFrame
 			static_pr.para		= prPara;
 			static_pr.paraName	= prParaName;
 			static_pr.superPr	= DocumentFrame.static_pr;
-		}
-		// default preset
-		if( static_presets == null ) {
+
+			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
+			fillDefaultGain( static_pr.para, PR_GAIN );
 			static_presets = new Presets( getClass(), static_pr.toProperties( true ));
 		}
 		presets	= static_presets;

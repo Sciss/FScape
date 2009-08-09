@@ -47,6 +47,7 @@ import de.sciss.util.Flag;
 import de.sciss.util.ParamSpace;
 
 import de.sciss.fscape.*;
+import de.sciss.fscape.io.GenericFile;
 import de.sciss.fscape.net.*;
 import de.sciss.fscape.util.*;
 
@@ -56,7 +57,7 @@ import de.sciss.fscape.util.*;
  *  application and session preferences
  *
  *  @author		Hanns Holger Rutz
- *  @version	0.70, 03-Oct-06
+ *  @version	0.73, 09-Aug-09
  */
 public class PrefsFrame
 extends AppWindow
@@ -112,6 +113,46 @@ extends AppWindow
 		ggPath	= new PrefPathField( PathField.TYPE_FOLDER, getResourceString( key2 ));
 		ggPath.setPreferences( prefs, key );
 		tab.gridAdd( ggPath, 1, row );
+
+		row++;
+		prefs   = app.getUserPrefs();
+		key2	= "prefsAudioFileFormat";
+		lb		= new JLabel( getResourceString( key2 ), JLabel.TRAILING );
+		tab.gridAdd( lb, 0, row );
+		b		= Box.createHorizontalBox();
+		ggChoice = new PrefComboBox();
+		for( int i = 0; i < GenericFile.TYPES_SOUND.length; i++ ) {
+			ggChoice.addItem( new StringItem( GenericFile.getFileTypeStr( GenericFile.TYPES_SOUND[ i ]), GenericFile.getTypeDescr( GenericFile.TYPES_SOUND[ i ])));
+		}
+		key		= "audioFileType";
+		ggChoice.setPreferences( prefs, key );
+		b.add( ggChoice );
+		ggChoice = new PrefComboBox();
+		for( int i = 0; i < PathField.SNDRES_NUM; i++ ) {
+			ggChoice.addItem( new StringItem( PathField.getSoundResID( i ), PathField.getSoundResDescr( i )));
+		}
+		key		= "audioFileRes";
+		ggChoice.setPreferences( prefs, key );
+		b.add( ggChoice );
+		ggChoice = new PrefComboBox();
+		for( int i = 0; i < PathField.SNDRATE_NUM; i++ ) {
+			ggChoice.addItem( new StringItem( PathField.getSoundRateID( i ), PathField.getSoundRateDescr( i )));
+		}
+		key		= "audioFileRate";
+		ggChoice.setPreferences( prefs, key );
+		b.add( ggChoice );
+		tab.gridAdd( b, 1, row, -1, 1 );
+
+		row++;
+		prefs   = app.getUserPrefs();
+		key2	= "prefsHeadroom";
+		key		= "headroom";
+		lb		= new JLabel( getResourceString( key2 ), JLabel.TRAILING );
+		tab.gridAdd( lb, 0, row );
+		ggParam  = new PrefParamField();
+		ggParam.addSpace( ParamSpace.spcAmpDecibels );
+		ggParam.setPreferences( prefs, key );
+		tab.gridAdd( ggParam, 1, row, -1, 1 );
 
 		row++;
 		osc		= OSCRoot.getInstance();

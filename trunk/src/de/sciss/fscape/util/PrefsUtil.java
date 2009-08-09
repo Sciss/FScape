@@ -43,6 +43,7 @@ import javax.swing.*;
 import org.w3c.dom.*;
 
 import de.sciss.app.*;
+import de.sciss.fscape.gui.PathField;
 import de.sciss.io.*;
 
 /**
@@ -173,6 +174,10 @@ public class PrefsUtil
 
 		// save current version
 		mainPrefs.putDouble( KEY_VERSION, AbstractApplication.getApplication().getVersion() );
+
+		putDontOverwrite( mainPrefs, "audioFileRes", PathField.getSoundResID( 1 ));
+		putDontOverwrite( mainPrefs, "audioFileRate", PathField.getSoundRateID( 2 ));
+		putDontOverwrite( mainPrefs, "headroom", new de.sciss.util.Param( -0.2, de.sciss.util.ParamSpace.spcAmpDecibels.unit ).toString() );
 
 		return warnings;
 	}

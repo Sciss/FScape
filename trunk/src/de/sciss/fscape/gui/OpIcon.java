@@ -30,7 +30,6 @@ package de.sciss.fscape.gui;
 
 import java.awt.AWTEvent;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -42,6 +41,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 
+import javax.swing.JComponent;
+
 import de.sciss.fscape.op.Operator;
 
 /**
@@ -49,7 +50,7 @@ import de.sciss.fscape.op.Operator;
  *	operator's icon.
  *
  *  @author		Hanns Holger Rutz
- *  @version	0.72, 21-Jan-09
+ *  @version	0.73, 09-Aug-09
  */
 public class OpIcon
 extends IconicComponent
@@ -190,19 +191,21 @@ extends IconicComponent
 	/**
 	 *	Fuegt dieses Icon einem Container zu; STATT Container.add( OpIcon ) zu verwenden!!
 	 */
-	public void addTo( Container c )
+	public void addTo( JComponent c )
 	{
 		c.add( this );
 		c.add( lab );
+		c.revalidate(); c.repaint();
 	}
 
 	/**
 	 *	Entfernt dieses Icon von einem Container; STATT Container.remove( OpIcon ) zu verwenden!!
 	 */
-	public void removeFrom( Container c )
+	public void removeFrom( JComponent c )
 	{
 		c.remove( this );
 		c.remove( lab );
+		c.revalidate(); c.repaint();
 	}
 
 	/**

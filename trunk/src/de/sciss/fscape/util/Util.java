@@ -355,6 +355,18 @@ public class Util
 	}
 
 	/**
+	 *	Eindimensionales Array loeschen
+	 */
+	public static void clear( float[] a, int off, int length )
+	{
+		final int stop = off + length;
+
+		for( int j = off; j < stop; j++ ) {
+			a[ j ] = 0.0f;
+		}
+	}
+
+	/**
 	 *	Eindimensionales Array umkehren
 	 */
 	public static void reverse( float[] a, int off, int length )

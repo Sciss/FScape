@@ -41,6 +41,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.JComboBox;
@@ -61,6 +62,9 @@ import de.sciss.io.AudioFileDescr;
 /**
  *  @author		Hanns Holger Rutz
  *  @version	0.72, 08-Aug-09
+ *  
+ *  @todo		multichannel version: could use the next
+ *  			vector (row in u multiplied by s-gain), or hue and saturation
  */
 public class BeltramiDecompositionDlg
 extends DocumentFrame
@@ -101,34 +105,38 @@ extends DocumentFrame
 	private static final int PR_OUTPUTFILE			= 1;
 	private static final int PR_OUTPUTTYPE			= 0;		// pr.intg
 	private static final int PR_OUTPUTRES			= 1;
-	private static final int PR_GAINTYPE			= 2;
-	private static final int PR_SCANDIR				= 3;
-	private static final int PR_CLPSEDIR			= 4;
+	private static final int PR_OUTPUTRATE			= 2;
+	private static final int PR_GAINTYPE			= 3;
+	private static final int PR_SCANDIR				= 4;
+	private static final int PR_CLPSEDIR			= 5;
 	private static final int PR_GAIN				= 0;		// pr.para
 	private static final int PR_CHUNKSIZE			= 1;
 	private static final int PR_SPACEOVERLAP		= 2;
 	private static final int PR_TIMEOVERLAP			= 3;
+	private static final int PR_TIMEJITTER			= 4;
 //	private static final int PR_READMARKERS			= 0;		// pr.bool
 
 	private static final String PRN_INIMGFILE		= "InImgFile";
 	private static final String PRN_OUTPUTFILE		= "OutputFile";
 	private static final String PRN_OUTPUTTYPE		= "OutputType";
 	private static final String PRN_OUTPUTRES		= "OutputReso";
+	private static final String PRN_OUTPUTRATE		= "OutputRate";
 	private static final String PRN_SCANDIR			= "ScanDir";
 	private static final String PRN_CLPSEDIR		= "CollapseDir";
 	private static final String PRN_CHUNKSIZE		= "ChunkSize";
 	private static final String PRN_SPACEOVERLAP	= "SpaceOverlap";
 	private static final String PRN_TIMEOVERLAP		= "TimeOverlap";
+	private static final String PRN_TIMEJITTER		= "TimeJitter";
 
 	private static final int	DIR_VERT		= 0;
 	private static final int	DIR_HORIZ		= 1;
 	
 	private static final String	prText[]		= { "", "" };
 	private static final String	prTextName[]	= { PRN_INIMGFILE, PRN_OUTPUTFILE };
-	private static final int	prIntg[]		= { 0, 0, GAIN_UNITY, DIR_VERT, DIR_VERT };
-	private static final String	prIntgName[]	= { PRN_OUTPUTTYPE, PRN_OUTPUTRES, PRN_GAINTYPE, PRN_SCANDIR, PRN_CLPSEDIR };
-	private static final Param	prPara[]		= { null, null, null, null };
-	private static final String	prParaName[]	= { PRN_GAIN, PRN_CHUNKSIZE, PRN_SPACEOVERLAP, PRN_TIMEOVERLAP };
+	private static final int	prIntg[]		= { 0, 0, 0, GAIN_UNITY, DIR_VERT, DIR_VERT };
+	private static final String	prIntgName[]	= { PRN_OUTPUTTYPE, PRN_OUTPUTRES, PRN_OUTPUTRATE, PRN_GAINTYPE, PRN_SCANDIR, PRN_CLPSEDIR };
+	private static final Param	prPara[]		= { null, null, null, null, null };
+	private static final String	prParaName[]	= { PRN_GAIN, PRN_CHUNKSIZE, PRN_SPACEOVERLAP, PRN_TIMEOVERLAP, PRN_TIMEJITTER };
 //	private static final boolean prBool[]		= { false };
 //	private static final String	prBoolName[]	= { PRN_READMARKERS };
 
@@ -136,6 +144,7 @@ extends DocumentFrame
 	private static final int GG_OUTPUTFILE		= GG_OFF_PATHFIELD	+ PR_OUTPUTFILE;
 	private static final int GG_OUTPUTTYPE		= GG_OFF_CHOICE		+ PR_OUTPUTTYPE;
 	private static final int GG_OUTPUTRES		= GG_OFF_CHOICE		+ PR_OUTPUTRES;
+	private static final int GG_OUTPUTRATE		= GG_OFF_CHOICE		+ PR_OUTPUTRATE;
 	private static final int GG_GAINTYPE		= GG_OFF_CHOICE		+ PR_GAINTYPE;
 	private static final int GG_SCANDIR			= GG_OFF_CHOICE		+ PR_SCANDIR;
 	private static final int GG_CLPSEDIR		= GG_OFF_CHOICE		+ PR_CLPSEDIR;
@@ -143,6 +152,7 @@ extends DocumentFrame
 	private static final int GG_CHUNKSIZE		= GG_OFF_PARAMFIELD	+ PR_CHUNKSIZE;
 	private static final int GG_SPACEOVERLAP	= GG_OFF_PARAMFIELD	+ PR_SPACEOVERLAP;
 	private static final int GG_TIMEOVERLAP		= GG_OFF_PARAMFIELD	+ PR_TIMEOVERLAP;
+	private static final int GG_TIMEJITTER		= GG_OFF_PARAMFIELD	+ PR_TIMEJITTER;
 
 	private static	PropertyArray	static_pr		= null;
 	private static	Presets			static_presets	= null;
@@ -172,15 +182,15 @@ extends DocumentFrame
 //			static_pr.bool		= prBool;
 //			static_pr.boolName	= prBoolName;
 			static_pr.para		= prPara;
-			static_pr.para[ PR_GAIN ]			= new Param(     0.0, Param.DECIBEL_AMP );
-			static_pr.para[ PR_CHUNKSIZE ]		= new Param(   256.0, Param.NONE );
-			static_pr.para[ PR_SPACEOVERLAP ]	= new Param(    75.0, Param.FACTOR_TIME );
-			static_pr.para[ PR_TIMEOVERLAP ]	= new Param(    25.0, Param.FACTOR_TIME );
+			static_pr.para[ PR_CHUNKSIZE ]		= new Param(   128.0, Param.NONE );
+			static_pr.para[ PR_SPACEOVERLAP ]	= new Param(    50.0, Param.FACTOR_TIME );
+			static_pr.para[ PR_TIMEOVERLAP ]	= new Param(    12.5, Param.FACTOR_TIME );
+			static_pr.para[ PR_TIMEJITTER ]		= new Param(     0.0, Param.FACTOR_TIME );
 			static_pr.paraName	= prParaName;
 			static_pr.superPr	= DocumentFrame.static_pr;
-		}
-		// default preset
-		if( static_presets == null ) {
+
+			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES, PR_OUTPUTRATE );
+			fillDefaultGain( static_pr.para, PR_GAIN );
 			static_presets = new Presets( getClass(), static_pr.toProperties( true ));
 		}
 		presets	= static_presets;
@@ -192,7 +202,7 @@ extends DocumentFrame
 		final PathField				ggInImgFile, ggOutputFile;
 		final PathField[]			ggInputs;
 		final Component[]			ggGain;
-		final ParamField			ggSpaceOverlap, ggTimeOverlap, ggChunkSize;
+		final ParamField			ggSpaceOverlap, ggTimeOverlap, ggChunkSize, ggTimeJitter;
 		final ParamSpace			spcChunk;
 		final JComboBox				ggScanDir, ggClpseDir;
 
@@ -232,7 +242,7 @@ extends DocumentFrame
 		gui.addPathField( ggInImgFile, GG_INIMGFILE, null );
 
 		ggOutputFile	= new PathField( PathField.TYPE_OUTPUTFILE + PathField.TYPE_FORMATFIELD +
-										 PathField.TYPE_RESFIELD, "Select output file" );
+										 PathField.TYPE_RESFIELD + PathField.TYPE_RATEFIELD, "Select output file" );
 		ggOutputFile.handleTypes( GenericFile.TYPES_SOUND );
 		ggInputs		= new PathField[ 1 ];
 		ggInputs[ 0 ]	= ggInImgFile;
@@ -245,6 +255,7 @@ extends DocumentFrame
 		gui.addPathField( ggOutputFile, GG_OUTPUTFILE, null );
 		gui.registerGadget( ggOutputFile.getTypeGadget(), GG_OUTPUTTYPE );
 		gui.registerGadget( ggOutputFile.getResGadget(), GG_OUTPUTRES );
+		gui.registerGadget( ggOutputFile.getRateGadget(), GG_OUTPUTRATE );
 
 		ggGain			= createGadgets( GGTYPE_GAIN );
 		con.weightx		= 0.1;
@@ -270,13 +281,13 @@ extends DocumentFrame
 		con.weightx		= 0.2;
 		gui.addChoice( ggScanDir, GG_SCANDIR, il );
 
-		ggChunkSize		= new ParamField( spcChunk );
+		ggSpaceOverlap	= new ParamField( Constants.spaces[ Constants.ratioTimeSpace ]);
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Chunk Size", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Space Overlap", JLabel.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
-		gui.addParamField( ggChunkSize, GG_CHUNKSIZE, null );
-
+		gui.addParamField( ggSpaceOverlap, GG_SPACEOVERLAP, null );
+		
 		ggClpseDir	= new JComboBox();
 		ggClpseDir.addItem( "Vertical" );
 		ggClpseDir.addItem( "Horizontal" );
@@ -286,22 +297,26 @@ extends DocumentFrame
 		con.weightx		= 0.2;
 		gui.addChoice( ggClpseDir, GG_CLPSEDIR, il );
 		
-		ggSpaceOverlap	= new ParamField( Constants.spaces[ Constants.ratioTimeSpace ]);
-		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Space Overlap", JLabel.RIGHT ));
-		con.weightx		= 0.4;
-		con.gridwidth	= GridBagConstraints.REMAINDER;
-		gui.addParamField( ggSpaceOverlap, GG_SPACEOVERLAP, null );
-
-		con.weightx		= 0.1;
-		con.gridwidth	= 2;
-		gui.addLabel( new JLabel() );
-
 		ggTimeOverlap	= new ParamField( Constants.spaces[ Constants.ratioTimeSpace ]);
 		con.weightx		= 0.1;
 		gui.addLabel( new JLabel( "Time Overlap", JLabel.RIGHT ));
 		con.weightx		= 0.4;
+		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggTimeOverlap, GG_TIMEOVERLAP, null );
+
+		ggChunkSize		= new ParamField( spcChunk );
+		con.weightx		= 0.1;
+		con.gridwidth	= 1;
+		gui.addLabel( new JLabel( "Chunk Size", JLabel.RIGHT ));
+		con.weightx		= 0.4;
+		gui.addParamField( ggChunkSize, GG_CHUNKSIZE, null );
+
+		ggTimeJitter	= new ParamField( Constants.spaces[ Constants.ratioTimeSpace ]);
+		con.weightx		= 0.1;
+		gui.addLabel( new JLabel( "Time Jitter", JLabel.RIGHT ));
+		con.weightx		= 0.4;
+		con.gridwidth	= GridBagConstraints.REMAINDER;
+		gui.addParamField( ggTimeJitter, GG_TIMEJITTER, null );
 
 		initGUI( this, FLAGS_PRESETS | FLAGS_PROGBAR, gui );
 		
@@ -405,8 +420,9 @@ extends DocumentFrame
 		int						chunkSize		= (int) pr.para[ PR_CHUNKSIZE ].val;
 		final double			spaceOverlap	= pr.para[ PR_SPACEOVERLAP ].val / 100;
 		final double			timeOverlap		= pr.para[ PR_TIMEOVERLAP ].val / 100;
+		final double			timeJitter		= pr.para[ PR_TIMEJITTER ].val / 100;
 		final int				numChunks, winSize, winSizeH, overLen, timeStep;
-
+		final int				timeJitMin, timeJitMax, timeJitRange;
 		final int				width, height, ns, m, n, procNum;
 		final int				cellWidth, cellHeight, cellStepX, cellStepY;
 		final float[]			hsb	= new float[ 3 ];
@@ -414,13 +430,17 @@ extends DocumentFrame
 		final float[]			s, win, overBuf;
 		final float[][]			mat, u;
 //		final float[][] 		v;
+		final Random			rnd;
 
 		float[]					chunkBuf;
 //		float[]					convBuf1;
-		int						rgb, xOff, yOff, writeLen;
+		int						rgb, xOff, yOff, writeLen, realStep;
 		float					gain2;
 		double					d1, d2, dcMem0 = 0.0, dcMem1 = 0.0;
 
+		final int dimStart = 0; // 1;
+		final int dimStop  = 1; // 2;
+		
 topLevel: try {
 
 		// ---- open input, output; init ----
@@ -435,7 +455,7 @@ topLevel: try {
 			if( ggOutput == null ) throw new IOException( ERR_MISSINGPROP );
 			outStream	= new AudioFileDescr();
 			outStream.channels = 1;
-			outStream.rate     = 44100; // XXX put in gui
+//			outStream.rate     = 44100;
 			ggOutput.fillStream( outStream );
 			outF		= AudioFile.openAsWrite( outStream );
 		// .... check running ....
@@ -459,7 +479,7 @@ topLevel: try {
 //				cellWidth		= Math.max( 1, width / numChunks );
 				cellWidth		= Math.min( width, chunkSize );
 				cellHeight		= height;
-				cellStepX		= Math.max( 1, (int) (cellWidth * (1.0 - spaceOverlap) + 0.5) );;
+				cellStepX		= Math.max( 1, (int) (cellWidth * (1.0 - spaceOverlap) + 0.5) );
 				cellStepY		= 0;
 				numChunks		= (width - cellWidth) / cellStepX + 1;
 				break;
@@ -470,13 +490,13 @@ topLevel: try {
 			
 			switch( clpseDir ) {
 			case DIR_VERT:
-				m		= width;
+				m		= cellWidth;
 				n		= cellHeight;
 				break;
 				
 			case DIR_HORIZ:
-				m		= cellWidth;
-				n		= height;
+				m		= cellHeight;
+				n		= cellWidth;
 				break;
 				
 			default:
@@ -488,7 +508,11 @@ topLevel: try {
 			winSizeH = Math.min( m >> 1, overLen ) & ~1;
 			winSize  = winSizeH << 1;
 			win		 = Filter.createFullWindow( winSize, Filter.WIN_HANNING );
-			overBuf  = new float[ overLen ];
+			timeJitMin = -Math.min( timeStep - 1, (int) (timeStep * timeJitter + 0.5) );
+			timeJitMax = Math.min( overLen - 1, (int) (overLen * timeJitter + 0.5) );
+			timeJitRange = timeJitMax - timeJitMin + 1;
+			rnd		= new Random();
+			overBuf  = new float[ m ]; // overLen + max jitter
 
 			// normalization requires temp files
 			if( pr.intg[ PR_GAINTYPE ] == GAIN_UNITY ) {
@@ -559,48 +583,57 @@ topLevel: try {
 //					if( u[ len - 1 ][ 0 ] != 0f ) break;
 //				}
 				
-				// ---- remove DC ----
-				gain2 = gain * s[ 0 ];
-//				for( int i = 0; i < m; i++ ) {
-//					chunkBuf[ i ]	= (float) u[ i ][ 0 ] * gain2;
-//				}
-				dcMem0 = u[ 0 ][ 0 ] * gain2;
-				for( int i = 0; i < m; i++ ) {
-					d1				= u[ i ][ 0 ] * gain2;
-					d2				= d1 - dcMem0 + 0.99 * dcMem1;
-					chunkBuf[ i ]	= (float) d2;
-					dcMem0			= d1;
-					dcMem1			= d2;
-				}
+				for( int dim = dimStart; dim < dimStop; dim++ ) {
 				
-				// overlapping
-				Util.mult( win, 0, chunkBuf, 0, winSizeH );
-				Util.mult( win, winSizeH, chunkBuf, m - winSizeH, winSizeH );
-				Util.add( overBuf, 0, chunkBuf, 0, overLen );
-//				System.arraycopy( overBuf, timeStep, overBuf, 0, overLen );
-//				Util.clear( overBuf, overLen, timeStep );
-//				Util.add( convBuf1, timeStep, overBuf, 0, overLen );
-				System.arraycopy( chunkBuf, timeStep, overBuf, 0, overLen );
+					// ---- remove DC ----
+					gain2 = gain * s[ dim ];
+//					for( int i = 0; i < m; i++ ) {
+//						chunkBuf[ i ]	= (float) u[ i ][ 0 ] * gain2;
+//					}
+					dcMem0 = u[ 0 ][ dim ] * gain2;
+					for( int i = 0; i < m; i++ ) {
+						d1				= u[ i ][ dim ] * gain2;
+						d2				= d1 - dcMem0 + 0.99 * dcMem1;
+						chunkBuf[ i ]	= (float) d2;
+						dcMem0			= d1;
+						dcMem1			= d2;
+					}
 				
-				writeLen = (chunkIdx < numChunks - 1) ? timeStep : m;
-				
-//				if( chunkIdx == 0 ) {
-//					dcMem0 = u[ 0 ][ 0 ] * gain2;
-//				}
-//				for( int i = 0; i < writeLen; i++ ) {
-//					d1				= chunkBuf[ i ];
-//					d2				= d1 - dcMem0 + 0.99 * dcMem1;
-//					convBuf1[ i ]	= (float) d2;
-//					dcMem0			= d1;
-//					dcMem1			= d2;
-//				}
+					// overlapping
+					Util.mult( win, 0, chunkBuf, 0, winSizeH );
+					Util.mult( win, winSizeH, chunkBuf, m - winSizeH, winSizeH );
+					Util.add( overBuf, 0, chunkBuf, 0, m );
+	//				System.arraycopy( overBuf, timeStep, overBuf, 0, overLen );
+	//				Util.clear( overBuf, overLen, timeStep );
+	//				Util.add( convBuf1, timeStep, overBuf, 0, overLen );
+					if( timeJitter > 0 ) {
+						realStep = timeStep + rnd.nextInt( timeJitRange ) + timeJitMin;
+					} else {
+						realStep = timeStep;
+					}
+					System.arraycopy( chunkBuf, realStep, overBuf, 0, m - realStep );
+					Util.clear( chunkBuf, m - realStep, realStep );
 					
-				if( tmpF == null ) {
-					outF.writeFrames( outBuf, 0, writeLen );
-				} else {
-					tmpF.writeFrames( outBuf, 0, writeLen );
-				}
-				maxAmp = Math.max( maxAmp, Util.maxAbs( chunkBuf, 0, m ));
+					writeLen = (chunkIdx < numChunks - 1) ? realStep : m;
+					
+	//				if( chunkIdx == 0 ) {
+	//					dcMem0 = u[ 0 ][ 0 ] * gain2;
+	//				}
+	//				for( int i = 0; i < writeLen; i++ ) {
+	//					d1				= chunkBuf[ i ];
+	//					d2				= d1 - dcMem0 + 0.99 * dcMem1;
+	//					convBuf1[ i ]	= (float) d2;
+	//					dcMem0			= d1;
+	//					dcMem1			= d2;
+	//				}
+						
+					if( tmpF == null ) {
+						outF.writeFrames( outBuf, 0, writeLen );
+					} else {
+						tmpF.writeFrames( outBuf, 0, writeLen );
+					}
+					maxAmp = Math.max( maxAmp, Util.maxAbs( chunkBuf, 0, m ));
+				} // for numDims
 				xOff += cellStepX;
 				yOff += cellStepY;
 			}			

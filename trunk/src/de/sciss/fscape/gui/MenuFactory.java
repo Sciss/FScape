@@ -137,10 +137,6 @@ extends BasicMenuFactory
 	
 	private static final String M_MOD_BETA		= "Unfinished";
 	private static final String MI_SMPSYN		= "Sample Synthesis";
-	private static final String MI_SMPCHAIN		= "Sample Chaining";
-	private static final String MI_SNDIMGCONV	= "Sound/Image Convolution";
-	private static final String MI_SND2IMG		= "Sound<->Image Conversion";
-	private static final String MI_STALKER		= "Stalker";
 	private static final String MI_TRANSEXTR	= "Transient Extractor";
 	private static final String MI_LPFILTER		= "Linear Predictive Filtering";
 	
@@ -244,10 +240,6 @@ extends BasicMenuFactory
 	},{
 		{ M_MOD_BETA },
 		{ new StringItem( "SmpSyn",			MI_SMPSYN ),		null },
-		{ new StringItem( "SmpChain",		MI_SMPCHAIN ),		null },
-		{ new StringItem( "SndImgConv",		MI_SNDIMGCONV ),	null },
-		{ new StringItem( "Snd2Img",		MI_SND2IMG ),		null },
-		{ new StringItem( "Stalker",		MI_STALKER ),		null },
 		{ new StringItem( "TransientExtr",	MI_TRANSEXTR ),		null },
 		{ new StringItem( "LPFilter",		MI_LPFILTER ),		null }
 	},{

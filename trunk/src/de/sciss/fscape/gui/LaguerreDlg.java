@@ -145,7 +145,6 @@ extends DocumentFrame
 			static_pr.bool		= prBool;
 			static_pr.boolName	= prBoolName;
 			static_pr.para		= prPara;
-			static_pr.para[ PR_GAIN ]			= new Param(    0.0, Param.DECIBEL_AMP );
 			static_pr.para[ PR_WARP ]			= new Param(  -10.0, Param.FACTOR );
 			static_pr.para[ PR_WARPMODDEPTH ]	= new Param(   20.0, Param.OFFSET_AMP );
 			static_pr.para[ PR_INFREQ ]			= new Param( 1000.0, Param.ABS_HZ );
@@ -155,9 +154,9 @@ extends DocumentFrame
 			static_pr.envl[ PR_WARPENV ]		= Envelope.createBasicEnvelope( Envelope.BASIC_TIME );
 			static_pr.envlName	= prEnvlName;
 			static_pr.superPr	= DocumentFrame.static_pr;
-		}
-		// default preset
-		if( static_presets == null ) {
+
+			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
+			fillDefaultGain( static_pr.para, PR_GAIN );
 			static_presets = new Presets( getClass(), static_pr.toProperties( true ));
 		}
 		presets	= static_presets;

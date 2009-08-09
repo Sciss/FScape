@@ -93,6 +93,13 @@ implements	ActionListener, ComponentListener, ItemListener, PathListener,
 	public static final int SNDRES_24		= 1;
 	public static final int SNDRES_32F		= 2;
 	public static final int SNDRES_32		= 3;
+	public static final int SNDRES_NUM		= 4;
+
+	public static final int SNDRATE_96		= 0;
+	public static final int SNDRATE_48		= 1;
+	public static final int SNDRATE_44		= 2;
+	public static final int SNDRATE_32		= 3;
+	public static final int SNDRATE_NUM		= 4;
 
 	public static final int IMGRES_8		= 0;
 	public static final int IMGRES_16		= 1;
@@ -103,6 +110,7 @@ implements	ActionListener, ComponentListener, ItemListener, PathListener,
 //	private static final float[] movRate	= { 8.0f, 10.0f, 12.0f, 15.0f, 24.0f, 25.0f, 29.97f, 30.0f };
 	private static final float[] spectRate	= sndRate;
 
+	private static final String[] sndResID	= { "int16", "int24", "int32", "float32" };
 	private static final String[] sndResTxt	= { "16-bit int", "24-bit int", "32-bit float", "32-bit int" };
 	private static final String[] sndRateTxt= { "96 kHz", "48 kHz", "44.1 kHz", "32 kHz" };
 	private static final String[] spectRateTxt= sndRateTxt;
@@ -234,7 +242,42 @@ implements	ActionListener, ComponentListener, ItemListener, PathListener,
 		});
 	}
 
-
+	public static String getSoundResID( int idx )
+	{
+		return sndResID[ idx ];
+	}
+	
+	public static int getSoundResIdx( String id )
+	{
+		for( int idx = 0; idx < sndResID.length; idx++ ) {
+			if( sndResID[ idx ].equals( id )) return idx;
+		}
+		return -1;
+	}
+	
+	public static String getSoundResDescr( int idx )
+	{
+		return sndResTxt[ idx ];
+	}
+	
+	public static String getSoundRateID( int idx )
+	{
+		return String.valueOf( sndRate[ idx ]);
+	}
+	
+	public static int getSoundRateIdx( String id )
+	{
+		for( int idx = 0; idx < sndRate.length; idx++ ) {
+			if( String.valueOf( sndRate[ idx ]).equals( id )) return idx;
+		}
+		return -1;
+	}
+	
+	public static String getSoundRateDescr( int idx )
+	{
+		return sndRateTxt[ idx ];
+	}
+	
 	public void setPath( File path )
 	{
 		setPathIgnoreScheme( path );
@@ -287,7 +330,7 @@ implements	ActionListener, ComponentListener, ItemListener, PathListener,
 	 */
 	public void fillStream( AudioFileDescr afd )
 	{
-		int	ID;
+		int	idx;
 	
 		afd.file		= getPath();
 	
@@ -295,8 +338,8 @@ implements	ActionListener, ComponentListener, ItemListener, PathListener,
 			afd.type	= GenericFile.getAudioFileType( getType() );
 		}
 		if( ggRes != null ) {
-			ID = ggRes.getSelectedIndex();
-			switch( ID ) {
+			idx = ggRes.getSelectedIndex();
+			switch( idx ) {
 			case SNDRES_16:
 				afd.bitsPerSample	= 16;
 				afd.sampleFormat	= AudioFileDescr.FORMAT_INT;
@@ -316,9 +359,9 @@ implements	ActionListener, ComponentListener, ItemListener, PathListener,
 			}
 		}
 		if( ggRate != null ) {
-			ID = ggRate.getSelectedIndex();
-			if( (ID >= 0) && (ID < sndRate.length) ) {
-				afd.rate = sndRate[ ID ];
+			idx = ggRate.getSelectedIndex();
+			if( (idx >= 0) && (idx < sndRate.length) ) {
+				afd.rate = sndRate[ idx ];
 			}
 		}
 	}

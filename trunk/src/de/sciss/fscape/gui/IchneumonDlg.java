@@ -122,14 +122,13 @@ extends DocumentFrame
 			static_pr.intg		= prIntg;
 			static_pr.intgName	= prIntgName;
 			static_pr.para		= prPara;
-			static_pr.para[ PR_GAIN ]		= new Param(    0.0, Param.DECIBEL_AMP );
 			static_pr.para[ PR_MINRSMP ]	= new Param(    1.0, Param.OFFSET_SEMITONES );
 			static_pr.para[ PR_MAXRSMP ]	= new Param(   24.0, Param.OFFSET_SEMITONES );
 			static_pr.paraName	= prParaName;
 			static_pr.superPr	= DocumentFrame.static_pr;
-		}
-		// default preset
-		if( static_presets == null ) {
+
+			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
+			fillDefaultGain( static_pr.para, PR_GAIN );
 			static_presets = new Presets( getClass(), static_pr.toProperties( true ));
 		}
 		presets	= static_presets;

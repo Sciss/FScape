@@ -170,17 +170,16 @@ extends DocumentFrame
 			static_pr.para[ PR_MAXCHUNKLEN ]= new Param( 1000.0, Param.ABS_MS );
 			static_pr.para[ PR_CROSSFADE ]	= new Param(   20.0, Param.FACTOR_TIME );
 			static_pr.para[ PR_ENTRYPOINT ]	= new Param(  500.0, Param.ABS_MS );
-			static_pr.para[ PR_GAIN ]		= new Param(    0.0, Param.DECIBEL_AMP );
 			static_pr.para[ PR_FLTAMOUNT ]	= new Param(   50.0, Param.FACTOR_AMP );
 			static_pr.para[ PR_OUTLENGTH ]	= new Param(  100.0, Param.FACTOR_TIME );
 			static_pr.paraName	= prParaName;
 			static_pr.envl		= prEnvl;
-			static_pr.envl[ PR_KRIECHENV ]	= Envelope.createBasicEnvelope( Envelope.BASIC_TIME );
+			static_pr.envl[ PR_KRIECHENV ]	= Envelope.createBasicEnvelope( Envelope.BASIC_UNSIGNED_TIME );
 			static_pr.envlName	= prEnvlName;
 			static_pr.superPr	= DocumentFrame.static_pr;
-		}
-		// default preset
-		if( static_presets == null ) {
+
+			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
+			fillDefaultGain( static_pr.para, PR_GAIN );
 			static_presets = new Presets( getClass(), static_pr.toProperties( true ));
 		}
 		presets	= static_presets;

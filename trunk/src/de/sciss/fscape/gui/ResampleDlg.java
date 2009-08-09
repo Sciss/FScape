@@ -153,7 +153,6 @@ extends DocumentFrame
 			static_pr.intg		= prIntg;
 			static_pr.intgName	= prIntgName;
 			static_pr.para		= prPara;
-			static_pr.para[ PR_GAIN ]				= new Param(  0.0, Param.DECIBEL_AMP );
 			static_pr.para[ PR_LENGTH ]				= new Param(  0.0, Param.OFFSET_TIME );
 			static_pr.para[ PR_RATE ]				= new Param(  0.0, Param.OFFSET_SEMITONES );
 			static_pr.para[ PR_RATEMODDEPTH ]		= new Param(  1.0, Param.OFFSET_SEMITONES );
@@ -166,9 +165,9 @@ extends DocumentFrame
 			static_pr.envl[ PR_RIGHTCHANMODENV ]= Envelope.createBasicEnvelope( Envelope.BASIC_TIME );
 			static_pr.envlName	= prEnvlName;
 			static_pr.superPr	= DocumentFrame.static_pr;
-		}
-		// default preset
-		if( static_presets == null ) {
+
+			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
+			fillDefaultGain( static_pr.para, PR_GAIN );
 			static_presets = new Presets( getClass(), static_pr.toProperties( true ));
 		}
 		presets	= static_presets;

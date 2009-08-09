@@ -167,7 +167,7 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
 		popIcon		= new PopupStrip( mIcon, this );
 		popNew		= new PopupStrip( mNew, this );
 		
-		setOpaque( true );
+		setOpaque( false );
 
 //	ImageIcon icon = new ImageIcon( "images/tools.gif", "test" );
 

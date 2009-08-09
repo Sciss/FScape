@@ -33,12 +33,37 @@
 
 package de.sciss.fscape.session;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import java.text.*;
-import java.util.*;
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.FileDialog;
+import java.awt.FlowLayout;
+import java.awt.Frame;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Properties;
+import java.util.prefs.Preferences;
+
+import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JTextField;
+import javax.swing.KeyStroke;
+import javax.swing.WindowConstants;
 
 import de.sciss.app.AbstractApplication;
 import de.sciss.app.AbstractWindow;
@@ -48,6 +73,26 @@ import de.sciss.common.AppWindow;
 import de.sciss.common.BasicApplication;
 import de.sciss.common.BasicWindowHandler;
 import de.sciss.common.ProcessingThread;
+import de.sciss.fscape.gui.DetachedMenu;
+import de.sciss.fscape.gui.EnvIcon;
+import de.sciss.fscape.gui.GUISupport;
+import de.sciss.fscape.gui.ListDlg;
+import de.sciss.fscape.gui.ParamField;
+import de.sciss.fscape.gui.PathField;
+import de.sciss.fscape.gui.ProcessPanel;
+import de.sciss.fscape.gui.ProgressPanel;
+import de.sciss.fscape.io.FloatFile;
+import de.sciss.fscape.io.GenericFile;
+import de.sciss.fscape.proc.Processor;
+import de.sciss.fscape.proc.ProcessorAdapter;
+import de.sciss.fscape.proc.ProcessorEvent;
+import de.sciss.fscape.proc.ProcessorListener;
+import de.sciss.fscape.prop.BasicProperties;
+import de.sciss.fscape.prop.Presets;
+import de.sciss.fscape.prop.PropertyArray;
+import de.sciss.fscape.util.Constants;
+import de.sciss.fscape.util.Param;
+import de.sciss.fscape.util.Util;
 import de.sciss.gui.AbstractWindowHandler;
 import de.sciss.gui.GUIUtil;
 import de.sciss.gui.HelpFrame;
@@ -59,18 +104,12 @@ import de.sciss.io.AudioFileDescr;
 import de.sciss.io.IOUtil;
 import de.sciss.util.Flag;
 
-import de.sciss.fscape.gui.*;
-import de.sciss.fscape.io.*;
-import de.sciss.fscape.proc.*;
-import de.sciss.fscape.prop.*;
-import de.sciss.fscape.util.*;
-
 /**
  *	Superclass of all processing windows. This handles thread and progress bar
  *	management and has some utility methods such as sound file normalization.
  *
  *  @author		Hanns Holger Rutz
- *  @version	0.71, 10-Sep-08
+ *  @version	0.73, 09-Aug-09
  */
 public abstract class DocumentFrame
 extends AppWindow
@@ -157,7 +196,7 @@ implements Processor, EventManager.Processor, ProgressComponent
 	
 	private final DocumentFrame enc_this	= this;
 	
-	private final java.util.List collTempFiles	= new ArrayList();	// Elements = AudioFile instances
+	private final List collTempFiles	= new ArrayList();	// Elements = AudioFile instances
 	
 // FFFF
 //	private final actionRevealFileClass		actionRevealFile;
@@ -382,6 +421,59 @@ implements Processor, EventManager.Processor, ProgressComponent
 	protected boolean autoUpdatePrefs()
 	{
 		return true;
+	}
+	
+	protected void fillDefaultAudioDescr( int[] intg, int typeIdx )
+	{
+		fillDefaultAudioDescr( intg, typeIdx, -1, -1 );
+	}
+	
+	protected void fillDefaultAudioDescr( int[] intg, int typeIdx, int resIdx )
+	{
+		fillDefaultAudioDescr( intg, typeIdx, resIdx, -1 );
+	}
+	
+	protected void fillDefaultAudioDescr( int[] intg, int typeIdx, int resIdx, int rateIdx )
+	{
+		final Preferences prefs = AbstractApplication.getApplication().getUserPrefs();
+			
+		if( typeIdx >= 0 ) {
+			final int typ = GenericFile.getType( prefs.get( "audioFileType", "" ));
+			for( int idx = 0; idx < GenericFile.TYPES_SOUND.length; idx++ ) {
+				if( GenericFile.TYPES_SOUND[ idx ] == typ ) {
+					intg[ typeIdx ] = idx;
+					break;
+				}
+			}
+		}
+		if( resIdx >= 0 ) {
+			final int idx = PathField.getSoundResIdx( prefs.get( "audioFileRes", "" ));
+			if( idx >= 0 ) {
+				intg[ resIdx ] = idx;
+			}
+		}
+		if( rateIdx >= 0 ) {
+			final int idx = PathField.getSoundRateIdx( prefs.get( "audioFileRate", "" ));
+			if( idx >= 0 ) {
+				intg[ rateIdx ] = idx;
+			}
+		}
+	}
+
+	protected void fillDefaultGain( Param[] para, int gainIdx )
+	{
+		para[ gainIdx ] = getDefaultGain();
+	}
+	
+	private Param getDefaultGain()
+	{
+		final Preferences prefs = AbstractApplication.getApplication().getUserPrefs();
+		final de.sciss.util.Param gainP = de.sciss.util.Param.fromPrefs( prefs, "headroom", null );
+		if( gainP != null ) {
+			return new Param( gainP.val, Param.DECIBEL_AMP );
+		} else {
+			return null;
+		}
 	}
 	
 	public Session getDocument()
@@ -1057,6 +1149,36 @@ saveLoop:		do {
 		return threadRunning;
 	}
 
+	private void setCheckBoxQuiet( JCheckBox cb, boolean selected )
+	{
+		final ActionListener[] al = cb.getActionListeners();
+		for( int i = 0; i < al.length; i++ ) {
+			cb.removeActionListener( al[ i ]);
+		}
+		try {
+			cb.setSelected( selected );
+		} finally {
+			for( int i = 0; i < al.length; i++ ) {
+				cb.addActionListener( al[ i ]);
+			}
+		}
+	}
+	
+	private void setComboBoxQuiet( JComboBox cb, int idx )
+	{
+		final ActionListener[] al = cb.getActionListeners();
+		for( int i = 0; i < al.length; i++ ) {
+			cb.removeActionListener( al[ i ]);
+		}
+		try {
+			cb.setSelectedIndex( idx );
+		} finally {
+			for( int i = 0; i < al.length; i++ ) {
+				cb.addActionListener( al[ i ]);
+			}
+		}
+	}
+	
 	/**
 	 *	Werte aus Prop-Array in GUI uebertragen
 	 *	subclasses can use this to make things easy
@@ -1073,13 +1195,13 @@ saveLoop:		do {
 			for( i = 0; i < pa.bool.length; i++ ) {
 				c = gui.getItemObj( i + GG_OFF_CHECKBOX );
 				if( c != null ) {
-					((JCheckBox) c).setSelected( pa.bool[ i ]);
+					this.setCheckBoxQuiet( (JCheckBox) c, pa.bool[ i ]);
 				}
 			}
 			for( i = 0; i < pa.intg.length; i++ ) {
 				c = gui.getItemObj( i + GG_OFF_CHOICE );
 				if( (c != null) && (((JComboBox) c).getItemCount() > pa.intg[ i ]) ) {
-					((JComboBox) c).setSelectedIndex( pa.intg[ i ]);
+					this.setComboBoxQuiet( (JComboBox) c, pa.intg[ i ]);
 				}
 			}
 			for( i = 0; i < pa.para.length; i++ ) {
@@ -1209,22 +1331,37 @@ saveLoop:		do {
 	 */
 	protected Component[] createGadgets( int type )
 	{
-		Component c[];
+		final Component c[];
 	
 		switch( type ) {
 		case GGTYPE_GAIN:
-			c			= new Component[ 2 ];
-			ggGain		= new ParamField( Constants.spaces[ Constants.decibelAmpSpace ]);
-			ggGainType	= new JComboBox();
-			ggGainType.addItem( "normalized" );
-			ggGainType.addItem( "immediate" );
-			c[ 0 ]		= ggGain;
-			c[ 1 ]		= ggGainType;
+			final ParamField gg1 = new ParamField( Constants.spaces[ Constants.decibelAmpSpace ]);
+			final JComboBox  gg2 = new JComboBox();
+			gg2.addItem( "normalized" );
+			gg2.addItem( "immediate" );
+			ggGain		= gg1;
+			ggGainType	= gg2;
+			c = new Component[] { gg1, gg2 };
+			gg2.addActionListener( new ActionListener() {
+				public void actionPerformed( ActionEvent e )
+				{
+//					System.out.println( "CHANGED " + cb.getSelectedIndex() );
+					switch( gg2.getSelectedIndex() ) {
+					case GAIN_ABSOLUTE:
+						gg1.setParam( new Param( 0.0, Param.DECIBEL_AMP ));
+						break;
+					case GAIN_UNITY:
+						gg1.setParam( getDefaultGain() );
+						break;
+					default:
+						break;
+					}
+				}
+			});
 			break;
 			
 		default:
-			c = new Component[ 0 ];
-			break;
+			throw new IllegalArgumentException( String.valueOf( type ));
 		}
 		return c;
 	}

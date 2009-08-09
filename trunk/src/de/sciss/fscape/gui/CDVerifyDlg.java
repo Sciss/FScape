@@ -70,15 +70,15 @@ extends DocumentFrame
 	private static final String PRN_ORIGINFILE	= "OrigInFile";
 	private static final String PRN_COPYINFILE	= "CopyInFile";
 	private static final String PRN_OUTPUTFILE	= "OutputFile";
-	private static final String PRN_OUTPUTTYPE	= "OutputType";
+//	private static final String PRN_OUTPUTTYPE	= "OutputType";
 	private static final String PRN_MAXGAP		= "MaxGap";
 	private static final String PRN_BITTOGGLE	= "BitToggle";
 	private static final String PRN_QUICKABORT	= "QuickAbort";
 
 	private static final String	prText[]		= { "", "", "" };
 	private static final String	prTextName[]	= { PRN_ORIGINFILE, PRN_COPYINFILE, PRN_OUTPUTFILE };
-	private static final int		prIntg[]	= { 0 };
-	private static final String	prIntgName[]	= { PRN_OUTPUTTYPE };
+//	private static final int		prIntg[]	= { 0 };
+//	private static final String	prIntgName[]	= { PRN_OUTPUTTYPE };
 	private static final Param	prPara[]		= { null };
 	private static final String	prParaName[]	= { PRN_MAXGAP };
 	private static final boolean	prBool[]	= { true, false };
@@ -115,8 +115,8 @@ extends DocumentFrame
 			static_pr			= new PropertyArray();
 			static_pr.text		= prText;
 			static_pr.textName	= prTextName;
-			static_pr.intg		= prIntg;
-			static_pr.intgName	= prIntgName;
+//			static_pr.intg		= prIntg;
+//			static_pr.intgName	= prIntgName;
 			static_pr.bool		= prBool;
 			static_pr.boolName	= prBoolName;
 			static_pr.para		= prPara;

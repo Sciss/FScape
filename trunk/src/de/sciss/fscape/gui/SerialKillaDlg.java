@@ -71,7 +71,7 @@ extends DocumentFrame
 //	private static final int PR_GAINTYPE		= 6;
 	private static final int PR_FRAMESIZE		= 7;
 	private static final int PR_OVERLAP			= 8;
-	private static final int PR_GAIN			= 0;		// pr.para
+//	private static final int PR_GAIN			= 0;		// pr.para
 	private static final int PR_OUTNOISE		= 0;		// pr.bool
 	private static final int PR_OUTTILT			= 1;
 	private static final int PR_OUTENERGY		= 2;
@@ -100,8 +100,8 @@ extends DocumentFrame
 													PRN_OVERLAP };
 	private static final boolean	prBool[]	= { true, false, false };
 	private static final String	prBoolName[]	= { PRN_OUTNOISE, PRN_OUTTILT, PRN_OUTENERGY };
-	private static final Param	prPara[]		= { null };
-	private static final String	prParaName[]	= { PRN_GAIN };
+//	private static final Param	prPara[]		= { null };
+//	private static final String	prParaName[]	= { PRN_GAIN };
 
 	private static final int GG_INPUTFILE		= GG_OFF_PATHFIELD	+ PR_INPUTFILE;
 	private static final int GG_NOUTPUTFILE		= GG_OFF_PATHFIELD	+ PR_NOUTPUTFILE;
@@ -150,9 +150,9 @@ extends DocumentFrame
 			static_pr.textName	= prTextName;
 			static_pr.intg		= prIntg;
 			static_pr.intgName	= prIntgName;
-			static_pr.para		= prPara;
-			static_pr.para[ PR_GAIN ]				= new Param(  0.0, Param.DECIBEL_AMP );
-			static_pr.paraName	= prParaName;
+//			static_pr.para		= prPara;
+//			static_pr.para[ PR_GAIN ]				= new Param(  0.0, Param.DECIBEL_AMP );
+//			static_pr.paraName	= prParaName;
 			static_pr.bool		= prBool;
 			static_pr.boolName	= prBoolName;
 //			static_pr.envl		= prEnvl;
@@ -160,9 +160,10 @@ extends DocumentFrame
 //			static_pr.envl[ PR_RIGHTCHANMODENV ]= Envelope.createBasicEnvelope( Envelope.BASIC_TIME );
 //			static_pr.envlName	= prEnvlName;
 			static_pr.superPr	= DocumentFrame.static_pr;
-		}
-		// default preset
-		if( static_presets == null ) {
+
+			fillDefaultAudioDescr( static_pr.intg, PR_NOUTPUTTYPE ); // just the type
+			fillDefaultAudioDescr( static_pr.intg, PR_TOUTPUTTYPE );
+			fillDefaultAudioDescr( static_pr.intg, PR_EOUTPUTTYPE );
 			static_presets = new Presets( getClass(), static_pr.toProperties( true ));
 		}
 		presets	= static_presets;

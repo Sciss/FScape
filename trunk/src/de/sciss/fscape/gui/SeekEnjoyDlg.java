@@ -141,12 +141,11 @@ extends DocumentFrame
 			static_pr.para[ PR_MINCHUNK ]	= new Param(   50.0, Param.ABS_MS );
 			static_pr.para[ PR_CROSSFADE ]	= new Param(   50.0, Param.FACTOR_TIME );
 			static_pr.para[ PR_TOLERANCE ]	= new Param(    3.0, Param.DECIBEL_AMP );
-			static_pr.para[ PR_GAIN ]		= new Param(   0.0, Param.DECIBEL_AMP );
 			static_pr.paraName	= prParaName;
 			static_pr.superPr	= DocumentFrame.static_pr;
-		}
-		// default preset
-		if( static_presets == null ) {
+
+			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
+			fillDefaultGain( static_pr.para, PR_GAIN );
 			static_presets = new Presets( getClass(), static_pr.toProperties( true ));
 		}
 		presets	= static_presets;
