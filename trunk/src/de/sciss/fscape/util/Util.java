@@ -477,6 +477,21 @@ public class Util
 	}
 
 	/**
+	 *	Creates a list from an iterator
+	 *
+	 *	@param	iter	an iterator whose contents should be returned as an array
+	 *	@return	the iterator elements as an array
+	 */
+	public static List iterToList( Iterator iter )
+	{
+		final List foo = new ArrayList();
+		while( iter.hasNext() ) {
+			foo.add( iter.next() );
+		}
+		return foo;
+	}
+	
+	/**
 	 *	Creates an array from an iterator
 	 *
 	 *	@param	iter	an iterator whose contents should be returned as an array
@@ -484,11 +499,7 @@ public class Util
 	 */
 	public static Object[] iterToArray( Iterator iter )
 	{
-		final List foo = new ArrayList();
-		while( iter.hasNext() ) {
-			foo.add( iter.next() );
-		}
-		return foo.toArray();
+		return iterToList( iter ).toArray();
 	}
 
 	/**
@@ -651,36 +662,36 @@ public class Util
 		}
 	}
 
-	/**
-	 *	Lazily sorts the data. Throws a
-	 *	<code>RuntimeException</code> if any object
-	 *	in the array is not <code>Comparable</code>.
-	 *	
-	 *	@param	data		array of objects implementing the
-	 *						<code>Comparable</code> interface
-	 *	@param	ascending	<code>true</code> to sort in ascending order,
-	 *						<code>false</code> to sort in descending order
-	 *					
-	 *	@see	java.lang.Comparable
-	 */
-	public static void sort( Object[] data, boolean ascending )
-	{
-		Object		a, b;
-		final int	mult	= ascending ? 1 : -1;
-		int			i, restart = 0;
-	
-		do {
-			for( i = restart, restart = data.length; i < data.length - 1; i++ ) {
-				a		= data[ i ];
-				b		= data[ i + 1 ];
-				if( ((Comparable) a).compareTo( b ) * mult > 0 ) {
-					data[ i+1 ] = a;
-					data[ i ]	= b;
-					restart		= Math.min( restart, Math.max( 0, i - 1 ));
-				}
-			}
-		} while( restart < data.length );
-	}
+//	/**
+//	 *	Lazily sorts the data. Throws a
+//	 *	<code>RuntimeException</code> if any object
+//	 *	in the array is not <code>Comparable</code>.
+//	 *	
+//	 *	@param	data		array of objects implementing the
+//	 *						<code>Comparable</code> interface
+//	 *	@param	ascending	<code>true</code> to sort in ascending order,
+//	 *						<code>false</code> to sort in descending order
+//	 *					
+//	 *	@see	java.lang.Comparable
+//	 */
+//	public static void sort( Object[] data, boolean ascending )
+//	{
+//		Object		a, b;
+//		final int	mult	= ascending ? 1 : -1;
+//		int			i, restart = 0;
+//	
+//		do {
+//			for( i = restart, restart = data.length; i < data.length - 1; i++ ) {
+//				a		= data[ i ];
+//				b		= data[ i + 1 ];
+//				if( ((Comparable) a).compareTo( b ) * mult > 0 ) {
+//					data[ i+1 ] = a;
+//					data[ i ]	= b;
+//					restart		= Math.min( restart, Math.max( 0, i - 1 ));
+//				}
+//			}
+//		} while( restart < data.length );
+//	}
 
 	/*
 	 *	Sorts an array data[0...len-1] into ascending order using Quicksort

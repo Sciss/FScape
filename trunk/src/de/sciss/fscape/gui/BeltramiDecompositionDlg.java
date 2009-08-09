@@ -438,8 +438,8 @@ extends DocumentFrame
 		float					gain2;
 		double					d1, d2, dcMem0 = 0.0, dcMem1 = 0.0;
 
-		final int dimStart = 0; // 1;
-		final int dimStop  = 1; // 2;
+//		final int dimStart = 0; // 1;
+//		final int dimStop  = 1; // 2;
 		
 topLevel: try {
 
@@ -583,16 +583,16 @@ topLevel: try {
 //					if( u[ len - 1 ][ 0 ] != 0f ) break;
 //				}
 				
-				for( int dim = dimStart; dim < dimStop; dim++ ) {
+//				for( int dim = dimStart; dim < dimStop; dim++ ) {
 				
 					// ---- remove DC ----
-					gain2 = gain * s[ dim ];
+					gain2 = gain * s[ 0 ];
 //					for( int i = 0; i < m; i++ ) {
 //						chunkBuf[ i ]	= (float) u[ i ][ 0 ] * gain2;
 //					}
-					dcMem0 = u[ 0 ][ dim ] * gain2;
+					dcMem0 = u[ 0 ][ 0 ] * gain2;
 					for( int i = 0; i < m; i++ ) {
-						d1				= u[ i ][ dim ] * gain2;
+						d1				= u[ i ][ 0 ] * gain2;
 						d2				= d1 - dcMem0 + 0.99 * dcMem1;
 						chunkBuf[ i ]	= (float) d2;
 						dcMem0			= d1;
@@ -633,7 +633,7 @@ topLevel: try {
 						tmpF.writeFrames( outBuf, 0, writeLen );
 					}
 					maxAmp = Math.max( maxAmp, Util.maxAbs( chunkBuf, 0, m ));
-				} // for numDims
+//				} // for numDims
 				xOff += cellStepX;
 				yOff += cellStepY;
 			}			

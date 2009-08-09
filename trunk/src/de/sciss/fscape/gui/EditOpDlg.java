@@ -119,7 +119,7 @@ extends BasicDialog
 		ggDelPreset.addMouseListener( list );
 
 		ggPresets = new JComboBox();
-		presetNames = op.getPresets().presetNames();
+		presetNames = op.getPresets().presetNames().iterator();
 		while( presetNames.hasNext() ) {
 			ggPresets.addItem( (String) presetNames.next() );
 		}

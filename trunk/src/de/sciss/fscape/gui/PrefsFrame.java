@@ -34,22 +34,41 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.FlowLayout;
-import java.awt.event.*;
-import java.util.prefs.*;
-import javax.swing.*;
-import de.sciss.app.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.prefs.Preferences;
+
+import javax.swing.Box;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+import javax.swing.UIManager;
+import javax.swing.WindowConstants;
+
+import de.sciss.app.AbstractApplication;
+import de.sciss.app.AbstractWindow;
+import de.sciss.app.PreferenceEntrySync;
 import de.sciss.common.AppWindow;
 import de.sciss.common.BasicWindowHandler;
-import de.sciss.gui.*;
 import de.sciss.io.IOUtil;
 import de.sciss.net.OSCChannel;
 import de.sciss.util.Flag;
 import de.sciss.util.ParamSpace;
 
-import de.sciss.fscape.*;
+import de.sciss.fscape.Main;
 import de.sciss.fscape.io.GenericFile;
-import de.sciss.fscape.net.*;
-import de.sciss.fscape.util.*;
+import de.sciss.fscape.net.OSCRoot;
+import de.sciss.fscape.util.PrefsUtil;
+import de.sciss.gui.AbstractWindowHandler;
+import de.sciss.gui.CoverGrowBox;
+import de.sciss.gui.HelpButton;
+import de.sciss.gui.PrefCheckBox;
+import de.sciss.gui.PrefComboBox;
+import de.sciss.gui.PrefParamField;
+import de.sciss.gui.PrefPathField;
+import de.sciss.gui.SpringPanel;
+import de.sciss.gui.StringItem;
 
 /**
  *  This is the frame that
@@ -208,8 +227,16 @@ extends AppWindow
         }
 		ggChoice.setPreferences( prefs, key );
 		ggChoice.addActionListener( new WarnPrefsChange( ggChoice, ggChoice, haveWarned, txtWarnLookAndFeel, title ));
-		
 		tab.gridAdd( ggChoice, 1, row, -1, 1 );
+
+		row++;
+       	key		= BasicWindowHandler.KEY_LAFDECORATION;
+		key2	= "prefsLAFDecoration";
+		title	= getResourceString( key2 );
+		ggCheckBox  = new PrefCheckBox( title );
+		ggCheckBox.setPreferences( prefs, key );
+		tab.gridAdd( ggCheckBox, 1, row, -1, 1 );
+		ggCheckBox.addActionListener( new WarnPrefsChange( ggCheckBox, ggCheckBox, haveWarned, txtWarnLookAndFeel, title ));
 
 		row++;
        	key		= BasicWindowHandler.KEY_INTERNALFRAMES;

@@ -28,15 +28,24 @@
 
 package de.sciss.fscape.prop;
 
-import java.io.*;
-import java.util.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Properties;
 
 /**
  *	Abgeleitete Properties-Klasse zur Verwaltung von Presets
  *	Einem Key-Namen stet als Value eine Properties-Liste gegenueber, die automatisch
  *	in einen "String" umgewandelt wird (durch Ersetzen der Linefeeds)
  *
- *  @version	0.71, 14-Nov-07
+ *  @version	0.72, 09-Aug-09
  */
 public class Presets
 extends BasicProperties
@@ -46,7 +55,13 @@ extends BasicProperties
 	/**
 	 *	Name fuer den Default-Preset
 	 */
-	public static final String DEFAULT = ".default";
+	public static final String DEFAULT = "(default)";
+	
+	private static final Comparator caseInsensitiveComp = new Comparator() {
+		public int compare( Object a, Object b ) {
+			return a.toString().toUpperCase().compareTo( b.toString().toUpperCase() );
+		}
+	};
 
 // -------- private Variablen --------
 // -------- public Methoden --------
@@ -104,6 +119,13 @@ extends BasicProperties
 		}
 		return val;
 	}
+	
+	public boolean containsPreset( String name )
+	{
+		synchronized( this ) {
+			return this.containsKey( stringToKey( name ));
+		}
+	}
 
 	/**
 	 *	Loescht einen Preset
@@ -125,19 +147,19 @@ extends BasicProperties
 	}
 
 	/**
-	 *	Liste aller Preset-Namen ermitteln
+	 *	Return List of all Preset-Names (sorted)
 	 */
-	public Iterator presetNames()
+	public List presetNames()
 	{
-		java.util.List li = new ArrayList();
 		synchronized( this ) {
-			Enumeration	e = propertyNames();
-
+			final List li = new ArrayList( this.size() );
+			final Enumeration e = propertyNames();
 			while( e.hasMoreElements() ) {
 				li.add( keyToString( (String) e.nextElement() ));
 			}
+			Collections.sort( li, caseInsensitiveComp );
+			return li;
 		}
-		return li.iterator();
 	}
 
 	/**
@@ -148,12 +170,11 @@ extends BasicProperties
 	 */
 	public static String propertiesToValue( Properties val )
 	{
-		ByteArrayOutputStream	outStream	= new ByteArrayOutputStream();
-		String					strVal;
+		final OutputStream	outStream	= new ByteArrayOutputStream();
 
 		try {
 			val.store( outStream, null );
-			strVal = outStream.toString();		// now we have the Properties as a String
+			final String strVal = outStream.toString();		// now we have the Properties as a String
 			outStream.close();
 			return strVal;
 		}
@@ -171,18 +192,17 @@ extends BasicProperties
 	 */
 	public static Properties valueToProperties( String strVal )
 	{
-		ByteArrayInputStream	inStream;
-		Properties				val			= new Properties();
+		final Properties val = new Properties();
 
 		try {
 			if( strVal != null ) {
-				inStream = new ByteArrayInputStream( strVal.getBytes() );
+				final InputStream inStream = new ByteArrayInputStream( strVal.getBytes() );
 				val.load( inStream );	// now we have the String as a Properites-Object
 				inStream.close();
 				return val;
 			}
 		}
-		catch( IOException e ) {}
+		catch( IOException e ) { /* nothing */ }
 		
 		return null;
 	}
@@ -196,11 +216,10 @@ extends BasicProperties
 	 */
 	protected static String stringToKey( String str )
 	{
-		char	c;
 		String	unicode;
 	
 		for( int i = 0; i < str.length(); i++ ) {
-			c = str.charAt( i );
+			final char c = str.charAt( i );
 			if( ("#!=:".indexOf( c ) >= 0) ||
 				Character.isWhitespace( c ) ) {		// verbotenes Zeichen
 
@@ -219,13 +238,10 @@ extends BasicProperties
 	 */
 	protected static String keyToString( String key )
 	{
-		int		i;
-		char	c;
-	
 		try {
+			int i;
 			while( (i = key.indexOf( "\\u" )) >= 0 ) {
-		
-				c = (char) Integer.parseInt( key.substring( i + 2, i + 6 ));		
+				final char c = (char) Integer.parseInt( key.substring( i + 2, i + 6 ));		
 				key = key.substring( 0, i ) + c + key.substring( i + 6 );
 			}
 		}
@@ -237,8 +253,8 @@ extends BasicProperties
 	
 	protected static Properties createDefaults( Properties defaultVal )
 	{
-		Properties	defaults	= new Properties();
-		String		strVal		= propertiesToValue( defaultVal );
+		final Properties	defaults	= new Properties();
+		final String		strVal		= propertiesToValue( defaultVal );
 		
 		if( strVal != null ) {
 			defaults.put( DEFAULT, strVal );

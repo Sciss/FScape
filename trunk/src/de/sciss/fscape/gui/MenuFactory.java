@@ -382,30 +382,19 @@ if( doc.getFrame() == null ) {
 	protected void addMenuItems()
 	{
 		MenuGroup				mg, smg, smg2;
-//		MenuCheckItem			mci;
-//		MenuRadioGroup			rg;
-//		Action					a;
-//		BooleanPrefsMenuAction	ba;
-//		IntPrefsMenuAction		ia;
-//		Preferences				prefs;
 		int						i;
 		
-		// Ctrl on Mac / Ctrl+Alt on PC
-//		final int myCtrl = MENU_SHORTCUT == KeyEvent.CTRL_MASK ? KeyEvent.CTRL_MASK | KeyEvent.ALT_MASK : KeyEvent.CTRL_MASK;
-
 		// --- file menu ---
 		
 		mg	= (MenuGroup) this.get( "file" );
 		smg = new MenuGroup( "new", getResourceString( "menuNew" ));
 		for( int j = 0; j < mSub.length; j++ ) {
 			if( j + 1 < mSub.length ) {
-//				smg2	= new MenuGroup( ((StringItem) mSub[ j ][ 0 ][ 0 ]).getKey(), mSub[ j ][ 0 ][ 0 ].toString() ); // XXX use resource strings
 				smg2	= new MenuGroup( mSub[ j ][ 0 ][ 0 ].toString(), mSub[ j ][ 0 ][ 0 ].toString() ); // XXX use resource strings
 			} else {
 				smg2	= smg;
 			}
 			for( int k = 1; k < mSub[ j ].length; k++ ) {
-//				smg2.add( new JMenuItem( new actionModuleClass( (StringItem) mSub[ j ][ i ][ 0 ], (KeyStroke) mSub[ j ][ i ][ 1 ])));
 				smg2.add( new MenuItem( ((StringItem) mSub[ j ][ k ][ 0 ]).getKey(),
 					new ActionModule( (StringItem) mSub[ j ][ k ][ 0 ], (KeyStroke) mSub[ j ][ k ][ 1 ])));
 			}
@@ -414,156 +403,25 @@ if( doc.getFrame() == null ) {
 			}
 		}
 		mg.add( smg, 0 );
-//
-//		i	= mg.indexOf( "open" );
-//		mg.add( new MenuItem( "openMultipleMono", actionOpenMM ), i + 1 );
-//		i	= mg.indexOf( "closeAll" );
-//		smg	= new MenuGroup( "import", getResourceString( "menuImport" ));
-//		smg.add( new MenuItem( "markers", getResourceString( "menuImportMarkers" )));
-//		mg.add( smg, i + 2 );
-//		mg.add( new MenuSeparator(), i + 3 );
-//		i = mg.indexOf( "saveCopyAs" );
-//		mg.add( new MenuItem( "saveSelectionAs", getResourceString( "menuSaveSelectionAs" )), i + 1 );
-
-//		// --- edit menu ---
-//		mg	= new MenuGroup( "edit", getResourceString( "menuEdit" ));
-//		mg.add( new MenuItem( "undo", getResourceString( "menuUndo" ), KeyStroke.getKeyStroke( KeyEvent.VK_Z, MENU_SHORTCUT )));
-//		mg.add( new MenuItem( "redo", getResourceString( "menuRedo" ), KeyStroke.getKeyStroke( KeyEvent.VK_Z, MENU_SHORTCUT + KeyEvent.SHIFT_MASK )));
-//		mg.addSeparator();
-//		mg.add( new MenuItem( "cut", getResourceString( "menuCut" ), KeyStroke.getKeyStroke( KeyEvent.VK_X, MENU_SHORTCUT )));
-//		mg.add( new MenuItem( "copy", getResourceString( "menuCopy" ), KeyStroke.getKeyStroke( KeyEvent.VK_C, MENU_SHORTCUT )));
-//		mg.add( new MenuItem( "paste", getResourceString( "menuPaste" ), KeyStroke.getKeyStroke( KeyEvent.VK_V, MENU_SHORTCUT )));
-//		mg.add( new MenuItem( "clear", getResourceString( "menuClear" ), KeyStroke.getKeyStroke( KeyEvent.VK_BACK_SPACE, 0 )));
-//		mg.addSeparator();
-//		mg.add( new MenuItem( "selectAll", getResourceString( "menuSelectAll" ), KeyStroke.getKeyStroke( KeyEvent.VK_A, MENU_SHORTCUT )));
-//		if( PreferencesJMenuItem.isAutomaticallyPresent() ) {
-//			root.getPreferencesJMenuItem().setAction( actionPreferences );
-//		} else {
-//			mg.addSeparator();
-//			mg.add( new MenuItem( "preferences", actionPreferences ));
-//		}
-//		this.add( mg );
-		
-// FFFF
-//		// --- timeline menu ---
-//		i	= this.indexOf( "edit" );
-//		mg	= new MenuGroup( "timeline", getResourceString( "menuTimeline" ));
-//		mg.add( new MenuItem( "trimToSelection", getResourceString( "menuTrimToSelection" ),
-//							  KeyStroke.getKeyStroke( KeyEvent.VK_F5, MENU_SHORTCUT )));
-//
-//		mg.add( new MenuItem( "insertSilence", getResourceString( "menuInsertSilence" ),
-//							  KeyStroke.getKeyStroke( KeyEvent.VK_E, MENU_SHORTCUT + KeyEvent.SHIFT_MASK )));
-//		mg.add( new MenuItem( "insertRecording", getResourceString( "menuInsertRec" )));
-//		this.add( mg, i + 1 );
-
-// FFFF
-//		// --- process menu ---
-//		mg  = new MenuGroup( "process", getResourceString( "menuProcess" ));
-//		mg.add( new MenuItem( "again", getResourceString( "menuProcessAgain" ), KeyStroke.getKeyStroke( KeyEvent.VK_F, MENU_SHORTCUT )));
-//		mg.addSeparator();
-//		smg  = new MenuGroup( "fscape", getResourceString( "menuFScape" ));
-//		smg.add( new MenuItem( "needlehole", getResourceString( "menuFScNeedlehole" )));
-//		mg.add( smg );
-//		smg = new MenuGroup( "sc", getResourceString( "menuSuperCollider" ));
-//		mg.add( smg );
-//		mg.addSeparator();
-//		mg.add( new MenuItem( "fadeIn", getResourceString( "menuFadeIn" ), KeyStroke.getKeyStroke( KeyEvent.VK_I, myCtrl )));
-//		mg.add( new MenuItem( "fadeOut", getResourceString( "menuFadeOut" ), KeyStroke.getKeyStroke( KeyEvent.VK_O, myCtrl )));
-//		mg.add( new MenuItem( "gain", getResourceString( "menuGain" ), KeyStroke.getKeyStroke( KeyEvent.VK_N, myCtrl )));
-//		mg.add( new MenuItem( "invert", getResourceString( "menuInvert" )));
-//		mg.add( new MenuItem( "mix", getResourceString( "menuMix" )));
-//		mg.add( new MenuItem( "reverse", getResourceString( "menuReverse" )));
-//		mg.add( new MenuItem( "rotateChannels", getResourceString( "menuRotateChannels" )));
-//		this.add( mg, i + 2 );
-
-// FFFF
-//		// --- operation menu ---
-//		mg			= new MenuGroup( "operation", getResourceString( "menuOperation" ));
-//		prefs		= root.getUserPrefs();
-//		ba			= new BooleanPrefsMenuAction( getResourceString( "menuInsertionFollowsPlay" ), null );
-//		mci			= new MenuCheckItem( "insertionFollowsPlay", ba );
-//		ba.setCheckItem( mci );
-//		ba.setPreferences( prefs, PrefsUtil.KEY_INSERTIONFOLLOWSPLAY );
-//		mg.add( mci );
-//		this.add( mg, i + 3 );
-
-// FFFF
-//		// --- view menu ---
-//		mg			= new MenuGroup( "view", getResourceString( "menuView" ));
-//		prefs		= root.getUserPrefs();
-//		smg			= new MenuGroup( "timeUnits", getResourceString( "menuTimeUnits" ));
-//		ia			= new IntPrefsMenuAction( getResourceString( "menuTimeUnitsSamples" ), null, PrefsUtil.TIME_SAMPLES );
-//		rg			= new MenuRadioGroup();
-//		smg.add( new MenuRadioItem( rg, "samples", ia ));	// crucial reihenfolge : erst item erzeugen, dann gruppe setzen, dann prefs
-//		ia.setRadioGroup( rg );
-//		ia.setPreferences( prefs, PrefsUtil.KEY_TIMEUNITS );
-//		ia			= new IntPrefsMenuAction( getResourceString( "menuTimeUnitsMinSecs" ), null, PrefsUtil.TIME_MINSECS );
-//		smg.add( new MenuRadioItem( rg, "minSecs", ia ));	// crucial reihenfolge : erst item erzeugen, dann gruppe setzen, dann prefs
-//		ia.setRadioGroup( rg );
-//		ia.setPreferences( prefs, PrefsUtil.KEY_TIMEUNITS );
-//		mg.add( smg );
-//
-//		ba			= new BooleanPrefsMenuAction( getResourceString( "menuViewNullLinie" ), null );
-//		mci			= new MenuCheckItem( "nullLinie", ba );
-//		ba.setCheckItem( mci );
-//		ba.setPreferences( prefs, PrefsUtil.KEY_VIEWNULLLINIE );
-//		mg.add( mci );
-//		ba			= new BooleanPrefsMenuAction( getResourceString( "menuViewVerticalRulers" ), null );
-//		mci			= new MenuCheckItem( "verticalRulers", ba );
-//		ba.setCheckItem( mci );
-//		ba.setPreferences( prefs, PrefsUtil.KEY_VIEWVERTICALRULERS );
-//		mg.add( mci );
-//		ba			= new BooleanPrefsMenuAction( getResourceString( "menuViewChanMeters" ), null );
-//		mci			= new MenuCheckItem( "channelMeters", ba );
-//		ba.setCheckItem( mci );
-//		ba.setPreferences( prefs, PrefsUtil.KEY_VIEWCHANMETERS );
-//		mg.add( mci );
-//		ba			= new BooleanPrefsMenuAction( getResourceString( "menuViewMarkers" ), null );
-//		mci			= new MenuCheckItem( "markers", ba );
-//		ba.setCheckItem( mci );
-//		ba.setPreferences( prefs, PrefsUtil.KEY_VIEWMARKERS );
-//		mg.add( mci );
-//		this.add( mg, i + 4 );
 
 		// --- window menu ---
-//		mWindowRadioGroup = new MenuRadioGroup();
-//		mgWindow = new MenuGroup( "window", getResourceString( "menuWindow" ));
 		mg	= (MenuGroup) this.get( "window" );
-// FFFF
-//		mg.add( new MenuItem( "ioSetup", new actionIOSetupClass( getResourceString( "frameIOSetup" ), null )), 0 );
-//		mg.add( new MenuSeparator(), 1 );
-//		mg.add( new MenuItem( "main", new actionShowWindowClass( getResourceString( "frameMain" ), null, Main.COMP_MAIN )), 2 );
-mg.add( new MenuItem( "main", new ActionShowWindow( getResourceString( "frameMain" ), null, Main.COMP_MAIN )), 0 );
-// FFFF
-//		mg.add( new MenuItem( "observer", new actionObserverClass( getResourceString( "paletteObserver" ), KeyStroke.getKeyStroke( KeyEvent.VK_NUMPAD3, MENU_SHORTCUT ))), 3 );
-//		mg.add( new MenuItem( "ctrlRoom", new actionCtrlRoomClass( getResourceString( "paletteCtrlRoom" ), KeyStroke.getKeyStroke( KeyEvent.VK_NUMPAD2, MENU_SHORTCUT ))), 4 );
-//		mg.add( new MenuSeparator(), 5 );
+		mg.add( new MenuItem( "main", new ActionShowWindow( getResourceString( "frameMain" ), null, Main.COMP_MAIN )), 0 );
+
+		// --- presets menu ---
+		mg   = new MenuGroup( "presets", getResourceString( "menuPresets" ));
+//		mg.setEnabled( false );
+		i	= this.indexOf( "window" );
+		this.add( mg, i );
 
 		// --- debug menu ---
 		mg   = new MenuGroup( "debug", "Debug" );
 		mg.add( new MenuItem( "dumpPrefs", PrefsUtil.getDebugDumpAction() ));
-// FFFF
-//		mg.add( new MenuItem( "dumpTracks", "Dump Track Structure" ));
-//		mg.add( new MenuItem( "dumpCache", CacheManager.getInstance().getDebugDumpAction() ));
-//		mg.add( new MenuItem( "dumpNodeTree", SuperColliderClient.getInstance().getDebugNodeTreeAction() ));
 		i	= this.indexOf( "help" );
 		this.add( mg, i );
-
-//		// --- help menu ---
-//		mg	= new MenuGroup( "help", getResourceString( "menuHelp" ));
-//		mg.add( new MenuItem( "manual", new actionURLViewerClass( getResourceString( "menuHelpManual" ), null, "index", false )));
-//		mg.add( new MenuItem( "shortcuts", new actionURLViewerClass( getResourceString( "menuHelpShortcuts" ), null, "Shortcuts", false )));
-//		mg.addSeparator();
-//		mg.add( new MenuItem( "website", new actionURLViewerClass( getResourceString( "menuHelpWebsite" ), null, getResourceString( "appURL" ), true )));
-//		a = new actionAboutClass( getResourceString( "menuAbout" ), null );
-//		if( AboutJMenuItem.isAutomaticallyPresent() ) {
-//			root.getAboutJMenuItem().setAction( a );
-//		} else {
-//			mg.addSeparator();
-//			mg.add( new MenuItem( "about", a ));
-//		}
-//
-//		this.add( mg );
+		
+		mg = (MenuGroup) this.get( "help" );
+		mg.add( new MenuItem( "module", getResourceString( "menuHelpModule" )), mg.indexOf( "shortcuts" ));
 	}
 	
 	public void showPreferences()

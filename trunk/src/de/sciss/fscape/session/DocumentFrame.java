@@ -57,10 +57,10 @@ import javax.swing.Icon;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JMenu;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
@@ -73,10 +73,8 @@ import de.sciss.common.AppWindow;
 import de.sciss.common.BasicApplication;
 import de.sciss.common.BasicWindowHandler;
 import de.sciss.common.ProcessingThread;
-import de.sciss.fscape.gui.DetachedMenu;
 import de.sciss.fscape.gui.EnvIcon;
 import de.sciss.fscape.gui.GUISupport;
-import de.sciss.fscape.gui.ListDlg;
 import de.sciss.fscape.gui.ParamField;
 import de.sciss.fscape.gui.PathField;
 import de.sciss.fscape.gui.ProcessPanel;
@@ -92,11 +90,12 @@ import de.sciss.fscape.prop.Presets;
 import de.sciss.fscape.prop.PropertyArray;
 import de.sciss.fscape.util.Constants;
 import de.sciss.fscape.util.Param;
-import de.sciss.fscape.util.Util;
 import de.sciss.gui.AbstractWindowHandler;
 import de.sciss.gui.GUIUtil;
 import de.sciss.gui.HelpFrame;
 import de.sciss.gui.MenuAction;
+import de.sciss.gui.MenuGroup;
+import de.sciss.gui.MenuItem;
 import de.sciss.gui.MenuRoot;
 import de.sciss.gui.ProgressComponent;
 import de.sciss.io.AudioFile;
@@ -153,6 +152,7 @@ implements Processor, EventManager.Processor, ProgressComponent
 	private ProgressPanel	pProgress			= null;
 	protected GUISupport	gui;
 
+	private MenuAction		actionDeletePreset	= null;
 	/*
 	 *	Subclassen muessen dieses pr ueberschreiben und super.static_pr in superPr eintragen!
 	 *	presets mussen sie mit ihrem static_presets ueberschreiben
@@ -192,17 +192,15 @@ implements Processor, EventManager.Processor, ProgressComponent
 
 	private static final Color  COLOR_NORM		= new Color( 0xFF, 0xFF, 0x00, 0x2F );
 
-	private JMenu			mPresets		= new JMenu();
-	
 	private final DocumentFrame enc_this	= this;
 	
 	private final List collTempFiles	= new ArrayList();	// Elements = AudioFile instances
 	
 // FFFF
 //	private final actionRevealFileClass		actionRevealFile;
-	private final actionCloseClass			actionClose;
-	private final actionSaveClass			actionSave;
-	private final actionSaveAsClass			actionSaveAs;
+	private final ActionClose			actionClose;
+	private final ActionSave			actionSave;
+	private final ActionSaveAs			actionSaveAs;
 //	private final actionSaveAsClass			actionSaveCopy;
 
 //	private final Main		root;
@@ -212,7 +210,7 @@ implements Processor, EventManager.Processor, ProgressComponent
 	private final BasicApplication			app;
 
 	private final AbstractWindow.Adapter	winListener;
-	private final actionShowWindowClass		actionShowWindow;
+	private final ActionShowWindow			actionShowWindow;
 
 	private final JLabel					lbWriteProtected;
 	private boolean							writeProtected			= false;
@@ -256,8 +254,6 @@ implements Processor, EventManager.Processor, ProgressComponent
 		
 		doc.setFrame( this );
 
-//		final int						modif		= Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
-//		final Container					cp			= getContentPane();
 		final MenuRoot					mr;
 
 		// einmalig PropertyArray initialisieren
@@ -265,23 +261,8 @@ implements Processor, EventManager.Processor, ProgressComponent
 			static_pr = new PropertyArray();
 		}
 
-//		internalFrames		= app.getWindowHandler().usesInternalFrames();
-
-//		pr = (PropertyArray) static_pr.clone();
-//		presets = new Presets( concrete.getClass(), static_pr.toProperties( true ));
-
 	// -------- Basic Listeners --------
 
-//		addWindowListener( new WindowAdapter() {
-//			public void windowClosing( WindowEvent e )
-//			{	
-//				if( (pp != null) && (pp.isSelected() != ProcessPanel.STATE_STOPPED) ) return;	// not while processing
-//
-//				setVisible( false );
-//				dispose();
-//			}
-//		});
-//
 		closeAfterSaveListener	= new ProcessingThread.Listener() {
 			public void processStarted( ProcessingThread.Event e ) {}
 
@@ -312,69 +293,29 @@ implements Processor, EventManager.Processor, ProgressComponent
 			}
 		};
 		this.addListener( winListener );
-//		this.addWindowFocusListener( winListener );
 
 		lbWriteProtected	= new JLabel();
 
-//		mb = new MainMenu( root );
-//		setJMenuBar( mb );
-
 		// --- Actions ---
-		actionClose			= new actionCloseClass();
-		actionSave			= new actionSaveClass();
-//		actionSave			= new actionSaveClass( app.getResourceString( "procWinSave" ), 
-//						KeyStroke.getKeyStroke( KeyEvent.VK_S, modif ), false );
-		actionSaveAs		= new actionSaveAsClass( false, false );
-//		actionSaveAs		= new actionSaveClass( app.getResourceString( "procWinSaveAs" ), 
-//						KeyStroke.getKeyStroke( KeyEvent.VK_S, modif + KeyEvent.SHIFT_MASK ), true );
-//		actionSaveCopy		= new actionSaveAsClass( true, false );
-// FFFF
-//		actionRevealFile	= new actionRevealFileClass();
+		actionClose			= new ActionClose();
+		actionSave			= new ActionSave();
+		actionSaveAs		= new ActionSaveAs( false, false );
 
-		actionShowWindow	= new actionShowWindowClass();
+		actionShowWindow	= new ActionShowWindow();
 
 		setDefaultCloseOperation( WindowConstants.DO_NOTHING_ON_CLOSE );
 		
 		// ---- menus and actions ----
 		mr = app.getMenuBarRoot();
 		
-// FFFF
-//		mr.putMimic( "file.new.fromSelection", this, actionNewFromSel );
-//		mr.putMimic( "file.import.markers", this, actionImportMarkers );
 		mr.putMimic( "file.close", this, actionClose );
 		mr.putMimic( "file.save", this, actionSave );
 		mr.putMimic( "file.saveAs", this, actionSaveAs );
-// FFFF
-//		mr.putMimic( "file.saveCopyAs", this, actionSaveCopyAs );
-//		mr.putMimic( "file.saveSelectionAs", this, actionSaveSelectionAs );
 
-// FFFF
 		mr.putMimic( "edit.undo", this, doc.getUndoManager().getUndoAction() );
 		mr.putMimic( "edit.redo", this, doc.getUndoManager().getRedoAction() );
-//		mr.putMimic( "edit.cut", this, doc.getCutAction() );
-//		mr.putMimic( "edit.copy", this, doc.getCopyAction() );
-//		mr.putMimic( "edit.paste", this, doc.getPasteAction() );
-//		mr.putMimic( "edit.clear", this, doc.getDeleteAction() );
-//		mr.putMimic( "edit.selectAll", this, actionSelectAll );
-//
-//		mr.putMimic( "timeline.insertSilence", this, doc.getSilenceAction() );
-//		mr.putMimic( "timeline.insertRecording", this, actionInsertRec );
-//		mr.putMimic( "timeline.trimToSelection", this, doc.getTrimAction() );
-//
-//		mr.putMimic( "process.again", this, actionProcessAgain );
-//		mr.putMimic( "process.fadeIn", this, actionFadeIn );
-//		mr.putMimic( "process.fadeOut", this, actionFadeOut );
-//		mr.putMimic( "process.gain", this, actionGain );
-//		mr.putMimic( "process.invert", this, actionInvert );
-//		mr.putMimic( "process.mix", this, actionMix );
-//		mr.putMimic( "process.reverse", this, actionReverse );
-//		mr.putMimic( "process.rotateChannels", this, actionRotateChannels );
-//		mr.putMimic( "process.fscape.needlehole", this, actionFScNeedlehole );
-//
-//		mr.putMimic( "debug.dumpTracks", this, actionDebugDump );
-		
-// FFFF
-//		updateEditEnabled( false );
+
+		mr.putMimic( "help.module", this, new ActionHelp( procTitle + " " + getResourceString( "menuHelp" ), null ));
 	}
 
 	// hallelujah this was a weird bug, calling back subclass methods in the constructor
@@ -545,7 +486,24 @@ setTitle( title );
 			wpHaveWarned = true;
 		}
 	}
-
+	
+	private MenuGroup getPresetMenu()
+	{
+		final MenuRoot mr = ((BasicApplication) AbstractApplication.getApplication()).getMenuBarRoot();
+		final MenuGroup mg = (MenuGroup) mr.get( "presets" );
+		return mg;
+	}
+	
+	private String createPresetMenuID( String name )
+	{
+		return( "preset_" + name );  // warning: don't use period
+	}
+	
+	private MenuItem createPresetMenuItem( String name )
+	{
+		return new MenuItem( createPresetMenuID( name ), new ActionRecallPreset( name, null ));
+	}
+	
 	/**
 	 *	GUI bauen
 	 *	- call once before setVisible() !
@@ -557,19 +515,8 @@ setTitle( title );
 	 */
 	protected void initGUI( DocumentFrame concrete, int flags, Component c )
 	{
-//		GridBagConstraints	con;
-//		GridBagLayout		lay;
-		
-		DetachedMenu					dm;
-		JPopupMenu						pop;
 		final Container					cp	= getContentPane();
 		final de.sciss.app.Application	app	= AbstractApplication.getApplication();
-//		int								modif;
-
-//		gui				= new GUISupport();
-//		con				= gui.getGridBagConstraints();
-//		lay				= gui.getGridBagLayout();
-//		con.insets		= new Insets( 1, 2, 1, 2 );
 
 		cp.setLayout( new BorderLayout( 0, 2 ));
 
@@ -578,45 +525,19 @@ setTitle( title );
 			toolBar		= new JPanel( new FlowLayout( FlowLayout.LEFT, 2, 2 ));
 			
 			if( (flags & FLAGS_PRESETS) != 0 ) {
-
-				Object[] presetNames = Util.iterToArray( getPresets().presetNames() );
-				Util.sort( presetNames, true );
-//				modif				= Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
-
-//				actionSave		= new actionSaveClass( app.getResourceString( "procWinSave" ), 
-//					KeyStroke.getKeyStroke( KeyEvent.VK_S, modif ), false );
-//				actionRevert	= new actionOpenClass( app.getResourceString( "procWinRevert" ), null );
- 
-				pop		= new JPopupMenu();
-//				pop.add( new actionOpenClass( app.getResourceString( "procWinOpen" ), 
-//					KeyStroke.getKeyStroke( KeyEvent.VK_O, modif )));
-//				pop.add( actionSave );
-//				pop.add( new actionSaveClass( app.getResourceString( "procWinSaveAs" ), 
-//					KeyStroke.getKeyStroke( KeyEvent.VK_S, modif + KeyEvent.SHIFT_MASK ), true ));
-//				pop.add( actionRevert );
-//				dm		= new DetachedMenu( app.getResourceString( "menuFile" ), pop );
-//				toolBar.add( dm );
-//				updatePopUpStates();
-
-				pop			= new JPopupMenu();
-				mPresets.setText( app.getResourceString( "procWinRecallPreset" ));
-				for( int i = 0; i < presetNames.length; i++ ) {
-					mPresets.add( new actionRecallPresetClass( presetNames[ i ].toString(), null ));
+				actionDeletePreset = new ActionDeletePreset( app.getResourceString( "procWinDelPreset" ), null );
+				final List presetNames = getPresets().presetNames();
+				final MenuGroup mg = getPresetMenu();
+				mg.add( this, new MenuItem( "store", new ActionAddPreset( app.getResourceString( "procWinAddPreset" ), null )));
+				mg.add( this, new MenuItem( "delete", actionDeletePreset ));
+				mg.addSeparator( this );
+				for( int i = 0; i < presetNames.size(); i++ ) {
+					final String pstName = presetNames.get( i ).toString();
+					mg.add( this, createPresetMenuItem( pstName ));
 				}
-				pop.add( mPresets );
-				pop.add( new actionAddPresetClass( app.getResourceString( "procWinAddPreset" ), null ));
-				pop.add( new actionDelPresetClass( app.getResourceString( "procWinDelPreset" ), null ));
-				dm			= new DetachedMenu( app.getResourceString( "menuPreset" ), pop );
-				toolBar.add( dm );
-				
-				pop			= new JPopupMenu();
-				pop.add( new actionHelpClass( app.getResourceString( "procWinShowHelp" ), null ));
-				dm			= new DetachedMenu(  app.getResourceString( "menuOptions" ), pop );
-				toolBar.add( dm );
+				presetNames.remove( Presets.DEFAULT );
+				actionDeletePreset.setEnabled( !presetNames.isEmpty() );
 			}
-//			con.gridwidth	= GridBagConstraints.REMAINDER;
-//			lay.setConstraints( toolBar, con );
-//			gui.add( toolBar );
 			cp.add( toolBar, BorderLayout.NORTH );
 		}
 
@@ -915,47 +836,41 @@ confirmed.set( actionSave.perform( actionSave.getValue( Action.NAME ).toString()
 		}
 		return success;
 	}
-
+	
 	/*
 	 *	Stores the current GUI values in a new preset
 	 *	of the given name.
 	 */
 	private boolean addPreset( String name )
 	{
-		PropertyArray	pa;
-		Properties		preset;
-		boolean			visible		= isVisible();
-		boolean			success		= false;
-		int				i, comp;
-
 		fillPropertyArray();
-		pa		= getPropertyArray();
-		preset	= pa.toProperties( false );
+		final PropertyArray	pa		= getPropertyArray();
+		final Properties	preset	= pa.toProperties( false );
 
 		if( !preset.isEmpty() ) {								// erfolgreich?
-			if( getPresets().setPreset( name, preset ) != null ) {
-				success = true;
-				for( i = 0; i < mPresets.getItemCount(); i++ ) {
-					comp = mPresets.getItem( i ).getText().compareTo( name );
-					if( comp == 0 ) return true;	// we're overwriting existing one, don't modify menu
-					if( comp > 0 ) break;
+			final Presets pst = getPresets();
+			final boolean overwrite = pst.containsPreset( name );
+			if( pst.setPreset( name, preset ) != null ) {
+				if( !overwrite ) { // create new menu entry
+					final List presetNames = pst.presetNames();
+					final int idx = presetNames.indexOf( name ) + 3; // store / remove / sep
+//					getPresetMenu()
+					final MenuGroup mg = getPresetMenu();
+					if( mg != null ) mg.add( this, createPresetMenuItem( name ), idx );
+					if( actionDeletePreset != null ) actionDeletePreset.setEnabled( true );
 				}
-				mPresets.insert( new actionRecallPresetClass( name, null ), i );
+				presetsChanged();
+				return true;
 
 			} else {
-				if( visible ) displayError( new IllegalStateException( ERR_CORRUPTED ), getTitle() );
+				if( isVisible() ) displayError( new IllegalStateException( ERR_CORRUPTED ), getTitle() );
 			}
 		} else {
-			if( visible ) {
+			if( isVisible() ) {
 				JOptionPane.showMessageDialog( getWindow(), ERR_NOPROPERTIES );
 			}
 		}
-		
-		if( success ) {
-			presetsChanged();
-			success = storePresetFile();
-		}
-		return success;
+		return false;
 	}
 	
 	/*
@@ -963,36 +878,32 @@ confirmed.set( actionSave.perform( actionSave.getValue( Action.NAME ).toString()
 	 */
 	private boolean deletePreset( String name )
 	{
-		boolean	success = false;
-		
-		if( getPresets().removePreset( name ) != null ) {
-			success = true;
-			for( int i = 0; i < mPresets.getItemCount(); i++ ) {
-				if( mPresets.getItem( i ).getText().equals( name )) {
-					mPresets.remove( i );
-					break;
-				}
+		final Presets pst = getPresets();
+		if( pst.removePreset( name ) != null ) {
+			final MenuGroup mg = getPresetMenu();
+			if( mg != null ) mg.remove( this, mg.get( this, createPresetMenuID( name )));
+			if( actionDeletePreset != null ) {
+				final List presetNames = pst.presetNames();
+				presetNames.remove( Presets.DEFAULT );
+				if( presetNames.isEmpty() ) actionDeletePreset.setEnabled( false );
 			}
+			presetsChanged();
+			return storePresetFile();
 		} else {
 			if( isVisible() ) displayError( new IllegalStateException( ERR_CORRUPTED ), getTitle() );
+			return false;
 		}
-
-		if( success ) {
-			presetsChanged();
-			success = storePresetFile();
-		}
-		return success;
 	}
 
 	private boolean storePresetFile()
 	{
 		boolean							success		= false;
-		final String					oldTitle	= getTitle();
+//		final String					oldTitle	= getTitle();
 		final de.sciss.app.Application	app			= AbstractApplication.getApplication();
 	
 //		if( getPresets().isModified() ) {
-			try {
-				setTitle( app.getResourceString( "procWinSavingPresets" ));
+//			try {
+//				setTitle( app.getResourceString( "procWinSavingPresets" ));
 saveLoop:		do {
 					try {
 //						getPresets().store();		// save presets to harddisk
@@ -1007,10 +918,10 @@ saveLoop:		do {
 						if( result != 0 ) break saveLoop;	// do not retry
 					}
 				} while( true );
-			}
-			finally {
-				setTitle( oldTitle );
-			}
+//			}
+//			finally {
+//				setTitle( oldTitle );
+//			}
 //		}
 		return success;
 	}
@@ -1818,10 +1729,10 @@ saveLoop:		do {
 
 // -------- internal classes --------
 
-	private class actionShowWindowClass
+	private class ActionShowWindow
 	extends MenuAction	// SyncedMenuAction
 	{
-		private actionShowWindowClass()
+		private ActionShowWindow()
 		{
 			super( null, null );
 		}
@@ -1874,7 +1785,7 @@ saveLoop:		do {
 //	}
 
 	// action for the Save-Session menu item
-	private class actionCloseClass
+	private class ActionClose
 	extends MenuAction
 	{
 		public void actionPerformed( ActionEvent e )
@@ -1907,10 +1818,10 @@ saveLoop:		do {
 //		}
 //	}
 
-	private class actionSaveClass
+	private class ActionSave
 	extends MenuAction
 	{
-		private actionSaveClass()
+		private ActionSave()
 		{
 			super();
 		}
@@ -1951,14 +1862,14 @@ saveLoop:		do {
 	}
 
 	// action for the Save-Session-As menu item
-	private class actionSaveAsClass
+	private class ActionSaveAs
 	extends MenuAction
 	{
 		private final boolean	asCopy;
 		private final boolean	selection;
 		private final Flag		openAfterSave;
 	
-		private actionSaveAsClass( boolean asCopy, boolean selection )
+		private ActionSaveAs( boolean asCopy, boolean selection )
 		{
 			if( selection && !asCopy ) throw new IllegalArgumentException();
 
@@ -2061,10 +1972,10 @@ if( asCopy ) openAfterSave.set( false );
 		}
 	}
 
-	private class actionHelpClass
+	private class ActionHelp
 	extends MenuAction
 	{
-		private actionHelpClass( String name, KeyStroke acc )
+		private ActionHelp( String name, KeyStroke acc )
 		{
 			super( name, acc );
 		}
@@ -2080,10 +1991,10 @@ if( asCopy ) openAfterSave.set( false );
 		}
 	}
 
-	private class actionAddPresetClass
+	private class ActionAddPreset
 	extends MenuAction
 	{
-		private actionAddPresetClass( String name, KeyStroke acc )
+		private ActionAddPreset( String name, KeyStroke acc )
 		{
 			super( name, acc );
 		}
@@ -2096,12 +2007,13 @@ if( asCopy ) openAfterSave.set( false );
 			
 			String name = JOptionPane.showInputDialog( getWindow(), app.getResourceString( "procWinEnterPresetName" ));
 			if( name != null && name.length() > 0 ) {
+				name = name.replace( '.', ' ' ); // period not allowed, as we use it as menu node id
 				if( name.equals( Presets.DEFAULT )) {
 					JOptionPane.showMessageDialog( getWindow(), app.getResourceString( "procWinDefaultPreset" ));
 					return;
 				}
 
-				for( Iterator iter = getPresets().presetNames(); iter.hasNext(); ) {
+				for( Iterator iter = getPresets().presetNames().iterator(); iter.hasNext(); ) {
 					if( name.equals( iter.next() )) {
 						if( JOptionPane.showConfirmDialog( getWindow(), name + ":\n"+
 								app.getResourceString( "procWinOverwritePreset" ),
@@ -2115,10 +2027,10 @@ if( asCopy ) openAfterSave.set( false );
 		}
 	}
 
-	private class actionDelPresetClass
+	private class ActionDeletePreset
 	extends MenuAction
 	{
-		private actionDelPresetClass( String name, KeyStroke acc )
+		private ActionDeletePreset( String name, KeyStroke acc )
 		{
 			super( name, acc );
 		}
@@ -2128,28 +2040,25 @@ if( asCopy ) openAfterSave.set( false );
 			if( threadRunning ) return;	// not while processing
 
 			final de.sciss.app.Application app = AbstractApplication.getApplication();
-			ListDlg list;
-			String[] allowedNames;
-			Object[] presetNames	= Util.iterToArray( getPresets().presetNames() );
-			Util.sort( presetNames, true );
-			
-			allowedNames = new String[ presetNames.length - 1 ];
-			for( int i = 0, j = 0; (i < presetNames.length) && (j < allowedNames.length); i++ ) {
-				if( !presetNames[ i ].equals( Presets.DEFAULT )) {
-					allowedNames[ j++ ] = presetNames[ i ].toString();
+			final List presetNames	= getPresets().presetNames();
+			presetNames.remove( Presets.DEFAULT );
+			final JList list = new JList( presetNames.toArray() );
+			final JScrollPane scroll = new JScrollPane( list );
+			final JOptionPane op = new JOptionPane( scroll, JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION );
+			final int result = BasicWindowHandler.showDialog( op, getComponent(), app.getResourceString( "procWinChooseDelPreset" ));
+			if( result == JOptionPane.OK_OPTION ) {
+				final Object[] selNames = list.getSelectedValues();
+				for( int i = 0; i < selNames.length; i++ ) {
+					deletePreset( selNames[ i ].toString() );
 				}
-			}
-			list = new ListDlg( getWindow(), app.getResourceString( "procWinChooseDelPreset" ), allowedNames );
-			if( list.getList() >= 0 ) {
-				deletePreset( allowedNames[ list.getList() ]);
 			}
 		}
 	}
 
-	private class actionRecallPresetClass
+	private class ActionRecallPreset
 	extends MenuAction
 	{
-		private actionRecallPresetClass( String name, KeyStroke acc )
+		private ActionRecallPreset( String name, KeyStroke acc )
 		{
 			super( name, acc );
 		}
