@@ -61,7 +61,7 @@ import de.sciss.io.AudioFileDescr;
 
 /**
  *  @author		Hanns Holger Rutz
- *  @version	0.72, 08-Aug-09
+ *  @version	0.72, 11-Aug-09
  *  
  *  @todo		multichannel version: could use the next
  *  			vector (row in u multiplied by s-gain), or hue and saturation
@@ -440,6 +440,10 @@ extends DocumentFrame
 
 //		final int dimStart = 0; // 1;
 //		final int dimStop  = 1; // 2;
+
+//		final float[][]			waveletCoeffs;
+//		final int				waveletLen;
+//final boolean wavelet = true;
 		
 topLevel: try {
 
@@ -514,6 +518,16 @@ topLevel: try {
 			rnd		= new Random();
 			overBuf  = new float[ m ]; // overLen + max jitter
 
+//			if( wavelet ) {
+//				waveletCoeffs	= Wavelet.getCoeffs( Wavelet.COEFFS_DAUB4 );
+//				waveletLen		= MathUtil.nextPowerOfTwo( n );
+//				mat				= new float[ m ][ waveletLen ];
+//			} else {
+//				waveletCoeffs	= null;
+//				waveletLen		= 0;
+//				mat				= new float[ m ][ n ];
+//			}
+
 			// normalization requires temp files
 			if( pr.intg[ PR_GAINTYPE ] == GAIN_UNITY ) {
 				tmpF		= createTempFile( outStream );
@@ -571,10 +585,19 @@ topLevel: try {
 //if( chunkIdx == 0 ) {
 //	printMatrix( mat, "mat" );
 //}
+//				if( wavelet ) {
+//					for( int i = 0; i < m; i++ ) {
+//						Wavelet.fwdTransform( mat[ i ], waveletLen, waveletCoeffs );
+//					}
+//				}
 				
 				svd( mat, s, u, null, (float) (chunkIdx + 1) / procNum, false );
 				if( !threadRunning ) break topLevel;
 
+//				if( wavelet ) {
+//					Wavelet.invTransform( u[ 0 ], waveletLen, waveletCoeffs );
+//				}
+				
 //if( chunkIdx == 0 ) {
 //	printVector( s, "s" );
 //	printMatrix( u, "u" );
@@ -612,7 +635,7 @@ topLevel: try {
 						realStep = timeStep;
 					}
 					System.arraycopy( chunkBuf, realStep, overBuf, 0, m - realStep );
-					Util.clear( chunkBuf, m - realStep, realStep );
+					Util.clear( overBuf, m - realStep, realStep );
 					
 					writeLen = (chunkIdx < numChunks - 1) ? realStep : m;
 					
