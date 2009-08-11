@@ -44,6 +44,7 @@ import java.util.Locale;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 
@@ -114,7 +115,7 @@ extends DocumentFrame
 	private static final int PR_SPACEOVERLAP		= 2;
 	private static final int PR_TIMEOVERLAP			= 3;
 	private static final int PR_TIMEJITTER			= 4;
-//	private static final int PR_READMARKERS			= 0;		// pr.bool
+	private static final int PR_HIGHPASS			= 0;		// pr.bool
 
 	private static final String PRN_INIMGFILE		= "InImgFile";
 	private static final String PRN_OUTPUTFILE		= "OutputFile";
@@ -127,6 +128,7 @@ extends DocumentFrame
 	private static final String PRN_SPACEOVERLAP	= "SpaceOverlap";
 	private static final String PRN_TIMEOVERLAP		= "TimeOverlap";
 	private static final String PRN_TIMEJITTER		= "TimeJitter";
+	private static final String PRN_HIGHPASS		= "HighPass";
 
 	private static final int	DIR_VERT		= 0;
 	private static final int	DIR_HORIZ		= 1;
@@ -137,8 +139,8 @@ extends DocumentFrame
 	private static final String	prIntgName[]	= { PRN_OUTPUTTYPE, PRN_OUTPUTRES, PRN_OUTPUTRATE, PRN_GAINTYPE, PRN_SCANDIR, PRN_CLPSEDIR };
 	private static final Param	prPara[]		= { null, null, null, null, null };
 	private static final String	prParaName[]	= { PRN_GAIN, PRN_CHUNKSIZE, PRN_SPACEOVERLAP, PRN_TIMEOVERLAP, PRN_TIMEJITTER };
-//	private static final boolean prBool[]		= { false };
-//	private static final String	prBoolName[]	= { PRN_READMARKERS };
+	private static final boolean prBool[]		= { false };
+	private static final String	prBoolName[]	= { PRN_HIGHPASS };
 
 	private static final int GG_INIMGFILE		= GG_OFF_PATHFIELD	+ PR_INIMGFILE;
 	private static final int GG_OUTPUTFILE		= GG_OFF_PATHFIELD	+ PR_OUTPUTFILE;
@@ -148,6 +150,7 @@ extends DocumentFrame
 	private static final int GG_GAINTYPE		= GG_OFF_CHOICE		+ PR_GAINTYPE;
 	private static final int GG_SCANDIR			= GG_OFF_CHOICE		+ PR_SCANDIR;
 	private static final int GG_CLPSEDIR		= GG_OFF_CHOICE		+ PR_CLPSEDIR;
+	private static final int GG_HIGHPASS		= GG_OFF_CHECKBOX	+ PR_HIGHPASS;
 	private static final int GG_GAIN			= GG_OFF_PARAMFIELD	+ PR_GAIN;
 	private static final int GG_CHUNKSIZE		= GG_OFF_PARAMFIELD	+ PR_CHUNKSIZE;
 	private static final int GG_SPACEOVERLAP	= GG_OFF_PARAMFIELD	+ PR_SPACEOVERLAP;
@@ -179,8 +182,8 @@ extends DocumentFrame
 			static_pr.textName	= prTextName;
 			static_pr.intg		= prIntg;
 			static_pr.intgName	= prIntgName;
-//			static_pr.bool		= prBool;
-//			static_pr.boolName	= prBoolName;
+			static_pr.bool		= prBool;
+			static_pr.boolName	= prBoolName;
 			static_pr.para		= prPara;
 			static_pr.para[ PR_CHUNKSIZE ]		= new Param(   128.0, Param.NONE );
 			static_pr.para[ PR_SPACEOVERLAP ]	= new Param(    50.0, Param.FACTOR_TIME );
@@ -205,6 +208,7 @@ extends DocumentFrame
 		final ParamField			ggSpaceOverlap, ggTimeOverlap, ggChunkSize, ggTimeJitter;
 		final ParamSpace			spcChunk;
 		final JComboBox				ggScanDir, ggClpseDir;
+		final JCheckBox				ggHighPass;
 
 		gui				= new GUISupport();
 		con				= gui.getGridBagConstraints();
@@ -318,6 +322,13 @@ extends DocumentFrame
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggTimeJitter, GG_TIMEJITTER, null );
 
+		ggHighPass		= new JCheckBox();
+		con.weightx		= 0.1;
+		con.gridwidth	= 1;
+		gui.addLabel( new JLabel( "High Pass ", JLabel.RIGHT ));
+		con.weightx		= 0.4;
+		gui.addCheckbox( ggHighPass, GG_HIGHPASS, null );
+
 		initGUI( this, FLAGS_PRESETS | FLAGS_PROGBAR, gui );
 		
 //		test();
@@ -421,6 +432,7 @@ extends DocumentFrame
 		final double			spaceOverlap	= pr.para[ PR_SPACEOVERLAP ].val / 100;
 		final double			timeOverlap		= pr.para[ PR_TIMEOVERLAP ].val / 100;
 		final double			timeJitter		= pr.para[ PR_TIMEJITTER ].val / 100;
+		final boolean			highpass		= pr.bool[ PR_HIGHPASS ];
 		final int				numChunks, winSize, winSizeH, overLen, timeStep;
 		final int				timeJitMin, timeJitMax, timeJitRange;
 		final int				width, height, ns, m, n, procNum;
@@ -467,8 +479,8 @@ topLevel: try {
 
 			// ---- further inits ----
 			
-			width				= img.getWidth();
-			height				= img.getHeight();
+			width				= img.getWidth() - (highpass ? 1 : 0);
+			height				= img.getHeight() - (highpass ? 1 : 0);
 			switch( scanDir ) {
 			case DIR_VERT:
 				cellWidth		= width;
@@ -560,6 +572,17 @@ topLevel: try {
 							rgb = img.getRGB( x, y );
 							Color.RGBtoHSB( (rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF, hsb );
 							mat[ row ][ col ]= hsb[ 2 ];
+							if( highpass ) {
+								rgb = img.getRGB( x + 1, y );
+								Color.RGBtoHSB( (rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF, hsb );
+								mat[ row ][ col ] -= hsb[ 2 ];
+								rgb = img.getRGB( x, y + 1 );
+								Color.RGBtoHSB( (rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF, hsb );
+								mat[ row ][ col ] -= hsb[ 2 ];
+								rgb = img.getRGB( x + 1, y + 1 );
+								Color.RGBtoHSB( (rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF, hsb );
+								mat[ row ][ col ] += hsb[ 2 ];
+							}
 						}
 					}
 					break;
@@ -570,6 +593,17 @@ topLevel: try {
 							rgb = img.getRGB( x, y );
 							Color.RGBtoHSB( (rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF, hsb );
 							mat[ row ][ col ]= hsb[ 2 ];
+							if( highpass ) {
+								rgb = img.getRGB( x + 1, y );
+								Color.RGBtoHSB( (rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF, hsb );
+								mat[ row ][ col ] -= hsb[ 2 ];
+								rgb = img.getRGB( x, y + 1 );
+								Color.RGBtoHSB( (rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF, hsb );
+								mat[ row ][ col ] -= hsb[ 2 ];
+								rgb = img.getRGB( x + 1, y + 1 );
+								Color.RGBtoHSB( (rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF, hsb );
+								mat[ row ][ col ] += hsb[ 2 ];
+							}
 						}
 					}
 					break;
