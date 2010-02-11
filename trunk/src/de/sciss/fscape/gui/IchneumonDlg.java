@@ -125,7 +125,7 @@ extends DocumentFrame
 			static_pr.para[ PR_MINRSMP ]	= new Param(    1.0, Param.OFFSET_SEMITONES );
 			static_pr.para[ PR_MAXRSMP ]	= new Param(   24.0, Param.OFFSET_SEMITONES );
 			static_pr.paraName	= prParaName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
 			fillDefaultGain( static_pr.para, PR_GAIN );
@@ -174,7 +174,7 @@ extends DocumentFrame
 		ggInputFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Input file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Input file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInputFile, GG_INPUTFILE, pathL );
@@ -188,7 +188,7 @@ extends DocumentFrame
 		ggOutputFile.deriveFrom( ggInputs, "$D0$F0Ich$E" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Output file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Output file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggOutputFile, GG_OUTPUTFILE, pathL );
@@ -198,7 +198,7 @@ extends DocumentFrame
 		ggGain			= createGadgets( GGTYPE_GAIN );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Gain", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Gain", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( (ParamField) ggGain[ 0 ], GG_GAIN, null );
 		con.weightx		= 0.5;
@@ -216,7 +216,7 @@ extends DocumentFrame
 		ggMinRsmp			= new ParamField( spcRateModDepth );
 		con.weightx			= 0.1;
 		con.gridwidth		= 1;
-		gui.addLabel( new JLabel( "Min.rsmp", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Min.rsmp", SwingConstants.RIGHT ));
 		con.weightx			= 0.4;
 		gui.addParamField( ggMinRsmp, GG_MINRSMP, null );
 
@@ -225,7 +225,7 @@ extends DocumentFrame
 			ggQuality.addItem( QUAL_NAMES[ i ]);
 		}
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Quality", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Quality", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addChoice( ggQuality, GG_QUALITY, null );
@@ -233,7 +233,7 @@ extends DocumentFrame
 		ggMaxRsmp			= new ParamField( spcRateModDepth );
 		con.weightx			= 0.1;
 		con.gridwidth		= 1;
-		gui.addLabel( new JLabel( "Max.rsmp", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Max.rsmp", SwingConstants.RIGHT ));
 		con.weightx			= 0.4;
 		gui.addParamField( ggMaxRsmp, GG_MAXRSMP, null );
 		
@@ -403,7 +403,7 @@ topLevel: try {
 
 			zcBuf			= new int[ 4 ]; // pre-zc-loc / zc-loc / post-zc-loc / factor-index
 			zcTempFile		= IOUtil.createTempFile();
-			zcFloatFile		= new FloatFile( zcTempFile, FloatFile.MODE_OUTPUT );
+			zcFloatFile		= new FloatFile( zcTempFile, GenericFile.MODE_OUTPUT );
 
 // System.out.println( "fltIncr "+fltIncr+"; overlapSize "+overlapSize+"; inBufSize "+inBufSize+"; outBufSize "+outBufSize );
 
@@ -417,7 +417,7 @@ topLevel: try {
 				}
 				for( ch = 0; ch < outChanNum; ch++ ) {
 					tempFile[ ch ]	= IOUtil.createTempFile();
-					floatF[ ch ]	= new FloatFile( tempFile[ ch ], FloatFile.MODE_OUTPUT );
+					floatF[ ch ]	= new FloatFile( tempFile[ ch ], GenericFile.MODE_OUTPUT );
 				}
 				progLen	   += (long) inLength;	// (outLength unknown)
 			} else {
@@ -725,7 +725,7 @@ topLevel: try {
 	 *	@param	filter		Dimension 0: flt (erstes createAntiAliasFilter Argument), 1: fltD;
 	 *						2: fltSmpPerCrossing; 3: fltGain (createAAF result)
 	 */
-	protected void resample( float[] src, double srcOff, float[] dest, int destOff, int length,
+	protected void resample( float[] src, double srcOff, float[] dest, int destOffStart, int length,
 							 double[] factor, float[][] filter )
 	{
 		int		i, fltOffI, srcOffI;
@@ -741,6 +741,7 @@ topLevel: try {
 		int		srcLen				= src.length;
 
 // System.out.println( "Rsmp "+srcOff+" ["+srcLen+"] => "+destOff+" +"+length+" ["+dest.length+"]" );
+		int destOff = destOffStart;
 
 		for( i = 0; i < length; i++, phase += 1.0 / f ) {
 			f		= factor[ i ];

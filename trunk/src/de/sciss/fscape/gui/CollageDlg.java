@@ -127,7 +127,7 @@ extends DocumentFrame
 //			static_pr.bool		= prBool;
 //			static_pr.boolName	= prBoolName;
 
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
 			fillDefaultGain( static_pr.para, PR_GAIN );
@@ -163,7 +163,7 @@ extends DocumentFrame
 		ggOutputFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.05;
-		gui.addLabel( new JLabel( "File name", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "File name", SwingConstants.RIGHT ));
 		con.gridheight	= 2;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
@@ -175,7 +175,7 @@ extends DocumentFrame
 		ggGain			= createGadgets( GGTYPE_GAIN );
 		con.weightx		= 0.05;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Gain", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Gain", SwingConstants.RIGHT ));
 		con.weightx		= 0.2;
 		gui.addParamField( (ParamField) ggGain[ 0 ], GG_GAIN, null );
 		con.weightx		= 0.2;
@@ -183,7 +183,7 @@ extends DocumentFrame
 
 		ggOutChan		= new ParamField( new ParamSpace( 1.0, 10000.0, 1.0, Param.NONE ));
 		con.weightx		= 0.05;
-		gui.addLabel( new JLabel( "# of channels", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "# of channels", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggOutChan, GG_OUTPUTCHAN, null );
@@ -231,7 +231,7 @@ extends DocumentFrame
 		ggInputFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.05;
-		gui.addLabel( new JLabel( "Input file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Input file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInputFile, GG_INPUTFILE, null );
@@ -239,7 +239,7 @@ extends DocumentFrame
 		ggInGain		= new ParamField( Constants.spaces[ Constants.decibelAmpSpace ]);
 		con.gridwidth	= 1;
 		con.weightx		= 0.05;
-		gui.addLabel( new JLabel( "Gain", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Gain", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggInGain, GG_INGAIN, null );
 
@@ -249,7 +249,7 @@ extends DocumentFrame
 
 		ggOffset		= new ParamField( spcOffset );
 		con.weightx		= 0.05;
-		gui.addLabel( new JLabel( "Cut offset", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Cut offset", SwingConstants.RIGHT ));
 		con.weightx		= 0.3;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggOffset, GG_INFILEOFFSET, null );
@@ -257,7 +257,7 @@ extends DocumentFrame
 		ggPan			= new ParamField( Constants.spaces[ Constants.decibelAmpSpace ]);
 		con.gridwidth	= 1;
 		con.weightx		= 0.05;
-		gui.addLabel( new JLabel( "Pan", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Pan", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggPan, GG_PAN, null );
 
@@ -267,7 +267,7 @@ extends DocumentFrame
 
 		ggLength		= new ParamField( spcLength );
 		con.weightx		= 0.05;
-		gui.addLabel( new JLabel( "Cut length", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Cut length", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggLength, GG_LENGTH, null );
@@ -291,7 +291,7 @@ extends DocumentFrame
 
 		ggStartTime		= new ParamField( spcOffset );
 		con.weightx		= 0.05;
-		gui.addLabel( new JLabel( "Start time", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Start time", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggStartTime, GG_STARTTIME, null );
@@ -315,7 +315,7 @@ extends DocumentFrame
 
 		ggEndTime		= new ParamField( spcOffset );
 		con.weightx		= 0.05;
-		gui.addLabel( new JLabel( "End time", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "End time", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggEndTime, GG_ENDTIME, null );

@@ -41,6 +41,7 @@ import java.io.IOException;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 import de.sciss.fscape.io.FloatFile;
 import de.sciss.fscape.io.GenericFile;
@@ -166,7 +167,7 @@ extends DocumentFrame
 			static_pr.envl		= prEnvl;
 			static_pr.envl[ PR_FREQENV ]		= Envelope.createBasicEnvelope( Envelope.BASIC_TIME );
 			static_pr.envlName	= prEnvlName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
 			fillDefaultGain( static_pr.para, PR_GAIN );
@@ -221,7 +222,7 @@ extends DocumentFrame
 		ggInputFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Input file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Input file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInputFile, GG_INPUTFILE, null );
@@ -231,7 +232,7 @@ extends DocumentFrame
 		ggReOutputFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Output [Real]", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Output [Real]", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggReOutputFile, GG_REOUTPUTFILE, null );
@@ -242,7 +243,7 @@ extends DocumentFrame
 //		ggImOutputFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Output [Imaginary]", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Output [Imaginary]", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggImOutputFile, GG_IMOUTPUTFILE, null );
@@ -257,7 +258,7 @@ extends DocumentFrame
 		ggGain			= createGadgets( GGTYPE_GAIN );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Gain", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Gain", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( (ParamField) ggGain[ 0 ], GG_GAIN, null );
 		con.weightx		= 0.5;
@@ -274,14 +275,14 @@ extends DocumentFrame
 		}
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Operation", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Operation", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addChoice( ggMode, GG_MODE, il );
 
 		ggAntiAlias		= new JCheckBox();
 		con.gridwidth	= 2;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Antialiasing", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Antialiasing", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.4;
 		gui.addCheckbox( ggAntiAlias, GG_ANTIALIAS, il );
@@ -289,7 +290,7 @@ extends DocumentFrame
 		ggFreq			= new ParamField( Constants.spaces[ Constants.absHzSpace ]);
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Shift amount", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Shift amount", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggFreq, GG_FREQ, null );
 
@@ -496,7 +497,7 @@ topLevel: try {
 				}
 				for( ch = 0; ch < inChanNum; ch++ ) {
 					reTempFile[ ch ]	= IOUtil.createTempFile();
-					reFloatF[ ch ]		= new FloatFile( reTempFile[ ch ], FloatFile.MODE_OUTPUT );
+					reFloatF[ ch ]		= new FloatFile( reTempFile[ ch ], GenericFile.MODE_OUTPUT );
 				}
 				if( imOutF != null ) {
 					imTempFile	= new File[ inChanNum ];
@@ -507,7 +508,7 @@ topLevel: try {
 					}
 					for( ch = 0; ch < inChanNum; ch++ ) {
 						imTempFile[ ch ]	= IOUtil.createTempFile();
-						imFloatF[ ch ]		= new FloatFile( imTempFile[ ch ], FloatFile.MODE_OUTPUT );
+						imFloatF[ ch ]		= new FloatFile( imTempFile[ ch ], GenericFile.MODE_OUTPUT );
 					}
 				}
 				progLen	   += (long) inLength;

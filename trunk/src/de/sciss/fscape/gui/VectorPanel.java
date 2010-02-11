@@ -181,7 +181,7 @@ implements TopPainter
 		});
 	}
 
-	private void redrawCrosshair( MouseEvent e )
+	protected void redrawCrosshair( MouseEvent e )
 	{
 		Dimension	dim			= ggVectorDisplay.getSize();
 		int			x			= e.getX();
@@ -223,7 +223,7 @@ implements TopPainter
 		ggVectorDisplay.repaint();
 	}
 
-	private void requestUpdate()
+	protected void requestUpdate()
 	{
 		boolean	hlog	= ggHLog != null && ggHLog.isSelected();
 		boolean	vlog	= ggVLog != null && ggVLog.isSelected();

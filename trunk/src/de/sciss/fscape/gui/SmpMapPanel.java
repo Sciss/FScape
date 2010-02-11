@@ -35,6 +35,7 @@ import java.util.*;
 import javax.swing.*;
 
 import de.sciss.fscape.*;
+import de.sciss.fscape.session.DocumentFrame;
 import de.sciss.fscape.util.*;
 
 import de.sciss.app.AbstractApplication;
@@ -385,7 +386,7 @@ implements ComponentListener, MouseListener, MouseMotionListener
 				}
 				if( (smpOld == null) || (smpOld.uniqueID != smp.uniqueID) ) {
 					GUIUtil.displayError( (JFrame) AbstractApplication.getApplication().getComponent( Main.COMP_MAIN ),
-										  new NoSuchElementException( SmpSynDlg.ERR_CORRUPTED ), "setSample" );
+										  new NoSuchElementException( DocumentFrame.ERR_CORRUPTED ), "setSample" );
 					return false;
 				}
 
@@ -405,7 +406,7 @@ implements ComponentListener, MouseListener, MouseMotionListener
 				newIndex = smpMap.addSample( smpOld );
 				if( newIndex == -1 ) {	// fatal error
 					GUIUtil.displayError( (JFrame) AbstractApplication.getApplication().getComponent( Main.COMP_MAIN ),
-											 new IllegalStateException( SmpSynDlg.ERR_CORRUPTED ), "setSample" );
+											 new IllegalStateException( DocumentFrame.ERR_CORRUPTED ), "setSample" );
 
 					currentSmpBox.setSelected( SB_STATE_NORMAL );
 					currentSmpBox = dummyBox;
@@ -846,7 +847,7 @@ implements ComponentListener, MouseListener, MouseMotionListener
 		}
 
 		// dragTopLeft/BottomRight evtl. beschneiden
-		cutTheCheese( dragSmp, dragTopLeft, dragBottomRight, otl, obr, dragType );
+		cutTheCheese( dragSmp, dragTopLeft, dragBottomRight, otl, obr );
 		
 		p1	= paramSpaceToScreen( dragTopLeft.x, dragTopLeft.y );
 		p2	= paramSpaceToScreen( dragBottomRight.x, dragBottomRight.y );
@@ -1123,7 +1124,7 @@ implements ComponentListener, MouseListener, MouseMotionListener
 	 *						sollten wiederhergestellt werden)
 	 */
 	protected boolean cutTheCheese( SmpZone smp, DoublePoint tl, DoublePoint br,
-									DoublePoint otl, DoublePoint obr, int dragType )
+									DoublePoint otl, DoublePoint obr )
 	{
 		int		num;
 		SmpZone	smp2;

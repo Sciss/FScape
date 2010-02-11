@@ -72,7 +72,7 @@ implements EventManager.Processor
 //	private final ProgressBar			ggProgress;
 	private final ProgressPanel			pProgress;
 	private final Action				actionClose;
-	private final actionProcessClass	actionProcess;
+	private final ActionProcess	actionProcess;
 	private	final JButton				ggProcess;
 
 	private final EventManager			elm		= new EventManager( this );
@@ -106,8 +106,8 @@ implements EventManager.Processor
 
 		final de.sciss.app.Application	app			= AbstractApplication.getApplication();
 		
-		actionClose		= new actionCloseClass( app.getResourceString( "buttonClose" ));
-		actionProcess	= new actionProcessClass();
+		actionClose		= new ActionClose( app.getResourceString( "buttonClose" ));
+		actionProcess	= new ActionProcess();
 		
 //		setFocusable( true );
 
@@ -234,8 +234,8 @@ if( state != STATE_RUNNING ) setEnabled( true );
 		final ActionMap	amap	= ggProcess.getActionMap();
 
 //		imap.put( KeyStroke.getKeyStroke( KeyEvent.VK_COLON, KeyEvent.META_MASK ), "stop" );
-		imap.put( KeyStroke.getKeyStroke( KeyEvent.VK_PERIOD, KeyEvent.META_MASK ), "stop" );
-		amap.put( "stop", new actionStopClass() );
+		imap.put( KeyStroke.getKeyStroke( KeyEvent.VK_PERIOD, InputEvent.META_MASK ), "stop" );
+		amap.put( "stop", new ActionStop() );
 //		imap.put( KeyStroke.getKeyStroke( KeyEvent.VK_COMMA, KeyEvent.META_MASK ), "pause" );
 //		imap.put( KeyStroke.getKeyStroke( KeyEvent.VK_COMMA, KeyEvent.META_MASK + KeyEvent.SHIFT_MASK ), "pause" );
 //		amap.put( "pause", new actionPauseClass() );
@@ -394,15 +394,15 @@ if( state != STATE_RUNNING ) setEnabled( true );
 
 // -------- internal classes --------
 
-	private class actionProcessClass
+	private class ActionProcess
 	extends AbstractAction
 	{
-		private actionProcessClass()
+		protected ActionProcess()
 		{
 			super( txt[ state ]);
 		}
 		
-		private void updateState()
+		protected void updateState()
 		{
 //			putValue( NAME, altMode ? txtAlt[ state ] : txt[ state ]);
 		}
@@ -422,10 +422,10 @@ if( state != STATE_RUNNING ) setEnabled( true );
 		}
 	}
 
-	private class actionStopClass
+	private class ActionStop
 	extends AbstractAction
 	{
-		private actionStopClass()
+		protected ActionStop()
 		{
 			super();
 		}
@@ -457,10 +457,10 @@ if( state != STATE_RUNNING ) setEnabled( true );
 		}
 	}
 */
-	private class actionCloseClass
+	private class ActionClose
 	extends AbstractAction
 	{
-		private actionCloseClass( String label )
+		protected ActionClose( String label )
 		{
 			super( label );
 		}

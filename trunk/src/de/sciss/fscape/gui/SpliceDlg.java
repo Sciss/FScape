@@ -136,7 +136,7 @@ extends DocumentFrame
 			static_pr.para[ PR_AUTONUM ]		= new Param(      2, Param.NONE );
 			static_pr.para[ PR_FINALSKIP ]		= new Param(    0.0, Param.ABS_MS );
 			static_pr.paraName	= prParaName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
 			static_presets = new Presets( getClass(), static_pr.toProperties( true ));
@@ -197,7 +197,7 @@ extends DocumentFrame
 		ggInputFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Input file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Input file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInputFile, GG_INPUTFILE, pathL );
@@ -207,7 +207,7 @@ extends DocumentFrame
 //		ggCurrentInfo.setBackground( null );
 //		con.weightx		= 0.1;
 //		con.gridwidth	= 1;
-//		gui.addLabel( new JLabel( "Current input", JLabel.RIGHT ));
+//		gui.addLabel( new JLabel( "Current input", SwingConstants.RIGHT ));
 //		con.gridwidth	= GridBagConstraints.REMAINDER;
 //		con.weightx		= 0.9;
 //		gui.addTextField( ggCurrentInfo, GG_CURRENTINFO, al );
@@ -220,7 +220,7 @@ extends DocumentFrame
 		ggOutputFile.deriveFrom( ggInputs, "$D0$F0Cut$E" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Output file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Output file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggOutputFile, GG_OUTPUTFILE, pathL );
@@ -230,7 +230,7 @@ extends DocumentFrame
 		ggCheck			= new JCheckBox();
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Separate files", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Separate files", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addCheckbox( ggCheck, GG_SEPARATEFILES, il );
@@ -265,13 +265,13 @@ extends DocumentFrame
 		ggParam			= new ParamField( spcLength );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Splice Length", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Splice Length", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggParam, GG_SPLICELENGTH, null );
 
 		ggSpliceLength	= new ParamField( spcLength );
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Initial Skip", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Initial Skip", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggSpliceLength, GG_INITIALSKIP, null );
@@ -280,13 +280,13 @@ extends DocumentFrame
 //		ggParam.setReference( ggSpliceLength );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Skip Length", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Skip Length", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggParam, GG_SKIPLENGTH, null );
 
 		ggParam			= new ParamField( spcLength );
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Final Skip", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Final Skip", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggParam, GG_FINALSKIP, null );
@@ -295,13 +295,13 @@ extends DocumentFrame
 		ggCheck			= new JCheckBox();
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Automatic rescale", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Automatic rescale", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addCheckbox( ggCheck, GG_AUTOSCALE, il );
 
 		ggParam			= new ParamField( new ParamSpace( 1, Double.POSITIVE_INFINITY, 1, Param.NONE ));
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "# of Splices", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "# of Splices", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggParam, GG_AUTONUM, null );
@@ -505,7 +505,7 @@ topLevel: try {
 	/*
 	 *	Neues Inputfile setzen
 	 */
-	private void setInput( String fname )
+	protected void setInput( String fname )
 	{
 		final AudioFile			f;
 		final AudioFileDescr	stream;

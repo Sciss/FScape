@@ -70,7 +70,7 @@ extends IconicComponent
 
 	public static final String OBJ_NAME = "OpIcon";
 
-	public static DataFlavor flavor	= null;				// DataFlavor representing this class
+	public static DataFlavor op_flavor	= null;				// DataFlavor representing this class
 
 	public static final int ICON_WIDTH		= ibWidth;
 	public static final int ICON_HEIGHT		= ibHeight;
@@ -130,8 +130,8 @@ extends IconicComponent
 		this.op = op;
 
 		// data flavors
-		if( OpIcon.flavor == null ) {
-			OpIcon.flavor = new DataFlavor( getClass(), "Operator Icon" );
+		if( OpIcon.op_flavor == null ) {
+			OpIcon.op_flavor = new DataFlavor( getClass(), "Operator Icon" );
 		}
 
 		lab		= new OpIconLabel( this, iName );
@@ -352,7 +352,7 @@ extends IconicComponent
 		if( flavors == null ) {
 			final DataFlavor iconFlavors[] = super.getTransferDataFlavors();
 			flavors			= new DataFlavor[ iconFlavors.length + 1 ];
-			flavors[ 0 ]	= OpIcon.flavor;
+			flavors[ 0 ]	= OpIcon.op_flavor;
 			for( int i = 0; i < iconFlavors.length; i++ ) {
 				flavors[ i + 1 ] = iconFlavors[ i ];
 			}
@@ -360,24 +360,24 @@ extends IconicComponent
 		return flavors;
 	}
 
-	public boolean isDataFlavorSupported( DataFlavor flavor )
+	public boolean isDataFlavorSupported( DataFlavor fl )
 	{
-		final DataFlavor flavors[] = getTransferDataFlavors();
-		for( int i = 0; i < flavors.length; i++ ) {
-			if( flavors[ i ].equals( flavor )) return true;
+		final DataFlavor flavs[] = getTransferDataFlavors();
+		for( int i = 0; i < flavs.length; i++ ) {
+			if( flavs[ i ].equals( fl )) return true;
 		}
 		return false;
 	}
 	
-	public Object getTransferData( DataFlavor flavor )
+	public Object getTransferData( DataFlavor fl )
 	throws UnsupportedFlavorException, IOException
 	{
-		if( flavor.equals( OpIcon.flavor )) {
+		if( fl.equals( OpIcon.op_flavor )) {
 			return this;
-		} else if( flavor.equals( DataFlavor.stringFlavor )) {
+		} else if( fl.equals( DataFlavor.stringFlavor )) {
 			return getName();
 		} else {
-			return super.getTransferData( flavor );
+			return super.getTransferData( fl );
 		}
 	}
 

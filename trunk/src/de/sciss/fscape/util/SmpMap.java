@@ -47,7 +47,7 @@ implements Cloneable
 
 // -------- private Variablen --------
 
-	protected Vector	smp;		// Element = SmpZones
+	protected Vector	smps;		// Element = SmpZones
 
 // -------- public Methoden --------
 
@@ -56,7 +56,7 @@ implements Cloneable
 		this.hSpace	= hSpace;
 		this.vSpace	= vSpace;
 		this.type	= type;
-		smp			= new Vector();
+		smps		= new Vector();
 	}
 
 	public SmpMap( ParamSpace hSpace, ParamSpace vSpace )
@@ -72,7 +72,7 @@ implements Cloneable
 		this.hSpace	= src.hSpace;
 		this.vSpace	= src.vSpace;
 		this.type	= src.type;
-		smp			= (Vector) src.smp.clone();
+		smps			= (Vector) src.smps.clone();
 	}
 
 	public Object clone()
@@ -111,10 +111,10 @@ implements Cloneable
 			d		= (velHi.val  - hSpace.min) / (hSpace.max - hSpace.min);
 			dist   += d*d;
 
-			index	= this.smp.size();
-			for( int i = 0; i < this.smp.size(); i++ ) {
+			index	= this.smps.size();
+			for( int i = 0; i < this.smps.size(); i++ ) {
 			
-				neighbour	= (SmpZone) this.smp.elementAt( i );
+				neighbour	= (SmpZone) this.smps.elementAt( i );
 				nFreqHi		= Param.transform( neighbour.freqHi, vSpace.unit, null, null ).val;
 				nFreqLo		= Param.transform( neighbour.freqLo, vSpace.unit, null, null ).val;
 				nVelHi		= Param.transform( neighbour.velHi,  hSpace.unit, null, null ).val;
@@ -142,7 +142,7 @@ implements Cloneable
 			}
 
 			if( index >= 0 ) {
-				this.smp.insertElementAt( smp, index );
+				this.smps.insertElementAt( smp, index );
 			}
 		}
 
@@ -157,7 +157,7 @@ implements Cloneable
 	public boolean removeSample( int index )
 	{
 		try {
-			smp.removeElementAt( index );
+			smps.removeElementAt( index );
 			return true;
 		}
 		catch( IndexOutOfBoundsException e ) {
@@ -173,7 +173,7 @@ implements Cloneable
 		SmpZone smp = null;
 	
 		try {
-			smp = (SmpZone) this.smp.elementAt( index );
+			smp = (SmpZone) smps.elementAt( index );
 		}
 		catch( IndexOutOfBoundsException e ) {}
 		
@@ -185,7 +185,7 @@ implements Cloneable
 	 */
 	public Enumeration getSamples()
 	{
-		return smp.elements();
+		return smps.elements();
 	}
 
 	/**
@@ -193,7 +193,7 @@ implements Cloneable
 	 */
 	public int size()
 	{
-		return smp.size();
+		return smps.size();
 	}
 
 	/**
@@ -293,8 +293,8 @@ implements Cloneable
 		
 		strBuf = new StringBuffer( hSpace.toString() + '|' + vSpace.toString() + '|' + type );
 		
-		for( int i = 0; i < smp.size(); i++ ) {
-			strBuf.append( "|" + ((SmpZone) smp.elementAt( i )).toString() );
+		for( int i = 0; i < smps.size(); i++ ) {
+			strBuf.append( "|" + ((SmpZone) smps.elementAt( i )).toString() );
 		}
 		
 		return( strBuf.toString() );
@@ -314,7 +314,7 @@ implements Cloneable
 							  Integer.parseInt( strTok.nextToken() ));		// type
 		
 		while( strTok.hasMoreElements() ) {
-			map.smp.addElement( SmpZone.valueOf( strTok.nextToken() ));
+			map.smps.addElement( SmpZone.valueOf( strTok.nextToken() ));
 		}
 
 		return map;

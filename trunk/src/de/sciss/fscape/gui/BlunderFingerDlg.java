@@ -44,6 +44,7 @@ import java.util.Random;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 import de.sciss.fscape.io.GenericFile;
 import de.sciss.fscape.prop.Presets;
@@ -169,7 +170,7 @@ extends DocumentFrame
 			static_pr.para[ PR_MUTAPROB ]		= new Param(   33.3, Param.RELPERCENT );
 			static_pr.para[ PR_MUTAAMOUNT ]		= new Param(    0.1, Param.FACTOR_AMP );
 			static_pr.paraName	= prParaName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
 			fillDefaultGain( static_pr.para, PR_GAIN );
@@ -212,7 +213,7 @@ extends DocumentFrame
 		con.fill		= GridBagConstraints.BOTH;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		
-		gui.addLabel( new JLabel( "Fuck the genfood mafia", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Fuck the genfood mafia", SwingConstants.RIGHT ));
 		
 	gui.addLabel( new GroupLabel( "Waveform I/O", GroupLabel.ORIENT_HORIZONTAL,
 								  GroupLabel.BRACE_NONE ));
@@ -222,7 +223,7 @@ extends DocumentFrame
 		ggInFitFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Fit input", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Fit input", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInFitFile, GG_INFITFILE, null );
@@ -232,7 +233,7 @@ extends DocumentFrame
 		ggInPopFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Population input", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Population input", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInPopFile, GG_INPOPFILE, null );
@@ -246,7 +247,7 @@ extends DocumentFrame
 		ggOutputFile.deriveFrom( ggInputs, "$D0$B0Gen$B1$E" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Evolved output", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Evolved output", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggOutputFile, GG_OUTPUTFILE, null );
@@ -256,7 +257,7 @@ extends DocumentFrame
 		ggGain			= createGadgets( GGTYPE_GAIN );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Gain", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Gain", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( (ParamField) ggGain[ 0 ], GG_GAIN, null );
 		con.weightx		= 0.5;
@@ -273,7 +274,7 @@ extends DocumentFrame
 		}
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Chromosome length", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Chromosome length", SwingConstants.RIGHT ));
 		con.weightx		= 0.2;
 		gui.addChoice( ggChromoLen, GG_CHROMOLEN, il );
 	
@@ -281,7 +282,7 @@ extends DocumentFrame
 			new ParamSpace( 1, 1000000, 1, Param.NONE )});
 		con.weightx		= 0.1;
 //		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Crossing points", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Crossing points", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggCrossPoints, GG_CROSSPOINTS, null );
@@ -290,7 +291,7 @@ extends DocumentFrame
 			new ParamSpace( 1, 1000000, 1, Param.NONE )});
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Iterations", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Iterations", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 //		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggIterations, GG_ITERATIONS, null );
@@ -298,7 +299,7 @@ extends DocumentFrame
 		ggMutaProb		= new ParamField( Constants.spaces[ Constants.unsignedModSpace ]);
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Mutation probability", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Mutation probability", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggMutaProb, GG_MUTAPROB, null );
@@ -307,7 +308,7 @@ extends DocumentFrame
 			new ParamSpace( 2, 65536, 2, Param.NONE )});
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Population", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Population", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggPopulation, GG_POPULATION, null );
 
@@ -317,7 +318,7 @@ extends DocumentFrame
 
 		ggMutaAmount	= new ParamField( spcMutaAmt );
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Mutation amount", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Mutation amount", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggMutaAmount, GG_MUTAAMOUNT, null );
@@ -325,7 +326,7 @@ extends DocumentFrame
 		ggElitism		= new JCheckBox();
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Elitism", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Elitism", SwingConstants.RIGHT ));
 		con.weightx		= 0.2;
 		gui.addCheckbox( ggElitism, GG_ELITISM, il );
 		
@@ -335,7 +336,7 @@ extends DocumentFrame
 		ggChanFit.addItem( "Mean" );
 		con.weightx		= 0.1;
 //		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Multichannel fitness", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Multichannel fitness", SwingConstants.RIGHT ));
 		con.weightx		= 0.2;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addChoice( ggChanFit, GG_CHANFIT, il );
@@ -345,7 +346,7 @@ extends DocumentFrame
 		ggDomain.addItem( "Wavelet" );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Domain", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Domain", SwingConstants.RIGHT ));
 		con.weightx		= 0.2;
 		gui.addChoice( ggDomain, GG_DOMAIN, il );
 		

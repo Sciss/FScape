@@ -451,14 +451,14 @@ implements	ActionListener, ComponentListener, ItemListener, PathListener,
 	 *  The user can abbrevate or extend filenames by pressing the appropriate
 	 *  key; in this case the $F and $B tags are exchanged in the scheme.
 	 */
-	public void deriveFrom( PathField[] superPaths, String scheme )
+	public void deriveFrom( PathField[] superPth, String schm )
 	{
-		this.superPaths = superPaths;
-		this.scheme		= scheme;
-		protoScheme		= scheme;
+		superPaths 		= superPth;
+		scheme			= schm;
+		protoScheme		= schm;
 
-		for( int i = 0; i < superPaths.length; i++ ) {
-			superPaths[ i ].addChildPathField( this );
+		for( int i = 0; i < superPth.length; i++ ) {
+			superPth[ i ].addChildPathField( this );
 		}
 	}
 	
@@ -558,7 +558,7 @@ implements	ActionListener, ComponentListener, ItemListener, PathListener,
 	{
 		String		fPath	= getPath().getPath();
 		GenericFile	f;
-		int			type;
+		int			typ;
 		String		typeStr	= null;
 		boolean		success	= false;
 		
@@ -566,10 +566,10 @@ implements	ActionListener, ComponentListener, ItemListener, PathListener,
 			
 			try {
 				f		= new GenericFile( fPath, GenericFile.MODE_INPUT );
-				type	= f.mode & GenericFile.MODE_TYPEMASK;
+				typ	= f.mode & GenericFile.MODE_TYPEMASK;
 				typeStr	= f.getTypeDescr();
 				for( int i = 0; i < handledTypes.length; i++ ) {
-					if( type == handledTypes[ i ]) {
+					if( typ == handledTypes[ i ]) {
 //						setFormat( typeStr + "; " + f.getFormat() );
 						setFormat( f.getFormat() );
 						success = true;
@@ -610,24 +610,24 @@ implements	ActionListener, ComponentListener, ItemListener, PathListener,
 	/*
 	 *	Tags: $Dx = Directory of superPath x; $Fx = Filename; $E = Extension; $Bx = Brief filename
 	 */
-	protected String evalScheme( String scheme )
+	protected String evalScheme( String schm )
 	{
 		String	txt2;
 		int		i, j, k;
 
-		for( i = scheme.indexOf( "$D" ); (i >= 0) && (i < scheme.length() - 2); i = scheme.indexOf( "$D", i )) {
-			j		= scheme.charAt( i + 2 ) - 48;
+		for( i = schm.indexOf( "$D" ); (i >= 0) && (i < schm.length() - 2); i = schm.indexOf( "$D", i )) {
+			j		= schm.charAt( i + 2 ) - 48;
 			try {
 				txt2 = superPaths[ j ].getPath().getPath();
 			} catch( ArrayIndexOutOfBoundsException e1 ) {
 				txt2 = "";
 			}
 			// sucky java 1.1 stringbuffer is impotent
-			scheme	= scheme.substring( 0, i ) + txt2.substring( 0, txt2.lastIndexOf( File.separatorChar ) + 1 ) +
-					  scheme.substring( i + 3 );
+			schm	= schm.substring( 0, i ) + txt2.substring( 0, txt2.lastIndexOf( File.separatorChar ) + 1 ) +
+					  schm.substring( i + 3 );
 		}
-		for( i = scheme.indexOf( "$F" ); (i >= 0) && (i < scheme.length() - 2); i = scheme.indexOf( "$F", i )) {
-			j		= scheme.charAt( i + 2 ) - 48;
+		for( i = schm.indexOf( "$F" ); (i >= 0) && (i < schm.length() - 2); i = schm.indexOf( "$F", i )) {
+			j		= schm.charAt( i + 2 ) - 48;
 			try {
 				txt2 = superPaths[ j ].getPath().getPath();
 			} catch( ArrayIndexOutOfBoundsException e1 ) {
@@ -635,11 +635,11 @@ implements	ActionListener, ComponentListener, ItemListener, PathListener,
 			}
 			txt2	= txt2.substring( txt2.lastIndexOf( File.separatorChar ) + 1 );
 			k		= txt2.lastIndexOf( '.' );
-			scheme	= scheme.substring( 0, i ) + ((k > 0) ? txt2.substring( 0, k ) : txt2 ) +
-					  scheme.substring( i + 3 );
+			schm	= schm.substring( 0, i ) + ((k > 0) ? txt2.substring( 0, k ) : txt2 ) +
+					  schm.substring( i + 3 );
 		}
-		for( i = scheme.indexOf( "$X" ); (i >= 0) && (i < scheme.length() - 2); i = scheme.indexOf( "$X", i )) {
-			j		= scheme.charAt( i + 2 ) - 48;
+		for( i = schm.indexOf( "$X" ); (i >= 0) && (i < schm.length() - 2); i = schm.indexOf( "$X", i )) {
+			j		= schm.charAt( i + 2 ) - 48;
 			try {
 				txt2 = superPaths[ j ].getPath().getPath();
 			} catch( ArrayIndexOutOfBoundsException e1 ) {
@@ -647,11 +647,11 @@ implements	ActionListener, ComponentListener, ItemListener, PathListener,
 			}
 			txt2	= txt2.substring( txt2.lastIndexOf( File.separatorChar ) + 1 );
 			k		= txt2.lastIndexOf( '.' );
-			scheme	= scheme.substring( 0, i ) + ((k > 0) ? txt2.substring( k ) : "" ) +
-					  scheme.substring( i + 3 );
+			schm	= schm.substring( 0, i ) + ((k > 0) ? txt2.substring( k ) : "" ) +
+					  schm.substring( i + 3 );
 		}
-		for( i = scheme.indexOf( "$B" ); (i >= 0) && (i < scheme.length() - 2); i = scheme.indexOf( "$B", i )) {
-			j		= scheme.charAt( i + 2 ) - 48;
+		for( i = schm.indexOf( "$B" ); (i >= 0) && (i < schm.length() - 2); i = schm.indexOf( "$B", i )) {
+			j		= schm.charAt( i + 2 ) - 48;
 			try {
 				txt2 = superPaths[ j ].getPath().getPath();
 			} catch( ArrayIndexOutOfBoundsException e1 ) {
@@ -660,14 +660,14 @@ implements	ActionListener, ComponentListener, ItemListener, PathListener,
 			txt2	= txt2.substring( txt2.lastIndexOf( File.separatorChar ) + 1 );
 			k		= txt2.lastIndexOf( '.' );
 			txt2	= abbrevate( (k > 0) ? txt2.substring( 0, k ) : txt2 );
-			scheme 	= scheme.substring( 0, i ) + txt2 + scheme.substring( i + 3 );
+			schm 	= schm.substring( 0, i ) + txt2 + schm.substring( i + 3 );
 		}
-		for( i = scheme.indexOf( "$E" ); i >= 0; i = scheme.indexOf( "$E", i )) {
+		for( i = schm.indexOf( "$E" ); i >= 0; i = schm.indexOf( "$E", i )) {
 			j		= getType();
-			scheme	= scheme.substring( 0, i ) + GenericFile.getExtStr( j ) + scheme.substring( i + 2 );
+			schm	= schm.substring( 0, i ) + GenericFile.getExtStr( j ) + schm.substring( i + 2 );
 		}
 
-		return scheme;
+		return schm;
 	}
 
 	/**
@@ -926,7 +926,7 @@ implements	ActionListener, ComponentListener, ItemListener, PathListener,
 			int			i;
 			String		s;
 			
-			inputMap.put( KeyStroke.getKeyStroke( KeyEvent.VK_LEFT, KeyEvent.META_MASK ), "abbr" );
+			inputMap.put( KeyStroke.getKeyStroke( KeyEvent.VK_LEFT, InputEvent.META_MASK ), "abbr" );
 			actionMap.put( "abbr", new AbstractAction() {
 				public void actionPerformed( ActionEvent e )
 				{
@@ -934,7 +934,7 @@ implements	ActionListener, ComponentListener, ItemListener, PathListener,
 					setPathAndDispatchEvent( new File( evalScheme( scheme )));
 				}
 			});
-			inputMap.put( KeyStroke.getKeyStroke( KeyEvent.VK_RIGHT, KeyEvent.META_MASK ), "expd" );
+			inputMap.put( KeyStroke.getKeyStroke( KeyEvent.VK_RIGHT, InputEvent.META_MASK ), "expd" );
 			actionMap.put( "expd", new AbstractAction() {
 				public void actionPerformed( ActionEvent e )
 				{
@@ -942,7 +942,7 @@ implements	ActionListener, ComponentListener, ItemListener, PathListener,
 					setPathAndDispatchEvent( new File( evalScheme( scheme )));
 				}
 			});
-			inputMap.put( KeyStroke.getKeyStroke( KeyEvent.VK_ESCAPE, KeyEvent.META_MASK ), "auto" );
+			inputMap.put( KeyStroke.getKeyStroke( KeyEvent.VK_ESCAPE, InputEvent.META_MASK ), "auto" );
 			actionMap.put( "auto", new AbstractAction() {
 				public void actionPerformed( ActionEvent e )
 				{
@@ -952,10 +952,10 @@ implements	ActionListener, ComponentListener, ItemListener, PathListener,
 			});
 			for( i = 1; i <= 9; i++ ) {
 				s = "sudir" + i;
-				inputMap.put( KeyStroke.getKeyStroke( KeyEvent.VK_NUMPAD0 + i, KeyEvent.META_MASK + KeyEvent.SHIFT_MASK ), s );
+				inputMap.put( KeyStroke.getKeyStroke( KeyEvent.VK_NUMPAD0 + i, InputEvent.META_MASK + InputEvent.SHIFT_MASK ), s );
 				actionMap.put( s, new SetUserDirAction( i ));
 				s = "rudir" + i;
-				inputMap.put( KeyStroke.getKeyStroke( KeyEvent.VK_NUMPAD0 + i, KeyEvent.META_MASK ), s );
+				inputMap.put( KeyStroke.getKeyStroke( KeyEvent.VK_NUMPAD0 + i, InputEvent.META_MASK ), s );
 				actionMap.put( s, new RecallUserDirAction( i ));
 			}
 		}

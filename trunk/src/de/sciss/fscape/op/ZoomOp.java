@@ -90,7 +90,7 @@ extends Operator
 			static_pr.para[ PR_BAND ]			= new Param( 16000.0, Param.ABS_HZ );
 			static_pr.paraName	= prParaName;
 
-			static_pr.superPr	= Operator.static_pr;
+			static_pr.superPr	= Operator.op_static_pr;
 		}
 		// default preset
 		if( static_presets == null ) {

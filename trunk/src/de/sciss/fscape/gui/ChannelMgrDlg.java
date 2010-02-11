@@ -129,13 +129,13 @@ extends DocumentFrame
 
 	private static final String	ERR_OUTNUM			= "Please update # of output files";
 
-	private int			outChanNum		= 0;
+	private int			guiOutChanNum		= 0;
 	private String		outPath			= "";
 	private String		outFileName		= "";
 	private String		outFileExt		= "";
 	
-	private JList ggInputList, ggOutputList;
-	private DefaultListModel  ggInputListModel, ggOutputListModel;
+	protected JList ggInputList, ggOutputList;
+	protected DefaultListModel  ggInputListModel, ggOutputListModel;
 	
 // -------- public Methoden --------
 
@@ -162,7 +162,7 @@ extends DocumentFrame
 			static_pr.para		= prPara;
 			static_pr.para[ PR_GAIN ]		= new Param(   0.0, Param.DECIBEL_AMP );
 			static_pr.paraName	= prParaName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
 //			fillDefaultGain( static_pr.para, PR_GAIN );
@@ -182,7 +182,6 @@ extends DocumentFrame
 		JComboBox			ggChanMode, ggNameMode;
 		JButton				ggCmd;
 		JScrollPane			ggInputScroll, ggOutputScroll;
-		int					i;
 		BasicCellRenderer   bcr;
 
 		gui				= new GUISupport();
@@ -331,7 +330,7 @@ extends DocumentFrame
 		ggInputFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Add file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Add file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInputFile, GG_INPUTFILE, pathL );
@@ -390,12 +389,12 @@ extends DocumentFrame
 								  GroupLabel.BRACE_NONE ));
 
 		ggChanMode		= new JComboBox();
-		for( i = 0; i < CHAN_NAMES.length; i++ ) {
+		for( int i = 0; i < CHAN_NAMES.length; i++ ) {
 			ggChanMode.addItem( CHAN_NAMES[ i ]);
 		}
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Operation mode", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Operation mode", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addChoice( ggChanMode, GG_CHANMODE, il );
@@ -414,7 +413,7 @@ extends DocumentFrame
 		ggOutputFile.deriveFrom( ggInputs, "$D0$F0-$E" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Filename", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Filename", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggOutputFile, GG_OUTPUTFILE, pathL );
@@ -424,7 +423,7 @@ extends DocumentFrame
 		ggGain			= createGadgets( GGTYPE_GAIN );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Gain", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Gain", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( (ParamField) ggGain[ 0 ], GG_GAIN, null );
 		con.weightx		= 0.5;
@@ -464,11 +463,11 @@ extends DocumentFrame
 		gui.addButton( ggCmd, GG_CMDOUTDOWN, al );
 
 		ggNameMode		= new JComboBox();
-		for( i = 0; i < NAME_NAMES.length; i++ ) {
+		for( int i = 0; i < NAME_NAMES.length; i++ ) {
 			ggNameMode.addItem( NAME_NAMES[ i ]);
 		}
 		con.gridwidth	= GridBagConstraints.RELATIVE;
-		gui.addLabel( new JLabel( "Auto scheme", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Auto scheme", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addChoice( ggNameMode, GG_NAMEMODE, il );
 
@@ -919,31 +918,31 @@ topLevel: try {
 		if( pr.intg[ PR_CHANMODE ] == CHAN_MERGE ) {
 			ch = Math.min( 1, ch );
 		}
-		outChanNum = ch;
+		guiOutChanNum = ch;
 		
 		oldIdx = ggOutputList.getSelectedIndex();
 		if( oldIdx >= 0 ) {
 			ggOutputList.clearSelection(); // ( oldIdx );
 		}
-		if( outChanNum < ggOutputListModel.size() ) {
-			for( i = ggOutputListModel.size() - 1; i >= outChanNum; i-- ) {
+		if( guiOutChanNum < ggOutputListModel.size() ) {
+			for( i = ggOutputListModel.size() - 1; i >= guiOutChanNum; i-- ) {
 				ggOutputListModel.removeElementAt( i );
 			}
 		}
 		for( i = 0; i < ggOutputListModel.size(); i++ ) {
 			oe		= (OutputEntry) ggOutputListModel.elementAt( i );
 			if( oe.auto ) {
-				oe.name = createAutoExt( i, outChanNum );
+				oe.name = createAutoExt( i, guiOutChanNum );
 				ggOutputListModel.setElementAt( oe, i );
 			}
 		}
-		while( outChanNum > ggOutputListModel.size() ) {
+		while( guiOutChanNum > ggOutputListModel.size() ) {
 			oe		= new OutputEntry();
 			oe.auto = true;
-			oe.name	= createAutoExt( ggOutputListModel.size(), outChanNum );
+			oe.name	= createAutoExt( ggOutputListModel.size(), guiOutChanNum );
 			ggOutputListModel.addElement( oe );
 		}
-		if( (oldIdx >= 0) && (oldIdx < outChanNum) ) {
+		if( (oldIdx >= 0) && (oldIdx < guiOutChanNum) ) {
 			ggOutputList.setSelectedIndex( oldIdx );
 			ggOutputList.ensureIndexIsVisible( oldIdx );
 		}

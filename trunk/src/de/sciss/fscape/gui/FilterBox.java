@@ -142,7 +142,7 @@ implements CircuitPanel.Box, javax.swing.Icon
 		double		smpPerPeriod;
 		int			numPeriods		= 3;
 		Point		len;
-		int			delay			= (int) (AudioFileDescr.millisToSamples( ref, 
+		int			delaySmp			= (int) (AudioFileDescr.millisToSamples( ref, 
 											Param.transform( this.delay, Param.ABS_MS, null, null ).val ) + 0.5);
 		int			halfWinSize;
 		double[][]	freqs			= calcFrequencies( smpRate );
@@ -150,7 +150,7 @@ implements CircuitPanel.Box, javax.swing.Icon
 		double		minFreq			= smpRate / 2;
 
 		if( sincFreqs.length == 0 ) {	// AllPass
-			len = new Point( 0, 1 + delay );
+			len = new Point( 0, 1 + delaySmp );
 			return len;
 		}
 		
@@ -174,7 +174,7 @@ implements CircuitPanel.Box, javax.swing.Icon
 		}
 
 		halfWinSize = (int) ((double) numPeriods * smpPerPeriod + 0.5);
-		len			= new Point( halfWinSize, Math.max( 0, halfWinSize - 1 + delay) );
+		len			= new Point( halfWinSize, Math.max( 0, halfWinSize - 1 + delaySmp) );
 
 		return len;
 	}
@@ -187,9 +187,9 @@ implements CircuitPanel.Box, javax.swing.Icon
 		final double	smpRate			= (double) ref.rate;
 		final double	freqNorm		= Constants.PI2 / smpRate;
 		final double	cosineNorm		= 4.0 / (Math.PI*Math.PI);
-		final int		delay			= (int) (AudioFileDescr.millisToSamples( ref, 
+		final int		dlySmp			= (int) (AudioFileDescr.millisToSamples( ref, 
 											Param.transform( this.delay, Param.ABS_MS, null, null ).val ) + 0.5);
-		final int		off				= totalLength.x + delay;
+		final int		off				= totalLength.x + dlySmp;
 		final Param		ampRef			= new Param( 1.0, Param.ABS_AMP );
 		final double[][] freqs			= calcFrequencies( smpRate );
 		final double[]	sincFreqs		= freqs[ 0 ];
@@ -201,7 +201,7 @@ implements CircuitPanel.Box, javax.swing.Icon
 		double			factor			= 1.0;
 		double			minFreq			= smpRate / 2;
 		float[]			win;
-		double			gain			= Param.transform( this.gain, Param.ABS_AMP, ampRef, null ).val *
+		double			gainFactor		= Param.transform( this.gain, Param.ABS_AMP, ampRef, null ).val *
 										  (sign ? -1 : 1);
 
 		for( int i = 0; i < buf.length; i++ ) {		// clear buf
@@ -209,7 +209,7 @@ implements CircuitPanel.Box, javax.swing.Icon
 		}
 
 		if( filterType == FLT_ALLPASS ) {			// -------- allpass --------
-			buf[ off ] = (float) gain;
+			buf[ off ] = (float) gainFactor;
 
 		} else {									// -------- multiband --------
 
@@ -273,15 +273,15 @@ implements CircuitPanel.Box, javax.swing.Icon
 			}
 			win			= null;
 			impPower   -= ((double) buf[ off ] * (double) buf[ off]) / 2;
-			gain	   *= Math.sqrt( coverage / impPower );
+			gainFactor	   *= Math.sqrt( coverage / impPower );
 // System.out.println( "impPower "+impPower +"; coverage "+coverage+"; gain "+gain );
 
 			// apply gain
 			for( int j = 1; j < halfWinSize; j++ ) {
-				buf[ off + j ] *= (float) gain;
-				buf[ off - j ] *= (float) gain;
+				buf[ off + j ] *= (float) gainFactor;
+				buf[ off - j ] *= (float) gainFactor;
 			}
-			buf[ off ] *= (float) gain;
+			buf[ off ] *= (float) gainFactor;
 
 		} // if not allpass
 	}

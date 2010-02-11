@@ -41,6 +41,7 @@ import java.util.Random;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 import de.sciss.fscape.io.GenericFile;
 import de.sciss.fscape.prop.Presets;
@@ -163,7 +164,7 @@ extends DocumentFrame
 			static_pr.para[ PR_MAXGRAINLEN ]	= new Param( 1000.0, Param.ABS_MS );
 			static_pr.para[ PR_CLUMP ]			= new Param(    1.0, Param.NONE );
 			static_pr.paraName	= prParaName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
 			fillDefaultGain( static_pr.para, PR_GAIN );
@@ -213,7 +214,7 @@ extends DocumentFrame
 		ggInputFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Control input", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Control input", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInputFile, GG_INPUTFILE, null );
@@ -223,7 +224,7 @@ extends DocumentFrame
 		ggPtrnFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Pattern input", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Pattern input", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggPtrnFile, GG_PATTERNFILE, null );
@@ -237,7 +238,7 @@ extends DocumentFrame
 		ggOutputFile.deriveFrom( ggInputs, "$D0$B0Sedi$B1$E" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Plot output", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Plot output", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggOutputFile, GG_OUTPUTFILE, null );
@@ -247,7 +248,7 @@ extends DocumentFrame
 		ggGain			= createGadgets( GGTYPE_GAIN );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Gain", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Gain", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( (ParamField) ggGain[ 0 ], GG_GAIN, null );
 		con.weightx		= 0.5;
@@ -262,13 +263,13 @@ extends DocumentFrame
 		ggTimeScale		= new ParamField( Constants.spaces[ Constants.factorTimeSpace ]);
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Time scale", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Time scale", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggTimeScale, GG_TIMESCALE, null );
 
 		ggClump			= new ParamField( new ParamSpace( 1, 65536, 1, Param.NONE ));
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Clump", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Clump", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggClump, GG_CLUMP, null );
@@ -280,7 +281,7 @@ extends DocumentFrame
 		ggMinGrainLen	= new ParamField( spcGrain );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Min. grain length", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Min. grain length", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 //		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggMinGrainLen, GG_MINGRAINLEN, null );
@@ -289,7 +290,7 @@ extends DocumentFrame
 		ggMaxBoost		= new ParamField( new ParamSpace[] { Constants.spaces[ Constants.ratioAmpSpace ], Constants.spaces[ Constants.decibelAmpSpace ]});
 		con.weightx		= 0.1;
 //		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Max boost", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Max boost", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggMaxBoost, GG_MAXBOOST, null );
@@ -297,7 +298,7 @@ extends DocumentFrame
 		ggMaxGrainLen	= new ParamField( spcGrain );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Max. grain length", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Max. grain length", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 //		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggMaxGrainLen, GG_MAXGRAINLEN, null );
@@ -305,7 +306,7 @@ extends DocumentFrame
 		ggWinSize		= new ParamField( Constants.spaces[ Constants.ratioTimeSpace ] );
 		con.weightx		= 0.1;
 //		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Win size", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Win size", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggWinSize, GG_WINSIZE, null );
@@ -315,7 +316,7 @@ extends DocumentFrame
 		ggChanType.addItem( "Maximum" );
 		con.weightx		= 0.1;
 		con.gridwidth	= 3;
-		gui.addLabel( new JLabel( "Multichannel correlation", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Multichannel correlation", SwingConstants.RIGHT ));
 		con.weightx		= 0.2;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addChoice( ggChanType, GG_CHANTYPE, il );

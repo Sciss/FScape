@@ -69,16 +69,16 @@ extends JPanel
 	protected CurvePoint currentCurvePoint;
 	protected CurvePoint dummyPoint;
 
-	private Cursor lastCursor;					// Cursor previously used to dnd or edit-op
+	protected Cursor lastCursor;					// Cursor previously used to dnd or edit-op
 
 	// this is all for drag+drop
-	private CurvePoint	dragSource	= null;
-	private DoublePoint	dragLeft, dragRight;	// Punkt links + rechts neben dem gezogenen
-	private boolean		dragState	= false;	// true for drag+drop
-	private int			dragType	= DRAG_NONE;
-	private int			dragLastX;				// last coordinates
-	private int			dragLastY;				// last coordinates
-	private DoublePoint	dragPoint;
+	protected CurvePoint	dragSource	= null;
+	protected DoublePoint	dragLeft, dragRight;	// Punkt links + rechts neben dem gezogenen
+	protected boolean		dragState	= false;	// true for drag+drop
+	protected int			dragType	= DRAG_NONE;
+	protected int			dragLastX;				// last coordinates
+	protected int			dragLastY;				// last coordinates
+	protected DoublePoint	dragPoint;
 
 	private static final int DRAG_MOVE	=	0;	// drag object
 	private	static final int DRAG_NONE	=  -1;
@@ -97,7 +97,7 @@ extends JPanel
 	// dieser Button wird nicht angezeigt, sondern dient nur als
 	// Institution zum Verwalten der ActionListener und fuer
 	// den Event-Dispatch!
-	private Button		actionComponent;
+	protected Button		actionComponent;
 
 	private final MouseInputAdapter mia;
 
@@ -771,7 +771,7 @@ extends JPanel
 	/*
 	 *	Berechnet die Position der Punkt neu
 	 */
-	private void recalcScreenPoints()
+	protected void recalcScreenPoints()
 	{
 		Component	c;
 		DoublePoint	pt;
@@ -792,7 +792,7 @@ extends JPanel
 	/*
 	 *	Uebersetzt Bildschirm-Koordinaten in Parameter-Koordinaten
 	 */
-	private DoublePoint screenToParamSpace( int x, int y )
+	protected DoublePoint screenToParamSpace( int x, int y )
 	{
 		double dx, dy;
 
@@ -808,7 +808,7 @@ extends JPanel
 	/*
 	 *	Uebersetzt Parameter-Koordinaten in Bildschirm-Koordinaten
 	 */
-	private Point paramSpaceToScreen( double dx, double dy )
+	protected Point paramSpaceToScreen( double dx, double dy )
 	{
 		int x, y;
 
@@ -826,7 +826,7 @@ extends JPanel
 	/*
 	 *	Index auf dem Panel, -1 bei Fehler
 	 */
-	private int getComponentIndex( Component c )
+	protected int getComponentIndex( Component c )
 	{
 		Component c2;
 	
@@ -851,7 +851,7 @@ extends JPanel
 
 	// ........ public Methoden ........
 
-		private CurvePoint()
+		protected CurvePoint()
 		{
 			super( null );
 
@@ -872,7 +872,7 @@ extends JPanel
 		 *
 		 *	@return	vorheriger Status
 		 */
-		private int setSelected( int state )
+		protected int setSelected( int state )
 		{
 			int lastState	= this.state;
 			this.state		= state;

@@ -37,6 +37,7 @@ import java.io.IOException;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 import de.sciss.fscape.io.GenericFile;
 import de.sciss.fscape.io.ImageFile;
@@ -143,7 +144,7 @@ extends DocumentFrame
 			static_pr.para[ PR_SIGNALCEIL ]		= new Param(     0.0, Param.DECIBEL_AMP );
 			static_pr.para[ PR_NOISEFLOOR ]		= new Param(   -96.0, Param.DECIBEL_AMP );
 			static_pr.paraName	= prParaName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 		}
 		// default preset
 		if( static_presets == null ) {
@@ -191,7 +192,7 @@ extends DocumentFrame
 		ggInputFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Audio input", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Audio input", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInputFile, GG_INPUTFILE, null );
@@ -204,7 +205,7 @@ extends DocumentFrame
 		ggOutputFile.deriveFrom( ggInputs, "$D0$F0Sona$E" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Image output", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Image output", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggOutputFile, GG_OUTPUTFILE, null );
@@ -216,13 +217,13 @@ extends DocumentFrame
 		ggMinFreq		= new ParamField( Constants.spaces[ Constants.absHzSpace ]);
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Lowest Frequency:", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Lowest Frequency:", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggMinFreq, GG_MINFREQ, null );
 
 		ggBandsPerOct	= new ParamField( new ParamSpace( 1, /* 96 */ 32768, 1, Param.NONE ));
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Bands Per Octave:", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Bands Per Octave:", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggBandsPerOct, GG_BANDSPEROCT, null );
@@ -230,13 +231,13 @@ extends DocumentFrame
 		ggMaxFreq		= new ParamField( Constants.spaces[ Constants.absHzSpace ]);
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Highest Frequency:", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Highest Frequency:", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggMaxFreq, GG_MAXFREQ, null );
 
 		ggTimeRes		= new ParamField( Constants.spaces[ Constants.absMsSpace ]);
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Max. Time Resolution:", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Max. Time Resolution:", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggTimeRes, GG_TIMERES, null );
@@ -244,7 +245,7 @@ extends DocumentFrame
 		ggSignalCeil	= new ParamField( Constants.spaces[ Constants.decibelAmpSpace ]);
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Signal Ceiling:", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Signal Ceiling:", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggSignalCeil, GG_SIGNALCEIL, null );
 		
@@ -253,7 +254,7 @@ extends DocumentFrame
 			ggMaxFFTSize.addItem( String.valueOf( i ));
 		}
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Max. FFT Size:", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Max. FFT Size:", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addChoice( ggMaxFFTSize, GG_MAXFFTSIZE, null );
@@ -261,7 +262,7 @@ extends DocumentFrame
 		ggNoiseFloor	= new ParamField( Constants.spaces[ Constants.decibelAmpSpace ]);
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Noise Floor:", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Noise Floor:", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 //		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggNoiseFloor, GG_NOISEFLOOR, null );
@@ -378,7 +379,7 @@ if( inChanNum != 1 ) throw new EOFException( ERR_MONO );
 
 			ggOutput				= (PathField) gui.getItemObj( GG_OUTPUTFILE );
 			if( ggOutput == null ) throw new IOException( ERR_MISSINGPROP );
-			outF					= new ImageFile( pr.text[ PR_OUTPUTFILE ], ImageFile.MODE_OUTPUT | ggOutput.getType() );
+			outF					= new ImageFile( pr.text[ PR_OUTPUTFILE ], GenericFile.MODE_OUTPUT | ggOutput.getType() );
 			imgStream				= new ImageStream();
 			imgStream.bitsPerSmp	= 8;	// ??? fillStream might not work correctly?
 			ggOutput.fillStream( imgStream );

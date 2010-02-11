@@ -125,7 +125,7 @@ extends DocumentFrame
 			static_pr.para[ PR_PATIENCE ]		= new Param( 100.0, Param.ABS_MS );
 			static_pr.para[ PR_CROSSFADE ]		= new Param(  10.0, Param.ABS_MS );
 			static_pr.paraName	= prParaName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
 			static_presets = new Presets( getClass(), static_pr.toProperties( true ));
@@ -158,7 +158,7 @@ extends DocumentFrame
 		ggInputFile1.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Input A", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Input A", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInputFile1, GG_INPUTFILE1, null );
@@ -168,7 +168,7 @@ extends DocumentFrame
 		ggInputFile2.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Input B", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Input B", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInputFile2, GG_INPUTFILE2, null );
@@ -183,7 +183,7 @@ extends DocumentFrame
 		ggOutputFile.deriveFrom( ggInputs, "$D0$B0Fuse$B1$E" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Output file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Output file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggOutputFile, GG_OUTPUTFILE, null );
@@ -199,7 +199,7 @@ extends DocumentFrame
 		ggPatience		= new ParamField( spcPatience );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Patience", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Patience", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggPatience, GG_PATIENCE, null );
@@ -207,7 +207,7 @@ extends DocumentFrame
 		ggCrossFade		= new ParamField( spcPatience );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Crossfade", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Crossfade", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggCrossFade, GG_CROSSFADE, null );
 
@@ -425,7 +425,7 @@ halllo:		while( threadRunning ) {
 
 // -------- private Methoden --------
 
-	private class Info
+	protected class Info
 	{
 		private AudioFile	sf;
 		private AudioFileDescr	stream;

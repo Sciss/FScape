@@ -159,7 +159,7 @@ extends DocumentFrame
 //			static_pr.envl[ PR_RATEMODENV ]		= Envelope.createBasicEnvelope( Envelope.BASIC_TIME );
 //			static_pr.envl[ PR_RIGHTCHANMODENV ]= Envelope.createBasicEnvelope( Envelope.BASIC_TIME );
 //			static_pr.envlName	= prEnvlName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_NOUTPUTTYPE ); // just the type
 			fillDefaultAudioDescr( static_pr.intg, PR_TOUTPUTTYPE );
@@ -209,7 +209,7 @@ extends DocumentFrame
 		ggInputFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Input file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Input file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInputFile, GG_INPUTFILE, null );
@@ -261,7 +261,7 @@ extends DocumentFrame
 //		ggGain			= createGadgets( GGTYPE_GAIN );
 //		con.weightx		= 0.1;
 //		con.gridwidth	= 1;
-//		gui.addLabel( new JLabel( "Gain", JLabel.RIGHT ));
+//		gui.addLabel( new JLabel( "Gain", SwingConstants.RIGHT ));
 //		con.weightx		= 0.4;
 //		gui.addParamField( (ParamField) ggGain[ 0 ], GG_GAIN, this );
 //		con.weightx		= 0.5;
@@ -278,7 +278,7 @@ extends DocumentFrame
 		}
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Frame size [smp]", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Frame size [smp]", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addChoice( ggFrameSize, GG_FRAMESIZE, il );
 
@@ -287,7 +287,7 @@ extends DocumentFrame
 			ggOverlap.addItem( (1<<i) + "x" );
 		}
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Overlap", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Overlap", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addChoice( ggOverlap, GG_OVERLAP, il );

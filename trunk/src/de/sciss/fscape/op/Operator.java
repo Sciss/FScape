@@ -136,7 +136,7 @@ implements Runnable, Slots, Cloneable, Transferable
 	 */
 	protected			PropertyArray	pr;
 
-	protected static	PropertyArray	static_pr	= null;
+	protected static	PropertyArray	op_static_pr	= null;
 
 	// Properties (defaults)
 	private static final int PR_SPECTRO	= 0;		// Array-Indices: pr.bool
@@ -185,13 +185,13 @@ implements Runnable, Slots, Cloneable, Transferable
 	public Operator()
 	{
 		// propertyarray defaults
-		if( static_pr == null ) {
-			static_pr = new PropertyArray();
+		if( op_static_pr == null ) {
+			op_static_pr = new PropertyArray();
 
-			static_pr.bool		= prBool;
-			static_pr.boolName	= prBoolName;
-			static_pr.intg		= prIntg;
-			static_pr.intgName	= prIntgName;
+			op_static_pr.bool		= prBool;
+			op_static_pr.boolName	= prBoolName;
+			op_static_pr.intg		= prIntg;
+			op_static_pr.intgName	= prIntgName;
 		}
 		
 //		icon		= new OpIcon( this );
@@ -310,22 +310,22 @@ implements Runnable, Slots, Cloneable, Transferable
 	 *	SyncFailedException, wenn "original" nicht dieselben Operator-Subklasse
 	 *	AlreadyBoundException, wenn dieser Op schon ein Alias ist
 	 */
-	public void turnIntoAlias( Operator original )
+	public void turnIntoAlias( Operator orig )
 	throws SyncFailedException, AlreadyBoundException
 	{
-		while( original.getOriginal() != null ) {
-			original = original.getOriginal();
+		while( orig.getOriginal() != null ) {
+			orig = orig.getOriginal();
 		}
 	
-		if( original.getClass() != this.getClass() ) {
+		if( orig.getClass() != this.getClass() ) {
 			throw new SyncFailedException( ERR_ALIASSYNC );
 		}
-		if( this.original != null ) {
+		if( original != null ) {
 			throw new AlreadyBoundException( ERR_ALREADYALIAS );
 		}
 
-		this.original = original;
-		original.registerAlias( this );
+		original = orig;
+		orig.registerAlias( this );
 		pr.superPr.intg[ PR_FLAGS ] |= FLAGS_ALIAS;
 		((OpIcon) getIcon()).operatorFlagsChanged( pr.superPr.intg[ PR_FLAGS ]);
 	}
@@ -442,13 +442,13 @@ implements Runnable, Slots, Cloneable, Transferable
 	 */
 	protected void runSlotsReady()
 	{
-		Enumeration		slots;
+		Enumeration		slts;
 		SpectStreamSlot	slot;
 		
 		if( pr.superPr.bool[ PR_SPECTRO ]) {
-			slots = getSlots( Slots.SLOTS_WRITER ).elements();
-			while( slots.hasMoreElements() ) {
-				slot = (SpectStreamSlot) slots.nextElement();
+			slts = getSlots( Slots.SLOTS_WRITER ).elements();
+			while( slts.hasMoreElements() ) {
+				slot = (SpectStreamSlot) slts.nextElement();
 				slot.createSpectrogram();
 			}
 		}
@@ -463,11 +463,11 @@ implements Runnable, Slots, Cloneable, Transferable
 	protected void runQuit( Exception e )
 	{
 		SpectStreamSlot	slot;
-		Enumeration		slots = getSlots( Slots.SLOTS_ANY ).elements();
+		Enumeration		slts = getSlots( Slots.SLOTS_ANY ).elements();
 	
 		threadDead = true;
-		while( slots.hasMoreElements() ) {
-			slot = (SpectStreamSlot) slots.nextElement();
+		while( slts.hasMoreElements() ) {
+			slot = (SpectStreamSlot) slts.nextElement();
 			slot.cleanUp();
 		}
 		if( e == null ) {
@@ -632,24 +632,24 @@ System.out.println( icon.getName() + ": aborted because of: " +threadError );
 		return flavors;
 	}
 
-	public boolean isDataFlavorSupported( DataFlavor flavor )
+	public boolean isDataFlavorSupported( DataFlavor fl )
 	{
-		DataFlavor flavors[] = getTransferDataFlavors();
-		for( int i = 0; i < flavors.length; i++ ) {
-			if( flavors[ i ].equals( flavor )) return true;
+		DataFlavor flavs[] = getTransferDataFlavors();
+		for( int i = 0; i < flavs.length; i++ ) {
+			if( flavs[ i ].equals( fl )) return true;
 		}
 		return false;
 	}
 	
-	public Object getTransferData( DataFlavor flavor )
+	public Object getTransferData( DataFlavor fl )
 	throws UnsupportedFlavorException, IOException
 	{
-		if( flavor.equals( Operator.flavor )) {
+		if( fl.equals( Operator.flavor )) {
 			if( disposed ) throw new IOException( ERR_DISPOSED );
 			return this;
 			
 		} else {
-			return icon.getTransferData( flavor );
+			return icon.getTransferData( fl );
 		}
 	}
 

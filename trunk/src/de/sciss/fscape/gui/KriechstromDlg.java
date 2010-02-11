@@ -176,7 +176,7 @@ extends DocumentFrame
 			static_pr.envl		= prEnvl;
 			static_pr.envl[ PR_KRIECHENV ]	= Envelope.createBasicEnvelope( Envelope.BASIC_UNSIGNED_TIME );
 			static_pr.envlName	= prEnvlName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
 			fillDefaultGain( static_pr.para, PR_GAIN );
@@ -229,7 +229,7 @@ extends DocumentFrame
 		ggInputFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Input file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Input file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInputFile, GG_INPUTFILE, pathL );
@@ -242,7 +242,7 @@ extends DocumentFrame
 		ggOutputFile.deriveFrom( ggInputs, "$D0$F0Frz$E" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Output file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Output file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggOutputFile, GG_OUTPUTFILE, pathL );
@@ -252,7 +252,7 @@ extends DocumentFrame
 		ggGain			= createGadgets( GGTYPE_GAIN );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Gain", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Gain", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( (ParamField) ggGain[ 0 ], GG_GAIN, null );
 		con.weightx		= 0.5;
@@ -283,7 +283,7 @@ extends DocumentFrame
 		ggOutLength		= new ParamField( spcOutLen );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Output length", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Output length", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= 4;
 		gui.addParamField( ggOutLength, GG_OUTLENGTH, null );
@@ -297,7 +297,7 @@ extends DocumentFrame
 
 		ggEntryPoint	= new ParamField( spcChunk );
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Max. entry offset", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Max. entry offset", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggEntryPoint, GG_ENTRYPOINT, null );
@@ -305,12 +305,12 @@ extends DocumentFrame
 		ggMinChunkNum	= new ParamField( spcNumber );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Min/Max simult. chunks", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Min/Max simult. chunks", SwingConstants.RIGHT ));
 		con.weightx		= 0.0;
 		gui.addParamField( ggMinChunkNum, GG_MINCHUNKNUM, null );
 		ggMaxChunkNum	= new ParamField( spcNumber );
 		con.weightx		= 0.0;
-		gui.addLabel( new JLabel( "...", JLabel.LEFT ));
+		gui.addLabel( new JLabel( "...", SwingConstants.LEFT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= 4;
 		gui.addParamField( ggMaxChunkNum, GG_MAXCHUNKNUM, null );
@@ -318,7 +318,7 @@ extends DocumentFrame
 		ggCrossFade		= new ParamField( spcFade );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Crossfades", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Crossfades", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggCrossFade, GG_CROSSFADE, null );
@@ -326,12 +326,12 @@ extends DocumentFrame
 		ggMinChunkRep	= new ParamField( spcNumber );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Min/Max chunks repeats", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Min/Max chunks repeats", SwingConstants.RIGHT ));
 		con.weightx		= 0.0;
 		gui.addParamField( ggMinChunkRep, GG_MINCHUNKREP, null );
 		ggMaxChunkRep	= new ParamField( spcNumber );
 		con.weightx		= 0.0;
-		gui.addLabel( new JLabel( "...", JLabel.LEFT ));
+		gui.addLabel( new JLabel( "...", SwingConstants.LEFT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= 4;
 		gui.addParamField( ggMaxChunkRep, GG_MAXCHUNKREP, null );
@@ -339,7 +339,7 @@ extends DocumentFrame
 		ggFltAmount		= new ParamField( Constants.spaces[ Constants.ratioAmpSpace ]);
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Filter amount", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Filter amount", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggFltAmount, GG_FLTAMOUNT, null );
@@ -347,7 +347,7 @@ extends DocumentFrame
 		ggMinChunkLen	= new ParamField( spcChunk );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Min. chunk length", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Min. chunk length", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= 4;
 		gui.addParamField( ggMinChunkLen, GG_MINCHUNKLEN, null );
@@ -358,7 +358,7 @@ extends DocumentFrame
 		}
 		con.weightx		= 0.1;
 		con.gridwidth	= 3;
-		gui.addLabel( new JLabel( "Filter colour", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Filter colour", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addChoice( ggFltColor, GG_FLTCOLOR, null );
@@ -366,7 +366,7 @@ extends DocumentFrame
 		ggMaxChunkLen	= new ParamField( spcChunk );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Max. chunk length", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Max. chunk length", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= 4;
 		gui.addParamField( ggMaxChunkLen, GG_MAXCHUNKLEN, null );
@@ -619,7 +619,7 @@ d7 = 1.0;
 				}
 				for( ch = 0; ch < inChanNum; ch++ ) {
 					tempFile[ ch ]	= IOUtil.createTempFile();
-					floatF[ ch ]	= new FloatFile( tempFile[ ch ], FloatFile.MODE_OUTPUT );
+					floatF[ ch ]	= new FloatFile( tempFile[ ch ], GenericFile.MODE_OUTPUT );
 				}
 				progLen += outLength / chunkNumMean;
 			} else {

@@ -158,7 +158,7 @@ public class SpectPatch
 				val		= file.getProperty( FILE_OP + i + FILE_OPPROP );
 				opProp	= Presets.valueToProperties( val );
 				val		= head.getProperty( HEAD_CLASS );
-				opLoc	= Prefs.getPointProperty( head, HEAD_LOC );
+				opLoc	= BasicProperties.getPointProperty( head, HEAD_LOC );
 				if( opLoc == null ) {
 					opLoc = new Point();
 				}
@@ -199,7 +199,7 @@ public class SpectPatch
 									if( slot2 != null ) {
 										opPanel.linkOperators( slot1, slot2 );
 										con		= opPanel.getConnector( slot1 );
-										conLoc	= Prefs.getPointProperty( link, LINK_LOC );
+										conLoc	= BasicProperties.getPointProperty( link, LINK_LOC );
 										
 										if( con != null ) {
 											if( conLoc != null ) {	// means it is visible!
@@ -352,7 +352,7 @@ public class SpectPatch
 				val		= val.substring( val.lastIndexOf( '.' ) + 1 );
 				head.put( HEAD_CLASS, val );									// Operator-Klasse
 				head.put( HEAD_NAME, opIcon.getName() );						// Icon-Name
-				Prefs.setPointProperty( head, HEAD_LOC, opIcon.getLocation() );	// Icon-Position
+				BasicProperties.setPointProperty( head, HEAD_LOC, opIcon.getLocation() );	// Icon-Position
 
 				op2		= op.getOriginal();
 				if( op2 != null ) {
@@ -400,7 +400,7 @@ public class SpectPatch
 							link.put( LINK_DEST, "" + op2ID + ',' + slot2.toString() );
 							con	= opPanel.getConnector( slot1 );
 							if( (con != null) && con.isVisible() ) {
-								Prefs.setPointProperty( link, LINK_LOC, con.getLocation() );
+								BasicProperties.setPointProperty( link, LINK_LOC, con.getLocation() );
 							}
 						} else {
 							// nothing yet XXX

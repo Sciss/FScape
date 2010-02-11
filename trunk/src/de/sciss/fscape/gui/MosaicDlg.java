@@ -49,6 +49,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 import de.sciss.fscape.io.GenericFile;
 import de.sciss.fscape.prop.Presets;
@@ -198,7 +199,7 @@ extends DocumentFrame
 			static_pr.para[ PR_ATTACK ]			= new Param(     2.0, Param.ABS_MS );
 			static_pr.para[ PR_RELEASE ]		= new Param(   100.0, Param.ABS_MS );
 			static_pr.paraName	= prParaName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
 			fillDefaultGain( static_pr.para, PR_GAIN );
@@ -250,7 +251,7 @@ extends DocumentFrame
 //		ggInImgFile.handleTypes( GenericFile.TYPES_IMAGE );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Image input", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Image input", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInImgFile, GG_INIMGFILE, null );
@@ -260,7 +261,7 @@ extends DocumentFrame
 		ggInMatFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Audio input", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Audio input", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInMatFile, GG_INMATFILE, null );
@@ -274,7 +275,7 @@ extends DocumentFrame
 		ggOutputFile.deriveFrom( ggInputs, "$D0$B0Mos$B1$E" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Mosaic output", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Mosaic output", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggOutputFile, GG_OUTPUTFILE, null );
@@ -284,7 +285,7 @@ extends DocumentFrame
 		ggGain			= createGadgets( GGTYPE_GAIN );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Gain", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Gain", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( (ParamField) ggGain[ 0 ], GG_GAIN, null );
 		con.weightx		= 0.5;
@@ -298,13 +299,13 @@ extends DocumentFrame
 		ggDuration		= new ParamField( Constants.spaces[ Constants.absMsSpace ]);
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Nominal Duration", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Nominal Duration", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggDuration, GG_DURATION, null );
 
 		ggMinFreq		= new ParamField( Constants.spaces[ Constants.absHzSpace ]);
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Min Freq.", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Min Freq.", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggMinFreq, GG_MINFREQ, null );
@@ -316,14 +317,14 @@ extends DocumentFrame
 		ggFilterType.addItem( "Bandpass" );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Filter Type", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Filter Type", SwingConstants.RIGHT ));
 		con.weightx		= 0.2;
 		gui.addChoice( ggFilterType, GG_FILTERTYPE, il );
 
 		ggMaxFreq		= new ParamField( Constants.spaces[ Constants.absHzSpace ]);
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Max Freq.", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Max Freq.", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggMaxFreq, GG_MAXFREQ, null );
@@ -331,7 +332,7 @@ extends DocumentFrame
 		ggReadMarkers	= new JCheckBox();
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Read Markers", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Read Markers", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addCheckbox( ggReadMarkers, GG_READMARKERS, il );
@@ -339,14 +340,14 @@ extends DocumentFrame
 		ggTimeOverlap	= new ParamField( Constants.spaces[ Constants.factorTimeSpace ]);
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Time Spacing", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Time Spacing", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggTimeOverlap, GG_TIMEOVERLAP, null );
 
 		ggFreqOverlap	= new ParamField(
             new ParamSpace( 100.0, 1000000.0, 0.01, Param.FACTOR_FREQ ));
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Freq Spacing", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Freq Spacing", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggFreqOverlap, GG_FREQOVERLAP, null );
@@ -354,13 +355,13 @@ extends DocumentFrame
 		ggTimeJitter = new ParamField( Constants.spaces[ Constants.factorTimeSpace ]);
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Time Jitter", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Time Jitter", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggTimeJitter, GG_TIMEJITTER, null );
 
 		ggFreqJitter	= new ParamField( Constants.spaces[ Constants.factorFreqSpace ]);
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Freq Jitter", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Freq Jitter", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggFreqJitter, GG_FREQJITTER, null );
@@ -368,7 +369,7 @@ extends DocumentFrame
 		ggMaxBoost		= new ParamField( Constants.spaces[ Constants.decibelAmpSpace ]);
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Max Boost", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Max Boost", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggMaxBoost, GG_MAXBOOST, null );
 
@@ -378,7 +379,7 @@ extends DocumentFrame
 		
 		ggAttack		= new ParamField( spcAtkRls );
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Attack", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Attack", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggAttack, GG_ATTACK, null );
@@ -386,13 +387,13 @@ extends DocumentFrame
 		ggNoiseFloor	= new ParamField( Constants.spaces[ Constants.decibelAmpSpace ]);
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Noise Floor", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Noise Floor", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggNoiseFloor, GG_NOISEFLOOR, null );
 
 		ggRelease		= new ParamField( spcAtkRls );
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Release", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Release", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggRelease, GG_RELEASE, null );
@@ -400,7 +401,7 @@ extends DocumentFrame
 //		ggElitism		= new JCheckBox();
 //		con.weightx		= 0.1;
 //		con.gridwidth	= 1;
-//		gui.addLabel( new JLabel( "Elitism", JLabel.RIGHT ));
+//		gui.addLabel( new JLabel( "Elitism", SwingConstants.RIGHT ));
 //		con.weightx		= 0.2;
 //		gui.addCheckbox( ggElitism, GG_ELITISM, il );
 		

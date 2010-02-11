@@ -129,7 +129,7 @@ extends Operator
 				static_pr.boolName[ PR_DELAY + i ]			= PRN_DELAY + (i+1);
 			}
 			
-			static_pr.superPr	= Operator.static_pr;
+			static_pr.superPr	= Operator.op_static_pr;
 		}
 		// default preset
 		if( static_presets == null ) {

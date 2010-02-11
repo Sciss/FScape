@@ -144,21 +144,21 @@ implements Dragable
 		return flavors;
 	}
 
-	public boolean isDataFlavorSupported( DataFlavor flavor )
+	public boolean isDataFlavorSupported( DataFlavor fl )
 	{
-		DataFlavor flavors[] = getTransferDataFlavors();
-		for( int i = 0; i < flavors.length; i++ ) {
-			if( flavors[ i ].equals( flavor )) return true;
+		DataFlavor flavs[] = getTransferDataFlavors();
+		for( int i = 0; i < flavs.length; i++ ) {
+			if( flavs[ i ].equals( fl )) return true;
 		}
 		return false;
 	}
 	
-	public Object getTransferData( DataFlavor flavor )
+	public Object getTransferData( DataFlavor fl )
 	throws UnsupportedFlavorException, IOException
 	{
-		if( flavor.equals( IconicComponent.flavor )) {
+		if( fl.equals( IconicComponent.flavor )) {
 			return this;
 
-		} else throw new UnsupportedFlavorException( flavor );
+		} else throw new UnsupportedFlavorException( fl );
 	}
 }

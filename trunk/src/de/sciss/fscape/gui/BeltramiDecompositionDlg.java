@@ -47,6 +47,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 import de.sciss.fscape.io.GenericFile;
 import de.sciss.fscape.prop.Presets;
@@ -190,7 +191,7 @@ extends DocumentFrame
 			static_pr.para[ PR_TIMEOVERLAP ]	= new Param(    12.5, Param.FACTOR_TIME );
 			static_pr.para[ PR_TIMEJITTER ]		= new Param(     0.0, Param.FACTOR_TIME );
 			static_pr.paraName	= prParaName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES, PR_OUTPUTRATE );
 			fillDefaultGain( static_pr.para, PR_GAIN );
@@ -240,7 +241,7 @@ extends DocumentFrame
 //		ggInImgFile.handleTypes( GenericFile.TYPES_IMAGE );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Image input", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Image input", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInImgFile, GG_INIMGFILE, null );
@@ -253,7 +254,7 @@ extends DocumentFrame
 		ggOutputFile.deriveFrom( ggInputs, "$D0$F0Svd$E" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Waveform Output", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Waveform Output", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggOutputFile, GG_OUTPUTFILE, null );
@@ -264,7 +265,7 @@ extends DocumentFrame
 		ggGain			= createGadgets( GGTYPE_GAIN );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Gain", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Gain", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( (ParamField) ggGain[ 0 ], GG_GAIN, null );
 		con.weightx		= 0.5;
@@ -281,13 +282,13 @@ extends DocumentFrame
 		ggScanDir.addItem( "Horizontal" );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Scan Dir", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Scan Dir", SwingConstants.RIGHT ));
 		con.weightx		= 0.2;
 		gui.addChoice( ggScanDir, GG_SCANDIR, il );
 
 		ggSpaceOverlap	= new ParamField( Constants.spaces[ Constants.ratioTimeSpace ]);
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Space Overlap", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Space Overlap", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggSpaceOverlap, GG_SPACEOVERLAP, null );
@@ -297,13 +298,13 @@ extends DocumentFrame
 		ggClpseDir.addItem( "Horizontal" );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Collapse Dir", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Collapse Dir", SwingConstants.RIGHT ));
 		con.weightx		= 0.2;
 		gui.addChoice( ggClpseDir, GG_CLPSEDIR, il );
 		
 		ggTimeOverlap	= new ParamField( Constants.spaces[ Constants.ratioTimeSpace ]);
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Time Overlap", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Time Overlap", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggTimeOverlap, GG_TIMEOVERLAP, null );
@@ -311,13 +312,13 @@ extends DocumentFrame
 		ggChunkSize		= new ParamField( spcChunk );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Chunk Size", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Chunk Size", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggChunkSize, GG_CHUNKSIZE, null );
 
 		ggTimeJitter	= new ParamField( Constants.spaces[ Constants.ratioTimeSpace ]);
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Time Jitter", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Time Jitter", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggTimeJitter, GG_TIMEJITTER, null );
@@ -325,7 +326,7 @@ extends DocumentFrame
 		ggHighPass		= new JCheckBox();
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "High Pass ", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "High Pass ", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addCheckbox( ggHighPass, GG_HIGHPASS, null );
 

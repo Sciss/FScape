@@ -71,7 +71,6 @@ extends DocumentFrame
 	
 	// Fehlermeldungen
 	private static final String	ERR_NOZONES		= "No sample zones defined";
-	private static final String	ERR_MISSINGPROP	= "Bug! Missing property!";
 
 	private static final double	MIDFREQ	= 523.2511306;	// C5 = Mittenfrequenz (Hz)
 
@@ -102,7 +101,6 @@ extends DocumentFrame
 	private static final String PRN_QUALITY		= "Quality";
 	private static final String PRN_NOISEFLOOR	= "NoiseFloor";
 	private static final String PRN_TRIGTHRESH	= "TrigThresh";
-	private static final String PRN_GAIN		= "Gain";
 	private static final String PRN_LENGTH		= "Length";
 
 	private static final String	prText[]		= { "", "", "" };
@@ -191,7 +189,7 @@ extends DocumentFrame
 			static_pr.para[ PR_GAIN ]		= new Param(    -6.0, Param.DECIBEL_AMP );
 			static_pr.para[ PR_LENGTH ]		= new Param(   100.0, Param.FACTOR_TIME );
 			static_pr.paraName	= prParaName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES, PR_OUTPUTRATE );
 			static_presets = new Presets( getClass(), static_pr.toProperties( true ));
@@ -576,7 +574,7 @@ extends DocumentFrame
 		ggInputFile.handleTypes( GenericFile.TYPES_SPECT );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Input file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Input file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInputFile, GG_INPUTFILE, pathL );
@@ -590,7 +588,7 @@ extends DocumentFrame
 		ggOutputFile.deriveFrom( ggInputs, "$D0$F0Syn$E" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Output file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Output file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggOutputFile, GG_OUTPUTFILE, pathL );
@@ -599,7 +597,7 @@ extends DocumentFrame
 		gui.registerGadget( ggOutputFile.getRateGadget(), GG_OUTPUTRATE );
 		
 	// -------- Synthesis-Parameter --------
-	gui.addLabel( new JLabel( "Synthesis settings", JLabel.CENTER ));
+	gui.addLabel( new JLabel( "Synthesis settings", SwingConstants.CENTER ));
 
 		con.fill		= GridBagConstraints.BOTH;
 //		ggSettings		= new JScrollPane(); // ( ScrollPane.SCROLLBARS_AS_NEEDED );
@@ -623,7 +621,7 @@ gui.addGadget( sgui, GG_SETTINGS );
 	 */
 	protected GUISupport createGUI()
 	{
-		GUISupport			sgui;
+		GUISupport			sg;
 		GridBagConstraints	con;
 
 		ParamField			ggNoiseFloor, ggTriggerThresh;
@@ -641,8 +639,8 @@ gui.addGadget( sgui, GG_SETTINGS );
 												Constants.spaces[ Constants.factorTimeSpace ]};
 		SmpMap				smpMap;
 
-		sgui			= new GUISupport();
-		con				= sgui.getGridBagConstraints();
+		sg			= new GUISupport();
+		con				= sg.getGridBagConstraints();
 		con.insets		= new Insets( 1, 2, 1, 2 );
 
 		con.fill		= GridBagConstraints.BOTH;
@@ -651,7 +649,7 @@ gui.addGadget( sgui, GG_SETTINGS );
 		con.gridheight	= 8;
 		con.weightx		= 1.0;
 		con.weighty		= 1.0;
-		sgui.addGadget( ggSmpMap, GGS_SMPMAP );
+		sg.addGadget( ggSmpMap, GGS_SMPMAP );
 
 		ampSpace		= new ParamSpace( Constants.spaces[ Constants.decibelAmpSpace ]);
 		noiseSpace		= new ParamSpace( ampSpace );
@@ -684,107 +682,107 @@ final double maxNew = freqSpace.fitValue( 22050.0 );
 		con.gridheight	= 1;
 		con.weighty		= 0.0;
 		con.weightx		= 0.0;
-	sgui.addLabel( new GroupLabel( "General Sensitivity", GroupLabel.ORIENT_HORIZONTAL, GroupLabel.BRACE_BOTTOM ));
+	sg.addLabel( new GroupLabel( "General Sensitivity", GroupLabel.ORIENT_HORIZONTAL, GroupLabel.BRACE_BOTTOM ));
 
 		con.gridwidth	= GridBagConstraints.RELATIVE;
-		sgui.addLabel( new JLabel( "Noisefloor", JLabel.RIGHT ));
+		sg.addLabel( new JLabel( "Noisefloor", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
-		sgui.addParamField( ggNoiseFloor, GGS_NOISEFLOOR, paramL );
+		sg.addParamField( ggNoiseFloor, GGS_NOISEFLOOR, paramL );
 
 		con.gridwidth	= GridBagConstraints.RELATIVE;
-		sgui.addLabel( new JLabel( "Trigger", JLabel.RIGHT ));
+		sg.addLabel( new JLabel( "Trigger", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
-		sgui.addParamField( ggTriggerThresh, GGS_TRIGTHRESH, paramL );
+		sg.addParamField( ggTriggerThresh, GGS_TRIGTHRESH, paramL );
 
 		con.fill		= GridBagConstraints.BOTH;
-	sgui.addLabel( new GroupLabel( "Sample Zone", GroupLabel.ORIENT_HORIZONTAL, GroupLabel.BRACE_BOTTOM ));
+	sg.addLabel( new GroupLabel( "Sample Zone", GroupLabel.ORIENT_HORIZONTAL, GroupLabel.BRACE_BOTTOM ));
 		con.fill		= GridBagConstraints.HORIZONTAL;
 		con.gridwidth	= GridBagConstraints.RELATIVE;
-		sgui.addLabel( new JLabel( "High freq", JLabel.RIGHT ));
+		sg.addLabel( new JLabel( "High freq", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
-		sgui.addParamField( ggSmpHiFreq, GGS_SMPHIFREQ, paramL );
+		sg.addParamField( ggSmpHiFreq, GGS_SMPHIFREQ, paramL );
 
 		con.gridwidth	= GridBagConstraints.RELATIVE;
-		sgui.addLabel( new JLabel( "Low freq", JLabel.RIGHT ));
+		sg.addLabel( new JLabel( "Low freq", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
-		sgui.addParamField( ggSmpLoFreq, GGS_SMPLOFREQ, paramL );
+		sg.addParamField( ggSmpLoFreq, GGS_SMPLOFREQ, paramL );
 
 		con.gridwidth	= GridBagConstraints.RELATIVE;
-		sgui.addLabel( new JLabel( "High vel.", JLabel.RIGHT ));
+		sg.addLabel( new JLabel( "High vel.", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
-		sgui.addParamField( ggSmpHiVel, GGS_SMPHIVEL, paramL );
+		sg.addParamField( ggSmpHiVel, GGS_SMPHIVEL, paramL );
 
 		con.gridwidth	= GridBagConstraints.RELATIVE;
-		sgui.addLabel( new JLabel( "Low vel.", JLabel.RIGHT ));
+		sg.addLabel( new JLabel( "Low vel.", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
-		sgui.addParamField( ggSmpLoVel, GGS_SMPLOVEL, paramL );
+		sg.addParamField( ggSmpLoVel, GGS_SMPLOVEL, paramL );
 
 		ggSmpFile		= new PathField( PathField.TYPE_INPUTFILE, "Select sample" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.0;
-		sgui.addLabel( new JLabel( "Sample", JLabel.RIGHT ));
+		sg.addLabel( new JLabel( "Sample", SwingConstants.RIGHT ));
 		con.weightx		= 0.9;
-		sgui.addPathField( ggSmpFile, GGS_SMPFILE, pathL );
+		sg.addPathField( ggSmpFile, GGS_SMPFILE, pathL );
 
 		ggSmpLoop		= new JCheckBox( "Loop" );
 		con.weightx		= 0.1;
-		sgui.addCheckbox( ggSmpLoop, GGS_SMPLOOP, il );
+		sg.addCheckbox( ggSmpLoop, GGS_SMPLOOP, il );
 
 		ggSmpPhase		= new JComboBox();
 		ggSmpPhase.addItem( "Continuous" );
 		ggSmpPhase.addItem( "Zero @trig" );
 		ggSmpPhase.addItem( "Spect phase @trig" );
 		con.weightx		= 0.0;
-		sgui.addLabel( new JLabel( "Phase", JLabel.RIGHT ));
+		sg.addLabel( new JLabel( "Phase", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
-		sgui.addChoice( ggSmpPhase, GGS_SMPPHASE, il );
+		sg.addChoice( ggSmpPhase, GGS_SMPPHASE, il );
 
 		ggSmpGain		= new ParamField( Constants.spaces[ Constants.decibelAmpSpace ]);
 		con.gridwidth	= 1;
 		con.weightx		= 0.0;
-		sgui.addLabel( new JLabel( "Gain", JLabel.RIGHT ));
+		sg.addLabel( new JLabel( "Gain", SwingConstants.RIGHT ));
 		con.gridwidth	= 2;
 		con.weightx		= 1.0;
-		sgui.addParamField( ggSmpGain, GGS_SMPGAIN, paramL );
+		sg.addParamField( ggSmpGain, GGS_SMPGAIN, paramL );
 		
 		ggSmpAtk		= new ParamField( Constants.spaces[ Constants.absMsSpace ]);
 		con.gridwidth	= 1;
 		con.weightx		= 0.0;
-		sgui.addLabel( new JLabel( "Attack", JLabel.RIGHT ));
+		sg.addLabel( new JLabel( "Attack", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
-		sgui.addParamField( ggSmpAtk, GGS_SMPATK, paramL );
+		sg.addParamField( ggSmpAtk, GGS_SMPATK, paramL );
 
 		ggSmpBase		= new ParamField( Constants.spaces[ Constants.absHzSpace ]);
 		con.gridwidth	= 1;
-		sgui.addLabel( new JLabel( "Base freq", JLabel.RIGHT ));
+		sg.addLabel( new JLabel( "Base freq", SwingConstants.RIGHT ));
 		con.gridwidth	= 2;
 		con.weightx		= 1.0;
-		sgui.addParamField( ggSmpBase, GGS_SMPBASE, paramL );
+		sg.addParamField( ggSmpBase, GGS_SMPBASE, paramL );
 
 		ggSmpRls		= new ParamField( Constants.spaces[ Constants.absMsSpace ]);
 		con.gridwidth	= 1;
 		con.weightx		= 0.0;
-		sgui.addLabel( new JLabel( "Release", JLabel.RIGHT ));
+		sg.addLabel( new JLabel( "Release", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
-		sgui.addParamField( ggSmpRls, GGS_SMPRLS, paramL );
+		sg.addParamField( ggSmpRls, GGS_SMPRLS, paramL );
 
 		con.weightx		= 1.0;
-	sgui.addLabel( new GroupLabel( "Total", GroupLabel.ORIENT_HORIZONTAL, GroupLabel.BRACE_BOTTOM ));
+	sg.addLabel( new GroupLabel( "Total", GroupLabel.ORIENT_HORIZONTAL, GroupLabel.BRACE_BOTTOM ));
 
 		ggGain			= new ParamField( Constants.spaces[ Constants.decibelAmpSpace ]);
 		con.gridwidth	= 1;
 		con.weightx		= 0.0;
-		sgui.addLabel( new JLabel( "Gain", JLabel.RIGHT ));
+		sg.addLabel( new JLabel( "Gain", SwingConstants.RIGHT ));
 		con.gridwidth	= 2;
 		con.weightx		= 1.0;
-		sgui.addParamField( ggGain, GGS_GAIN, paramL );
+		sg.addParamField( ggGain, GGS_GAIN, paramL );
 
 		ggLength		= new ParamField( lengthSpaces );
 		con.gridwidth	= 1;
 		con.weightx		= 0.0;
-		sgui.addLabel( new JLabel( "Length", JLabel.RIGHT ));
+		sg.addLabel( new JLabel( "Length", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
-		sgui.addParamField( ggLength, GGS_LENGTH, paramL );
+		sg.addParamField( ggLength, GGS_LENGTH, paramL );
 
 		ggQuality		= new JComboBox();
 		ggQuality.addItem( "Low: linear+mono" );
@@ -792,12 +790,12 @@ final double maxNew = freqSpace.fitValue( 22050.0 );
 		ggQuality.addItem( "High: filtered" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.0;
-		sgui.addLabel( new JLabel( "Quality", JLabel.RIGHT ));
+		sg.addLabel( new JLabel( "Quality", SwingConstants.RIGHT ));
 		con.gridwidth	= 2;
 		con.weightx		= 1.0;
-		sgui.addChoice( ggQuality, GGS_QUALITY, il );
+		sg.addChoice( ggQuality, GGS_QUALITY, il );
 
-	 	return sgui;
+	 	return sg;
 	}
 
 	/**
@@ -910,7 +908,7 @@ final double maxNew = freqSpace.fitValue( 22050.0 );
 
 	// ---- Header lesen ----
 		try {
-			f		= new SpectralFile( fname, SpectralFile.MODE_INPUT );
+			f		= new SpectralFile( fname, GenericFile.MODE_INPUT );
 			stream	= f.getDescr();
 			f.close();
 		
@@ -1028,7 +1026,7 @@ topLevel: try {
 				throw new IOException( ERR_NOZONES );
 			}
 
-			inF			= new SpectralFile( pr.text[ PR_INPUTFILE ], SpectralFile.MODE_INPUT );
+			inF			= new SpectralFile( pr.text[ PR_INPUTFILE ], GenericFile.MODE_INPUT );
 			inStream	= inF.getDescr();
 			// this helps to prevent errors from empty files!
 			if( inStream.frames <= 1 ) throw new EOFException( ERR_EMPTY );
@@ -1385,7 +1383,7 @@ smpInit:	for( i = 0, k = 1; (i < numSmp) && threadRunning; i++ ) {
 	 *	@param	dataLen		SampleWords in outData; mindestens 2!
 	 */
 	protected void resampleLin( SmpZoneLocal szl, int ch, int chanNum, float startAmp, float endAmp,
-								float outData[], int dataOff, int dataLen )
+								float outData[], int dataOffStart, int dataLenStart )
 	{
 		int		srcChanNum	= szl.basic.stream.channels;
 		int		srcCh		= ch % srcChanNum;
@@ -1404,7 +1402,8 @@ smpInit:	for( i = 0, k = 1; (i < numSmp) && threadRunning; i++ ) {
 		Region	loop;
 
 		startGain	= szl.lvlCurrent * startAmp;
-		dataOff		= dataOff * chanNum + ch;
+		int dataOff		= dataOffStart * chanNum + ch;
+		int dataLen		= dataLenStart;
 
 	// ---- Gain-Zunahme pro Output-Sample (gainIncr) berechnen ----
 		if( szl.lvlIncr != 0.0f ) {	// Atk/Rls Phase
@@ -1506,7 +1505,7 @@ smpInit:	for( i = 0, k = 1; (i < numSmp) && threadRunning; i++ ) {
 	 *	@param	dataLen		SampleWords in outData; mindestens 2!
 	 */
 	protected void resampleFlt( SmpZoneLocal szl, int ch, int chanNum, float startAmp, float endAmp,
-								float outData[], int dataOff, int dataLen )
+								float outData[], int dataOffStart, int dataLenStart )
 	{
 		int		srcChanNum	= szl.basic.stream.channels;
 		int		srcCh		= ch % srcChanNum;
@@ -1541,7 +1540,8 @@ smpInit:	for( i = 0, k = 1; (i < numSmp) && threadRunning; i++ ) {
 		}
 
 		startGain	= szl.lvlCurrent * startAmp;
-		dataOff		= dataOff * chanNum + ch;
+		int dataOff		= dataOffStart * chanNum + ch;
+		int dataLen		= dataLenStart;
 
 	// ---- Gain-Zunahme pro Output-Sample (gainIncr) berechnen ----
 		if( szl.lvlIncr != 0.0f ) {	// Atk/Rls Phase

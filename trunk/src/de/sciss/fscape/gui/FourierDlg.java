@@ -44,6 +44,7 @@ import java.util.List;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 import de.sciss.fscape.io.FloatFile;
 import de.sciss.fscape.io.GenericFile;
@@ -107,10 +108,8 @@ extends DocumentFrame
 	private static final String PRN_OUTPUTTYPE		= "OutputType";
 	private static final String PRN_OUTPUTRES		= "OutputReso";
 	private static final String PRN_DIRECTION		= "Dir";
-	private static final String PRN_GAINTYPE		= "GainType";
 	private static final String PRN_FORMAT			= "Format";
 	private static final String PRN_LENGTH			= "Length";
-	private static final String PRN_GAIN			= "Gain";
 	private static final String PRN_MEMORY			= "Memory";
 	private static final String PRN_HASIMINPUT		= "HasImInput";
 	private static final String PRN_HASIMOUTPUT		= "HasImOutput";
@@ -172,7 +171,7 @@ extends DocumentFrame
 			static_pr.paraName	= prParaName;
 			static_pr.bool		= prBool;
 			static_pr.boolName	= prBoolName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
 			fillDefaultGain( static_pr.para, PR_GAIN );
@@ -228,7 +227,7 @@ extends DocumentFrame
 		ggReInputFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Input [Real]", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Input [Real]", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggReInputFile, GG_REINPUTFILE, null );
@@ -252,7 +251,7 @@ extends DocumentFrame
 		ggReOutputFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Output [Real]", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Output [Real]", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggReOutputFile, GG_REOUTPUTFILE, null );
@@ -282,7 +281,7 @@ extends DocumentFrame
 		ggGain			= createGadgets( GGTYPE_GAIN );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Gain", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Gain", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( (ParamField) ggGain[ 0 ], GG_GAIN, null );
 		con.weightx		= 0.5;
@@ -298,7 +297,7 @@ extends DocumentFrame
 		ggDirection.addItem( "Backward (Inverse)" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Direction", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Direction", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addChoice( ggDirection, GG_DIRECTION, il );
 
@@ -307,7 +306,7 @@ extends DocumentFrame
 		ggFormat.addItem( "Polar" );
 		ggFormat.addItem( "Cepstral (log.)" );
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Spectral format", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Spectral format", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addChoice( ggFormat, GG_FORMAT, il );
@@ -317,7 +316,7 @@ extends DocumentFrame
 		ggLength.addItem( "Truncate to 2^n" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "FFT Length", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "FFT Length", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addChoice( ggLength, GG_LENGTH, il );
 
@@ -329,8 +328,8 @@ extends DocumentFrame
 		ggMemory		= new ParamField( new ParamSpace( 1.0, 2047.0, 1.0, Param.NONE ));
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-//		gui.addLabel( new JLabel( "Freq scale", JLabel.RIGHT ));
-		gui.addLabel( new JLabel( "Mem.alloc. [MB]", JLabel.RIGHT ));
+//		gui.addLabel( new JLabel( "Freq scale", SwingConstants.RIGHT ));
+		gui.addLabel( new JLabel( "Mem.alloc. [MB]", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 //		gui.addParamField( ggFreqShift, GG_FREQSHIFT, this );
@@ -393,7 +392,7 @@ extends DocumentFrame
 		long				halfLen;
 
 		PathField			ggOutput;
-		Marker				mark			= null;
+//		Marker				mark			= null;
 
 		// Synthesize
 		Param				ampRef			= new Param( 1.0, Param.ABS_AMP );			// transform-Referenz
@@ -402,7 +401,8 @@ extends DocumentFrame
 		long				totalInSamples; // 	= 0;	// reichen 32 bit?
 		long				inLength;
 		long				framesRead, framesWritten;
-		long				n1, n2;
+		long				n1;
+//		long				n2;
 		int					chunkLen, i1;
 
 		float				maxAmp			= 0.0f;
@@ -443,12 +443,12 @@ n1 = -1;
 					mark= (Marker) imInStream.markers.elementAt( i );
 				}
 			}
-*/
 			if( n1 >= 0 ) {	// input contains "PiHalf" marker ==> use to calc FFTLength
 				n2 = mark.pos << 1;
 				for( dataLen = 2, scaleNum = 1; dataLen < n2; dataLen<<=1, scaleNum++ ) ;
 				if( dataLen != n2 ) n1 = -1;	// calc the normal way below
 			}
+*/
 			if( n1 < 0 ) {	// otherwise expand/trunc input length to power of 2
 				for( dataLen = 2, scaleNum = 1; dataLen < inLength; dataLen<<=1, scaleNum++ ) ;
 				if( (pr.intg[ PR_LENGTH ] == LENGTH_TRUNC) && (dataLen > inLength) ) {
@@ -516,7 +516,7 @@ freqShift = (pr.intg[ PR_DIRECTION ] == DIR_FORWARD) ? 1 : -1;
 			for( int ch = 0; ch < inChanNum; ch++ ) {
 				for( int i = 0; i < 4; i++ ) {
 					tempFile[ ch ][ i ]	= IOUtil.createTempFile();	// for detail data
-					floatF[ ch ][ i ]	= new FloatFile( tempFile[ ch ][ i ], FloatFile.MODE_OUTPUT );
+					floatF[ ch ][ i ]	= new FloatFile( tempFile[ ch ][ i ], GenericFile.MODE_OUTPUT );
 				}
 			}
 			

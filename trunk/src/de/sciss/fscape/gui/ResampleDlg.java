@@ -164,7 +164,7 @@ extends DocumentFrame
 			static_pr.envl[ PR_RATEMODENV ]		= Envelope.createBasicEnvelope( Envelope.BASIC_TIME );
 			static_pr.envl[ PR_RIGHTCHANMODENV ]= Envelope.createBasicEnvelope( Envelope.BASIC_TIME );
 			static_pr.envlName	= prEnvlName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
 			fillDefaultGain( static_pr.para, PR_GAIN );
@@ -249,7 +249,7 @@ extends DocumentFrame
 		ggInputFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Input file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Input file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInputFile, GG_INPUTFILE, pathL );
@@ -262,7 +262,7 @@ extends DocumentFrame
 		ggOutputFile.deriveFrom( ggInputs, "$D0$F0Rsmp$E" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Output file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Output file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggOutputFile, GG_OUTPUTFILE, pathL );
@@ -272,7 +272,7 @@ extends DocumentFrame
 		ggGain			= createGadgets( GGTYPE_GAIN );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Gain", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Gain", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( (ParamField) ggGain[ 0 ], GG_GAIN, paramL );
 		con.weightx		= 0.5;
@@ -302,7 +302,7 @@ extends DocumentFrame
 		ggRate			= new ParamField( spcRate );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "New rate", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "New rate", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggRate, GG_RATE, paramL );
 		ggRateMod		= new JCheckBox();
@@ -321,7 +321,7 @@ extends DocumentFrame
 		ggRightChan		= new JCheckBox();
 		con.gridwidth	= 2;
 		con.weightx		= 0.5;
-		gui.addLabel( new JLabel( "Destinct right channel mod.", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Destinct right channel mod.", SwingConstants.RIGHT ));
 		con.weightx		= 0.0;
 		con.gridwidth	= 1;
 		gui.addCheckbox( ggRightChan, GG_RIGHTCHAN, il );
@@ -338,7 +338,7 @@ extends DocumentFrame
 		ggLength		= new ParamField( spcLength );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Desired length", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Desired length", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggLength, GG_LENGTH, paramL );
 		con.gridwidth	= GridBagConstraints.REMAINDER;
@@ -356,7 +356,7 @@ extends DocumentFrame
 		ggQuality.addItem( "Long" );
 		con.weightx		= 0.1;
 		con.gridwidth	= 2;
-		gui.addLabel( new JLabel( "FIR length", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "FIR length", SwingConstants.RIGHT ));
 		con.weightx		= 0.2;
 		gui.addChoice( ggQuality, GG_QUALITY, il );
 		ggInterpole		= new JCheckBox( "Interpolate" );
@@ -593,7 +593,7 @@ topLevel: try {
 				}
 				for( ch = 0; ch < inChanNum; ch++ ) {
 					tempFile[ ch ]	= IOUtil.createTempFile();
-					floatF[ ch ]	= new FloatFile( tempFile[ ch ], FloatFile.MODE_OUTPUT );
+					floatF[ ch ]	= new FloatFile( tempFile[ ch ], GenericFile.MODE_OUTPUT );
 				}
 				progLen	   += inLength;
 			}

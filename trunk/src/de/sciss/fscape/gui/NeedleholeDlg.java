@@ -131,7 +131,7 @@ extends DocumentFrame
 			static_pr.boolName	= prBoolName;
 			static_pr.para		= prPara;
 			static_pr.paraName	= prParaName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
 			fillDefaultGain( static_pr.para, PR_GAIN );
@@ -181,7 +181,7 @@ extends DocumentFrame
 		ggInputFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Input file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Input file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInputFile, GG_INPUTFILE, null );
@@ -194,7 +194,7 @@ extends DocumentFrame
 		ggOutputFile.deriveFrom( ggInputs, "$D0$F0Bloss$E" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Output file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Output file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggOutputFile, GG_OUTPUTFILE, null );
@@ -204,7 +204,7 @@ extends DocumentFrame
 		ggGain			= createGadgets( GGTYPE_GAIN );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Gain", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Gain", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( (ParamField) ggGain[ 0 ], GG_GAIN, null );
 		con.weightx		= 0.5;
@@ -218,7 +218,7 @@ extends DocumentFrame
 		ggLength		= new ParamField( Constants.spaces[ Constants.absMsSpace ]);
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Window length", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Window length", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggLength, GG_LENGTH, null );
 
@@ -228,7 +228,7 @@ extends DocumentFrame
 		ggFilter.addItem( "Minimum" );
 		ggFilter.addItem( "Center Clipping" );
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Filter", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Filter", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addChoice( ggFilter, GG_FILTER, il );
@@ -238,7 +238,7 @@ extends DocumentFrame
 		ggThresh		= new ParamField( spcThresh );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Clip thresh", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Clip thresh", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggThresh, GG_THRESH, null );
@@ -369,7 +369,7 @@ topLevel: try {
 				}
 				for( ch = 0; ch < inChanNum; ch++ ) {
 					tempFile[ ch ]	= IOUtil.createTempFile();
-					floatF[ ch ]	= new FloatFile( tempFile[ ch ], FloatFile.MODE_OUTPUT );
+					floatF[ ch ]	= new FloatFile( tempFile[ ch ], GenericFile.MODE_OUTPUT );
 				}
 				progLen	   += inLength;
 			}
@@ -666,7 +666,7 @@ topLevel: try {
 		final float[][] buf;
 		final int[][]	idxBuf;
 	
-		private MedianFilter( int winSize, int channels )
+		protected MedianFilter( int winSize, int channels )
 		{
 			this.winSize	= winSize;
 			this.channels   = channels;

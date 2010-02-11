@@ -95,7 +95,7 @@ implements OSCRouter	// EventManager.Processor
 	
 	// --- actions ---
 
-	private final actionSaveClass			actionSave;
+	private final ActionSave			actionSave;
 // XXX FFFF
 //	private final actionCutClass			actionCut;
 //	private final actionCopyClass			actionCopy;
@@ -126,7 +126,7 @@ implements OSCRouter	// EventManager.Processor
 	
 	private File							file			= null;
 	
-	private ProcessingThread				pt				= null;
+	private ProcessingThread				currentPT		= null;
 
 	public Session()
 	{
@@ -148,7 +148,7 @@ implements OSCRouter	// EventManager.Processor
 //		markers				= (MarkerTrail) markerTrack.getTrail();
 //		tracks.add( null, markerTrack );
 
-		actionSave			= new actionSaveClass();
+		actionSave			= new ActionSave();
 // XXX FFFF
 //		actionCut			= new actionCutClass();
 //		actionCopy			= new actionCopyClass();
@@ -235,13 +235,13 @@ implements OSCRouter	// EventManager.Processor
 	{
 //System.out.println( "checking..." );
 		if( !EventQueue.isDispatchThread() ) throw new IllegalMonitorStateException();
-		if( pt == null ) return true;
+		if( currentPT == null ) return true;
 		if( timeout == 0 ) return false;
 
 //System.out.println( "sync " + timeout );
-		pt.sync( timeout );
+		currentPT.sync( timeout );
 //System.out.println( "sync done" );
-		return( (pt == null) || !pt.isRunning() );
+		return( (currentPT == null) || !currentPT.isRunning() );
 	}
 	
 	/**
@@ -249,7 +249,7 @@ implements OSCRouter	// EventManager.Processor
 	 * 	can exist at a time. To ensure that no other thread is running,
 	 * 	call <code>checkProcess()</code>.
 	 * 
-	 * 	@param	pt	the thread to launch
+	 * 	@param	currentPT	the thread to launch
 	 * 	@throws	IllegalMonitorStateException	if called from outside the event thread
 	 * 	@throws	IllegalStateException			if another process is still running
 	 * 	@see	#checkProcess()
@@ -258,17 +258,17 @@ implements OSCRouter	// EventManager.Processor
 	public void start( ProcessingThread process )
 	{
 		if( !EventQueue.isDispatchThread() ) throw new IllegalMonitorStateException();
-		if( this.pt != null ) throw new IllegalStateException( "Process already running" );
+		if( this.currentPT != null ) throw new IllegalStateException( "Process already running" );
 		
-		pt = process;
-		pt.addListener( new ProcessingThread.Listener() {
+		currentPT = process;
+		currentPT.addListener( new ProcessingThread.Listener() {
 			public void processStarted( ProcessingThread.Event e ) {}
 			public void processStopped( ProcessingThread.Event e )
 			{
-				pt = null;
+				currentPT = null;
 			}
 		});
-		pt.start();
+		currentPT.start();
 	}
 
 	public DocumentFrame getFrame()
@@ -760,7 +760,7 @@ implements OSCRouter	// EventManager.Processor
 	
 // ------------------ internal classes ------------------
 	
-	private class actionSaveClass
+	protected class ActionSave
 	implements ProcessingThread.Client
 	{
 		/**
@@ -777,7 +777,7 @@ implements OSCRouter	// EventManager.Processor
 		 *
 		 *  @synchronization	this method is to be called in the event thread
 		 */
-		private ProcessingThread initiate( String name, Span span, AudioFileDescr[] afds, boolean asCopy )
+		protected ProcessingThread initiate( String name, Span span, AudioFileDescr[] afds, boolean asCopy )
 		{
 			final ProcessingThread pt;
 		

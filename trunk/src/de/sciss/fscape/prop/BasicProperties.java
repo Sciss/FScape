@@ -144,7 +144,7 @@ extends Properties
 	
 				try {
 					MRJAdapter.setFileType( f.getAbsoluteFile(), "FScP" ); // Constants.OSTypePrefs );
-				} catch( IOException e ) {}		// Filetype nicht wichtig
+				} catch( IOException e ) { /* ignored */}		// Filetype nicht wichtig
 			}
 		}
 	}

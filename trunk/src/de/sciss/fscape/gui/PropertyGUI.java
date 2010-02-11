@@ -226,7 +226,7 @@ implements ItemListener
 					break;
 
 				case objLabel:
-					cmp = new JLabel( objName, col == 0 ? JLabel.RIGHT : JLabel.LEFT );
+					cmp = new JLabel( objName, col == 0 ? SwingConstants.RIGHT : SwingConstants.LEFT );
 					break;
 
 				case objGroupLabel:
@@ -398,15 +398,15 @@ implements ItemListener
 	 *	NOTE:	Nur mit PropertyName (boolName etc.) versehene Werte
 	 *			werden beruecksichtigt
 	 */
-	public void fillPropertyArray( PropertyArray pr )
+	public void fillPropertyArray( PropertyArray pa )
 	{
-		fillPropertyArray( pr, pr.boolName );
-		fillPropertyArray( pr, pr.intgName );
-		fillPropertyArray( pr, pr.textName );
-		fillPropertyArray( pr, pr.paraName );
-		fillPropertyArray( pr, pr.envlName );
-//		fillPropertyArray( pr, pr.fontName );
-//		fillPropertyArray( pr, pr.colrName );
+		fillPropertyArray( pa, pa.boolName );
+		fillPropertyArray( pa, pa.intgName );
+		fillPropertyArray( pa, pa.textName );
+		fillPropertyArray( pa, pa.paraName );
+		fillPropertyArray( pa, pa.envlName );
+//		fillPropertyArray( pa, pa.fontName );
+//		fillPropertyArray( pa, pa.colrName );
 	}
 
 	/**
@@ -415,15 +415,15 @@ implements ItemListener
 	 *	NOTE:	Nur mit PropertyName (boolName etc.) versehene Werte
 	 *			werden beruecksichtigt
 	 */
-	public void fillGUI( PropertyArray pr )
+	public void fillGUI( PropertyArray pa )
 	{
-		fillGUI( pr, pr.boolName );
-		fillGUI( pr, pr.intgName );
-		fillGUI( pr, pr.textName );
-		fillGUI( pr, pr.paraName );
-		fillGUI( pr, pr.envlName );
-//		fillGUI( pr, pr.fontName );
-//		fillGUI( pr, pr.colrName );
+		fillGUI( pa, pa.boolName );
+		fillGUI( pa, pa.intgName );
+		fillGUI( pa, pa.textName );
+		fillGUI( pa, pa.paraName );
+		fillGUI( pa, pa.envlName );
+//		fillGUI( pa, pa.fontName );
+//		fillGUI( pa, pa.colrName );
 	}
 	
 // -------- Item Methoden (JCheckBox + JComboBox) --------
@@ -446,7 +446,7 @@ implements ItemListener
 	 *
 	 *	@param	prNames	zu bearbeitender Feldtyp, z.B. pr.boolName
 	 */
-	protected void fillPropertyArray( PropertyArray pr, String prNames[] )
+	protected void fillPropertyArray( PropertyArray pa, String prNames[] )
 	{
 		PropertyComponent	prCmp;
 		Component			cmp;
@@ -461,23 +461,23 @@ implements ItemListener
 				
 					switch( prCmp.type ) {
 					case objParamField:
-						pr.para[ i ] = ((ParamField) cmp).getParam();
+						pa.para[ i ] = ((ParamField) cmp).getParam();
 						break;
 
 					case objEditEnv:
-						pr.envl[ i ] = ((EnvIcon) cmp).getEnv();
+						pa.envl[ i ] = ((EnvIcon) cmp).getEnv();
 						break;
 
 					case objJCheckBox:
-						pr.bool[ i ] = ((JCheckBox) cmp).isSelected();
+						pa.bool[ i ] = ((JCheckBox) cmp).isSelected();
 						break;
 
 					case objJComboBox:
-						pr.intg[ i ] = ((JComboBox) cmp).getSelectedIndex();
+						pa.intg[ i ] = ((JComboBox) cmp).getSelectedIndex();
 						break;
 
 					case objPathField:
-						pr.text[ i ] = ((PathField) cmp).getPath().getPath();
+						pa.text[ i ] = ((PathField) cmp).getPath().getPath();
 						break;
 
 //					case objFontField:
@@ -503,7 +503,7 @@ implements ItemListener
 	 *
 	 *	@param	prNames	zu bearbeitender Feldtyp, z.B. pr.boolName
 	 */
-	protected void fillGUI( PropertyArray pr, String prNames[] )
+	protected void fillGUI( PropertyArray pa, String prNames[] )
 	{
 		PropertyComponent	prCmp;
 		Component			cmp;
@@ -518,23 +518,23 @@ implements ItemListener
 				
 					switch( prCmp.type ) {
 					case objParamField:
-						((ParamField) cmp).setParam( pr.para[ i ]);
+						((ParamField) cmp).setParam( pa.para[ i ]);
 						break;
 
 					case objEditEnv:
-						((EnvIcon) cmp).setEnv( pr.envl[ i ]);
+						((EnvIcon) cmp).setEnv( pa.envl[ i ]);
 						break;
 
 					case objJCheckBox:
-						((JCheckBox) cmp).setSelected( pr.bool[ i ]);
+						((JCheckBox) cmp).setSelected( pa.bool[ i ]);
 						break;
 
 					case objJComboBox:
-						((JComboBox) cmp).setSelectedIndex( pr.intg[ i ]);
+						((JComboBox) cmp).setSelectedIndex( pa.intg[ i ]);
 						break;
 
 					case objPathField:
-						((PathField) cmp).setPath( new File( pr.text[ i ]));
+						((PathField) cmp).setPath( new File( pa.text[ i ]));
 						break;
 
 //					case objFontField:

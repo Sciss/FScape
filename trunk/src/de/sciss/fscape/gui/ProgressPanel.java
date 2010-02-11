@@ -57,7 +57,7 @@ implements ProgressComponent
 		super();
 		
 		pb			= new ProgressBar();
-		lb			= new JLabel( "", JLabel.RIGHT );
+		lb			= new JLabel( "", SwingConstants.RIGHT );
 		lb.setBorder( BorderFactory.createEmptyBorder( 0, 8, 0, 4 )); // T L B R
 		ggCancel	= new ModificationButton( ModificationButton.SHAPE_ABORT );
 		ggCancel.setEnabled( false );

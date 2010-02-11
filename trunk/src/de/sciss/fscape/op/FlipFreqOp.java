@@ -149,7 +149,7 @@ extends Operator
 			static_pr.envl[ PR_LOMODENV ]		= Envelope.createBasicEnvelope( Envelope.BASIC_TIME );
 			static_pr.envlName	= prEnvlName;
 
-			static_pr.superPr	= Operator.static_pr;
+			static_pr.superPr	= Operator.op_static_pr;
 		}
 		// default preset
 		if( static_presets == null ) {

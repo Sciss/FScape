@@ -155,7 +155,7 @@ extends DocumentFrame
 			static_pr.para[ PR_ROLLOFF ]		= new Param(   12.0, Param.OFFSET_SEMITONES );
 			static_pr.para[ PR_BANDSPEROCT ]	= new Param(   12.0, Param.NONE );
 			static_pr.paraName	= prParaName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
 			fillDefaultGain( static_pr.para, PR_GAIN );
@@ -190,7 +190,7 @@ extends DocumentFrame
 		ggInputFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Input 1", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Input 1", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInputFile, GG_INPUTFILE, null );
@@ -200,7 +200,7 @@ extends DocumentFrame
 		ggModFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Input 2", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Input 2", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggModFile, GG_MODFILE, null );
@@ -214,7 +214,7 @@ extends DocumentFrame
 		ggOutputFile.deriveFrom( ggInputs, "$D0$B0Vcd$B1$E" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Output", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Output", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggOutputFile, GG_OUTPUTFILE, null );
@@ -224,7 +224,7 @@ extends DocumentFrame
 		ggGain			= createGadgets( GGTYPE_GAIN );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Gain", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Gain", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( (ParamField) ggGain[ 0 ], GG_GAIN, null );
 		con.weightx		= 0.5;
@@ -238,7 +238,7 @@ extends DocumentFrame
 		ggLoFreq		= new ParamField( Constants.spaces[ Constants.absHzSpace ]);
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Low Freq", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Low Freq", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggLoFreq, GG_LOFREQ, null );
 
@@ -250,7 +250,7 @@ extends DocumentFrame
 		ggHiFreq		= new ParamField( spcHiCut );
 		ggHiFreq.setReference( ggLoFreq );
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "High Freq", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "High Freq", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggHiFreq, GG_HIFREQ, null );
@@ -258,7 +258,7 @@ extends DocumentFrame
 		ggBandsPerOct	= new ParamField( new ParamSpace( 1.0, 256.0, 1.0, Param.NONE ));
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Bands per Oct.", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Bands per Oct.", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggBandsPerOct, GG_BANDSPEROCT, null );
 
@@ -268,7 +268,7 @@ extends DocumentFrame
 		ggFltLen.addItem( "Long" );
 		ggFltLen.addItem( "Very long" );
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Filter length", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Filter length", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addChoice( ggFltLen, GG_FILTERLEN, null );
@@ -279,7 +279,7 @@ extends DocumentFrame
 		}
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Combination", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Combination", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addChoice( ggKombination, GG_KOMBINATION, null );
 
@@ -685,7 +685,7 @@ topLevel: try {
 				}
 				for( ch = 0; ch < inChanNum; ch++ ) {
 					tempFile[ ch ]	= IOUtil.createTempFile();
-					floatF[ ch ]	= new FloatFile( tempFile[ ch ], FloatFile.MODE_OUTPUT );
+					floatF[ ch ]	= new FloatFile( tempFile[ ch ], GenericFile.MODE_OUTPUT );
 				}
 				progLen	   += inLength;
 			} else {													// account for gain loss RealFFT => CmplxIFFT

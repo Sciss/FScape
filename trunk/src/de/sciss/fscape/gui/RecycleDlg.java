@@ -165,7 +165,7 @@ extends DocumentFrame
 			static_pr.para[ PR_CMPSPACING ]		= new Param(    6.0, Param.ABS_MS );	// 256 smp for Logic
 			static_pr.para[ PR_CROSSFADE ]		= new Param(    0.0, Param.ABS_MS );
 			static_pr.paraName	= prParaName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
 			static_presets = new Presets( getClass(), static_pr.toProperties( true ));
@@ -218,7 +218,7 @@ extends DocumentFrame
 		ggOriginFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Original Input", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Original Input", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggOriginFile, GG_ORIGINFILE, null );
@@ -228,7 +228,7 @@ extends DocumentFrame
 		ggCompactFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Compacted Input", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Compacted Input", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggCompactFile, GG_COMPACTFILE, null );
@@ -241,7 +241,7 @@ extends DocumentFrame
 		ggOutputFile.deriveFrom( ggInputs, "$D0$F0Rcyc$E" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Recycled Output", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Recycled Output", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggOutputFile, GG_OUTPUTFILE, null );
@@ -273,20 +273,20 @@ extends DocumentFrame
 		ggMinMatch		= new ParamField( spcInterval );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Min. Matching", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Min. Matching", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggMinMatch, GG_MINMATCH, null );
 
 		ggMarkers		= new JCheckBox();
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Write Markers", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Write Markers", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addCheckbox( ggMarkers, GG_MARKERS, null );
 
 		ggCmpSpacing	= new ParamField( spcInterval );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Compact Spacing", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Compact Spacing", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggCmpSpacing, GG_CMPSPACING, null );
 		con.weightx		= 0.1;
@@ -296,7 +296,7 @@ extends DocumentFrame
 		ggMinRecycle	= new ParamField( spcInterval );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Min. Recycling", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Min. Recycling", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggMinRecycle, GG_MINRECYCLE, null );
 		con.weightx		= 0.1;
@@ -306,7 +306,7 @@ extends DocumentFrame
 		ggPadding		= new ParamField( spcInterval );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Pre/Post Padding", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Pre/Post Padding", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggPadding, GG_PADDING, null );
 		con.weightx		= 0.1;
@@ -316,7 +316,7 @@ extends DocumentFrame
 		ggCrossFade		= new ParamField( spcInterval );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Crossfade", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Crossfade", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggCrossFade, GG_CROSSFADE, null );
 		con.weightx		= 0.1;
@@ -372,15 +372,15 @@ extends DocumentFrame
 		java.util.List		markers;
 
 		PathField			ggOutput;
-		boolean				threadJustAnalyze;
+		boolean				justAnalyse;
 
 		long				dispDelta, dispTime;
 		boolean				infoChange;
 		int					fadeLength, fadeInLength, fadeOutLength;
 		
 topLevel: try {
-			threadJustAnalyze		= this.threadJustAnalyze;	// "Analyze"-JButton acts like a JCheckBox,
-			this.threadJustAnalyze	= false;					// 	we have to "turn it off" ourself
+			justAnalyse		= threadJustAnalyze;	// "Analyze"-JButton acts like a JCheckBox,
+			threadJustAnalyze	= false;					// 	we have to "turn it off" ourself
 
 		// ---- open input, output; init ----
 
@@ -402,7 +402,7 @@ topLevel: try {
 			}
 
 		// ---- open output ----
-			if( !threadJustAnalyze ) {
+			if( !justAnalyse ) {
 				if( !pr.bool[ PR_MARKERS ]) {
 					outF		= AudioFile.openAsWrite( outStream );
 				} else {
@@ -452,7 +452,7 @@ topLevel: try {
 				matchEnd		= 0;
 				regionList.clear();		// Elemente = de.sciss.fscape.io.Region, chronologically added
 
-				progLen			= ((long) origLength + (long) cmpLength) << (threadJustAnalyze ? 0 : 1);
+				progLen			= ((long) origLength + (long) cmpLength) << (justAnalyse ? 0 : 1);
 				dispDelta		= 10000;	// first prelim. display after 10 sec.
 				dispTime		= System.currentTimeMillis() + dispDelta;
 				infoChange		= true;
@@ -647,7 +647,7 @@ followLp:				for( ch = 0; ch < chanNum; ch++ ) {
 				cmpF = null;
 				regionsKnown = true;
 				
-				if( !threadJustAnalyze ) indicateOutputWrite();
+				if( !justAnalyse ) indicateOutputWrite();
 			} // if( !regionsKnown )
 
 		// ================ PASS 2: Region copying ================
@@ -665,7 +665,7 @@ followLp:				for( ch = 0; ch < chanNum; ch++ ) {
 				outLength += j;
 			}
 
-			if( !threadJustAnalyze ) {
+			if( !justAnalyse ) {
 				if( pr.bool[ PR_MARKERS ]) {
 					outStream.setProperty( AudioFileDescr.KEY_MARKERS, markers );
 					outF		= AudioFile.openAsWrite( outStream );
@@ -811,7 +811,7 @@ followLp:				for( ch = 0; ch < chanNum; ch++ ) {
 	/*
 	 *	Neues Inputfile setzen
 	 */
-	private void clearInput()
+	protected void clearInput()
 	{
 		regionsKnown	= false;
 		regionList.clear();

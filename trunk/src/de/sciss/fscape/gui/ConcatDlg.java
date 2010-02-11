@@ -160,7 +160,7 @@ extends DocumentFrame
 			static_pr.para[ PR_OVERLAP ]	= new Param(   0.0, Param.FACTOR_TIME );
 			static_pr.para[ PR_FADE ]		= new Param(   0.0, Param.FACTOR_TIME );
 			static_pr.paraName	= prParaName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
 			fillDefaultGain( static_pr.para, PR_GAIN );
@@ -220,7 +220,7 @@ extends DocumentFrame
 		ggInputFile1.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "First input file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "First input file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInputFile1, GG_INPUTFILE1, pathL );
@@ -230,7 +230,7 @@ extends DocumentFrame
 		ggInputFile2.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Last input file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Last input file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInputFile2, GG_INPUTFILE2, pathL );
@@ -240,7 +240,7 @@ extends DocumentFrame
 		ggCurrentInfo.setBackground( null );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Current input", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Current input", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addTextField( ggCurrentInfo, GG_CURRENTINFO, null );
@@ -253,7 +253,7 @@ extends DocumentFrame
 		ggOutputFile.deriveFrom( ggInputs, "$D0$F0CC$E" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Output file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Output file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggOutputFile, GG_OUTPUTFILE, pathL );
@@ -263,7 +263,7 @@ extends DocumentFrame
 		ggGain			= createGadgets( GGTYPE_GAIN );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Gain", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Gain", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( (ParamField) ggGain[ 0 ], GG_GAIN, null );
 		con.weightx		= 0.5;
@@ -300,14 +300,14 @@ extends DocumentFrame
 		ggOffset		= new ParamField( spcOffset );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Chunk Offset", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Chunk Offset", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggOffset, GG_OFFSET, null );
 
 		ggLength		= new ParamField( spcLength );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Chunk Length", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Chunk Length", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggLength, GG_LENGTH, null );
@@ -316,7 +316,7 @@ extends DocumentFrame
 		ggOverlap.setReference( ggLength );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Chunk Overlap", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Chunk Overlap", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggOverlap, GG_OVERLAP, null );
 
@@ -324,7 +324,7 @@ extends DocumentFrame
 		ggFade.setReference( ggOverlap );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Overlap Crossfade", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Overlap Crossfade", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggFade, GG_FADE, null );
@@ -336,7 +336,7 @@ ggFadeShape.setEnabled( false );
 		}
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Crossfade Shape", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Crossfade Shape", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addChoice( ggFadeShape, GG_FADESHAPE, null );
 
@@ -346,7 +346,7 @@ ggFadeShape.setEnabled( false );
 		}
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Crossfade Type", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Crossfade Type", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addChoice( ggFadeType, GG_FADETYPE, null );
@@ -502,7 +502,7 @@ System.out.println( "outLen   "+ outLength );
 				}
 				for( ch = 0; ch < outChanNum; ch++ ) {
 					tempFile[ ch ]	= IOUtil.createTempFile();
-					floatF[ ch ]	= new FloatFile( tempFile[ ch ], FloatFile.MODE_OUTPUT );
+					floatF[ ch ]	= new FloatFile( tempFile[ ch ], GenericFile.MODE_OUTPUT );
 				}
 			} else {
 				gain		= (float) (Param.transform( pr.para[ PR_GAIN ], Param.ABS_AMP, ampRef, null )).val;

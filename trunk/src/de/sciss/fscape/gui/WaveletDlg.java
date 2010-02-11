@@ -72,8 +72,6 @@ extends DocumentFrame
 
 	private static final int DIR_FORWARD			= 0;
 	private static final int DIR_BACKWARD			= 1;
-	private static final int GAIN_UNITY				= 0;
-	private static final int GAIN_ABSOLUTE			= 1;
 	private static final int LENGTH_EXPAND			= 0;
 	private static final int LENGTH_TRUNC			= 1;
 
@@ -134,7 +132,7 @@ extends DocumentFrame
 			static_pr.para		= prPara;
 			static_pr.para[ PR_SCALEGAIN ]	= new Param( 3.0, Param.DECIBEL_AMP );
 			static_pr.paraName	= prParaName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
 			fillDefaultGain( static_pr.para, PR_GAIN );
@@ -168,7 +166,7 @@ extends DocumentFrame
 		ggInputFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Input file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Input file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInputFile, GG_INPUTFILE, null );
@@ -181,7 +179,7 @@ extends DocumentFrame
 		ggOutputFile.deriveFrom( ggInputs, "$D0$F0WT$E" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Output file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Output file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggOutputFile, GG_OUTPUTFILE, null );
@@ -191,7 +189,7 @@ extends DocumentFrame
 		ggGain			= createGadgets( GGTYPE_GAIN );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Gain", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Gain", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( (ParamField) ggGain[ 0 ], GG_GAIN, null );
 		con.weightx		= 0.5;
@@ -208,13 +206,13 @@ extends DocumentFrame
 		}
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Filter", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Filter", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addChoice( ggFilter, GG_FILTER, null );
 
 		ggScaleGain		= new ParamField( Constants.spaces[ Constants.decibelAmpSpace ]);
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Gain per Scale", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Gain per Scale", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggScaleGain, GG_SCALEGAIN, null );
@@ -224,7 +222,7 @@ extends DocumentFrame
 		ggDirection.addItem( "Backward (Inverse)" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Direction", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Direction", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addChoice( ggDirection, GG_DIRECTION, null );
 
@@ -238,7 +236,7 @@ extends DocumentFrame
 		ggLength.addItem( "Truncate to flt*2^n" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "FWT Length", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "FWT Length", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addChoice( ggLength, GG_LENGTH, null );
 
@@ -383,7 +381,7 @@ topLevel: try {
 			
 				for( ch = 0; ch < inChanNum; ch++ ) {
 					tempFile[ ch ][ 2 ]	= IOUtil.createTempFile();	// for detail data
-					floatF[ ch ][ 2 ]	= new FloatFile( tempFile[ ch ][ 2 ], FloatFile.MODE_OUTPUT );
+					floatF[ ch ][ 2 ]	= new FloatFile( tempFile[ ch ][ 2 ], GenericFile.MODE_OUTPUT );
 				}
 
 				progOff		= 0;
@@ -506,7 +504,7 @@ topLevel: try {
 // System.out.println( "   create smooth temp files" );
 										for( ch = 0; ch < inChanNum; ch++ ) {
 											tempFile[ ch ][ j ]	= IOUtil.createTempFile();
-											floatF[ ch ][ j ]	= new FloatFile( tempFile[ ch ][ j ], FloatFile.MODE_OUTPUT );
+											floatF[ ch ][ j ]	= new FloatFile( tempFile[ ch ][ j ], GenericFile.MODE_OUTPUT );
 										}
 									}
 								}
@@ -716,7 +714,7 @@ topLevel: try {
 									for( ch = 0; ch < inChanNum; ch++ ) {
 										tempFile[ ch ][ 1 - smoothIndex ]	= IOUtil.createTempFile();
 										floatF[ ch ][ 1 - smoothIndex ]		= new FloatFile( tempFile[ ch ][ 1 - smoothIndex ],
-																							 FloatFile.MODE_OUTPUT );
+										                               		              GenericFile.MODE_OUTPUT );
 									}
 								}
 							}

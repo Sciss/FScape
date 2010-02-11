@@ -40,6 +40,7 @@ import java.io.IOException;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 import de.sciss.fscape.io.FloatFile;
 import de.sciss.fscape.io.GenericFile;
@@ -179,7 +180,7 @@ extends DocumentFrame
 			static_pr.paraName	= prParaName;
 			static_pr.bool		= prBool;
 			static_pr.boolName	= prBoolName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
 			fillDefaultGain( static_pr.para, PR_GAIN );
@@ -229,7 +230,7 @@ extends DocumentFrame
 		ggInputFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Input file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Input file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInputFile, GG_INPUTFILE, null );
@@ -239,7 +240,7 @@ extends DocumentFrame
 		ggOutputFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Output", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Output", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggOutputFile, GG_OUTPUTFILE, null );
@@ -253,7 +254,7 @@ extends DocumentFrame
 		ggGain			= createGadgets( GGTYPE_GAIN );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Gain", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Gain", SwingConstants.RIGHT ));
 		con.weightx		= 0.3;
 		gui.addParamField( (ParamField) ggGain[ 0 ], GG_GAIN, null );
 		gui.addChoice( (JComboBox) ggGain[ 1 ], GG_GAINTYPE, il );
@@ -272,7 +273,7 @@ extends DocumentFrame
 		}
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "# of Bands", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "# of Bands", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addChoice( ggNumBands, GG_NUMBANDS, il );
 
@@ -281,7 +282,7 @@ extends DocumentFrame
 			ggQuality.addItem( QUAL_NAMES[ i ]);
 		}
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Quality", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Quality", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addChoice( ggQuality, GG_QUALITY, il );
@@ -290,7 +291,7 @@ extends DocumentFrame
 			ggFreq			= new ParamField( Constants.spaces[ Constants.absHzSpace ]);
 			con.weightx		= 0.1;
 			con.gridwidth	= 1;
-			gui.addLabel( new JLabel( "CrossOver " + (i+1), JLabel.RIGHT ));
+			gui.addLabel( new JLabel( "CrossOver " + (i+1), SwingConstants.RIGHT ));
 			con.weightx		= 0.4;
 			con.gridwidth	= (i & 1) == 0 ? 1 : GridBagConstraints.REMAINDER;
 			gui.addParamField( ggFreq, GG_FREQ1 + i, null );
@@ -299,7 +300,7 @@ extends DocumentFrame
 		ggRollOff		= new ParamField( Constants.spaces[ Constants.ratioFreqSpace ]);
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "RollOff", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "RollOff", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggRollOff, GG_ROLLOFF, null );
 
@@ -508,7 +509,7 @@ topLevel: try {
 			for( i = 0; i < numBands; i++ ) {
 				for( ch = 0; ch < inChanNum; ch++ ) {
 					tempFile[i][ch]		= IOUtil.createTempFile();
-					floatF[i][ch]		= new FloatFile( tempFile[i][ch], FloatFile.MODE_OUTPUT );
+					floatF[i][ch]		= new FloatFile( tempFile[i][ch], GenericFile.MODE_OUTPUT );
 				}
 			}
 			progLen	   += (long) inLength * numBands;

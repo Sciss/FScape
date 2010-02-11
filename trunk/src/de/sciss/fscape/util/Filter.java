@@ -534,11 +534,11 @@ public class Filter
 	/**
 	 *	Energie berechnen (sum(x^2))
 	 */
-	public static double calcEnergy( float a[], int off, int length )
+	public static double calcEnergy( float a[], int offStart, int length )
 	{
 		double	energy	= 0.0;
+		int		off		= offStart;
 		int		stop	= off + length;
-		
 		while( off < stop ) {
 			energy += a[ off ]*a[ off++ ];
 		}

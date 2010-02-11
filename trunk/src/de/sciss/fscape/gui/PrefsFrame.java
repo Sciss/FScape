@@ -43,6 +43,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
@@ -127,7 +128,7 @@ extends AppWindow
 		prefs   = IOUtil.getUserPrefs();
 		key		= IOUtil.KEY_TEMPDIR;
 		key2	= "prefsTmpDir";
-		lb		= new JLabel( getResourceString( key2 ), JLabel.TRAILING );
+		lb		= new JLabel( getResourceString( key2 ), SwingConstants.TRAILING );
 		tab.gridAdd( lb, 0, row );
 		ggPath	= new PrefPathField( PathField.TYPE_FOLDER, getResourceString( key2 ));
 		ggPath.setPreferences( prefs, key );
@@ -136,7 +137,7 @@ extends AppWindow
 		row++;
 		prefs   = app.getUserPrefs();
 		key2	= "prefsAudioFileFormat";
-		lb		= new JLabel( getResourceString( key2 ), JLabel.TRAILING );
+		lb		= new JLabel( getResourceString( key2 ), SwingConstants.TRAILING );
 		tab.gridAdd( lb, 0, row );
 		b		= Box.createHorizontalBox();
 		ggChoice = new PrefComboBox();
@@ -166,7 +167,7 @@ extends AppWindow
 		prefs   = app.getUserPrefs();
 		key2	= "prefsHeadroom";
 		key		= "headroom";
-		lb		= new JLabel( getResourceString( key2 ), JLabel.TRAILING );
+		lb		= new JLabel( getResourceString( key2 ), SwingConstants.TRAILING );
 		tab.gridAdd( lb, 0, row );
 		ggParam  = new PrefParamField();
 		ggParam.addSpace( ParamSpace.spcAmpDecibels );
@@ -179,7 +180,7 @@ extends AppWindow
 		key		= OSCRoot.KEY_ACTIVE;
 //		key2	= "prefsOSCActive";
 		key2	= "prefsOSCServer";
-		lb		= new JLabel( getResourceString( key2 ), JLabel.TRAILING );
+		lb		= new JLabel( getResourceString( key2 ), SwingConstants.TRAILING );
 		tab.gridAdd( lb, 0, row );
 		b		= Box.createHorizontalBox();
 		ggCheckBox = new PrefCheckBox( getResourceString( "prefsOSCActive" ));
@@ -189,7 +190,7 @@ extends AppWindow
 
 		key		= OSCRoot.KEY_PROTOCOL;
 		key2	= "prefsOSCProtocol";
-		lb		= new JLabel( getResourceString( key2 ), JLabel.TRAILING );
+		lb		= new JLabel( getResourceString( key2 ), SwingConstants.TRAILING );
 //		tab.gridAdd( lb, 2, row );
 		b.add( Box.createHorizontalStrut( 16 ));
 		b.add( lb );
@@ -202,7 +203,7 @@ extends AppWindow
 
 		key		= OSCRoot.KEY_PORT;
 		key2	= "prefsOSCPort";
-		lb		= new JLabel( getResourceString( key2 ), JLabel.TRAILING );
+		lb		= new JLabel( getResourceString( key2 ), SwingConstants.TRAILING );
 //		tab.gridAdd( lb, 4, row );
 		b.add( Box.createHorizontalStrut( 16 ));
 		b.add( lb );
@@ -218,7 +219,7 @@ extends AppWindow
         key     = PrefsUtil.KEY_LOOKANDFEEL;
 		key2	= "prefsLookAndFeel";
 		title	= getResourceString( key2 );
-		lb		= new JLabel( title, JLabel.TRAILING );
+		lb		= new JLabel( title, SwingConstants.TRAILING );
 		tab.gridAdd( lb, 0, row );
 		ggChoice = new PrefComboBox();
 		lafInfos = UIManager.getInstalledLookAndFeels();
@@ -342,7 +343,7 @@ extends AppWindow
 		private final String				title;
 		private final String				initialValue;
 	
-		private WarnPrefsChange( PreferenceEntrySync pes, Component c, Flag haveWarned, String text, String title )
+		protected WarnPrefsChange( PreferenceEntrySync pes, Component c, Flag haveWarned, String text, String title )
 		{
 			this.pes		= pes;
 			this.c			= c;

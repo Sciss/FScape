@@ -33,6 +33,7 @@ import java.io.*;
 import java.rmi.AlreadyBoundException;
 
 import de.sciss.fscape.gui.*;
+import de.sciss.fscape.io.GenericFile;
 import de.sciss.fscape.prop.*;
 import de.sciss.fscape.spect.*;
 import de.sciss.fscape.util.*;
@@ -120,7 +121,7 @@ extends Operator
 			static_pr.para[ PR_LENGTH ]		= new Param( 5000.0, Param.ABS_MS );
 			static_pr.paraName	= prParaName;
 			
-			static_pr.superPr	= Operator.static_pr;
+			static_pr.superPr	= Operator.op_static_pr;
 		}
 		// default preset
 		if( static_presets == null ) {
@@ -197,7 +198,7 @@ extends Operator
 		}
 
 		try {	// catching IOExceptions
-			runFile = new SpectralFile( runFileName, SpectralFile.MODE_INPUT |
+			runFile = new SpectralFile( runFileName, GenericFile.MODE_INPUT |
 										(pr.bool[ PR_REMOVEDC ] ? SpectralFile.MODE_REMOVEDC : 0) );
 
 			runInStream	= runFile.getDescr();
@@ -309,7 +310,7 @@ extends Operator
 		if( (pr.text[ PR_FILENAME ] != null) && (pr.text[ PR_FILENAME ].length() != 0) ) {
 
 			try {	// catching IOExceptions
-				inputFile	= new SpectralFile( pr.text[ PR_FILENAME ], SpectralFile.MODE_INPUT );
+				inputFile	= new SpectralFile( pr.text[ PR_FILENAME ], GenericFile.MODE_INPUT );
 				inStream	= inputFile.getDescr();
 				fileLength	= (double) (inStream.frames * inStream.smpPerFrame) /
 							  ((double) inStream.smpRate / 1000);

@@ -85,8 +85,6 @@ extends DocumentFrame
 	private static final String PRN_IMOUTPUTFILE	= "ImOutFile";
 	private static final String PRN_OUTPUTTYPE		= "OutputType";
 	private static final String PRN_OUTPUTRES		= "OutputReso";
-	private static final String PRN_GAINTYPE		= "GainType";
-	private static final String PRN_GAIN			= "Gain";
 	private static final String PRN_HASIMINPUT		= "HasImInput";
 	private static final String PRN_HASIMIMPULSE	= "HasImImp";
 	private static final String PRN_HASIMOUTPUT		= "HasImOutput";
@@ -126,9 +124,9 @@ extends DocumentFrame
 	private static	Presets			static_presets	= null;
 
 	private JTextField ggInfo;
-	private ParamField ggMemory;
-	private final long[] inLength	= new long[ 4 ];
-	private final int[] inChanNum	= new int[ 4 ];
+	protected ParamField ggMemory;
+	protected final long[] guiInLength	= new long[ 4 ];
+	protected final int[] inChanNum	= new int[ 4 ];
 
 // -------- public Methoden --------
 
@@ -155,7 +153,7 @@ extends DocumentFrame
 			static_pr.paraName	= prParaName;
 			static_pr.bool		= prBool;
 			static_pr.boolName	= prBoolName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
 			fillDefaultGain( static_pr.para, PR_GAIN );
@@ -172,7 +170,6 @@ extends DocumentFrame
 		JCheckBox			ggHasImInput, ggHasImOutput;
 		PathField[]			ggParent1, ggParent2;
 		Component[]			ggGain;
-		int					i, j;
 
 		gui				= new GUISupport();
 		con				= gui.getGridBagConstraints();
@@ -225,11 +222,11 @@ extends DocumentFrame
 					AudioFile		af	= AudioFile.openAsRead( e.getPath() );
 					AudioFileDescr	afd	= af.getDescr();
 					af.close();
-					inLength[ i ]	= afd.length;
+					guiInLength[ i ]	= afd.length;
 					inChanNum[ i ]	= afd.channels;
 				}
 				catch( IOException e1 ) {
-					inLength[ i ]	= 0;
+					guiInLength[ i ]	= 0;
 					inChanNum[ i ]	= 0;
 				}
 				recalcSteps();
@@ -254,14 +251,14 @@ extends DocumentFrame
 								  GroupLabel.BRACE_NONE ));
 
 		ggParent1		= new PathField[ 2 ];
-		for( i = 0; i < 2; i++ ) {
+		for( int i = 0; i < 2; i++ ) {
 			ggReInputFile	= new PathField( PathField.TYPE_INPUTFILE + PathField.TYPE_FORMATFIELD,
 											 "Select real part of input" );
 			ggReInputFile.handleTypes( GenericFile.TYPES_SOUND );
 			ggParent1[ i ]	= ggReInputFile;
 			con.gridwidth	= 1;
 			con.weightx		= 0.1;
-			gui.addLabel( new JLabel( "Input "+(i+1)+" [Real]", JLabel.RIGHT ));
+			gui.addLabel( new JLabel( "Input "+(i+1)+" [Real]", SwingConstants.RIGHT ));
 			con.gridwidth	= GridBagConstraints.REMAINDER;
 			con.weightx		= 0.9;
 			gui.addPathField( ggReInputFile, GG_REINPUTFILE + (i<<1), pathL );
@@ -275,10 +272,10 @@ extends DocumentFrame
 			ggHasImInput	= new JCheckBox( "Input "+(i+1)+" [Imaginary]" );
 			con.gridwidth	= 1;
 			con.weightx		= 0.1;
-			j				= con.anchor;
+			final int tmpAnchor = con.anchor;
 			con.anchor		= GridBagConstraints.EAST;
 			gui.addCheckbox( ggHasImInput, GG_HASIMINPUT + (i<<1), il );
-			con.anchor		= j;
+			con.anchor		= tmpAnchor;
 			con.gridwidth	= GridBagConstraints.REMAINDER;
 			con.weightx		= 0.9;
 			gui.addPathField( ggImInputFile, GG_IMINPUTFILE + (i<<1), pathL );
@@ -286,7 +283,7 @@ extends DocumentFrame
 //			ggCepstral		= new JCheckBox();
 //			con.gridwidth	= 1;
 //			con.weightx		= 0.1;
-//			gui.addLabel( new JLabel( "Cepstral", JLabel.RIGHT ));
+//			gui.addLabel( new JLabel( "Cepstral", SwingConstants.RIGHT ));
 //			con.gridwidth	= GridBagConstraints.REMAINDER;
 //			gui.addCheckbox( ggCepstral, GG_CEPSTRAL1 + i, il );
 		}
@@ -296,7 +293,7 @@ extends DocumentFrame
 		ggReOutputFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Output [Real]", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Output [Real]", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggReOutputFile, GG_REOUTPUTFILE, pathL );
@@ -308,10 +305,10 @@ extends DocumentFrame
 		ggHasImOutput	= new JCheckBox( "Output [Imaginary]" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		j				= con.anchor;
+		final int tmpAnchor = con.anchor;
 		con.anchor		= GridBagConstraints.EAST;
 		gui.addCheckbox( ggHasImOutput, GG_HASIMOUTPUT, il );
-		con.anchor		= j;
+		con.anchor		= tmpAnchor;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggImOutputFile, GG_IMOUTPUTFILE, pathL );
@@ -324,7 +321,7 @@ extends DocumentFrame
 		ggGain			= createGadgets( GGTYPE_GAIN );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Gain", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Gain", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( (ParamField) ggGain[ 0 ], GG_GAIN, paramL );
 		con.weightx		= 0.5;
@@ -334,7 +331,7 @@ extends DocumentFrame
 		ggMemory		= new ParamField( new ParamSpace( 1.0, 2047.0, 1.0, Param.NONE ));
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Mem.alloc. [MB]", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Mem.alloc. [MB]", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggMemory, GG_MEMORY, paramL );
 
@@ -342,7 +339,7 @@ extends DocumentFrame
 		ggInfo.setEditable( false );
 		ggInfo.setBackground( null );
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "\u2192", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "\u2192", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addGadget( ggInfo, GG_OFF_OTHER + 0 );
@@ -363,11 +360,11 @@ extends DocumentFrame
 				AudioFile		af	= AudioFile.openAsRead( new File( pr.text[ i ]));
 				AudioFileDescr	afd	= af.getDescr();
 				af.close();
-				inLength[ j ]	= afd.length;
+				guiInLength[ j ]	= afd.length;
 				inChanNum[ j ]	= afd.channels;
 			}
 			catch( IOException e1 ) {
-				inLength[ j ]	= 0;
+				guiInLength[ j ]	= 0;
 				inChanNum[ j ]	= 0;
 			}
 		}
@@ -420,7 +417,7 @@ extends DocumentFrame
 		int					outChanNum;
 		long				outLength;
 		long[]				inLength		= new long[ 2 ];
-		int[]				inChanNum		= new int[ 2 ];
+//		int[]				inChanNum		= new int[ 2 ];
 		long				framesRead, framesWritten;
 		int					fullFFTsize, convLen, gainLen;
 
@@ -919,12 +916,12 @@ topLevel: try {
 		}
 	} // process()
 
-	private void recalcSteps()
+	protected void recalcSteps()
 	{
 		int outChanNum = Math.max( inChanNum[ 0 ], inChanNum[ 2 ]);
 		long[] minLength = new long[] {
-			pr.bool[ PR_HASIMINPUT ]   ? Math.min( inLength[ 0 ], inLength[ 1 ]) : inLength[ 0 ],
-			pr.bool[ PR_HASIMIMPULSE ] ? Math.min( inLength[ 2 ], inLength[ 3 ]) : inLength[ 2 ],
+			pr.bool[ PR_HASIMINPUT ]   ? Math.min( guiInLength[ 0 ], guiInLength[ 1 ]) : guiInLength[ 0 ],
+			pr.bool[ PR_HASIMIMPULSE ] ? Math.min( guiInLength[ 2 ], guiInLength[ 3 ]) : guiInLength[ 2 ],
 		};
 		
 		if( outChanNum > 0 && minLength[ 0 ] > 0 && minLength[ 1 ] > 0 ) {
@@ -1040,7 +1037,7 @@ topLevel: try {
 		}
 	}
 	
-	private static class Descriptor
+	protected static class Descriptor
 	{
 		int		fftSize;
 		long	totalSteps;

@@ -130,7 +130,7 @@ extends DocumentFrame
 			static_pr.boolName	= prBoolName;
 			static_pr.para		= prPara;
 			static_pr.paraName	= prParaName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
 			fillDefaultGain( static_pr.para, PR_GAIN );
@@ -179,7 +179,7 @@ extends DocumentFrame
 		ggInputFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Input file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Input file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInputFile, GG_INPUTFILE, null );
@@ -193,7 +193,7 @@ extends DocumentFrame
 		ggOutputFile.deriveFrom( ggInputs, "$D0$F0Rot$E" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Output file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Output file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggOutputFile, GG_OUTPUTFILE, null );
@@ -203,7 +203,7 @@ extends DocumentFrame
 		ggGain			= createGadgets( GGTYPE_GAIN );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Gain", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Gain", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( (ParamField) ggGain[ 0 ], GG_GAIN, null );
 		con.weightx		= 0.5;
@@ -219,13 +219,13 @@ extends DocumentFrame
 		ggMode.addItem( "Repeat" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Mode", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Mode", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addChoice( ggMode, GG_MODE, il );
 
 		ggRepeats		= new ParamField( new ParamSpace( 2.0, 10000.0, 1.0, Param.NONE ));
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Repeats", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Repeats", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggRepeats, GG_REPEATS, null );
@@ -331,7 +331,7 @@ topLevel: try {
 
 			zcBuf			= new int[ 1 ]; // next dist
 			zcTempFile		= IOUtil.createTempFile();
-			zcFloatFile		= new FloatFile( zcTempFile, FloatFile.MODE_OUTPUT );
+			zcFloatFile		= new FloatFile( zcTempFile, GenericFile.MODE_OUTPUT );
 
 			// normalization requires temp files
 			if( pr.intg[ PR_GAINTYPE ] == GAIN_UNITY ) {
@@ -339,7 +339,7 @@ topLevel: try {
 				floatF		= new FloatFile[ inChanNum ];
 				for( int ch = 0; ch < inChanNum; ch++ ) {
 					tempFile[ ch ]	= IOUtil.createTempFile();
-					floatF[ ch ]	= new FloatFile( tempFile[ ch ], FloatFile.MODE_OUTPUT );
+					floatF[ ch ]	= new FloatFile( tempFile[ ch ], GenericFile.MODE_OUTPUT );
 				}
 				progLen	   += inLength;
 			} else {

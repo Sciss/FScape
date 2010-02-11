@@ -87,7 +87,7 @@ extends DocumentFrame
 			static_pr			= new PropertyArray();
 			static_pr.text		= prText;
 			static_pr.textName	= prTextName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 		}
 		// default preset
 		if( static_presets == null ) {

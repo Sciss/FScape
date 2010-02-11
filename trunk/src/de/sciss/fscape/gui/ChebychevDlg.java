@@ -154,7 +154,7 @@ extends DocumentFrame
 	private static	PropertyArray	static_pr		= null;
 	private static	Presets			static_presets	= null;
 
-	private JButton ggToTime, ggToFreq;
+	protected JButton ggToTime, ggToFreq;
 
 // -------- public Methoden --------
 
@@ -193,7 +193,7 @@ extends DocumentFrame
 			static_pr.para[ PR_BANDSPEROCT ]	= new Param(   36.0, Param.NONE );
 			static_pr.para[ PR_MIDTIME ]		= new Param(   50.0, Param.FACTOR_TIME );
 			static_pr.paraName	= prParaName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
 			fillDefaultGain( static_pr.para, PR_GAIN );
@@ -260,7 +260,7 @@ extends DocumentFrame
 		ggInputFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Input file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Input file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInputFile, GG_INPUTFILE, null );
@@ -270,7 +270,7 @@ extends DocumentFrame
 		ggOutputFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Output file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Output file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggOutputFile, GG_OUTPUTFILE, null );
@@ -284,7 +284,7 @@ extends DocumentFrame
 		ggGain			= createGadgets( GGTYPE_GAIN );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Gain", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Gain", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( (ParamField) ggGain[ 0 ], GG_GAIN, null );
 		con.weightx		= 0.5;
@@ -299,7 +299,7 @@ extends DocumentFrame
 		con.weightx		= 0.1;
 		con.weighty		= 0.0;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Low Freq", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Low Freq", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggLoFreq, GG_LOFREQ, null );
 
@@ -311,14 +311,14 @@ extends DocumentFrame
 		ggMidFreq		= new ParamField( spcHiCut );
 		ggMidFreq.setReference( ggLoFreq );
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Mid Freq", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Mid Freq", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggMidFreq, GG_MIDFREQ, null );
 
 		ggHiFreq		= new ParamField( spcHiCut );
 		ggHiFreq.setReference( ggLoFreq );
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "High Freq", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "High Freq", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggHiFreq, GG_HIFREQ, null );
@@ -354,13 +354,13 @@ extends DocumentFrame
 		con.weightx		= 0.1;
 		con.weighty		= 0.0;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Mid Time", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Mid Time", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggMidTime, GG_MIDTIME, null );
 
 		ggBandsPerOct	= new ParamField( new ParamSpace( 1.0, 256.0, 1.0, Param.NONE ));
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Bands per Oct.", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Bands per Oct.", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggBandsPerOct, GG_BANDSPEROCT, null );
 
@@ -370,14 +370,14 @@ extends DocumentFrame
 		ggFltLen.addItem( "Long" );
 		ggFltLen.addItem( "Very long" );
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Filter length", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Filter length", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addChoice( ggFltLen, GG_FILTERLEN, null );
 
 //		ggDropEnv		= new JCheckBox();
 //		con.weightx		= 0.1;
-//		gui.addLabel( new JLabel( "Drop Envelope Tracking", JLabel.RIGHT ));
+//		gui.addLabel( new JLabel( "Drop Envelope Tracking", SwingConstants.RIGHT ));
 //		con.weightx		= 0.4;
 //		con.gridwidth	= GridBagConstraints.REMAINDER;
 //		gui.addCheckbox( ggDropEnv, GG_DROPENV, il );
@@ -1268,9 +1268,9 @@ Debug.view( tmp, "Summed BPs FFT" );
 		float[]	harmonWeight2;	// 0...1	middle time
 		float[]	harmonWeight3;	// 0...1	end of performance
 		
-		private ChebyTracker() {}
+		protected ChebyTracker() { /* empty */}
 		
-		private ChebyTracker( ChebyTracker orig )
+		protected ChebyTracker( ChebyTracker orig )
 		{
 			this.peakBuf		= (float[]) orig.peakBuf.clone();
 			this.peakBufLen		= orig.peakBufLen;

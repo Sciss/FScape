@@ -220,7 +220,7 @@ extends DocumentFrame
 			static_pr.paraName	= prParaName;
 			static_pr.bool		= prBool;
 			static_pr.boolName	= prBoolName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
 			fillDefaultGain( static_pr.para, PR_GAIN );
@@ -286,7 +286,7 @@ extends DocumentFrame
 			ggReInputFile.handleTypes( GenericFile.TYPES_SOUND );
 			con.gridwidth	= 1;
 			con.weightx		= 0.1;
-			gui.addLabel( new JLabel( "Input [Real]", JLabel.RIGHT ));
+			gui.addLabel( new JLabel( "Input [Real]", SwingConstants.RIGHT ));
 			con.gridwidth	= 2;
 			con.weightx		= 3.0;
 			gui.addPathField( ggReInputFile, GG_REINPUTFILE1 + i, null );
@@ -294,7 +294,7 @@ extends DocumentFrame
 			ggOffset		= new ParamField( spcOffset );
 			con.weightx		= 0.1;
 			con.gridwidth	= 1;
-			gui.addLabel( new JLabel( "Offset", JLabel.RIGHT ));
+			gui.addLabel( new JLabel( "Offset", SwingConstants.RIGHT ));
 			con.weightx		= 0.4;
 			con.gridwidth	= GridBagConstraints.REMAINDER;
 			gui.addParamField( ggOffset, GG_OFFSET1 + i, null );
@@ -316,7 +316,7 @@ extends DocumentFrame
 			ggLength		= new ParamField( spcLength );
 			con.weightx		= 0.1;
 			con.gridwidth	= 1;
-			gui.addLabel( new JLabel( "Length", JLabel.RIGHT ));
+			gui.addLabel( new JLabel( "Length", SwingConstants.RIGHT ));
 			con.weightx		= 0.4;
 			con.gridwidth	= GridBagConstraints.REMAINDER;
 			gui.addParamField( ggLength, GG_LENGTH1 + i, null );
@@ -329,7 +329,7 @@ extends DocumentFrame
 			ggInputGain		= new ParamField( Constants.spaces[ Constants.decibelAmpSpace ]);
 			con.gridwidth	= 1;
 			con.weightx		= 0.1;
-			gui.addLabel( new JLabel( "Drive", JLabel.RIGHT ));
+			gui.addLabel( new JLabel( "Drive", SwingConstants.RIGHT ));
 			con.weightx		= 0.4;
 			gui.addParamField( ggInputGain, GG_INPUTGAIN1 + i, null );
 
@@ -354,7 +354,7 @@ extends DocumentFrame
 		ggReOutputFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "File [Real]", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "File [Real]", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggReOutputFile, GG_REOUTPUTFILE, null );
@@ -382,7 +382,7 @@ extends DocumentFrame
 		ggGain			= createGadgets( GGTYPE_GAIN );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Gain", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Gain", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( (ParamField) ggGain[ 0 ], GG_GAIN, null );
 		con.weightx		= 0.5;
@@ -399,14 +399,14 @@ extends DocumentFrame
 		}
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Operator", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Operator", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addChoice( ggOperator, GG_OPERATOR, il );
 
 		con.weightx		= 0.1;
 		gui.addLabel( new JLabel( "" ));
 		ggDryMix		= new ParamField( Constants.spaces[ Constants.ratioAmpSpace ]);
-		gui.addLabel( new JLabel( "Dry mix", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Dry mix", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggDryMix, GG_DRYMIX, null );
 
@@ -420,7 +420,7 @@ extends DocumentFrame
 		ggWetMix		= new ParamField( Constants.spaces[ Constants.ratioAmpSpace ]);
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Wet mix", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Wet mix", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggWetMix, GG_WETMIX, null );
 		con.weightx		= 0.1;
@@ -624,7 +624,7 @@ topLevel: try {
 				}
 				for( ch = 0; ch < outChanNum; ch++ ) {
 					reTempFile[ ch ]	= IOUtil.createTempFile();
-					reFloatF[ ch ]		= new FloatFile( reTempFile[ ch ], FloatFile.MODE_OUTPUT );
+					reFloatF[ ch ]		= new FloatFile( reTempFile[ ch ], GenericFile.MODE_OUTPUT );
 				}
 				if( pr.bool[ PR_HASIMOUTPUT ]) {
 					imTempFile	= new File[ outChanNum ];
@@ -635,7 +635,7 @@ topLevel: try {
 					}
 					for( ch = 0; ch < outChanNum; ch++ ) {
 						imTempFile[ ch ]	= IOUtil.createTempFile();
-						imFloatF[ ch ]		= new FloatFile( imTempFile[ ch ], FloatFile.MODE_OUTPUT );
+						imFloatF[ ch ]		= new FloatFile( imTempFile[ ch ], GenericFile.MODE_OUTPUT );
 					}
 				}
 				progLen	   += (long) outLength;

@@ -32,6 +32,7 @@ import java.awt.*;
 import java.io.*;
 
 import de.sciss.fscape.gui.*;
+import de.sciss.fscape.io.GenericFile;
 import de.sciss.fscape.prop.*;
 import de.sciss.fscape.spect.*;
 import de.sciss.fscape.util.*;
@@ -110,7 +111,7 @@ extends Operator
 			static_pr.bool		= prBool;
 			static_pr.boolName	= prBoolName;
 
-			static_pr.superPr	= Operator.static_pr;
+			static_pr.superPr	= Operator.op_static_pr;
 		}
 		// default preset
 		if( static_presets == null ) {
@@ -181,7 +182,7 @@ extends Operator
 
 topLevel:
 		try {
-			runFile = new SpectralFile( runFileName, SpectralFile.MODE_OUTPUT |
+			runFile = new SpectralFile( runFileName, GenericFile.MODE_OUTPUT |
 										(pr.bool[ PR_REMOVEDC ] ? SpectralFile.MODE_REMOVEDC : 0) );
 
 			// ------------------------------ Input-Slot ------------------------------

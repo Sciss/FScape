@@ -80,10 +80,10 @@ extends AbstractRenderPlugIn
 		return true;
 	}
 
-	public void init( de.sciss.app.Document doc, Preferences prefs )
+	public void init( de.sciss.app.Document doc, Preferences p )
 	{
-		super.init( doc, prefs );
-		this.prefs	= prefs;
+		super.init( doc, p );
+		prefs	= p;
 	}
 
 	public JComponent getSettingsView( RenderContext context )
@@ -109,17 +109,17 @@ extends AbstractRenderPlugIn
 		ggFilter.addItem( new StringItem( FILTER_MINIMUM, "Minimum" ));
 		ggFilter.addItem( new StringItem( FILTER_CENTER, "Center Clipping" ));
 
-		p.gridAdd( new JLabel( "Gain", JLabel.RIGHT ), 0, 0 );
+		p.gridAdd( new JLabel( "Gain", SwingConstants.RIGHT ), 0, 0 );
 		p.gridAdd( ggGain, 1, 0 );
 		p.gridAdd( ggGainType, 1, 0 );
 		
-		p.gridAdd( new JLabel( "Window length", JLabel.RIGHT ), 0, 1 );
+		p.gridAdd( new JLabel( "Window length", SwingConstants.RIGHT ), 0, 1 );
 		p.gridAdd( ggLength, 1, 1 );
-		p.gridAdd( new JLabel( "Filter", JLabel.RIGHT ), 0, 2 );
+		p.gridAdd( new JLabel( "Filter", SwingConstants.RIGHT ), 0, 2 );
 		p.gridAdd( ggFilter, 1, 2 );
-		p.gridAdd( new JLabel( "Clip thresh", JLabel.RIGHT ), 0, 3 );
+		p.gridAdd( new JLabel( "Clip thresh", SwingConstants.RIGHT ), 0, 3 );
 		p.gridAdd( ggThresh, 1, 3 );
-		p.gridAdd( new JLabel( "Subtract dry signal", JLabel.RIGHT ), 0, 4 );
+		p.gridAdd( new JLabel( "Subtract dry signal", SwingConstants.RIGHT ), 0, 4 );
 		p.gridAdd( ggSubDry, 1, 4 );
 
 		ggGain.setPreferences( this.prefs, KEY_GAIN );
@@ -401,7 +401,7 @@ extends AbstractRenderPlugIn
 		final float[][] buf;
 		final int[][]	idxBuf;
 	
-		private MedianFilter( int winSize, int channels )
+		protected MedianFilter( int winSize, int channels )
 		{
 			this.winSize	= winSize;
 			this.channels   = channels;

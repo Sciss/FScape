@@ -242,9 +242,9 @@ ggNumber.setSpace( currentSpace );
 	{
 		this();
 
-		ParamSpace spaces[]	= new ParamSpace[ 1 ];
-		spaces[ 0 ]			= space;
-		setSpaces( spaces );
+		ParamSpace spcs[]	= new ParamSpace[ 1 ];
+		spcs[ 0 ]			= space;
+		setSpaces( spcs );
 	}
 
 	/**
@@ -256,7 +256,7 @@ ggNumber.setSpace( currentSpace );
 		setSpaces( spaces );
 	}
 	
-	private Number paraToNumber( Param newParam )
+	protected Number paraToNumber( Param newParam )
 	{
 		final Number newNum;
 	
@@ -477,7 +477,7 @@ dispatchChange();
 		} // for( i = 0; i < elm.countListeners(); i++ )
 	}
 	
-	private void dispatchChange()
+	protected void dispatchChange()
 	{
 		elm.dispatchEvent( new ParamEvent( this, ParamEvent.CHANGED, System.currentTimeMillis(),
 										   getParam(), getSpace() ));

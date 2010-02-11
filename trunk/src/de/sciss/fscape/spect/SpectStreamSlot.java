@@ -179,28 +179,28 @@ public class SpectStreamSlot
 	 *
 	 *	erzeugt eine AlreadyBoundException, wenn der Slot bereits einen Stream fuehrt
 	 */
-	public void initWriter( SpectStream stream )
+	public void initWriter( SpectStream strm )
 	throws AlreadyBoundException
 	{
 		synchronized( this ) {
-			if( this.stream != null ) {			// nanu, schon ein Stream präsent?!
+			if( stream != null ) {			// nanu, schon ein Stream präsent?!
 				throw new AlreadyBoundException( ERR_STILLINUSE );
 			}
-			stream.initWriter();
+			strm.initWriter();
 			ownerThread	= Thread.currentThread();
-			this.stream	= stream;
-			this.state	= STATE_ACTIVE;
+			stream		= strm;
+			state		= STATE_ACTIVE;
 		}
 
 		if( linked != null ) {
 			synchronized( linked ) {
-				linked.stream = stream;
+				linked.stream = strm;
 				if( linked.state == STATE_WAITING ) {
 					linked.notify();			// tell dem to start
 				}
 			}
 		} else {
-			this.state = STATE_DUMMY;
+			state = STATE_DUMMY;
 		}
 	}
 

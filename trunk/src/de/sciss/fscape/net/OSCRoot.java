@@ -464,7 +464,7 @@ implements OSCRouter, OSCListener, Runnable, PreferenceChangeListener
 	/*
 	 *	Command: /dumpOSC, int <incomingMode> [, int <outgoingMode> ]
 	 */
-	private void oscCmdDump( RoutedOSCMessage rom )
+	protected void oscCmdDump( RoutedOSCMessage rom )
 	{
 		final int	numArgs	= rom.msg.getArgCount();
 		int			argIdx	= 0;

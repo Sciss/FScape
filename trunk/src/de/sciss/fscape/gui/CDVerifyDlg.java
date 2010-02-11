@@ -122,7 +122,7 @@ extends DocumentFrame
 			static_pr.para		= prPara;
 			static_pr.para[ PR_MAXGAP ]		= new Param(  20.0, Param.ABS_MS );
 			static_pr.paraName	= prParaName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 		}
 		// default preset
 		if( static_presets == null ) {
@@ -154,7 +154,7 @@ extends DocumentFrame
 		ggInputFile1.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Original input file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Original input file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInputFile1, GG_ORIGINFILE, null );
@@ -164,7 +164,7 @@ extends DocumentFrame
 		ggInputFile2.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Re-imported (copy) input file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Re-imported (copy) input file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInputFile2, GG_COPYINFILE, null );
@@ -176,7 +176,7 @@ extends DocumentFrame
 		ggGap			= new ParamField( Constants.spaces[ Constants.absMsSpace ]);
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Max. Start Gap", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Max. Start Gap", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggGap, GG_MAXGAP, null );
 

@@ -138,19 +138,19 @@ extends DocumentFrame
 
 	private static final String ERR_DELETE	= "File was not deleted";
 
-	private static final String[]	EXCLUDE_DLG	= { "MainFrame", "PrefsDlg", "ParamSettingsDlg", "FileInfoDlg" };
+	protected static final String[]	EXCLUDE_DLG	= { "MainFrame", "PrefsDlg", "ParamSettingsDlg", "FileInfoDlg" };
 
 	// Gaga, Batch Table REDO
-    private   BatchTableModel		batchTM;
-    private   ParamTableModel		paramTM;
+	protected   BatchTableModel		batchTM;
+    protected   ParamTableModel		paramTM;
 	private   BatchCellRenderer		batchCR;
-	private   JTable				batchTable;
+	protected   JTable				batchTable;
     private   JTable				paramTable;
-	private   List					batchVector;
+	protected List					batchVector;
 //	private   Vector				paramVector;
 	
 	private TableModelListener		tml;
-	private ClipboardOwner			cbo;
+	protected ClipboardOwner			cbo;
 	private ProcessorListener		procL;
 	
 // -------- public Methoden --------
@@ -179,7 +179,7 @@ extends DocumentFrame
 //			static_pr.para		= prPara;
 //			static_pr.para[ PR_GAIN ]		= new Param( 0.0, Param.DECIBEL_AMP );
 //			static_pr.paraName	= prParaName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 		}
 		// default preset
 		if( static_presets == null ) {
@@ -317,9 +317,9 @@ extends DocumentFrame
 							}
 						}
 					}
-					catch( IllegalStateException e97 ) {}
-					catch( IOException e98 ) {}
-					catch( UnsupportedFlavorException e99 ) {}
+					catch( IllegalStateException e97 ) { /* ignored */}
+					catch( IOException e98 ) { /* ignored */}
+					catch( UnsupportedFlavorException e99 ) { /* ignored */}
 					break;
 				}
 			}
@@ -402,7 +402,7 @@ for( int m = 0; m < modules.length; m++ ) {
 					}
 					
 				} else if( e.getSource() == paramTM ) {
-				
+					// ignore
 				}
 			}
 		};
@@ -467,7 +467,7 @@ tb.setFloatable( false );
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 	gui.addLabel( new GroupLabel( "Module Parameter Settings", GroupLabel.ORIENT_HORIZONTAL,
 								  GroupLabel.BRACE_NONE ));
-		con.gridwidth	= GridBagConstraints.REMAINDER;;
+		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 1.0;
 		con.weighty		= 0.3;
 		initParamTable();
@@ -686,7 +686,7 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 									synchronized( this ) {
 										wait( 3000 );
 									}
-								} catch( InterruptedException e3 ) {}
+								} catch( InterruptedException e3 ) { /* ignored */ }
 								bObj.process = procWin.getProgression();
 								batchTM.fireTableCellUpdated( line, 2 );
 								j		= (int) (bObj.process * 10);
@@ -760,7 +760,7 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 					try {
 						if( !new File( replaceLoopVars( bObj.fileObj, loops )).delete() ) {
 							throw new IOException( ERR_DELETE );
-						};
+						}
 					}
 					catch( Exception e1 ) {
 						cmdErr = e1;
@@ -850,7 +850,7 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 		System.out.print( df.format( new Date() ) + line );
 	}
 
-	private void updateParamTable()
+	protected void updateParamTable()
 	{
 		String[][]  modParam = null;
 		BatchObject bObj;
@@ -864,7 +864,7 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 		paramTM.setParam( modParam );
 	}
 	
-	private DocumentFrame getProcInstance( BatchObject bObj, List loops )
+	protected DocumentFrame getProcInstance( BatchObject bObj, List loops )
 	throws ClassNotFoundException, InstantiationException, IllegalAccessException
 	{
 		DocumentFrame procWin;
@@ -926,7 +926,7 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 	
 // -------------- internal classes --------------
 
-	private static class BatchTableModel
+	protected static class BatchTableModel
 	extends AbstractTableModel
 	{
 		private static final String[] columnNames = { "Line", "Command", "Object", "On Error", "Error Label" };
@@ -935,7 +935,7 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 		private static Class   integerClass		= Integer.class;
 		private static Class   batchObjectClass    = BatchObject.class;
 		
-		private BatchTableModel( List batchVector )
+		protected BatchTableModel( List batchVector )
 		{
 			this.batchVector = batchVector;
 		}
@@ -1013,15 +1013,15 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 		}
 	} // BatchTableModel
 
-	private static class BatchCellRenderer
+	protected static class BatchCellRenderer
 	extends BasicCellRenderer
 	{
-		private static final String[] CMD_NAMES = { "Module", "Delete File", "Begin Loop", "End Loop", "Skip To", "Label" };
-		private static final String[] ERR_NAMES = { "Stop", "Continue", "Skip To" };
+		protected static final String[] CMD_NAMES = { "Module", "Delete File", "Begin Loop", "End Loop", "Skip To", "Label" };
+		protected static final String[] ERR_NAMES = { "Stop", "Continue", "Skip To" };
 
 		private JProgressBar progBar = new JProgressBar( 0, 100 );
 		
-		private BatchCellRenderer()
+		protected BatchCellRenderer()
 		{
 			super();
 			progBar.setStringPainted( true );
@@ -1112,7 +1112,7 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 		}
 	} // BatchCellRenderer
 
-	private class BatchCellEditor
+	protected class BatchCellEditor
 	extends AbstractCellEditor
 	implements TableCellEditor
 	{
@@ -1167,7 +1167,7 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 		}
 	} // BatchCellEditor
 		
-	private class ModuleCellEditor
+	protected class ModuleCellEditor
 	extends DefaultFormatter
 	{
 		private BatchObject  obj = null;
@@ -1189,7 +1189,7 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 		}
 	} // ModuleCellEditor
 
-	private class LabelCellEditor
+	protected class LabelCellEditor
 	extends DefaultFormatter
 	{
 		private BatchObject  obj = new BatchObject();
@@ -1209,7 +1209,7 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 		}
 	} // LabelCellEditor
 		
-	private class FileCellEditor
+	protected class FileCellEditor
 	extends DefaultFormatter
 	{
 		private BatchObject  obj = new BatchObject();
@@ -1229,7 +1229,7 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 		}
 	} // FileCellEditor
 
-	private class LoopCellEditor
+	protected class LoopCellEditor
 	extends DefaultFormatter
 	{
 		private BatchObject  obj = null;
@@ -1250,34 +1250,34 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 		{
 			if( obj != null ) {
 				int i, j, k;
-				s = s.toUpperCase();
-				i = s.indexOf( "=" );
-				j = s.indexOf( "TO", i+1 );
-				if( (s.length() > 0) && Character.isLetter( s.charAt( 0 ))) {
-					obj.loopObj.variable = s.charAt( 0 );
+				final String sNorm = s.toUpperCase();
+				i = sNorm.indexOf( "=" );
+				j = sNorm.indexOf( "TO", i+1 );
+				if( (sNorm.length() > 0) && Character.isLetter( sNorm.charAt( 0 ))) {
+					obj.loopObj.variable = sNorm.charAt( 0 );
 				}
-				if( (i > 0) && (j > (i+1)) && (j+2 < s.length()) ) {
+				if( (i > 0) && (j > (i+1)) && (j+2 < sNorm.length()) ) {
 					try {
-						k = Math.max( 0, Integer.parseInt( s.substring( i+1, j ).trim() ));
+						k = Math.max( 0, Integer.parseInt( sNorm.substring( i+1, j ).trim() ));
 						obj.loopObj.startIdx = k;
-						k = Math.max( k, Integer.parseInt( s.substring( j+2 ).trim() ));
+						k = Math.max( k, Integer.parseInt( sNorm.substring( j+2 ).trim() ));
 						obj.loopObj.stopIdx = k;
-					} catch( NumberFormatException e99 ) {}				
+					} catch( NumberFormatException e99 ) { /* ignore */}				
 				}
 			}
 			return obj;
 		}
 	} // LoopCellEditor
 
-	private static class BatchObjectArray
+	protected static class BatchObjectArray
 	implements Transferable
 	{
-		private static DataFlavor flavor;
+		protected static DataFlavor flavor;
 		
 		private static DataFlavor[] flavors;
 		private BatchObject[] obj;
 		
-		private BatchObjectArray()
+		protected BatchObjectArray()
 		{
 			if( flavor == null ) {
 				flavor      = new DataFlavor( getClass(), "Batch Object Array" );
@@ -1286,7 +1286,7 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 			}
 		}
 		
-		private BatchObjectArray( BatchObject[] obj )
+		protected BatchObjectArray( BatchObject[] obj )
 		{
 			this.obj = obj;
 		}
@@ -1296,19 +1296,19 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 			return flavors;
 		}
 		
-		public boolean isDataFlavorSupported( DataFlavor flavor )
+		public boolean isDataFlavorSupported( DataFlavor fl )
 		{
 			for( int i = 0; i < flavors.length; i++ ) {
-				if( flavor.match( flavors[i] )) return true;
+				if( fl.match( flavors[i] )) return true;
 			}
 			return false;
 		}
 		
-		public Object getTransferData( DataFlavor flavor )
+		public Object getTransferData( DataFlavor fl )
 		throws UnsupportedFlavorException
 		{
 			for( int i = 0; i < flavors.length; i++ ) {
-				if( flavor.match( flavors[i] )) {
+				if( fl.match( flavors[i] )) {
 					BatchObject[] objCopy = new BatchObject[ obj.length ];
 					for( int j = 0; j < objCopy.length; j++ ) {
 						objCopy[j] = new BatchObject( obj[j] );
@@ -1316,35 +1316,35 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 					return objCopy;
 				}
 			}
-			throw new UnsupportedFlavorException( flavor );
+			throw new UnsupportedFlavorException( fl );
 		}
 	}
 
 	/**
 	 *	Interne Klasse fuer die Listeneintraege
 	 */
-	private static class BatchObject
+	protected static class BatchObject
 	{
-		private static final int CMD_MODULE      = 0;
-		private static final int CMD_DELFILE     = 1;	
-		private static final int CMD_BEGLOOP     = 2;
-		private static final int CMD_ENDLOOP     = 3;
-		private static final int CMD_SKIP	    = 4;
-		private static final int CMD_LABEL       = 5;
+		protected static final int CMD_MODULE      = 0;
+		protected static final int CMD_DELFILE     = 1;	
+		protected static final int CMD_BEGLOOP     = 2;
+		protected static final int CMD_ENDLOOP     = 3;
+		protected static final int CMD_SKIP	    = 4;
+		protected static final int CMD_LABEL       = 5;
 		
-		private static final boolean[] CMD_CANERROR  = { true, true, false, false, false, false };
+		protected static final boolean[] CMD_CANERROR  = { true, true, false, false, false, false };
 
 		private static final int ERR_STOP	    = 0;
 		private static final int ERR_CONTINUE  	= 1;	
 		private static final int ERR_SKIP	    = 2;
 
-		private  int			command     = CMD_LABEL;
-		private  int			errorCmd    = ERR_STOP;
-		private  ModuleObject   modObj      = new ModuleObject();
-		private  LoopObject     loopObj     = new LoopObject();
-		private  String			fileObj     = "file";
-		private  String			labelObj    = "label";
-		private  float			process		= 0.0f;		// wird >0 waehrend des Ablaufeens des zugehoerigen Moduls
+		protected  int			command     = CMD_LABEL;
+		protected  int			errorCmd    = ERR_STOP;
+		protected  ModuleObject   modObj      = new ModuleObject();
+		protected  LoopObject     loopObj     = new LoopObject();
+		protected  String			fileObj     = "file";
+		protected  String			labelObj    = "label";
+		protected  float			process		= 0.0f;		// wird >0 waehrend des Ablaufeens des zugehoerigen Moduls
 		
 		private final static String	PR_CMD		= "comd";
 		private final static String	PR_ERRCMD	= "ecmd";
@@ -1358,9 +1358,9 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 		private final static String	PR_LPSTART  = "lbeg";
 		private final static String	PR_LPSTOP   = "lend";
 
-		private BatchObject() {}
+		protected BatchObject() { /* nothing */ }
 		
-		private BatchObject( BatchObject source )
+		protected BatchObject( BatchObject source )
 		{
 			command     = source.command;
 			errorCmd    = source.errorCmd;
@@ -1393,8 +1393,8 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 				bObj.loopObj.startIdx   = Integer.parseInt( (String) p.get( PR_LPSTART ));
 				bObj.loopObj.stopIdx	= Integer.parseInt( (String) p.get( PR_LPSTOP ));
 			}
-			catch( NumberFormatException e1 ) {}
-			catch( NullPointerException e2 ) {}
+			catch( NumberFormatException e1 ) { /* ignored */ }
+			catch( NullPointerException e2 ) { /* ignored */ }
 
 			s2 = (String) p.get( PR_MODPAR );
 			if( s2 != null ) bObj.modObj.prParam = Presets.valueToProperties( s2 );
@@ -1444,16 +1444,16 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 	/**
 	 *	Interne Klasse fuer die Listeneintraege
 	 */
-	private static class LoopObject
+	protected static class LoopObject
 	{
-		private  char   variable    = 'A';
-		private  int    startIdx    = 1;
-		private  int    stopIdx     = 9;
-		private  int	processIdx;
+		protected  char   variable    = 'A';
+		protected  int    startIdx    = 1;
+		protected  int    stopIdx     = 9;
+		protected  int	processIdx;
 		
-		private LoopObject() {}
+		protected LoopObject() { /* nothing */}
 		
-		private LoopObject( LoopObject source )
+		protected LoopObject( LoopObject source )
 		{
 			variable    = source.variable;
 			startIdx    = source.startIdx;
@@ -1464,16 +1464,16 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 	/**
 	 *	Interne Klasse fuer die Listeneintraege
 	 */
-	private static class ModuleObject
+	protected static class ModuleObject
 	{
-		private  String  name			= "module";
-		private  String  modClass		= null;
-		private  Properties prParam		= new Properties();
-		private  String[][]  modParam	= new String[0][2];
+		protected  String  name			= "module";
+		protected  String  modClass		= null;
+		protected  Properties prParam		= new Properties();
+		protected  String[][]  modParam	= new String[0][2];
 		
-		private ModuleObject() {}
+		protected ModuleObject() { /* nothing */ }
 
-		private ModuleObject( ModuleObject source )
+		protected ModuleObject( ModuleObject source )
 		{
 			int i;
 
@@ -1489,7 +1489,7 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 		}
 	} // ModuleObject
 
-	private static class ParamTableModel
+	protected static class ParamTableModel
 	extends AbstractTableModel
 	{
 		private static final String[] columnNames = { "Parameter", "Value" };
@@ -1497,7 +1497,7 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 		private String[][]  emptyData   = new String[0][2];
 		private String[][]  paramData   = emptyData;
 		
-		private void setParam( String[][] paramData )
+		protected void setParam( String[][] paramData )
 		{
 			if( paramData != null ) {
 				this.paramData = paramData;

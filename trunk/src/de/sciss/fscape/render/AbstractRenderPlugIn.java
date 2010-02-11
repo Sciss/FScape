@@ -62,6 +62,7 @@ implements RenderPlugIn
 	 */
 	public void init( Document doc, Preferences prefs )
 	{
+		// nothing
 	}
 
 	/**
@@ -69,6 +70,7 @@ implements RenderPlugIn
 	 */
 	public void dispose()
 	{
+		// nothing
 	}
 	
 	/**

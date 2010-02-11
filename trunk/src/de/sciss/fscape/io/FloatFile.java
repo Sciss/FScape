@@ -338,15 +338,15 @@ loop:	while( offset < dataEnd ) {
 	public void close()
 	throws IOException
 	{
-		int bufLength	= this.bufLength;
+		int bufLenTmp	= bufLength;
 		this.bufLength	= 0;
-		byte buf[]		= this.buf;
-		this.buf		= null;
+		byte bufTmp[]	= buf;
+		buf				= null;
 
 		if( !flushed ) {
 			flushed = true;
-			if( (buf != null) && (bufLength > 0) ) {		// ...then flush buffer
-				write( buf, 0, bufLength );
+			if( (bufTmp != null) && (bufLenTmp > 0) ) {		// ...then flush buffer
+				write( bufTmp, 0, bufLenTmp );
 			}
 		}
 		super.close();

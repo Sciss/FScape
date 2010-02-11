@@ -48,7 +48,7 @@ extends JDialog
 {
 	// windows bounds get saved to a sub node inside the shared node
 	// the node's name is the class name's last part (omitting the package)
-	private final Preferences	classPrefs;
+	protected final Preferences	classPrefs;
 
 	protected BasicDialog( Component parent, String title, boolean mode )
 	{

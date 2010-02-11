@@ -54,7 +54,7 @@ public class Wavelet
 	protected static final float daub4_c2	= +0.2241438680420134f;
 	protected static final float daub4_c3	= -0.1294095225512604f;
 
-	protected static final float cc[][]	=	{
+	protected static final float static_cc[][]	=	{
 		// Daubechies 4
 		{ daub4_c0, daub4_c1, daub4_c2, daub4_c3 },
 		// the following taken from S.Mallat, Wavelet Tour of Signal Processing, p.251
@@ -190,7 +190,7 @@ public class Wavelet
 		int		nCoeffs;
 
 		if( (ID >= 0) && (ID <= COEFFS_MAX) ) {
-			ccStat		= Wavelet.cc[ ID ];
+			ccStat		= Wavelet.static_cc[ ID ];
 			nCoeffs		= ccStat.length;
 			cc			= new float[ nCoeffs ];
 			flt			= new float[ 2 ][];

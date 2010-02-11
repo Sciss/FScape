@@ -48,6 +48,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 import de.sciss.fscape.io.GenericFile;
 import de.sciss.fscape.prop.Presets;
@@ -136,7 +137,7 @@ extends DocumentFrame
 //			static_pr.boolName	= prBoolName;
 			static_pr.para		= prPara;
 			static_pr.paraName	= prParaName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
 			fillDefaultGain( static_pr.para, PR_GAIN );
@@ -199,7 +200,7 @@ extends DocumentFrame
 		ggInputFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Filename", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Filename", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInputFile, GG_INPUTFILE, pathL );
@@ -229,7 +230,7 @@ extends DocumentFrame
 		ggOutputFile.deriveFrom( ggInputs, "$D0$F0Gain$E" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Filename", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Filename", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggOutputFile, GG_OUTPUTFILE, pathL );
@@ -239,7 +240,7 @@ extends DocumentFrame
 		ggGain			= createGadgets( GGTYPE_GAIN );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Gain", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Gain", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( (ParamField) ggGain[ 0 ], GG_GAIN, null );
 		con.weightx		= 0.5;
@@ -309,21 +310,21 @@ extends DocumentFrame
 		long				maxFrame;
 
 		PathField			ggOutput;
-		boolean				threadJustFind, printMarkers;
+		boolean				justFind, printMrks;
 		boolean				needsRead, needsWrite;
 		long				dispDelta, dispTime;
 
 topLevel: try {
-			threadJustFind		= this.threadJustFind;	// "Find Peak"-JButton acts like a JCheckBox,
-			this.threadJustFind	= false;				// 	we have to "turn it off" ourself
-			printMarkers		= this.printMarkers;
-			this.printMarkers	= false;
+			justFind		= threadJustFind;	// "Find Peak"-JButton acts like a JCheckBox,
+			threadJustFind	= false;				// 	we have to "turn it off" ourself
+			printMrks		= printMarkers;
+			printMarkers	= false;
 
 		// ---- open input ----
 			inF			= AudioFile.openAsRead( new File( pr.text[ PR_INPUTFILE ]));
 			inStream	= inF.getDescr();
 			
-			if( printMarkers ) printMarkers( inStream );
+			if( printMrks ) printMarkers( inStream );
 			
 			chanNum		= inStream.channels;
 			inLength	= (int) inStream.length;
@@ -332,8 +333,8 @@ topLevel: try {
 
 			inBuf		= new float[ chanNum ][ 8192 ];
 
-			needsRead	= threadJustFind || (!peakKnown && (pr.intg[ PR_GAINTYPE ] == GAIN_UNITY));
-			needsWrite	= !threadJustFind;
+			needsRead	= justFind || (!peakKnown && (pr.intg[ PR_GAINTYPE ] == GAIN_UNITY));
+			needsWrite	= !justFind;
 			
 			progLen		= (needsRead ? (long) inLength : 0) + (needsWrite ? (long) inLength*2 : 0);
 			progOff		= 0L;
@@ -510,7 +511,7 @@ topLevel: try {
 			inStream	= null;
 
 			// inform about clipping
-			if( !threadJustFind && (maxAmp > 1.0f) && (pr.intg[ PR_GAINTYPE ] == GAIN_ABSOLUTE) ) {
+			if( !justFind && (maxAmp > 1.0f) && (pr.intg[ PR_GAINTYPE ] == GAIN_ABSOLUTE) ) {
 				handleClipping( (float) Math.sqrt( maxAmp ));
 			}
 		}

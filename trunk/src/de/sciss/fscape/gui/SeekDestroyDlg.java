@@ -123,7 +123,7 @@ extends DocumentFrame
 			static_pr.intgName	= prIntgName;
 			static_pr.bool		= prBool;
 			static_pr.boolName	= prBoolName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
 			static_presets = new Presets( getClass(), static_pr.toProperties( true ));
@@ -169,7 +169,7 @@ extends DocumentFrame
 		ggTrajFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Input file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Input file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggTrajFile, GG_TRAJFILE, null );
@@ -179,7 +179,7 @@ extends DocumentFrame
 		ggShapeFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Shape file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Shape file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggShapeFile, GG_SHAPEFILE, null );
@@ -193,7 +193,7 @@ extends DocumentFrame
 		ggOutputFile.deriveFrom( ggInputs, "$D0$F0Shp$E" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Output file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Output file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggOutputFile, GG_OUTPUTFILE, null );
@@ -212,7 +212,7 @@ extends DocumentFrame
 		ggShape.addItem( "Square(x)" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Function", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Function", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addChoice( ggShape, GG_SHAPE, il );
 
@@ -223,7 +223,7 @@ extends DocumentFrame
 		ggSigMode.addItem( "Unipolar*sign(x)" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Signal mode", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Signal mode", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.4;
 		gui.addChoice( ggSigMode, GG_SIGMODE, il );
@@ -231,7 +231,7 @@ extends DocumentFrame
 		ggDCBlock		= new JCheckBox();
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "DC blocking", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "DC blocking", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.4;
 		gui.addCheckbox( ggDCBlock, GG_DCBLOCK, il );

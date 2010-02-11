@@ -89,7 +89,7 @@ extends Operator
 			static_pr.intg		= prIntg;
 			static_pr.intgName	= prIntgName;
 
-			static_pr.superPr	= Operator.static_pr;
+			static_pr.superPr	= Operator.op_static_pr;
 		}
 		// default preset
 		if( static_presets == null ) {

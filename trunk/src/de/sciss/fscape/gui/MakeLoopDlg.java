@@ -154,7 +154,7 @@ extends DocumentFrame
 			static_pr.para[ PR_FADELENGTH ]		= new Param( 1000.0, Param.ABS_MS );
 			static_pr.para[ PR_FINALSKIP ]		= new Param(    0.0, Param.ABS_MS );
 			static_pr.paraName	= prParaName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
 			fillDefaultGain( static_pr.para, PR_GAIN );
@@ -192,7 +192,7 @@ extends DocumentFrame
 		ggInputFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Input file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Input file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInputFile, GG_INPUTFILE, null );
@@ -205,7 +205,7 @@ extends DocumentFrame
 		ggOutputFile.deriveFrom( ggInputs, "$D0$F0Loop$E" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Output file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Output file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggOutputFile, GG_OUTPUTFILE, null );
@@ -215,7 +215,7 @@ extends DocumentFrame
 		ggGain			= createGadgets( GGTYPE_GAIN );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Gain", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Gain", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( (ParamField) ggGain[ 0 ], GG_GAIN, null );
 		con.weightx		= 0.5;
@@ -252,13 +252,13 @@ extends DocumentFrame
 		ggParam			= new ParamField( spcLength );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Crossfade Length", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Crossfade Length", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggParam, GG_FADELENGTH, null );
 
 		ggParam			= new ParamField( spcLength );
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Initial Skip", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Initial Skip", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggParam, GG_INITIALSKIP, null );
@@ -269,13 +269,13 @@ extends DocumentFrame
 		}
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Crossfade Position", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Crossfade Position", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addChoice( ggCombo, GG_FADEPOS, null );
 
 		ggParam			= new ParamField( spcLength );
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Final Skip", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Final Skip", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggParam, GG_FINALSKIP, null );
@@ -287,7 +287,7 @@ ggCombo.setEnabled( false );
 		}
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Crossfade Shape", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Crossfade Shape", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addChoice( ggCombo, GG_FADESHAPE, null );
 
@@ -297,7 +297,7 @@ ggCombo.setEnabled( false );
 		}
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Crossfade Type", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Crossfade Type", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addChoice( ggCombo, GG_FADETYPE, null );

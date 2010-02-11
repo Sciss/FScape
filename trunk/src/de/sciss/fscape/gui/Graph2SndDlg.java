@@ -104,7 +104,7 @@ extends DocumentFrame
 //			static_pr.bool		= prBool;
 //			static_pr.boolName	= prBoolName;
 
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES, PR_OUTPUTRATE );
 //			fillDefaultGain( static_pr.para, PR_GAIN );
@@ -135,7 +135,7 @@ extends DocumentFrame
 		ggInputFile.handleTypes( GenericFile.TYPES_IMAGE );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Input image", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Input image", SwingConstants.RIGHT ));
 		con.gridheight	= 2;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
@@ -150,7 +150,7 @@ extends DocumentFrame
 		ggOutputFile.deriveFrom( ggInputs, "$D0$F0$E" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Output sound", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Output sound", SwingConstants.RIGHT ));
 		con.gridheight	= 2;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
@@ -207,7 +207,7 @@ extends DocumentFrame
 topLevel: try {
 		// ---- open input ----
 
-			imgF		= new ImageFile( pr.text[ PR_INPUTFILE ], ImageFile.MODE_INPUT );
+			imgF		= new ImageFile( pr.text[ PR_INPUTFILE ], GenericFile.MODE_INPUT );
 			imgStream	= imgF.initReader();
 			width		= imgStream.width;
 			height		= imgStream.height;

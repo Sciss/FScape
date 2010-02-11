@@ -153,7 +153,7 @@ extends DocumentFrame
 			static_pr.envl		= prEnvl;
 			static_pr.envl[ PR_WARPENV ]		= Envelope.createBasicEnvelope( Envelope.BASIC_TIME );
 			static_pr.envlName	= prEnvlName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
 			fillDefaultGain( static_pr.para, PR_GAIN );
@@ -236,7 +236,7 @@ extends DocumentFrame
 		ggInputFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Input file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Input file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInputFile, GG_INPUTFILE, pathL );
@@ -246,7 +246,7 @@ extends DocumentFrame
 		ggOutputFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Output file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Output file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggOutputFile, GG_OUTPUTFILE, pathL );
@@ -260,7 +260,7 @@ extends DocumentFrame
 		ggGain			= createGadgets( GGTYPE_GAIN );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Gain", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Gain", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( (ParamField) ggGain[ 0 ], GG_GAIN, paramL );
 		con.weightx		= 0.5;
@@ -274,7 +274,7 @@ extends DocumentFrame
 		ggWarp			= new ParamField( Constants.spaces[ Constants.modSpace ]);			// XXX
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Warp amount", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Warp amount", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggWarp, GG_WARP, paramL );
 
@@ -294,12 +294,12 @@ extends DocumentFrame
 		ggInFreq		= new ParamField( Constants.spaces[ Constants.absHzSpace ]);
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Input freq.", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Input freq.", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggInFreq, GG_INFREQ, paramL );
 		ggOutFreq		= new ParamField( Constants.spaces[ Constants.absHzSpace ]);
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "\u2192 Output freq.", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "\u2192 Output freq.", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggOutFreq, GG_OUTFREQ, paramL );
@@ -310,7 +310,7 @@ extends DocumentFrame
 		}
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Frame size [smp]", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Frame size [smp]", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addChoice( ggFrameSize, GG_FRAMESIZE, il );
 
@@ -319,7 +319,7 @@ extends DocumentFrame
 			ggOverlap.addItem( i + "x" );
 		}
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Overlap", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Overlap", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addChoice( ggOverlap, GG_OVERLAP, il );
@@ -438,7 +438,7 @@ topLevel: try {
 				}
 				for( ch = 0; ch < inChanNum; ch++ ) {
 					tempFile[ ch ]	= IOUtil.createTempFile();
-					floatF[ ch ]	= new FloatFile( tempFile[ ch ], FloatFile.MODE_OUTPUT );
+					floatF[ ch ]	= new FloatFile( tempFile[ ch ], GenericFile.MODE_OUTPUT );
 				}
 				progLen	   += (long) inLength;
 			} else {

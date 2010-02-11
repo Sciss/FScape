@@ -130,7 +130,7 @@ extends DocumentFrame
 
 	private static final String	MARK_CUT			= "Cut";
 
-	private double inLength = -1.0;	// [ms]
+	private double inLengthMillis = -1.0;	// [ms]
 
 // -------- public Methoden --------
 
@@ -164,7 +164,7 @@ extends DocumentFrame
 			static_pr.boolName	= prBoolName;
 //			static_pr.envl		= prEnvl;
 //			static_pr.envlName	= prEnvlName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
 			static_presets = new Presets( getClass(), static_pr.toProperties( true ));
@@ -228,7 +228,7 @@ extends DocumentFrame
 		ggInputFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Input file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Input file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInputFile, GG_INPUTFILE, pathL );
@@ -241,7 +241,7 @@ extends DocumentFrame
 		ggOutputFile.deriveFrom( ggInputs, "$D0$F0Back$E" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Output file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Output file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggOutputFile, GG_OUTPUTFILE, pathL );
@@ -263,12 +263,12 @@ extends DocumentFrame
 		ggMinSpacing	= new ParamField( spcSpacing );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Min.spacing", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Min.spacing", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggMinSpacing, GG_MINSPACING, paramL );
 		ggMinXFade		= new ParamField( spcSpacing );
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Min.X-fade", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Min.X-fade", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggMinXFade, GG_MINXFADE, paramL );
@@ -276,12 +276,12 @@ extends DocumentFrame
 		ggMaxSpacing	= new ParamField( spcSpacing );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Max.spacing", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Max.spacing", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggMaxSpacing, GG_MAXSPACING, paramL );
 		ggMaxXFade		= new ParamField( spcSpacing );
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Max.X-fade", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Max.X-fade", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggMaxXFade, GG_MAXXFADE, paramL );
@@ -289,12 +289,12 @@ extends DocumentFrame
 		ggOffset		= new ParamField( spcOffset );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Offset", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Offset", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggOffset, GG_OFFSET, paramL );
 		ggWeight		= new ParamField( Constants.spaces[ Constants.ratioAmpSpace ]);
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Energy priority", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Energy priority", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggWeight, GG_WEIGHT, paramL );
@@ -304,12 +304,12 @@ extends DocumentFrame
 		ggCutInfo.setBackground( null );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Approx.# of tiles", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Approx.# of tiles", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addTextField( ggCutInfo, GG_CUTINFO, null );
 		ggMarkers		= new JCheckBox();
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Write markers", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Write markers", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addCheckbox( ggMarkers, GG_MARKERS, null );
@@ -326,11 +326,11 @@ ggCorrFine.setEnabled( false ); // XXX
 		}
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Corr.length [smp]", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Corr.length [smp]", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addChoice( ggCorrLength, GG_CORRLENGTH, null );
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Stepsize [smp]", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Stepsize [smp]", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addChoice( ggCorrStep, GG_CORRSTEP, null );
@@ -342,11 +342,11 @@ ggCorrFine.setEnabled( false ); // XXX
 		ggMode.addItem( "Forward Segmentation" );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Mode", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Mode", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addChoice( ggMode, GG_MODE, null );
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Fine step", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Fine step", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addChoice( ggCorrFine, GG_CORRFINE, null );
@@ -918,7 +918,7 @@ volumeLp:				for( j = 0, f1 = 1.122462f; j < 6; j++, f1 *= 1.122462f ) {
 	/**
 	 *	Neues Inputfile setzen
 	 */
-	private void setInput( String fname )
+	protected void setInput( String fname )
 	{
 		AudioFile		f		= null;
 		AudioFileDescr		stream	= null;
@@ -929,27 +929,27 @@ volumeLp:				for( j = 0, f1 = 1.122462f; j < 6; j++, f1 *= 1.122462f ) {
 			stream	= f.getDescr();
 			f.close();
 
-			inLength = AudioFileDescr.samplesToMillis( stream, stream.length );
+			inLengthMillis = AudioFileDescr.samplesToMillis( stream, stream.length );
 			recalcApprox();
 			
 		} catch( IOException e1 ) {
-			inLength = -1.0;
+			inLengthMillis = -1.0;
 		}
 	}
 	
 	// calc approximate # of tiles according to input length, min+max spacing
-	private void recalcApprox()
+	protected void recalcApprox()
 	{
 		int			minNum, maxNum, meanNum;
 		double		d1, d2;
 
-		if( inLength >= 0 ) {
+		if( inLengthMillis >= 0 ) {
 
 			d1			= Param.transform( pr.para[ PR_MAXSPACING ], Param.ABS_MS, null, null ).val;
 			d2			= Param.transform( pr.para[ PR_MINSPACING ], Param.ABS_MS, null, null ).val;
-			minNum		= (int) Math.ceil( inLength / d1 );
-			maxNum		= (int) Math.ceil( inLength / d2 );
-			meanNum		= (int) Math.ceil( inLength / ((d1+d2)/2) );
+			minNum		= (int) Math.ceil( inLengthMillis / d1 );
+			maxNum		= (int) Math.ceil( inLengthMillis / d2 );
+			meanNum		= (int) Math.ceil( inLengthMillis / ((d1+d2)/2) );
 
 			gui.stringToJTextField( "¿" + meanNum + " (" +minNum + "É" + maxNum + ")", GG_CUTINFO );
 			

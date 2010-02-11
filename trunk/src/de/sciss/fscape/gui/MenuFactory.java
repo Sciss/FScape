@@ -37,6 +37,7 @@ import java.awt.FileDialog;
 import java.awt.Frame;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
@@ -174,8 +175,9 @@ extends BasicMenuFactory
 //	private static final String MI_EXTERNAL		= "External...";
 //	private static final String MI_CURVE		= "Edit Curve";
 
-	private static final int PROC_MODIF   = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() == ActionEvent.CTRL_MASK ?
-		ActionEvent.ALT_MASK : ActionEvent.CTRL_MASK;	// on windows, use alt to avoid confusion with normal accelerators
+	private static final int PROC_MODIF   = InputEvent.CTRL_MASK |
+		(Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() == InputEvent.CTRL_MASK ? InputEvent.ALT_MASK : 0);
+		// on windows, use ctrl alt to avoid confusion with normal accelerators
 
 	private static final Object[][][] mSub = {
 	{
@@ -499,7 +501,7 @@ System.err.println( "removeSCPlugIn : NOT YET WORKING" );
 //		removeMenuItem( mSuperCollider, a );
 	}
 	
-	private Session findDocumentForPath( File f )
+	protected Session findDocumentForPath( File f )
 	{
 		final de.sciss.app.DocumentHandler	dh	= AbstractApplication.getApplication().getDocumentHandler();
 		Session								doc;
@@ -604,7 +606,7 @@ if( f.equals( doc.getFile() )) return doc;
 	extends MenuAction
 	implements ProcessingThread.Client
 	{
-		private ActionOpen( String text, KeyStroke shortcut )
+		protected ActionOpen( String text, KeyStroke shortcut )
 		{
 			super( text, shortcut );
 			
@@ -655,7 +657,7 @@ if( f.equals( doc.getFile() )) return doc;
 		 *  @synchronization	this method must be called in event thread
 		 */
 //		private ProcessingThread perform( File path )
-		private void perform( File path, boolean visible )
+		protected void perform( File path, boolean visible )
 		{
 			final ProcessingThread				pt;
 //			final Object[]						args	= new Object[ 4 ];
@@ -907,7 +909,7 @@ if( result == DONE ) {
 	{
 		private final String className;
 	
-		private ActionModule( StringItem module, KeyStroke shortcut )
+		protected ActionModule( StringItem module, KeyStroke shortcut )
 		{
 			super( module.toString(), shortcut );
 			

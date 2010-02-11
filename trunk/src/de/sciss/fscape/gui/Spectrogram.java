@@ -160,14 +160,14 @@ implements AdjustmentListener, MouseListener, MouseMotionListener, WindowListene
 	/**
 	 *	Meldet einen Stream zum Monitoren an
 	 */
-	public void newStream( SpectStream stream )
+	public void newStream( SpectStream strm )
 	{
 		synchronized( this ) {
-			this.stream	= stream;
-			for( maxZoom = 0; (stream.bands >> maxZoom) > height; maxZoom++ );
+			stream	= strm;
+			for( maxZoom = 0; (strm.bands >> maxZoom) > height; maxZoom++ );
 			zoom		= Math.max( 0, maxZoom - 1 );		// i.d.R. 10000 Hz, vernünftig
 			bottomLine	= 0;
-			freqSpacing	= (stream.hiFreq - stream.loFreq) / stream.bands;
+			freqSpacing	= (strm.hiFreq - strm.loFreq) / strm.bands;
 			updateZoomGG();
 			spectPanel.setCursor( new Cursor( Cursor.CROSSHAIR_CURSOR ));
 		}

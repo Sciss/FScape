@@ -152,7 +152,7 @@ extends DocumentFrame
 			static_pr.para		= prPara;
 			static_pr.para[ PR_MINAMP ]		= new Param( -60.0, Param.DECIBEL_AMP );
 			static_pr.paraName	= prParaName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
 //			fillDefaultGain( static_pr.para, PR_GAIN );
@@ -202,7 +202,7 @@ extends DocumentFrame
 		ggInputFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Input file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Input file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInputFile, GG_INPUTFILE, null );
@@ -215,7 +215,7 @@ extends DocumentFrame
 		ggOutputFile.deriveFrom( ggInputs, "$D0$F0DClk$E" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Output file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Output file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggOutputFile, GG_OUTPUTFILE, null );
@@ -229,7 +229,7 @@ extends DocumentFrame
 		ggFScapeDetect	= new JCheckBox();
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Let FScape detect", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Let FScape detect", SwingConstants.RIGHT ));
 		gui.addCheckbox( ggFScapeDetect, GG_FSCAPEDETECT, il );
 
 		ggCheckSize		= new JComboBox();
@@ -237,7 +237,7 @@ extends DocumentFrame
 		ggCheckSize.addItem( "32" );
 		ggCheckSize.addItem( "64" );
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Check size [smp]", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Check size [smp]", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addChoice( ggCheckSize, GG_CHECKSIZE, il );
@@ -245,7 +245,7 @@ extends DocumentFrame
 		ggMarkerDetect	= new JCheckBox();
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Read markers", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Read markers", SwingConstants.RIGHT ));
 		gui.addCheckbox( ggMarkerDetect, GG_MARKERDETECT, il );
 
 		ggProbBound		= new JComboBox();
@@ -253,7 +253,7 @@ extends DocumentFrame
 		ggProbBound.addItem( "1 : 1000" );
 		ggProbBound.addItem( "1 : 2000" );
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Probablity bound", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Probablity bound", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addChoice( ggProbBound, GG_PROBBOUND, il );
@@ -262,7 +262,7 @@ extends DocumentFrame
 		ggMinAmp		= new ParamField( spcMinAmp );
 		con.weightx		= 0.1;
 		con.gridwidth	= 3;
-		gui.addLabel( new JLabel( "Min. amp.", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Min. amp.", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggMinAmp, GG_MINAMP, null );
@@ -274,7 +274,7 @@ extends DocumentFrame
 		ggFScapeRepair	= new JCheckBox();
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Let FScape repair", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Let FScape repair", SwingConstants.RIGHT ));
 		gui.addCheckbox( ggFScapeRepair, GG_FSCAPEREPAIR, il );
 
 		ggXFade			= new JComboBox();
@@ -282,7 +282,7 @@ extends DocumentFrame
 		ggXFade.addItem( "1024" );
 		ggXFade.addItem( "2048" );
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "XFade size [smp]", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "XFade size [smp]", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addChoice( ggXFade, GG_XFADE, il );
@@ -290,7 +290,7 @@ extends DocumentFrame
 		ggMarkerRepair	= new JCheckBox();
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Write markers", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Write markers", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addCheckbox( ggMarkerRepair, GG_MARKERREPAIR, il );
 
@@ -299,7 +299,7 @@ extends DocumentFrame
 		ggImpulseFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Impulse response", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Impulse response", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggImpulseFile, GG_IMPULSEFILE, null );
@@ -533,7 +533,7 @@ topLevel: try {
 				}
 				for( ch = 0; ch < inChanNum; ch++ ) {
 					tempFile[ ch ]	= IOUtil.createTempFile();
-					floatF[ ch ]	= new FloatFile( tempFile[ ch ], FloatFile.MODE_OUTPUT );
+					floatF[ ch ]	= new FloatFile( tempFile[ ch ], GenericFile.MODE_OUTPUT );
 				}
 				progLen	   += (long) outLength;	// account for extra reads/writes
 			}

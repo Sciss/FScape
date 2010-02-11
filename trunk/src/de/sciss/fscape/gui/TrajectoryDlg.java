@@ -135,7 +135,7 @@ extends DocumentFrame
 			static_pr.para[ PR_LENGTH ]		= new Param( 100.0, Param.FACTOR_TIME );
 			static_pr.para[ PR_OFFSET ]		= new Param(   0.0, Param.OFFSET_MS );
 			static_pr.paraName	= prParaName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
 			fillDefaultGain( static_pr.para, PR_GAIN );
@@ -171,7 +171,7 @@ extends DocumentFrame
 		ggInputFile1.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Input file 1", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Input file 1", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInputFile1, GG_INPUTFILE1, null );
@@ -181,7 +181,7 @@ extends DocumentFrame
 		ggInputFile2.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Input file 2", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Input file 2", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInputFile2, GG_INPUTFILE2, null );
@@ -195,7 +195,7 @@ extends DocumentFrame
 		ggOutputFile.deriveFrom( ggInputs, "$D0$B0Trj$B1$E" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Output file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Output file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggOutputFile, GG_OUTPUTFILE, null );
@@ -205,7 +205,7 @@ extends DocumentFrame
 		ggGain			= createGadgets( GGTYPE_GAIN );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Gain", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Gain", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( (ParamField) ggGain[ 0 ], GG_GAIN, null );
 		con.weightx		= 0.5;
@@ -216,7 +216,7 @@ extends DocumentFrame
 		ggLimitThresh	= new ParamField( spcLimitThresh );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Limit.thresh.", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Limit.thresh.", SwingConstants.RIGHT ));
 		con.weightx		= 0.233;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggLimitThresh, GG_LIMITTHRESH, null );
@@ -231,13 +231,13 @@ extends DocumentFrame
 		ggImgWidth		= new ParamField( spcImgDim );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Width [pixels]", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Width [pixels]", SwingConstants.RIGHT ));
 		con.weightx		= 0.233;
 		gui.addParamField( ggImgWidth, GG_IMGWIDTH, null );
 			
 		ggImgHeight		= new ParamField( spcImgDim );
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Height [pixels]", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Height [pixels]", SwingConstants.RIGHT ));
 		con.weightx		= 0.233;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggImgHeight, GG_IMGHEIGHT, null );
@@ -255,13 +255,13 @@ extends DocumentFrame
 		ggOffset		= new ParamField( spcOffset );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Traj. Offset", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Traj. Offset", SwingConstants.RIGHT ));
 		con.weightx		= 0.233;
 		gui.addParamField( ggOffset, GG_OFFSET, null );
 
 		ggLength		= new ParamField( spcLength );
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Traj. Length", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Traj. Length", SwingConstants.RIGHT ));
 		con.weightx		= 0.233;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggLength, GG_LENGTH, null );
@@ -272,7 +272,7 @@ extends DocumentFrame
 		}
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Zoom factor", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Zoom factor", SwingConstants.RIGHT ));
 		con.weightx		= 0.233;
 		gui.addChoice( ggZoom, GG_ZOOM, null );
 
@@ -281,7 +281,7 @@ extends DocumentFrame
 			ggDecay.addItem( String.valueOf( Math.pow( 2, i )));
 		}
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Decay", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Decay", SwingConstants.RIGHT ));
 		con.weightx		= 0.233;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addChoice( ggDecay, GG_DECAY, null );
@@ -392,7 +392,7 @@ topLevel: try {
 
 			ggOutput	= (PathField) gui.getItemObj( GG_OUTPUTFILE );
 			if( ggOutput == null ) throw new IOException( ERR_MISSINGPROP );
-			imgF					= new ImageFile( pr.text[ PR_OUTPUTFILE ], ImageFile.MODE_OUTPUT | ggOutput.getType() );
+			imgF					= new ImageFile( pr.text[ PR_OUTPUTFILE ], GenericFile.MODE_OUTPUT | ggOutput.getType() );
 			imgStream				= new ImageStream();
 			imgStream.bitsPerSmp	= 8;	// ??? fillStream might not work correctly?
 			ggOutput.fillStream( imgStream );

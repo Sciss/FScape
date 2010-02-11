@@ -183,7 +183,7 @@ extends DocumentFrame
 			static_pr.para[ PR_PLOTOFFSET ]		= new Param(    0.0, Param.ABS_MS );
 			static_pr.para[ PR_PLOTNUM ]		= new Param(   10.0, Param.NONE );
 			static_pr.paraName	= prParaName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
 			fillDefaultGain( static_pr.para, PR_GAIN );
@@ -239,7 +239,7 @@ extends DocumentFrame
 		ggInputFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Control input", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Control input", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInputFile, GG_INPUTFILE, null );
@@ -249,7 +249,7 @@ extends DocumentFrame
 		ggPtrnFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Pattern input", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Pattern input", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggPtrnFile, GG_PATTERNFILE, null );
@@ -259,7 +259,7 @@ extends DocumentFrame
 		ggIconFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Icon input", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Icon input", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggIconFile, GG_ICONFILE, null );
@@ -273,7 +273,7 @@ extends DocumentFrame
 		ggOutputFile.deriveFrom( ggInputs, "$D0$B0Plot$B1$E" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Plot output", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Plot output", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggOutputFile, GG_OUTPUTFILE, null );
@@ -283,7 +283,7 @@ extends DocumentFrame
 		ggGain			= createGadgets( GGTYPE_GAIN );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Gain", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Gain", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( (ParamField) ggGain[ 0 ], GG_GAIN, null );
 		con.weightx		= 0.5;
@@ -300,13 +300,13 @@ extends DocumentFrame
 		ggTrigSrc.addItem( "Serial (AND)" );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Source channels", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Source channels", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addChoice( ggTrigSrc, GG_TRIGSOURCE, il );
 		
 		ggTrigThresh	= new ParamField( Constants.spaces[ Constants.ratioAmpSpace ]);
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Threshold", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Threshold", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggTrigThresh, GG_TRIGTHRESH, null );
@@ -317,7 +317,7 @@ extends DocumentFrame
 		ggTrigSign.addItem( "Both" );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Thresh sign", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Thresh sign", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addChoice( ggTrigSign, GG_TRIGSIGN, il );
 
@@ -326,7 +326,7 @@ extends DocumentFrame
 		spcInterval[1]	= Constants.spaces[ Constants.absBeatsSpace ];
 		ggTrigInterval	= new ParamField( spcInterval );
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Min.interval", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Min.interval", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggTrigInterval, GG_TRIGINTERVAL, null );
@@ -337,7 +337,7 @@ extends DocumentFrame
 		ggPltGain		= new ParamField( Constants.spaces[ Constants.ratioAmpSpace ]);
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Variable gain", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Variable gain", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggPltGain, GG_PLOTGAIN, null );
 
@@ -346,7 +346,7 @@ extends DocumentFrame
 		spcOffset[1]	= Constants.spaces[ Constants.offsetBeatsSpace ];
 		ggPltOffset		= new ParamField( spcOffset );
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Offset", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Offset", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggPltOffset, GG_PLOTOFFSET, null );
@@ -354,7 +354,7 @@ extends DocumentFrame
 		ggPltChGain		= new ParamField( Constants.spaces[ Constants.ratioAmpSpace ]);
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Channel gain", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Channel gain", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggPltChGain, GG_PLOTCHANGAIN, null );
 
@@ -369,7 +369,7 @@ extends DocumentFrame
 		ggWriteMark		= new JCheckBox();
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Write markers", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Write markers", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addCheckbox( ggWriteMark, GG_WRITEMARK, il );
 
@@ -595,7 +595,7 @@ topLevel: try {
 			}
 			for( ch = 0; ch < outChanNum; ch++ ) {
 				outTempFile[ ch ]	= IOUtil.createTempFile();
-				outFloatF[ ch ]		= new FloatFile( outTempFile[ ch ], FloatFile.MODE_OUTPUT );
+				outFloatF[ ch ]		= new FloatFile( outTempFile[ ch ], GenericFile.MODE_OUTPUT );
 			}
 		// .... check running ....
 			if( !threadRunning ) break topLevel;

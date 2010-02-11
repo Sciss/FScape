@@ -179,7 +179,7 @@ extends DocumentFrame
 			static_pr.envl		= prEnvl;
 			static_pr.envl[ PR_IRMODENV ]	= Envelope.createBasicEnvelope( Envelope.BASIC_UNSIGNED_TIME );
 			static_pr.envlName	= prEnvlName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
 			fillDefaultGain( static_pr.para, PR_GAIN );
@@ -230,7 +230,7 @@ extends DocumentFrame
 		ggInputFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Input file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Input file", SwingConstants.RIGHT ));
 		con.gridheight	= 2;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
@@ -242,7 +242,7 @@ extends DocumentFrame
 		con.gridheight	= 1;
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Impulse response", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Impulse response", SwingConstants.RIGHT ));
 		con.gridheight	= 2;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
@@ -257,7 +257,7 @@ extends DocumentFrame
 		ggOutputFile.deriveFrom( ggInputs, "$D0$B0Con$B1$E" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Output file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Output file", SwingConstants.RIGHT ));
 		con.gridheight	= 2;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
@@ -268,7 +268,7 @@ extends DocumentFrame
 		ggGain			= createGadgets( GGTYPE_GAIN );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Gain", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Gain", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( (ParamField) ggGain[ 0 ], GG_GAIN, null );
 		con.weightx		= 0.5;
@@ -288,7 +288,7 @@ extends DocumentFrame
 		ggMode.addItem( "Conv w/ inversion" );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Mode", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Mode", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addChoice( ggMode, GG_MODE, il );
 
@@ -300,13 +300,13 @@ extends DocumentFrame
 		ggNormImpPower	= new JCheckBox();
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Norm. IR energy", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Norm. IR energy", SwingConstants.RIGHT ));
 		gui.addCheckbox( ggNormImpPower, GG_NORMIMPPOWER, il );
 
 		ggFadeLength	= new ParamField( Constants.spaces[ Constants.absMsSpace ]);
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Trunc fadeout", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Trunc fadeout", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggFadeLength, GG_FADELENGTH, null );
@@ -314,7 +314,7 @@ extends DocumentFrame
 		ggMinPhase		= new JCheckBox();
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Make minimum phase", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Make minimum phase", SwingConstants.RIGHT ));
 		gui.addCheckbox( ggMinPhase, GG_MINPHASE, il );
 
 		ggLength		= new JComboBox();
@@ -323,7 +323,7 @@ extends DocumentFrame
 		ggLength.addItem( "Inp + IR\\{support}" );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "File length", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "File length", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addChoice( ggLength, GG_LENGTH, il );
@@ -338,7 +338,7 @@ extends DocumentFrame
 		ggMorph			= new JCheckBox();
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Morph IRs", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Morph IRs", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addCheckbox( ggMorph, GG_MORPH, il );
 
@@ -348,7 +348,7 @@ extends DocumentFrame
 		ggMorphPolicy.addItem( "Correlate + shift" );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Policy", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Policy", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addChoice( ggMorphPolicy, GG_MORPHPOLICY, il );
@@ -356,7 +356,7 @@ extends DocumentFrame
 		ggIRNumber		= new ParamField( new ParamSpace( 1.0, 100000.0, 1.0, Param.NONE ));
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "# of IRs in file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "# of IRs in file", SwingConstants.RIGHT ));
 		con.weightx		= 0.8;
 		gui.addParamField( ggIRNumber, GG_IRNUMBER, null );
 		ggIRModEnv		= new EnvIcon( getWindow() );
@@ -369,13 +369,13 @@ extends DocumentFrame
 		ggWinStep		= new ParamField( Constants.spaces[ Constants.absMsSpace ]);
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Window size", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Window size", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggWinStep, GG_WINSTEP, null );
 
 		ggWinOverlap	= new ParamField( Constants.spaces[ Constants.absMsSpace ]);
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Overlap", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Overlap", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggWinOverlap, GG_WINOVERLAP, null );
@@ -711,7 +711,7 @@ topLevel: try {
 				floatF		= new FloatFile[ outChanNum ];
 				for( int ch = 0; ch < outChanNum; ch++ ) {
 					tempFile[ ch ]	= IOUtil.createTempFile();
-					floatF[ ch ]	= new FloatFile( tempFile[ ch ], FloatFile.MODE_OUTPUT );
+					floatF[ ch ]	= new FloatFile( tempFile[ ch ], GenericFile.MODE_OUTPUT );
 				}
 				progLen	   += (long) outLength;
 			} else {

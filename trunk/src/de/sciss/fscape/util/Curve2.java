@@ -45,8 +45,8 @@ public class Curve2
 
 	public	int			flags;
 	public	int			size;		// in x, y ; arrays dürfen aber länger sein; mind. 2!
-	public	float[]		x;			// nur im Bereich 0...1 ; Randpunkte nicht löschen! Keine doppelten x
-	public	float[]		y;
+	public	float[]		xs;			// nur im Bereich 0...1 ; Randpunkte nicht löschen! Keine doppelten x
+	public	float[]		ys;
 	public	boolean		looped		= false;
 	public	float		loopStart	= 0.0f;
 	public	float		loopEnd		= 1.0f;
@@ -64,12 +64,12 @@ public class Curve2
 	{
 		this.flags	= flags;
 		size		= 2;
-		x			= new float[ 2 ];
-		y			= new float[ 2 ];
-		x[ 0 ]		= 0.0f;
-		y[ 0 ]		= 0.0f;
-		x[ 1 ]		= 1.0f;
-		y[ 1 ]		= 1.0f;
+		xs			= new float[ 2 ];
+		ys			= new float[ 2 ];
+		xs[ 0 ]		= 0.0f;
+		ys[ 0 ]		= 0.0f;
+		xs[ 1 ]		= 1.0f;
+		ys[ 1 ]		= 1.0f;
 	}
 
 	public Curve2()
@@ -89,10 +89,10 @@ public class Curve2
 		this.loopEnd	= src.loopEnd;
 		this.loopCount	= src.loopCount;
 
-		this.x			= new float[ size + 16 ];
-		this.y			= new float[ size + 16 ];
-		System.arraycopy( src.x, 0, this.x, 0, size );
-		System.arraycopy( src.y, 0, this.y, 0, size );
+		this.xs			= new float[ size + 16 ];
+		this.ys			= new float[ size + 16 ];
+		System.arraycopy( src.xs, 0, this.xs, 0, size );
+		System.arraycopy( src.ys, 0, this.ys, 0, size );
 	}
 
 	public Object clone()
@@ -120,7 +120,7 @@ public class Curve2
 			x = loopStart + (((x - loopStart) * loopCount) % (loopEnd - loopStart));
 		}
 		
-		if( (x < this.x[ 0 ]) || (x > this.x[ size-1 ])) return -1;
+		if( (x < this.xs[ 0 ]) || (x > this.xs[ size-1 ])) return -1;
 		
 		// bisection; see NumericalRecipes 3.4
 		int	idxHi, idxLo, idxMid;
@@ -129,7 +129,7 @@ public class Curve2
 		idxHi	=	size - 1;
 		while( (idxHi - idxLo) > 1) {
 			idxMid = (idxHi + idxLo) >> 1;
-			if( x >= this.x[ idxMid ])	idxLo = idxMid;
+			if( x >= this.xs[ idxMid ])	idxLo = idxMid;
 			else						idxHi = idxMid;
 		}		return idxLo;
 	}
@@ -148,17 +148,17 @@ public class Curve2
 			x = loopStart + (((x - loopStart) * loopCount) % (loopEnd - loopStart));
 		}
 		
-		if( (x < this.x[ 0 ]) || (x > this.x[ size-1 ])) return -1;
+		if( (x < this.xs[ 0 ]) || (x > this.xs[ size-1 ])) return -1;
 		
 		// hunt; see NumericalRecipes 3.4
 		int	idxHi, idxMid, inc;
 
 		if( idxLo >= 0 ) {
 			inc = 1;	// Initial hunting increment.
-			if( x >= this.x[ idxLo ]) {	// Hunt up
+			if( x >= this.xs[ idxLo ]) {	// Hunt up
 				idxHi = idxLo + 1;
 				if( idxHi >= size - 1 ) return idxLo;
-				while( x >= this.x[ idxHi ]) {
+				while( x >= this.xs[ idxHi ]) {
 					idxLo	= idxHi;
 					inc	  <<= 1;
 					idxHi  += inc;
@@ -170,7 +170,7 @@ public class Curve2
 			} else {					// Hunt down
 				idxHi = idxLo;
 				idxLo--;
-				while( x < this.x[ idxLo ]) {
+				while( x < this.xs[ idxLo ]) {
 					idxHi	= idxLo;
 					inc   <<= 1;
 					idxLo  -= inc;
@@ -189,7 +189,7 @@ public class Curve2
 		// bisection phase:
 		while( (idxHi - idxLo) > 1) {
 			idxMid = (idxHi + idxLo) >> 1;
-			if( x >= this.x[ idxMid ])	idxLo = idxMid;
+			if( x >= this.xs[ idxMid ])	idxLo = idxMid;
 			else						idxHi = idxMid;
 		}		return idxLo;
 	}
@@ -248,12 +248,12 @@ public class Curve2
 			u[ 0 ]				= 0.0f;
 			yDrv[ size - 1 ]	= 0.0f;
 			for( i = 1, j = 0, k = 2; k < size; i++, j++, k++ ) {
-				sig			= (x[ i ] - x[ j ]) / (x[ k ] - x[ j ]);
+				sig			= (xs[ i ] - xs[ j ]) / (xs[ k ] - xs[ j ]);
 				p			= sig * yDrv[ j ] + 2.0f;
 				yDrv[ i ]	= (sig - 1.0f) / p;
-				u[ i ]		= (y[ k ] - y[ i ]) / (x[ k ] - x[ i ]) -
-							  (y[ i ] - y[ j ]) / (x[ i ] - x[ j ]);
-				u[ i ]		= (6.0f * u[ i ] / (x[ k ] - x[ j ]) - sig * u[ j ]) / p;
+				u[ i ]		= (ys[ k ] - ys[ i ]) / (xs[ k ] - xs[ i ]) -
+							  (ys[ i ] - ys[ j ]) / (xs[ i ] - xs[ j ]);
+				u[ i ]		= (6.0f * u[ i ] / (xs[ k ] - xs[ j ]) - sig * u[ j ]) / p;
 			}			
 			for( i = size - 2; i >= 0; i-- ) {
 				yDrv[ i ] = yDrv[ i ] * yDrv[ i+1 ] + u[ i ];
@@ -269,10 +269,10 @@ public class Curve2
 		
 		switch( flags & INTMASK ) {
 		case INT_SAMPLEHOLD:
-			if( x < this.x[ idxLo+1 ]) {
-				return( this.y[ idxLo ]);
+			if( x < this.xs[ idxLo+1 ]) {
+				return( this.ys[ idxLo ]);
 			} else {
-				return( this.y[ idxLo+1 ]);
+				return( this.ys[ idxLo+1 ]);
 			}
 		case INT_SPLINE:
 			return spline( x, idxLo );
@@ -288,11 +288,11 @@ public class Curve2
 		float	h, b, a;
 
 		idxHi	= idxLo + 1;
-		h		= this.x[ idxHi ] - this.x[ idxLo ];
-		a		= (this.x[ idxHi ] - x) / h;
+		h		= this.xs[ idxHi ] - this.xs[ idxLo ];
+		a		= (this.xs[ idxHi ] - x) / h;
 		b		= 1.0f - a;
 		
-		return( a * this.y[ idxLo ] + b * this.y[ idxHi ]);
+		return( a * this.ys[ idxLo ] + b * this.ys[ idxHi ]);
 	}
 	
 	// adapted from NumericalRecipes 3.3
@@ -302,11 +302,11 @@ public class Curve2
 		float	h, b, a;
 
 		idxHi	= idxLo + 1;
-		h		= this.x[ idxHi ] - this.x[ idxLo ];
-		a		= (this.x[ idxHi ] - x) / h;
+		h		= this.xs[ idxHi ] - this.xs[ idxLo ];
+		a		= (this.xs[ idxHi ] - x) / h;
 		b		= 1.0f - a; // (x - this.x[ idxLo ]) / h;
 
-		return( a * this.y[ idxLo ] + b * this.y[ idxHi ] + 
+		return( a * this.ys[ idxLo ] + b * this.ys[ idxHi ] + 
 				((a*a*a - a) * yDrv[ idxLo ] + (b*b*b - b) * yDrv[ idxHi ]) * (h*h) / 6.0f );
 	}
 

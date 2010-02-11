@@ -67,13 +67,13 @@ extends JPanel
 	// gerade angewaehlte Box; wenn keiner ausgewaehlt, muss
 	// er auf dummyBox gesetzt werden, damit keine Null-Pointer Fehler
 	// auftreten koennen!
-	private CircuitPanel.Box		currentBox	= null;
-	private CircuitPanel			ground;
-	private final CircuitPanel.Box	protoType;
+	protected CircuitPanel.Box		currentBox	= null;
+	protected CircuitPanel			ground;
+	protected final CircuitPanel.Box	protoType;
 
-	private final java.util.List boxes	= new ArrayList();
-	private final Map mapBoxToView;		// only for ground!
-	private int				type;
+	protected final java.util.List boxes	= new ArrayList();
+	protected final Map mapBoxToView;		// only for ground!
+	protected int				typ;
 
 	// dieser Button wird nicht angezeigt, sondern dient nur als
 	// Institution zum Verwalten der ActionListener und fuer
@@ -105,7 +105,7 @@ extends JPanel
 	{
 		super();
 
-		type				= TYPE_GROUND;
+		typ				= TYPE_GROUND;
 		ground				= this;
 		actionComponent		= new Button();
 		this.protoType		= protoType;
@@ -116,11 +116,11 @@ extends JPanel
 		setCircuit( "" );
 	}
 
-	private CircuitPanel( CircuitPanel ground, String circuit )
+	protected CircuitPanel( CircuitPanel ground, String circuit )
 	{
 		super();
 		
-		type			= (int) circuit.charAt( 0 ) - 48;
+		typ			= (int) circuit.charAt( 0 ) - 48;
 		this.ground		= ground;
 		this.protoType	= ground.protoType;
 		mapBoxToView	= null;
@@ -136,7 +136,7 @@ extends JPanel
 		if( c != null ) c.repaint();
 	}
 	
-	private void insertBox( Object o, int index )
+	protected void insertBox( Object o, int index )
 	{
 		JComponent	view;
 		int			numBoxes;
@@ -156,7 +156,7 @@ extends JPanel
 
 		con.gridx = 1;
 		con.gridy = 1;
-		switch( type ) {
+		switch( typ ) {
 		case TYPE_SERIAL:
 			con.gridx += index;
 			break;
@@ -171,7 +171,7 @@ extends JPanel
 		numBoxes = boxes.size();
 		
 		for( int i = ++index; i < numBoxes; i++ ) {
-			switch( type ) {
+			switch( typ ) {
 			case TYPE_SERIAL:
 				con.gridx++;
 				break;
@@ -199,7 +199,7 @@ extends JPanel
 		notifyListeners( ACTION_BOXCREATED );
 	}
 	
-	private void removeBox( int index )
+	protected void removeBox( int index )
 	{
 		Object o = boxes.remove( index );
 		Component c;
@@ -220,7 +220,7 @@ extends JPanel
 
 		con.gridx = 1;
 		con.gridy = 1;
-		switch( type ) {
+		switch( typ ) {
 		case TYPE_SERIAL:
 			con.gridx += index;
 			break;
@@ -242,7 +242,7 @@ extends JPanel
 				c = null;
 			}
 			lay.setConstraints( c, con );
-			switch( type ) {
+			switch( typ ) {
 			case TYPE_SERIAL:
 				con.gridx++;
 				break;
@@ -302,7 +302,7 @@ extends JPanel
 						if( numBoxes == 0 ) {
 							insertBox( box, 0 );
 						} else {
-							switch( type ) {
+							switch( typ ) {
 							case TYPE_GROUND:
 								o	= boxes.get( 0 );
 								if( o instanceof CircuitPanel.Box ) {
@@ -499,7 +499,7 @@ boxLp:		for( int i = 0; i < numBoxes; i++ ) {
 
 	public int getType()
 	{
-		return type;
+		return typ;
 	}
 
 	/**
@@ -719,11 +719,11 @@ boxLp:		for( int i = 0; i < numBoxes; i++ ) {
 //		Graphics2D	g2		= (Graphics2D) g;
 
 		g.setColor( colrConnections );
-		if( type != TYPE_SERIAL ) {
+		if( typ != TYPE_SERIAL ) {
 			g.fillRect( 2, midY - 2, 2, 5 );
 			g.fillRect( dim.width - 4, midY - 2, 2, 5 );
 		}
-		if( type == TYPE_PARALLEL ) {
+		if( typ == TYPE_PARALLEL ) {
 			c = getComponents();
 			int maxMid = 0, minMid = dim.height;
 			for( int i = 0; i < c.length; i++ ) {
@@ -744,7 +744,7 @@ boxLp:		for( int i = 0; i < numBoxes; i++ ) {
 
 // -------- private Methoden --------
 
-	private void notifyListeners( String actionStr )
+	protected void notifyListeners( String actionStr )
 	{
 		ActionEvent e;
 	
@@ -752,7 +752,7 @@ boxLp:		for( int i = 0; i < numBoxes; i++ ) {
 		ground.actionComponent.dispatchEvent( e );
 	}
 
-	private int calcDirection( Component c, int x, int y )
+	protected int calcDirection( Component c, int x, int y )
 	{
 		Rectangle	bounds	= c.getBounds();
 		int			dir		= 0;
@@ -765,11 +765,12 @@ boxLp:		for( int i = 0; i < numBoxes; i++ ) {
 		return dir;
 	}
 
-	private int parseNumBoxes( String circuit, int cIndex )
+	private int parseNumBoxes( String circuit, int cIndexStart )
 	{
 		int		numBoxes, bracketCount;
 		char	c;
-	
+
+		int cIndex = cIndexStart;
 		for( numBoxes = 0; cIndex < circuit.length(); ) {
 			c = circuit.charAt( cIndex++ );
 			if( c == '{' ) {
@@ -788,11 +789,12 @@ boxLp:		for( int i = 0; i < numBoxes; i++ ) {
 		return numBoxes;
 	}	
 
-	private String parseSettings( String circuit, int cIndex )
+	private String parseSettings( String circuit, int cIndexStart )
 	{
 		int		startID, endID, bracketCount;
 		char	ch;
 	
+		int cIndex = cIndexStart;
 		while( cIndex < circuit.length() ) {
 			ch = circuit.charAt( cIndex++ );
 			if( ch == '{' ) {
@@ -813,12 +815,12 @@ boxLp:		for( int i = 0; i < numBoxes; i++ ) {
 		return "";
 	}
 	
-	private String encodeBox( Object o )
+	protected String encodeBox( Object o )
 	{
 		if( o instanceof CircuitPanel.Box ) {
 			return( String.valueOf( TYPE_BOX ) + '{' + o.toString() + '}' );
 		} else if( o instanceof CircuitPanel ) {
-			return( String.valueOf( ((CircuitPanel) o).type ) + '{' + o.toString() + '}' );
+			return( String.valueOf( ((CircuitPanel) o).typ ) + '{' + o.toString() + '}' );
 		} else {
 			assert false : o.getClass().getName();
 		}
@@ -829,7 +831,7 @@ boxLp:		for( int i = 0; i < numBoxes; i++ ) {
 	{
 		StringBuffer str = new StringBuffer();
 	
-		str.append( type );
+		str.append( typ );
 		synchronized( boxes ) {
 			for( int i = 0; i < boxes.size(); i++ ) {
 				str.append( encodeBox( boxes.get( i )));
@@ -862,7 +864,7 @@ boxLp:		for( int i = 0; i < numBoxes; i++ ) {
 	{
 		private CircuitPanel.Box box;
 	
-		private BoxAction( CircuitPanel.Box box )
+		protected BoxAction( CircuitPanel.Box box )
 		{
 			super();
 			

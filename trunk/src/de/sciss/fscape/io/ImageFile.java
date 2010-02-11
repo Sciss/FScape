@@ -143,14 +143,14 @@ extends GenericFile
 	/**
 	 *	Meldet einen ImageStream zum Schreiben in das File an;
 	 */
-	public void initWriter( ImageStream stream )
+	public void initWriter( ImageStream strm )
 	throws IOException
 	{	
-		this.stream		= stream;
-		bytesPerRow		= stream.width * stream.smpPerPixel * ((stream.bitsPerSmp + 7) >> 3);
+		stream			= strm;
+		bytesPerRow		= strm.width * strm.smpPerPixel * ((strm.bitsPerSmp + 7) >> 3);
 		suckyPCdata		= false;
 		invert			= false;
-		rowsPerStrip	= stream.height;
+		rowsPerStrip	= strm.height;
 		numStrips		= 1;
 		bufSize			= 131072;
 //		bufSize			= getDefaultBufSize();
@@ -257,15 +257,15 @@ extends GenericFile
 	throws IOException
 	{
 		stream			= null;
-		int bufOffset	= this.bufOffset;
-		this.bufOffset	= 0;
-		byte buf[]		= this.buf;
-		this.buf		= null;
+		int bufOffTmp	= bufOffset;
+		bufOffset		= 0;
+		byte bufTmp[]	= buf;
+		buf				= null;
 
 		if( (mode & MODE_FILEMASK) == MODE_OUTPUT ) {
 
-			if( (buf != null) && (bufOffset > 0) ) {		// ...then flush buffer
-				write( buf, 0, bufOffset );
+			if( (bufTmp != null) && (bufOffTmp > 0) ) {		// ...then flush buffer
+				write( bufTmp, 0, bufOffTmp );
 			}
 		}
 		super.close();

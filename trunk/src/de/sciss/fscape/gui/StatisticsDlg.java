@@ -53,6 +53,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.event.MouseInputAdapter;
 
 import de.sciss.fscape.io.FloatFile;
@@ -178,7 +179,7 @@ extends DocumentFrame
 			static_pr.bool		= prBool;
 			static_pr.boolName	= prBoolName;
 
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 		}
 		// default preset
 		if( static_presets == null ) {
@@ -289,7 +290,7 @@ extends DocumentFrame
 		ggInputFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "File name", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "File name", SwingConstants.RIGHT ));
 		con.gridheight	= 2;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
@@ -306,25 +307,25 @@ extends DocumentFrame
 		ggProperty.addItem( "Sample histogram" );
 		con.weightx		= 0.133;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Property", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Property", SwingConstants.RIGHT ));
 		con.weightx		= 0.2;
 		con.gridwidth	= 2;
 		gui.addChoice( ggProperty, GG_PROPERTY, il );
 
 		ggDataLen		= new JComboBox();
-		for( int i = 32; i <= 8192; i <<= 1 ) {
+		for( int i = 32; i <= 65536; i <<= 1 ) {
 			ggDataLen.addItem( String.valueOf( i ));
 		}
 		con.gridwidth	= 1;
 		con.weightx		= 0.2;
-		gui.addLabel( new JLabel( "Record size", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Record size", SwingConstants.RIGHT ));
 		con.weightx		= 0.133;
 		gui.addChoice( ggDataLen, GG_DATALEN, il );
 
 		ggAnalysisWin	= new JComboBox();
 		GUISupport.addItemsToChoice( Filter.getWindowNames(), ggAnalysisWin );
 		con.weightx		= 0.133;
-		gui.addLabel( new JLabel( "Analysis win", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Analysis win", SwingConstants.RIGHT ));
 		con.weightx		= 0.2;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addChoice( ggAnalysisWin, GG_ANALYSISWIN, il );
@@ -356,7 +357,7 @@ extends DocumentFrame
 		con.weightx		= 0.15;
 		con.weighty		= 0.0;
 		con.gridwidth	= 2;
-		gui.addLabel( new JLabel( "View channel(s)", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "View channel(s)", SwingConstants.RIGHT ));
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
 		gui.addChoice( ggChannel, GG_CHANNEL, il );
@@ -466,7 +467,7 @@ topLevel: try {
 		// ---- preparations ----
 
 			tempFile	= IOUtil.createTempFile();
-			floatF		= new FloatFile( tempFile, FloatFile.MODE_OUTPUT );
+			floatF		= new FloatFile( tempFile, GenericFile.MODE_OUTPUT );
 			dataLen		= 1 << (pr.intg[ PR_DATALEN ] + 5);
 			data		= new float[ dataLen ];
 			data2		= new float[ dataLen ];
@@ -688,7 +689,7 @@ topLevel: try {
 
 // -------- private Methoden --------
 
-	private void redrawDataset()
+	protected void redrawDataset()
 	{
 		DataRecord	rec			= properties[ pr.intg[ PR_PROPERTY ]];
 		FloatFile	floatF		= null;
@@ -712,7 +713,7 @@ topLevel: try {
 
 				if( needsReload || (rec.data == null) ) {
 					try {
-						floatF		= new FloatFile( rec.tempFile, FloatFile.MODE_INPUT );
+						floatF		= new FloatFile( rec.tempFile, GenericFile.MODE_INPUT );
 						rec.sum		= false;
 						rec.hlog	= false;
 						rec.vlog	= false;
@@ -848,7 +849,7 @@ topLevel: try {
 	}
 
 
-	private void redrawCrosshair( MouseEvent e )
+	protected void redrawCrosshair( MouseEvent e )
 	{
 		Dimension	dim	= ggVectorDisplay.getSize();
 		int			x	= e.getX();
@@ -912,7 +913,7 @@ topLevel: try {
 
 // -------- interne DataRecord-Klasse --------
 
-	private static class DataRecord
+	protected static class DataRecord
 	{
 		private File			tempFile	= null;
 		private float[]			data		= null;

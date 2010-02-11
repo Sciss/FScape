@@ -144,8 +144,7 @@ implements VectorPanel.Client
 
 	private FilterBox currentFlt = null;
 
-	private static final String	ERR_EMPTY			= "IR length will be zero";
-	private static final String	ERR_MISSINGPROP		= "Bug! Missing property!";
+	private static final String	ERR_RESULT_EMPTY			= "IR length will be zero";
 
 	private final MessageFormat msgHertz	= new MessageFormat( "{0,number,0.0} Hz", Locale.US );  // XXX US locale
 	private final MessageFormat msgDecibel	= new MessageFormat( "{0,number,0.0} dB", Locale.US );  // XXX US locale
@@ -180,7 +179,7 @@ implements VectorPanel.Client
 			static_pr.para		= prPara;
 			static_pr.paraName	= prParaName;
 
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, -1, PR_OUTPUTRATE );
 			fillDefaultGain( static_pr.para, PR_GAIN );
@@ -409,13 +408,13 @@ implements VectorPanel.Client
 		gui.registerGadget( ggOutputFile.getTypeGadget(), GG_OUTPUTTYPE );
 		gui.registerGadget( ggOutputFile.getResGadget(), GG_OUTPUTRES );
 		gui.registerGadget( ggOutputFile.getRateGadget(), GG_OUTPUTRATE );
-		panel.addGadget( new JLabel( "File name", JLabel.RIGHT ));
+		panel.addGadget( new JLabel( "File name", SwingConstants.RIGHT ));
 		panel.addGadget( ggOutputFile );
 
 		panel.newLine();
 		box				= Box.createHorizontalBox();
 		ggGain			= createGadgets( GGTYPE_GAIN );
-		panel.addGadget( new JLabel( "Gain", JLabel.RIGHT ));
+		panel.addGadget( new JLabel( "Gain", SwingConstants.RIGHT ));
 		gui.registerGadget( (ParamField) ggGain[ 0 ], GG_GAIN );
 		((ParamField) ggGain[ 0 ]).addParamListener( paramL );
 		gui.registerGadget( (JComboBox) ggGain[ 1 ], GG_GAINTYPE );
@@ -456,7 +455,7 @@ implements VectorPanel.Client
 		ggFilterType.addItem( "High Pass" );
 		ggFilterType.addItem( "Band Pass" );
 		ggFilterType.addItem( "Band Stop" );
-		panel.addGadget( new JLabel( "Type", JLabel.RIGHT ));
+		panel.addGadget( new JLabel( "Type", SwingConstants.RIGHT ));
 		gui.registerGadget( ggFilterType, GG_FILTERTYPE );
 		ggFilterType.addItemListener( il );
 		box.add( ggFilterType );
@@ -479,7 +478,7 @@ implements VectorPanel.Client
 
 		panel.newLine();
 		ggCutOff		= new ParamField( Constants.spaces[ Constants.absHzSpace ]);
-		panel.addGadget( new JLabel( "Cutoff", JLabel.RIGHT ));
+		panel.addGadget( new JLabel( "Cutoff", SwingConstants.RIGHT ));
 		gui.registerGadget( ggCutOff, GG_CUTOFF );
 		ggCutOff.addParamListener( paramL );
 		panel.addGadget( ggCutOff );
@@ -487,7 +486,7 @@ implements VectorPanel.Client
 		panel.newLine();
 		ggRollOff		= new ParamField( spcBandwidth );
 		ggRollOff.setReference( ggCutOff );
-		panel.addGadget( new JLabel( "Rolloff", JLabel.RIGHT ));
+		panel.addGadget( new JLabel( "Rolloff", SwingConstants.RIGHT ));
 		gui.registerGadget( ggRollOff, GG_ROLLOFF );
 		ggRollOff.addParamListener( paramL );
 		panel.addGadget( ggRollOff );
@@ -495,21 +494,21 @@ implements VectorPanel.Client
 		panel.newLine();
 		ggBandwidth		= new ParamField( spcBandwidth );
 		ggBandwidth.setReference( ggCutOff );
-		panel.addGadget( new JLabel( "Bandwidth", JLabel.RIGHT ));
+		panel.addGadget( new JLabel( "Bandwidth", SwingConstants.RIGHT ));
 		gui.registerGadget( ggBandwidth, GG_BANDWIDTH );
 		ggBandwidth.addParamListener( paramL );
 		panel.addGadget( ggBandwidth );
 
 		panel.newLine();
 		ggFilterGain	= new ParamField( Constants.spaces[ Constants.decibelAmpSpace ]);
-		panel.addGadget( new JLabel( "Gain", JLabel.RIGHT ));
+		panel.addGadget( new JLabel( "Gain", SwingConstants.RIGHT ));
 		gui.registerGadget( ggFilterGain, GG_FILTERGAIN );
 		ggFilterGain.addParamListener( paramL );
 		panel.addGadget( ggFilterGain );
 
 		panel.newLine();
 		ggDelay			= new ParamField( spcDelay );
-		panel.addGadget( new JLabel( "Delay", JLabel.RIGHT ));
+		panel.addGadget( new JLabel( "Delay", SwingConstants.RIGHT ));
 		gui.registerGadget( ggDelay, GG_DELAY );
 		ggDelay.addParamListener( paramL );
 		panel.addGadget( ggDelay );
@@ -524,7 +523,7 @@ implements VectorPanel.Client
 		panel.newLine();
 		ggOTLimit		= new ParamField( spcLimit );
 		ggOTLimit.setReference( ggCutOff );
-		panel.addGadget( new JLabel( "Limit freq", JLabel.RIGHT ));
+		panel.addGadget( new JLabel( "Limit freq", SwingConstants.RIGHT ));
 		gui.registerGadget( ggOTLimit, GG_OTLIMIT );
 		ggOTLimit.addParamListener( paramL );
 		panel.addGadget( ggOTLimit );
@@ -532,7 +531,7 @@ implements VectorPanel.Client
 		panel.newLine();
 		ggOTSpacing		= new ParamField( spcBandwidth );
 		ggOTSpacing.setReference( ggCutOff );
-		panel.addGadget( new JLabel( "Spacing", JLabel.RIGHT ));
+		panel.addGadget( new JLabel( "Spacing", SwingConstants.RIGHT ));
 		gui.registerGadget( ggOTSpacing, GG_OTSPACING );
 		ggOTSpacing.addParamListener( paramL );
 		panel.addGadget( ggOTSpacing );
@@ -548,7 +547,7 @@ pageBox.add( box );
 		panel			= new CompactPanel();
 		ggWindow		= new JComboBox();
 		GUISupport.addItemsToChoice( Filter.getWindowNames(), ggWindow );
-		panel.addGadget( new JLabel( "IIR\u2192FIR win", JLabel.RIGHT ));	// unicode 2192 = arrow right
+		panel.addGadget( new JLabel( "IIR\u2192FIR win", SwingConstants.RIGHT ));	// unicode 2192 = arrow right
 		gui.registerGadget( ggWindow, GG_WINDOW );
 		ggWindow.addItemListener( il );
 		panel.addGadget( ggWindow );
@@ -557,7 +556,7 @@ pageBox.add( box );
 		for( int i = 0; i < QUAL_NAMES.length; i++ ) {
 			ggQuality.addItem( QUAL_NAMES[ i ]);
 		}
-		panel.addGadget( new JLabel( "Filter Length", JLabel.RIGHT ));
+		panel.addGadget( new JLabel( "Filter Length", SwingConstants.RIGHT ));
 		gui.registerGadget( ggQuality, GG_QUALITY );
 		ggQuality.addItemListener( il );
 		panel.addGadget( ggQuality );
@@ -632,7 +631,7 @@ topLevel: try {
 			impLength	= calcLength( ggCircuit, outStream );
 			outLength	= impLength.x + impLength.y;
 			if( pr.bool[ PR_MINPHASE ]) outLength *= 2;	// account for modified ringing out
-			if( outLength <= 0 ) throw new IOException( ERR_EMPTY );
+			if( outLength <= 0 ) throw new IOException( ERR_RESULT_EMPTY );
 
 			for( fftLength = 2; fftLength < outLength; fftLength <<= 1 ) ;
 			complexFFTsize	= fftLength << 1;

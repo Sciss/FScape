@@ -159,27 +159,27 @@ extends GenericFile
 	 *
 	 *	@param	format	PVA_MAG, PVA_PHASE oder PVA_POLAR
 	 */
-	public void initWriter( SpectStream stream, int format )
+	public void initWriter( SpectStream strm, int format )
 	throws IOException
 	{	
 		dataNum		= (format == PVA_POLAR) ? 2 : 1;
 		dataOffset	= (format == PVA_PHASE) ? 1 : 0;
-		bands		= stream.bands;
-		frames		= stream.frames;
+		bands		= strm.bands;
+		frames		= strm.frames;
 
 		hdr[ hdr_magic ]		= SHA_MAGIC;
 		hdr[ hdr_headBsize ]	= hdr_sizeof << 2;
 		hdr[ hdr_dataBsize ]	= CSA_UNK_LEN;		// am Schluss korrigiert
 		hdr[ hdr_dataFormat ]	= PVA_FLOAT;
-		hdr[ hdr_smpRate ]		= Float.floatToIntBits( stream.smpRate );
-		hdr[ hdr_chanNum ]		= stream.chanNum;
-		hdr[ hdr_frameSize ]	= (stream.bands - 1) * dataNum;
-		hdr[ hdr_smpPerFrame ]	= stream.smpPerFrame;
+		hdr[ hdr_smpRate ]		= Float.floatToIntBits( strm.smpRate );
+		hdr[ hdr_chanNum ]		= strm.chanNum;
+		hdr[ hdr_frameSize ]	= (strm.bands - 1) * dataNum;
+		hdr[ hdr_smpPerFrame ]	= strm.smpPerFrame;
 		hdr[ hdr_frameBsize ]	= hdr[ hdr_frameSize ] << 1;		// correct? XXX
 		hdr[ hdr_frameFormat ]	= format;
-		hdr[ hdr_loFreq ]		= Float.floatToIntBits( stream.loFreq );
-		hdr[ hdr_hiFreq ]		= Float.floatToIntBits( stream.hiFreq );
-		hdr[ hdr_freqMode ]		= stream.freqMode;
+		hdr[ hdr_loFreq ]		= Float.floatToIntBits( strm.loFreq );
+		hdr[ hdr_hiFreq ]		= Float.floatToIntBits( strm.hiFreq );
+		hdr[ hdr_freqMode ]		= strm.freqMode;
 		hdr[ hdr_info ]			= 0x46534350;			// 'FSCP'
 
 		for( int i = 0; i < hdr.length; i++ ) {
@@ -188,13 +188,13 @@ extends GenericFile
 
 // SND HACK BUG FIX XXXX
 if( hdr[ hdr_chanNum ] == 2 ) {
-	byte[] foo = new byte[ (stream.bands * dataNum) << 2 ];
+	byte[] foo = new byte[ (strm.bands * dataNum) << 2 ];
 	for( int i = 0; i < foo.length; i++ ) foo[ i ] = 0;
 	write( foo );
 }
 		
-		buffer = new byte[ (stream.bands * dataNum * stream.chanNum) << 2 ];
-		this.stream = stream;
+		buffer = new byte[ (strm.bands * dataNum * strm.chanNum) << 2 ];
+		this.stream = strm;
 	}
 
 	/**

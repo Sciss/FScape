@@ -41,6 +41,7 @@ import java.util.Locale;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 import de.sciss.fscape.io.GenericFile;
 import de.sciss.fscape.prop.Presets;
@@ -142,7 +143,7 @@ extends DocumentFrame
 			static_pr.para		= prPara;
 			static_pr.paraName	= prParaName;
 
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES, PR_OUTPUTRATE );
 			static_presets = new Presets( getClass(), static_pr.toProperties( true ));
@@ -175,7 +176,7 @@ extends DocumentFrame
 		ggOutputFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Filename", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Filename", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggOutputFile, GG_OUTPUTFILE, null );
@@ -186,7 +187,7 @@ extends DocumentFrame
 		ggGain			= createGadgets( GGTYPE_GAIN );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Amplitude", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Amplitude", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( (ParamField) ggGain[ 0 ], GG_GAIN, null );
@@ -205,7 +206,7 @@ extends DocumentFrame
 		ggStartTime		= new JFormattedTextField();
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Start Time", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Start Time", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addTextField( ggStartTime, GG_STARTTIME, null );
 		
@@ -214,7 +215,7 @@ extends DocumentFrame
 			ggFrames.addItem( FRAMES_LABELS[ i ]);
 		}
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Frames/sec.", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Frames/sec.", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addChoice( ggFrames, GG_FRAMES, null );
@@ -222,7 +223,7 @@ extends DocumentFrame
 		ggStopTime		= new JFormattedTextField();
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Stop Time", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Stop Time", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addTextField( ggStopTime, GG_STOPTIME, null );
 

@@ -142,7 +142,7 @@ extends DocumentFrame
 			static_pr.para[ PR_CROSSFADE ]	= new Param(   50.0, Param.FACTOR_TIME );
 			static_pr.para[ PR_TOLERANCE ]	= new Param(    3.0, Param.DECIBEL_AMP );
 			static_pr.paraName	= prParaName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
 			fillDefaultGain( static_pr.para, PR_GAIN );
@@ -178,7 +178,7 @@ extends DocumentFrame
 		ggInputFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Input file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Input file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInputFile, GG_INPUTFILE, null );
@@ -188,7 +188,7 @@ extends DocumentFrame
 		ggCtrlFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Control file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Control file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggCtrlFile, GG_CTRLFILE, null );
@@ -201,7 +201,7 @@ extends DocumentFrame
 		ggOutputFile.deriveFrom( ggInputs, "$D0$F0Enj$E" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Output file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Output file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggOutputFile, GG_OUTPUTFILE, null );
@@ -211,7 +211,7 @@ extends DocumentFrame
 		ggGain			= createGadgets( GGTYPE_GAIN );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Gain", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Gain", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( (ParamField) ggGain[ 0 ], GG_GAIN, null );
 		con.weightx		= 0.5;
@@ -230,7 +230,7 @@ extends DocumentFrame
 		ggMinChunk		= new ParamField( spcChunk );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Min. Chunk Length", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Min. Chunk Length", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggMinChunk, GG_MINCHUNK, null );
 
@@ -243,7 +243,7 @@ extends DocumentFrame
 		ggCrossFade		= new ParamField( spcFade );
 		ggCrossFade.setReference( ggMinChunk );
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Crossfades", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Crossfades", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggCrossFade, GG_CROSSFADE, null );
@@ -255,7 +255,7 @@ extends DocumentFrame
 		ggTolerance.setReference( new Param( 1.0, Param.ABS_AMP ));
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Tolerance", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Tolerance", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggTolerance, GG_TOLERANCE, null );
 
@@ -264,7 +264,7 @@ extends DocumentFrame
 			ggFadeType.addItem( TYPE_NAMES[ i ]);
 		}
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Crossfade Type", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Crossfade Type", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addChoice( ggFadeType, GG_FADETYPE, null );
@@ -274,7 +274,7 @@ extends DocumentFrame
 		ggCurrentInfo.setBackground( null );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "# of Regions", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "# of Regions", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addTextField( ggCurrentInfo, GG_CURRENTINFO, null );
 
@@ -283,7 +283,7 @@ extends DocumentFrame
 			ggSorting.addItem( SORT_NAMES[ i ]);
 		}
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Sorting", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Sorting", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addChoice( ggSorting, GG_SORTING, null );
@@ -395,7 +395,7 @@ topLevel: try {
 				}
 				for( ch = 0; ch < inChanNum; ch++ ) {
 					tempFile[ ch ]	= IOUtil.createTempFile();
-					floatF[ ch ]	= new FloatFile( tempFile[ ch ], FloatFile.MODE_OUTPUT );
+					floatF[ ch ]	= new FloatFile( tempFile[ ch ], GenericFile.MODE_OUTPUT );
 				}
 				progLen += inLength;
 			} else {

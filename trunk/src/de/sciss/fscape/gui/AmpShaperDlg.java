@@ -172,7 +172,7 @@ extends DocumentFrame
 			static_pr.envl[ PR_ENV ]			= Envelope.createBasicEnvelope( Envelope.BASIC_UNSIGNED_TIME );
 			static_pr.envl[ PR_RIGHTCHANENV ]	= Envelope.createBasicEnvelope( Envelope.BASIC_UNSIGNED_TIME );
 			static_pr.envlName	= prEnvlName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
 			fillDefaultAudioDescr( static_pr.intg, PR_ENVOUTTYPE, PR_ENVOUTRES );
@@ -233,7 +233,7 @@ extends DocumentFrame
 		ggInputFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Input file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Input file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInputFile, GG_INPUTFILE, null );
@@ -243,7 +243,7 @@ extends DocumentFrame
 		ggEnvInFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Env input", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Env input", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggEnvInFile, GG_ENVINFILE, null );
@@ -256,7 +256,7 @@ extends DocumentFrame
 		ggOutputFile.deriveFrom( ggInputs, "$D0$F0Amp$E" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Output file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Output file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggOutputFile, GG_OUTPUTFILE, null );
@@ -266,7 +266,7 @@ extends DocumentFrame
 		ggGain			= createGadgets( GGTYPE_GAIN );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Gain", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Gain", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( (ParamField) ggGain[ 0 ], GG_GAIN, null );
 		con.weightx		= 0.5;
@@ -301,7 +301,7 @@ extends DocumentFrame
 
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Gain", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Gain", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( (ParamField) ggEnvGain[ 0 ], GG_ENVGAIN, null );
 		con.weightx		= 0.5;
@@ -319,13 +319,13 @@ extends DocumentFrame
 		ggEnvSource.addItem( "Envelope" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Source", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Source", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addChoice( ggEnvSource, GG_ENVSOURCE, il );
 
 		ggInvert		= new JCheckBox();
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Inversion", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Inversion", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.4;
 		gui.addCheckbox( ggInvert, GG_INVERT, il );
@@ -335,7 +335,7 @@ extends DocumentFrame
 		ggMode.addItem( "Replacement" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Apply mode", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Apply mode", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addChoice( ggMode, GG_MODE, il );
@@ -343,7 +343,7 @@ extends DocumentFrame
 		ggEnv			= new EnvIcon( getWindow() );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Envelope", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Envelope", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addGadget( ggEnv, GG_ENV );
 
@@ -352,7 +352,7 @@ extends DocumentFrame
 		spcMaxChange	= new ParamSpace( spcMaxChange.inc, spcMaxChange.max, spcMaxChange.inc, spcMaxChange.unit );
 		ggMaxChange		= new ParamField( spcMaxChange );
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Max boost", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Max boost", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggMaxChange, GG_MAXCHANGE, null );
@@ -371,7 +371,7 @@ extends DocumentFrame
 		spcAverage[2]	= Constants.spaces[ Constants.ratioTimeSpace ];
 		ggAverage		= new ParamField( spcAverage );
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Smoothing", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Smoothing", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggAverage, GG_AVERAGE, null );
@@ -600,7 +600,7 @@ for( i = 0; i < 2; i++ ) {
 				}
 				for( ch = 0; ch < outChanNum; ch++ ) {
 					outTempFile[ ch ]	= IOUtil.createTempFile();
-					outFloatF[ ch ]		= new FloatFile( outTempFile[ ch ], FloatFile.MODE_OUTPUT );
+					outFloatF[ ch ]		= new FloatFile( outTempFile[ ch ], GenericFile.MODE_OUTPUT );
 				}
 				progLen	   += (long) outLength;
 			} else {
@@ -619,7 +619,7 @@ for( i = 0; i < 2; i++ ) {
 				}
 				for( ch = 0; ch < envOutChanNum; ch++ ) {
 					envTempFile[ ch ]	= IOUtil.createTempFile();
-					envFloatF[ ch ]		= new FloatFile( envTempFile[ ch ], FloatFile.MODE_OUTPUT );
+					envFloatF[ ch ]		= new FloatFile( envTempFile[ ch ], GenericFile.MODE_OUTPUT );
 				}
 				progLen	   += (long) envOutLength;
 			} else {

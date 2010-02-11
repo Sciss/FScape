@@ -153,7 +153,7 @@ extends DocumentFrame
 			static_pr.para[ PR_LPADAPT2 ]			= new Param(  0.5, Param.FACTOR_AMP );
 			static_pr.para[ PR_CMADAPT ]			= new Param(  0.1, Param.FACTOR_AMP );
 			static_pr.paraName	= prParaName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
 			fillDefaultGain( static_pr.para, PR_GAIN );
@@ -207,7 +207,7 @@ extends DocumentFrame
 		ggInputFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "(Excitation) input", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "(Excitation) input", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInputFile, GG_INPUTFILE, null );
@@ -217,7 +217,7 @@ extends DocumentFrame
 		ggModFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Filter input", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Filter input", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggModFile, GG_MODFILE, null );
@@ -231,7 +231,7 @@ extends DocumentFrame
 		ggOutputFile.deriveFrom( ggInputs, "$D0$F0LP$E" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Output file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Output file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggOutputFile, GG_OUTPUTFILE, null );
@@ -241,7 +241,7 @@ extends DocumentFrame
 		ggGain			= createGadgets( GGTYPE_GAIN );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Gain", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Gain", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( (ParamField) ggGain[ 0 ], GG_GAIN, null );
 		con.weightx		= 0.5;
@@ -258,19 +258,19 @@ extends DocumentFrame
 		}
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Source LP output", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Source LP output", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addChoice( ggLPMode, GG_LPMODE, il );
 
 		ggLPOrder1		= new ParamField( new ParamSpace( 1.0, 4096.0, 1.0, Param.NONE ));
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Source LP order", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Source LP order", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggLPOrder1, GG_LPORDER1, null );
 
 		ggLPAdapt1		= new ParamField( Constants.spaces[ Constants.ratioAmpSpace ]);
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Adaptiveness", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Adaptiveness", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggLPAdapt1, GG_LPADAPT1, null );
@@ -278,19 +278,19 @@ extends DocumentFrame
 		ggCrossSynth	= new JCheckBox();
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Cross synthesis", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Cross synthesis", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addCheckbox( ggCrossSynth, GG_CROSSSYNTH, il );
 
 		ggLPOrder2		= new ParamField( new ParamSpace( 1.0, 4096.0, 1.0, Param.NONE ));
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Target LP order", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Target LP order", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggLPOrder2, GG_LPORDER2, null );
 
 		ggLPAdapt2		= new ParamField( Constants.spaces[ Constants.ratioAmpSpace ]);
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Adaptiveness", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Adaptiveness", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggLPAdapt2, GG_LPADAPT2, null );
@@ -298,19 +298,19 @@ extends DocumentFrame
 		ggConstMod		= new JCheckBox();
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Constant Modulus Flt.", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Constant Modulus Flt.", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addCheckbox( ggConstMod, GG_CONSTANTMODULUS, il );
 
 		ggCMOrder		= new ParamField( new ParamSpace( 1.0, 4096.0, 1.0, Param.NONE ));
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "CM order", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "CM order", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggCMOrder, GG_CMORDER, null );
 
 		ggCMAdapt		= new ParamField( Constants.spaces[ Constants.ratioAmpSpace ]);
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Adaptiveness", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Adaptiveness", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggCMAdapt, GG_CMADAPT, null );
@@ -497,7 +497,7 @@ topLevel: try {
 				}
 				for( ch = 0; ch < inChanNum; ch++ ) {
 					tempFile[ ch ]	= IOUtil.createTempFile();
-					floatF[ ch ]	= new FloatFile( tempFile[ ch ], FloatFile.MODE_OUTPUT );
+					floatF[ ch ]	= new FloatFile( tempFile[ ch ], GenericFile.MODE_OUTPUT );
 				}
 				progLen	   += outLength;
 			} else {

@@ -138,7 +138,7 @@ extends BasicDialog
 		gui		= new GUISupport();
 		con		= gui.getGridBagConstraints();
 		lay		= gui.getGridBagLayout();
-		list	= new EditEnvDlgListener( this, gui );
+		list	= new EditEnvDlgListener( this );
 		con.insets = new Insets( 2, 2, 2, 2 );
 
 	// -------- Toolbar --------
@@ -248,11 +248,11 @@ timeSpace[ 2 ]			= new ParamSpace( timeSpace[ 2 ].inc, timeSpace[ 2 ].max, timeS
 		ggPointY	= new ParamField( Constants.spaces[ Constants.modSpace ]);
 		con.weightx = 0.0;
 		con.gridwidth = 1;
-		gui.addLabel( new JLabel( "X", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "X", SwingConstants.RIGHT ));
 		con.weightx = 0.17;
 		gui.addParamField( ggPointX, GG_POINTX, list );
 		con.weightx = 0.0;
-		gui.addLabel( new JLabel( "Y", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Y", SwingConstants.RIGHT ));
 		con.weightx = 0.17;
 		gui.addParamField( ggPointY, GG_POINTY, list );
 		con.gridwidth = GridBagConstraints.REMAINDER;
@@ -293,7 +293,7 @@ timeSpace[ 2 ]			= new ParamSpace( timeSpace[ 2 ].inc, timeSpace[ 2 ].max, timeS
 		super.initDialog();
 	}
 	
-	private void closeMe()
+	protected void closeMe()
 	{
 		this.setVisible( false );
 		try {
@@ -443,7 +443,6 @@ timeSpace[ 2 ]			= new ParamSpace( timeSpace[ 2 ].inc, timeSpace[ 2 ].max, timeS
 	// -------- private Variablen --------
 
 		private EditEnvDlg dlg;		// Edit-Dialog, der den Listener installiert
-		private GUISupport gui;		// gui, dessen Objecte hier Ÿberwacht werden
 
 		private	CurvePanel	curvePanel = null;		// derzeit aktives
 
@@ -453,10 +452,9 @@ timeSpace[ 2 ]			= new ParamSpace( timeSpace[ 2 ].inc, timeSpace[ 2 ].max, timeS
 		 *	@param dlg	Edit-Dialog, der den Listener installiert
 		 *	@param gui	zu Ÿberwachendes GUI
 		 */
-		public EditEnvDlgListener( EditEnvDlg dlg, GUISupport gui )
+		public EditEnvDlgListener( EditEnvDlg dlg )
 		{
 			this.dlg = dlg;
-			this.gui = gui;
 		}
 
 	// -------- Action Methoden --------

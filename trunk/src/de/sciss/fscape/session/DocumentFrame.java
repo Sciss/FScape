@@ -159,7 +159,7 @@ implements Processor, EventManager.Processor, ProgressComponent
 	 */
 	protected		 PropertyArray	pr;
 	protected 		 Presets		presets;
-	protected static PropertyArray	static_pr	= null;
+//	protected static PropertyArray	static_pr	= null;
 	
 	public static final String		ERR_CORRUPTED		= "Internal data corrupted. Please report bug!";
 	protected static final String	ERR_MEMORY			= "FScape ran out of memory";
@@ -256,10 +256,10 @@ implements Processor, EventManager.Processor, ProgressComponent
 
 		final MenuRoot					mr;
 
-		// einmalig PropertyArray initialisieren
-		if( static_pr == null ) {
-			static_pr = new PropertyArray();
-		}
+//		// einmalig PropertyArray initialisieren
+//		if( static_pr == null ) {
+//			static_pr = new PropertyArray();
+//		}
 
 	// -------- Basic Listeners --------
 
@@ -406,7 +406,7 @@ implements Processor, EventManager.Processor, ProgressComponent
 		para[ gainIdx ] = getDefaultGain();
 	}
 	
-	private Param getDefaultGain()
+	protected Param getDefaultGain()
 	{
 		final Preferences prefs = AbstractApplication.getApplication().getUserPrefs();
 		final de.sciss.util.Param gainP = de.sciss.util.Param.fromPrefs( prefs, "headroom", null );
@@ -516,7 +516,6 @@ setTitle( title );
 	protected void initGUI( DocumentFrame concrete, int flags, Component c )
 	{
 		final Container					cp	= getContentPane();
-		final de.sciss.app.Application	app	= AbstractApplication.getApplication();
 
 		cp.setLayout( new BorderLayout( 0, 2 ));
 
@@ -604,7 +603,7 @@ setTitle( title );
 		return null;
 	}
 	
-	private void documentClosed()
+	protected void documentClosed()
 	{
 		disposed = true;	// important to avoid "too late window messages" to be processed; fucking swing doesn't kill them despite listener being removed
 //System.err.println( "DocumentFrame.documentClosed()" );
@@ -649,7 +648,7 @@ setTitle( title );
 		super.dispose();
 	}
 
-	private String getResourceString( String key )
+	protected String getResourceString( String key )
 	{
 		return AbstractApplication.getApplication().getResourceString( key );
 	}
@@ -808,7 +807,7 @@ confirmed.set( actionSave.perform( actionSave.getValue( Action.NAME ).toString()
 	/*
 	 *	laedt Werte eines Presets ins GUI u. PropertyArray
 	 */	
-	private boolean loadPreset( String name )
+	protected boolean loadPreset( String name )
 	{
 		PropertyArray	pa;
 		Properties		preset;
@@ -841,7 +840,7 @@ confirmed.set( actionSave.perform( actionSave.getValue( Action.NAME ).toString()
 	 *	Stores the current GUI values in a new preset
 	 *	of the given name.
 	 */
-	private boolean addPreset( String name )
+	protected boolean addPreset( String name )
 	{
 		fillPropertyArray();
 		final PropertyArray	pa		= getPropertyArray();
@@ -876,7 +875,7 @@ confirmed.set( actionSave.perform( actionSave.getValue( Action.NAME ).toString()
 	/*
 	 *	Deletes a preset
 	 */
-	private boolean deletePreset( String name )
+	protected boolean deletePreset( String name )
 	{
 		final Presets pst = getPresets();
 		if( pst.removePreset( name ) != null ) {
@@ -899,7 +898,6 @@ confirmed.set( actionSave.perform( actionSave.getValue( Action.NAME ).toString()
 	{
 		boolean							success		= false;
 //		final String					oldTitle	= getTitle();
-		final de.sciss.app.Application	app			= AbstractApplication.getApplication();
 	
 //		if( getPresets().isModified() ) {
 //			try {
@@ -978,7 +976,7 @@ saveLoop:		do {
 	 *
 	 *	@return		true on success
 	 */
-	private boolean saveFile( File f )
+	protected boolean saveFile( File f )
 	{
 		PropertyArray	pa;
 		BasicProperties	preset;
@@ -1096,7 +1094,7 @@ saveLoop:		do {
 	 *	VORAUSSETZUNG:	Gadget-IDs in GUI stimmen mit denen in PropertyArray plus GG_OFF_...
 	 *					ueberein
 	 */
-	public void fillGUI( GUISupport gui )
+	public void fillGUI( GUISupport g )
 	{
 		PropertyArray	pa	= getPropertyArray();
 		int				i;
@@ -1104,29 +1102,29 @@ saveLoop:		do {
 		
 		try {
 			for( i = 0; i < pa.bool.length; i++ ) {
-				c = gui.getItemObj( i + GG_OFF_CHECKBOX );
+				c = g.getItemObj( i + GG_OFF_CHECKBOX );
 				if( c != null ) {
 					this.setCheckBoxQuiet( (JCheckBox) c, pa.bool[ i ]);
 				}
 			}
 			for( i = 0; i < pa.intg.length; i++ ) {
-				c = gui.getItemObj( i + GG_OFF_CHOICE );
+				c = g.getItemObj( i + GG_OFF_CHOICE );
 				if( (c != null) && (((JComboBox) c).getItemCount() > pa.intg[ i ]) ) {
 					this.setComboBoxQuiet( (JComboBox) c, pa.intg[ i ]);
 				}
 			}
 			for( i = 0; i < pa.para.length; i++ ) {
-				c = gui.getItemObj( i + GG_OFF_PARAMFIELD );
+				c = g.getItemObj( i + GG_OFF_PARAMFIELD );
 				if( c != null ) {
 					((ParamField) c).setParam( pa.para[ i ]);
 				}
 			}
 			for( i = 0; i < pa.text.length; i++ ) {
-				c = gui.getItemObj( i + GG_OFF_TEXTFIELD );
+				c = g.getItemObj( i + GG_OFF_TEXTFIELD );
 				if( c != null ) {
 					((JTextField) c).setText( pa.text[ i ]);
 				} else {
-					c = gui.getItemObj( i + GG_OFF_PATHFIELD );
+					c = g.getItemObj( i + GG_OFF_PATHFIELD );
 					if( c != null ) {
 						((PathField) c).setPath( new File( pa.text[ i ]));
 					}
@@ -1145,7 +1143,7 @@ saveLoop:		do {
 //				}
 //			}
 			for( i = 0; i < pa.envl.length; i++ ) {
-				c = gui.getItemObj( i + GG_OFF_ENVICON );
+				c = g.getItemObj( i + GG_OFF_ENVICON );
 				if( c != null ) {
 					((EnvIcon) c).setEnv( pa.envl[ i ]);
 				}
@@ -1174,7 +1172,7 @@ saveLoop:		do {
 	 *	VORAUSSETZUNG:	Gadget-IDs in GUI stimmen mit denen in PropertyArray plus GG_OFF_...
 	 *					ueberein
 	 */
-	protected void fillPropertyArray( GUISupport gui )
+	protected void fillPropertyArray( GUISupport g )
 	{
 		PropertyArray	pa	= getPropertyArray();
 		int				i;
@@ -1182,29 +1180,29 @@ saveLoop:		do {
 		
 		try {
 			for( i = 0; i < pa.bool.length; i++ ) {
-				c = gui.getItemObj( i + GG_OFF_CHECKBOX );
+				c = g.getItemObj( i + GG_OFF_CHECKBOX );
 				if( c != null ) {
 					pa.bool[ i ] = ((JCheckBox) c).isSelected();
 				}
 			}
 			for( i = 0; i < pa.intg.length; i++ ) {
-				c = gui.getItemObj( i + GG_OFF_CHOICE );
+				c = g.getItemObj( i + GG_OFF_CHOICE );
 				if( c != null ) {
 					pa.intg[ i ] = ((JComboBox) c).getSelectedIndex();
 				}
 			}
 			for( i = 0; i < pa.para.length; i++ ) {
-				c = gui.getItemObj( i + GG_OFF_PARAMFIELD );
+				c = g.getItemObj( i + GG_OFF_PARAMFIELD );
 				if( c != null ) {
 					pa.para[ i ] = ((ParamField) c).getParam();
 				}
 			}
 			for( i = 0; i < pa.text.length; i++ ) {
-				c = gui.getItemObj( i + GG_OFF_TEXTFIELD );
+				c = g.getItemObj( i + GG_OFF_TEXTFIELD );
 				if( c != null ) {
 					pa.text[ i ] = ((JTextField) c).getText();
 				} else {
-					c = gui.getItemObj( i + GG_OFF_PATHFIELD );
+					c = g.getItemObj( i + GG_OFF_PATHFIELD );
 					if( c != null ) {
 						pa.text[ i ] = ((PathField) c).getPath().getPath();
 					}
@@ -1223,7 +1221,7 @@ saveLoop:		do {
 //				}
 //			}
 			for( i = 0; i < pa.envl.length; i++ ) {
-				c = gui.getItemObj( i + GG_OFF_ENVICON );
+				c = g.getItemObj( i + GG_OFF_ENVICON );
 				if( c != null ) {
 					pa.envl[ i ] = ((EnvIcon) c).getEnv();
 				}
@@ -1281,22 +1279,22 @@ saveLoop:		do {
 	 *	Dialog mit Clipping-Info und Option zum Anpassen des Gain-Feldes
 	 *	vorbereiten; aus process() aufzurufen
 	 */
-	protected void handleClipping( float maxAmp )
+	protected void handleClipping( float mxAmp )
 	{
-		clipping = ((maxAmp < 0.707f) || (maxAmp > 1.0f));
+		clipping = ((mxAmp < 0.707f) || (mxAmp > 1.0f));
 		if( !clipping ) return;
 
 		int	gainType = (ggGainType == null ? GAIN_ABSOLUTE : ggGainType.getSelectedIndex() );
 		
 		clipping	= clipping && (gainType != GAIN_UNITY);			// user might want low amp or clipping
-		this.maxAmp	= maxAmp;
+		maxAmp		= mxAmp;
 	}
 	
 	/*
 	 *	Dialog mit Clipping-Info und Option zum Anpassen des Gain-Feldes
 	 *	(Anpassung wird automatisch vorgenommen)
 	 */
-	private void clippingDlg()
+	protected void clippingDlg()
 	{
 		double			newAmp	  	= 1.0 / ((double) maxAmp * 1.0115794543);	// 0.1 dB headroom
 		Param			p, pa, ref;
@@ -1732,7 +1730,7 @@ saveLoop:		do {
 	private class ActionShowWindow
 	extends MenuAction	// SyncedMenuAction
 	{
-		private ActionShowWindow()
+		protected ActionShowWindow()
 		{
 			super( null, null );
 		}
@@ -1785,7 +1783,7 @@ saveLoop:		do {
 //	}
 
 	// action for the Save-Session menu item
-	private class ActionClose
+	protected class ActionClose
 	extends MenuAction
 	{
 		public void actionPerformed( ActionEvent e )
@@ -1821,7 +1819,7 @@ saveLoop:		do {
 	private class ActionSave
 	extends MenuAction
 	{
-		private ActionSave()
+		protected ActionSave()
 		{
 			super();
 		}
@@ -1843,7 +1841,7 @@ saveLoop:		do {
 			}
 		}
 		
-		private boolean perform( String name, File f, boolean asCopy, boolean openAfterSave )
+		protected boolean perform( String name, File f, boolean asCopy, boolean openAfterSave )
 		{
 //			initiate( name, span, afds, asCopy, openAfterSave ).start();
 			final boolean success = saveFile( f );
@@ -1869,7 +1867,7 @@ saveLoop:		do {
 		private final boolean	selection;
 		private final Flag		openAfterSave;
 	
-		private ActionSaveAs( boolean asCopy, boolean selection )
+		protected ActionSaveAs( boolean asCopy, boolean selection )
 		{
 			if( selection && !asCopy ) throw new IllegalArgumentException();
 
@@ -1897,7 +1895,7 @@ saveLoop:		do {
 		 *			and format or <code>null</code>
 		 *			if the dialog was cancelled.
 		 */
-		protected File query( File protoType, boolean asCopy, boolean selection, Flag openAfterSave )
+		protected File query( File protoType, boolean cpy, boolean sel, Flag open )
 		{
 			final FileDialog			fDlg;
 			File						f, f2;
@@ -1910,12 +1908,12 @@ saveLoop:		do {
 				f2	= new File( f, "Desktop" );
 				f	= new File( f2.isDirectory() ? f2 : f, getResourceString( "frameUntitled" ));
 			} else {
-				if( asCopy || selection ) {
+				if( cpy || sel ) {
 					str	= protoType.getName();
 					i	= str.lastIndexOf( '.' );
 					if( i == -1 ) i = str.length();
 					f	= new File( protoType.getParentFile(), str.substring( 0, i ) +
-						 (selection ? getResourceString( "fileDlgCut" ) : " " + getResourceString( "fileDlgCopy" )));
+						 (sel ? getResourceString( "fileDlgCut" ) : " " + getResourceString( "fileDlgCopy" )));
 				} else {
 					f	= protoType;
 				}
@@ -1924,11 +1922,11 @@ saveLoop:		do {
 //			affp.automaticFileSuffix( ggPathFields[ j ] );
 			f = IOUtil.setFileSuffix( f, "fsc" );
 
-			if( (protoType == null) || asCopy || selection ) {	// create non-existent file name
-				f = IOUtil.nonExistentFileVariant( f, -1, selection ? null : " ", null );
+			if( (protoType == null) || cpy || sel ) {	// create non-existent file name
+				f = IOUtil.nonExistentFileVariant( f, -1, sel ? null : " ", null );
 			}
 
-			if( asCopy ) {
+			if( cpy ) {
 //				ggOpenAfterSave = new JCheckBox( getResourceString( "labelOpenAfterSave" ));
 //				ggOpenAfterSave.setSelected( openAfterSave.isSet() );
 //				msgPane.gridAdd( ggOpenAfterSave, 1, y );
@@ -1950,7 +1948,7 @@ saveLoop:		do {
 //			if( ggOpenAfterSave != null ) {
 //				openAfterSave.set( ggOpenAfterSave.isSelected() );
 //			}
-if( asCopy ) openAfterSave.set( false );
+if( cpy ) open.set( false );
 
 			if( fDlg.getFile() != null ) {
 				f = new File( fDlg.getDirectory(), fDlg.getFile() );
@@ -1975,7 +1973,7 @@ if( asCopy ) openAfterSave.set( false );
 	private class ActionHelp
 	extends MenuAction
 	{
-		private ActionHelp( String name, KeyStroke acc )
+		protected ActionHelp( String name, KeyStroke acc )
 		{
 			super( name, acc );
 		}
@@ -1994,7 +1992,7 @@ if( asCopy ) openAfterSave.set( false );
 	private class ActionAddPreset
 	extends MenuAction
 	{
-		private ActionAddPreset( String name, KeyStroke acc )
+		protected ActionAddPreset( String name, KeyStroke acc )
 		{
 			super( name, acc );
 		}
@@ -2002,8 +2000,6 @@ if( asCopy ) openAfterSave.set( false );
 		public void actionPerformed( ActionEvent e )
 		{
 			if( threadRunning ) return;	// not while processing
-
-			final de.sciss.app.Application app = AbstractApplication.getApplication();
 			
 			String name = JOptionPane.showInputDialog( getWindow(), app.getResourceString( "procWinEnterPresetName" ));
 			if( name != null && name.length() > 0 ) {
@@ -2030,7 +2026,7 @@ if( asCopy ) openAfterSave.set( false );
 	private class ActionDeletePreset
 	extends MenuAction
 	{
-		private ActionDeletePreset( String name, KeyStroke acc )
+		protected ActionDeletePreset( String name, KeyStroke acc )
 		{
 			super( name, acc );
 		}
@@ -2039,7 +2035,6 @@ if( asCopy ) openAfterSave.set( false );
 		{
 			if( threadRunning ) return;	// not while processing
 
-			final de.sciss.app.Application app = AbstractApplication.getApplication();
 			final List presetNames	= getPresets().presetNames();
 			presetNames.remove( Presets.DEFAULT );
 			final JList list = new JList( presetNames.toArray() );
@@ -2058,7 +2053,7 @@ if( asCopy ) openAfterSave.set( false );
 	private class ActionRecallPreset
 	extends MenuAction
 	{
-		private ActionRecallPreset( String name, KeyStroke acc )
+		protected ActionRecallPreset( String name, KeyStroke acc )
 		{
 			super( name, acc );
 		}

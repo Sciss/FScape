@@ -89,7 +89,7 @@ extends Operator
 			static_pr.para[ PR_ANGLE ]		= new Param(  25.0, Param.NONE );
 			static_pr.paraName	= prParaName;
 
-			static_pr.superPr	= Operator.static_pr;
+			static_pr.superPr	= Operator.op_static_pr;
 		}
 		// default preset
 		if( static_presets == null ) {

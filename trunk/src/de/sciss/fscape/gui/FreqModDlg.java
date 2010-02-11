@@ -139,7 +139,7 @@ extends DocumentFrame
 			static_pr.para[ PR_OSCFREQ ]			= new Param( 2000.0, Param.ABS_HZ );
 			static_pr.para[ PR_RATEMODDEPTH ]		= new Param(    3.0, Param.OFFSET_SEMITONES );
 			static_pr.paraName	= prParaName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
 			fillDefaultGain( static_pr.para, PR_GAIN );
@@ -202,7 +202,7 @@ extends DocumentFrame
 		ggInputFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Carrier input", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Carrier input", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInputFile, GG_INPUTFILE, pathL );
@@ -212,7 +212,7 @@ extends DocumentFrame
 		ggModFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Modulator input", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Modulator input", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggModFile, GG_MODFILE, pathL );
@@ -226,7 +226,7 @@ extends DocumentFrame
 		ggOutputFile.deriveFrom( ggInputs, "$D0$F0FM$E" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Output file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Output file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggOutputFile, GG_OUTPUTFILE, pathL );
@@ -236,7 +236,7 @@ extends DocumentFrame
 		ggGain			= createGadgets( GGTYPE_GAIN );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Gain", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Gain", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( (ParamField) ggGain[ 0 ], GG_GAIN, null );
 		con.weightx		= 0.5;
@@ -253,7 +253,7 @@ extends DocumentFrame
 		}
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Source", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Source", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addChoice( ggSource, GG_SOURCE, il );
 
@@ -262,7 +262,7 @@ extends DocumentFrame
 			ggQuality.addItem( QUAL_NAMES[ i ]);
 		}
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Quality", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Quality", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addChoice( ggQuality, GG_QUALITY, il );
@@ -281,13 +281,13 @@ extends DocumentFrame
 //		ggRateModDepth.setReference( ggRate );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Mod. depth", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Mod. depth", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggRateModDepth, GG_RATEMODDEPTH, null );
 
 		ggRate			= new ParamField( Constants.spaces[ Constants.absHzSpace ]);
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Osc. freq.", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Osc. freq.", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggRate, GG_OSCFREQ, null );
@@ -485,7 +485,7 @@ topLevel: try {
 				}
 				for( ch = 0; ch < outChanNum; ch++ ) {
 					tempFile[ ch ]	= IOUtil.createTempFile();
-					floatF[ ch ]	= new FloatFile( tempFile[ ch ], FloatFile.MODE_OUTPUT );
+					floatF[ ch ]	= new FloatFile( tempFile[ ch ], GenericFile.MODE_OUTPUT );
 				}
 				progLen	   += (long) inLength;	// (outLength unknown)
 			} else {

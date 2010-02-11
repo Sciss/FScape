@@ -161,7 +161,7 @@ extends Operator
 			static_pr.para[ PR_HIRADIUS ]	= new Param(     0.0, Param.DECIBEL_AMP );
 			static_pr.paraName	= prParaName;
 			
-			static_pr.superPr	= Operator.static_pr;
+			static_pr.superPr	= Operator.op_static_pr;
 		}
 		// default preset
 		if( static_presets == null ) {
@@ -626,7 +626,7 @@ k = 0;
 						runFrameDone( runOutSlot, runOutFr  );
 						runOutStream.freeFrame( runOutFr );
 					}
-					catch( InterruptedException e ) {}	// mainLoop wird eh gleich verlassen
+					catch( InterruptedException e ) { /* ignored */}	// mainLoop wird eh gleich verlassen
 					runCheckPause();
 				}
 

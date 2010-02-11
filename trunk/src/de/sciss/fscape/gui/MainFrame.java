@@ -48,7 +48,9 @@ import de.sciss.common.BasicApplication;
 
 import de.sciss.gui.AbstractWindowHandler;
 import de.sciss.gui.CoverGrowBox;
+import de.sciss.gui.GUIUtil;
 import de.sciss.gui.LogTextArea;
+import de.sciss.gui.MenuRoot;
 
 // XXX FFFF
 //import de.sciss.jcollider.*;
@@ -235,7 +237,8 @@ bottomPane.setBorder( BorderFactory.createEmptyBorder( 2, 4, 2, 4 ));
 
 		// ---- menus and actions ----
 		
-		((BasicApplication) app).getMenuBarRoot().putMimic( "edit.clear", this, lta.getClearAction() );
+		final MenuRoot mr = ((BasicApplication) app).getMenuBarRoot();
+		mr.putMimic( "edit.clear", this, lta.getClearAction() );
 
 		// ---- listeners -----
 		
@@ -258,7 +261,9 @@ bottomPane.setBorder( BorderFactory.createEmptyBorder( 2, 4, 2, 4 ));
 		r.setLocation( 0, 0 );
 		setBounds( r );
 		setVisible( true );
-//		toFront();
+
+		GUIUtil.removeMenuModifierBindings( lta, mr );
+		GUIUtil.removeMenuModifierBindings( new JTextField(), mr );
 	}
 
 	protected boolean restoreVisibility()

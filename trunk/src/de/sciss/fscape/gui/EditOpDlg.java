@@ -203,10 +203,8 @@ extends BasicDialog
 //		return true;
 //	}
 
-	private void closeMe()
+	protected void closeMe()
 	{
-		Operator	op = this.getOperator();
-
 		this.setVisible( false );
 		try {
 			op.getPrefs().store();			// Prefs ggf. speichern
@@ -283,7 +281,6 @@ extends BasicDialog
 		public void actionPerformed( ActionEvent e )
 		{
 			int			ID = gui.getItemID( e );
-			Operator	op = dlg.getOperator();
 			Component	associate;
 			Properties	prop;
 			
@@ -316,7 +313,6 @@ extends BasicDialog
 		public void itemStateChanged( ItemEvent e )
 		{
 			int				ID = gui.getItemID( e );
-			Operator		op = dlg.getOperator();
 			Properties		preset;
 			PropertyArray	pa;
 			Component		associate;
@@ -363,7 +359,6 @@ extends BasicDialog
 		public void mouseClicked( MouseEvent e )
 		{
 			int				ID = gui.getItemID( e );
-			Operator		op = dlg.getOperator();
 			Properties		preset;
 			PropertyArray	pa;
 			Component		associate;

@@ -138,7 +138,7 @@ extends DocumentFrame
 			static_pr.para[ PR_SGAIN ]			= new Param(  -17.0, Param.DECIBEL_AMP );
 			static_pr.para[ PR_CONVLENGTH ]		= new Param(    5.0, Param.ABS_MS );
 			static_pr.paraName	= prParaName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 
 			fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
 			fillDefaultGain( static_pr.para, PR_GAIN );
@@ -173,7 +173,7 @@ extends DocumentFrame
 		ggInputFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Input file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Input file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInputFile, GG_INPUTFILE, null );
@@ -183,7 +183,7 @@ extends DocumentFrame
 		ggCallosumFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Corpus callosum", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Corpus callosum", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggCallosumFile, GG_CALLOSUMFILE, null );
@@ -196,7 +196,7 @@ extends DocumentFrame
 		ggOutputFile.deriveFrom( ggInputs, "$D0$F0Schz$E" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Output file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Output file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggOutputFile, GG_OUTPUTFILE, null );
@@ -206,7 +206,7 @@ extends DocumentFrame
 		ggGain			= createGadgets( GGTYPE_GAIN );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Gain", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Gain", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( (ParamField) ggGain[ 0 ], GG_GAIN, null );
 		con.weightx		= 0.5;
@@ -223,7 +223,7 @@ extends DocumentFrame
 		ggOffset		= new ParamField( spcOffset );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Callosum offset", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Callosum offset", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggOffset, GG_OFFSET, null );
 		
@@ -235,7 +235,7 @@ extends DocumentFrame
 		ggMGain			= new ParamField( Constants.spaces[ Constants.decibelAmpSpace ]);
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Mid. gain", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Mid. gain", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggMGain, GG_MGAIN, null );
 
@@ -247,13 +247,13 @@ extends DocumentFrame
 		ggSGain			= new ParamField( Constants.spaces[ Constants.decibelAmpSpace ]);
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Side gain", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Side gain", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggSGain, GG_SGAIN, null );
 
 		ggConvLength	= new ParamField( Constants.spaces[ Constants.absMsSpace ]);
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Conv. length", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Conv. length", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggConvLength, GG_CONVLENGTH, null );
@@ -403,7 +403,7 @@ topLevel: try {
 				}
 				for( ch = 0; ch < outChanNum; ch++ ) {
 					outTempFile[ ch ]	= IOUtil.createTempFile();
-					outFloatF[ ch ]		= new FloatFile( outTempFile[ ch ], FloatFile.MODE_OUTPUT );
+					outFloatF[ ch ]		= new FloatFile( outTempFile[ ch ], GenericFile.MODE_OUTPUT );
 				}
 				progLen	   += outLength;
 			} else {

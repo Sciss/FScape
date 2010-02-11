@@ -152,7 +152,6 @@ extends DocumentFrame
 	private static final String PRN_CHANNELS		= "Channels";
 	private static final String PRN_NOISEFLOOR		= "NoiseFloor";
 	private static final String PRN_ADJUSTGAIN		= "AdjustGain";
-	private static final String PRN_GAIN			= "Gain";
 
 	private static final String	prText[]		= { "", "" };
 	private static final String	prTextName[]	= { PRN_INPUTFILE, PRN_OUTPUTFILE };
@@ -209,7 +208,7 @@ extends DocumentFrame
 			static_pr.para[ PR_GAIN ]		= new Param( 0.0, Param.DECIBEL_AMP );
 			static_pr.para[ PRS_NOISEFLOOR ]= new Param( -120.0, Param.DECIBEL_AMP );
 			static_pr.paraName	= prParaName;
-			static_pr.superPr	= DocumentFrame.static_pr;
+//			static_pr.superPr	= DocumentFrame.static_pr;
 		}
 		// default preset
 		if( static_presets == null ) {
@@ -281,7 +280,7 @@ extends DocumentFrame
 		ggInputFile.handleTypes( handledTypes );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Input file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Input file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggInputFile, GG_INPUTFILE, pathL );
@@ -294,7 +293,7 @@ extends DocumentFrame
 		ggOutputFile.deriveFrom( ggInputs, "$D0$F0$E" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Output file", JLabel.RIGHT ));
+		gui.addLabel( new JLabel( "Output file", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggOutputFile, GG_OUTPUTFILE, pathL );
@@ -305,7 +304,7 @@ extends DocumentFrame
 		
 	// -------- Conversion-Parameter --------
 
-		gui.addLabel( new JLabel( "Conversion settings", JLabel.CENTER ));
+		gui.addLabel( new JLabel( "Conversion settings", SwingConstants.CENTER ));
 		con.fill		= GridBagConstraints.BOTH;
 		ggSettings		= new JScrollPane(); // ( ScrollPane.SCROLLBARS_AS_NEEDED );
 		ggSettings.setPreferredSize( new Dimension( 256, 256 ));	// XXX
@@ -324,7 +323,7 @@ extends DocumentFrame
 	 */
 	protected PropertyGUI createGUI( int type )
 	{
-		PropertyGUI	gui;
+		PropertyGUI	g;
 	
 		String	gain		= "cbAdjust gain,actrue|100|en,acfalse|100|di,pr"+PRN_ADJUSTGAIN+";"+
 							  "pf"+Constants.decibelAmpSpace+",id100,pr"+PRN_GAIN;
@@ -367,9 +366,9 @@ extends DocumentFrame
 			return null;
 		}
 
-	 	gui = new PropertyGUI( guiDescr );
-	 	gui.setType( type );
-	 	return gui;
+	 	g = new PropertyGUI( guiDescr );
+	 	g.setType( type );
+	 	return g;
 	}
 	
 	/**
@@ -388,13 +387,13 @@ extends DocumentFrame
 		super.fillGUI();
 		super.fillGUI( gui );
 
-		PropertyGUI 	settingsGUI = getSettingsGUI();
+		PropertyGUI 	g = getSettingsGUI();
 
 		setInput( pr.text[ PR_INPUTFILE ]);
 		outputChanged();
 
-		if( settingsGUI != null ) {
-			settingsGUI.fillGUI( pr );		// load values
+		if( g != null ) {
+			g.fillGUI( pr );		// load values
 		}
 	}
 
@@ -406,10 +405,10 @@ extends DocumentFrame
 		super.fillPropertyArray();
 		super.fillPropertyArray( gui );
 
-		PropertyGUI		settingsGUI	= getSettingsGUI();
+		PropertyGUI		g	= getSettingsGUI();
 		
-		if( settingsGUI != null ) {
-			settingsGUI.fillPropertyArray( pr );		// save values
+		if( g != null ) {
+			g.fillPropertyArray( pr );		// save values
 		}
 	}
 	
@@ -584,7 +583,7 @@ topLevel: try {
 		// --- open input ----
 			switch( inType ) {
 			case TYPE_SPECT:
-				inF			= new SpectralFile( pr.text[ PR_INPUTFILE ], SpectralFile.MODE_INPUT );
+				inF			= new SpectralFile( pr.text[ PR_INPUTFILE ], GenericFile.MODE_INPUT );
 				inStream	= ((SpectralFile) inF).getDescr();
 				// this helps to prevent errors from empty files!
 				if( ((SpectStream) inStream).frames <= 0 ) throw new EOFException( ERR_EMPTY );
@@ -598,7 +597,7 @@ topLevel: try {
 				break;
 
 			case TYPE_IMAGE:
-				inF			= new ImageFile( pr.text[ PR_INPUTFILE ], ImageFile.MODE_INPUT );
+				inF			= new ImageFile( pr.text[ PR_INPUTFILE ], GenericFile.MODE_INPUT );
 				inStream	= ((ImageFile) inF).initReader();
 				// this helps to prevent errors from empty files!
 				if( ((ImageStream) inStream).height <= 0 ) throw new EOFException( ERR_EMPTY );
@@ -616,7 +615,7 @@ topLevel: try {
 			case TYPE_SPECT:
 				ggOutput	= (PathField) gui.getItemObj( GG_OUTPUTFILE );
 				if( ggOutput == null ) throw new IOException( ERR_MISSINGPROP );
-				outF		= new SpectralFile( pr.text[ PR_OUTPUTFILE ], SpectralFile.MODE_OUTPUT | ggOutput.getType() );
+				outF		= new SpectralFile( pr.text[ PR_OUTPUTFILE ], GenericFile.MODE_OUTPUT | ggOutput.getType() );
 				outStream	= new SpectStream();
 				ggOutput.fillStream( (SpectStream) outStream );
 
@@ -781,7 +780,7 @@ final int smpPerFrame = (bands - 1) >> overlap;
 			case TYPE_IMAGE:
 				ggOutput	= (PathField) gui.getItemObj( GG_OUTPUTFILE );
 				if( ggOutput == null ) throw new IOException( ERR_MISSINGPROP );
-				outF		= new ImageFile( pr.text[ PR_OUTPUTFILE ], ImageFile.MODE_OUTPUT | ggOutput.getType() );
+				outF		= new ImageFile( pr.text[ PR_OUTPUTFILE ], GenericFile.MODE_OUTPUT | ggOutput.getType() );
 				outStream	= new ImageStream();
 				ggOutput.fillStream( (ImageStream) outStream );
 

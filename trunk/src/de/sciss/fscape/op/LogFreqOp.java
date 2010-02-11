@@ -109,7 +109,7 @@ extends Operator
 			static_pr.para[ PR_LOFREQ ]			= new Param(    32.0, Param.ABS_HZ );
 			static_pr.paraName	= prParaName;
 
-			static_pr.superPr	= Operator.static_pr;
+			static_pr.superPr	= Operator.op_static_pr;
 		}
 		// default preset
 		if( static_presets == null ) {
