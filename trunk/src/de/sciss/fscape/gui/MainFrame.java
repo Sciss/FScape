@@ -99,7 +99,7 @@ extends AppWindow
 		"in a land of maple", "beauty is difficult", "not of one bird but of many",
 		"no cloud, but the crystal body", "well, my window", "the rest is explodable",
 		"who fished for sound in the Seine", "the chess board too lucid", "there will certainly be minor plurloinments",
-		"mint, thyme and basicilum", "the Godess was born of sea-foam", "in identity but not atom for atom",
+		"mint, thyme and basilicum", "the Godess was born of sea-foam", "in identity but not atom for atom",
 		"in profusion nearly all humble persons", "hence the d\u00E9bacle", "je suis au bout de mes forces",
 		"you can sleep here for a peseta", "but to have done instead of not doing", "and you might find a bit of enamel",
 		"there is fatigue deep as a grave", "there are distinctions in clarity", ""
