@@ -1,7 +1,7 @@
 /**
  *	Client-side represenation of the FScape audio renderer.
  *
- *	@version	0.11, 25-Jun-06
+ *	@version	0.12, 13-May-08
  *	@author	Hanns Holger Rutz
  */
 FScape {
@@ -48,6 +48,35 @@ FScape {
 			});
 		};
 	}
+	
+	postWindowProcess { arg path, indent = 0;
+		var cond, success, lastBlock = 0, indentTxt, name;
+		
+		indentTxt = "";
+		indent.do({ indentTxt = indentTxt ++ "  " });
+		name = path.basename;
+		
+		cond = Condition.new;
+		"%FScape '%'\n".postf( indentTxt, name );
+		indentTxt.post;
+		this.openAndProcess( path, false, doneAction: { arg prog, error;
+			success = error.isNil;
+			if( success, {
+				" OK.".postln;
+			}, {
+				"\n%Failed with error = '%'!\n".postf( indentTxt, error );
+			});
+			cond.test = true; cond.signal;
+		}, progFunc: { arg prog;
+			var block = (prog * 50).asInteger;
+			if( block > lastBlock, {
+				(block - lastBlock).do({ "#".post });
+				lastBlock = block;
+			});
+		}, progInterval: 0.05 );
+		cond.test = false; cond.wait;
+		if( success.not, { Error( name ).throw });
+	}
 
 	// !experimental!
 	openAndProcess { arg docFile, visible = true, closeWhenDone = true, doneAction, progFunc, progInterval = 1;
@@ -92,7 +121,6 @@ FScape {
 					isRunning = true;
 						
 //					1.wait;	// tricky sync
-//0.1.wait;
 					this.query( "/main", [ \version ]);
 						
 					while({ isRunning }, {
@@ -102,6 +130,9 @@ FScape {
 							isRunning = msg[ 0 ] != 0;
 							progFunc.value( msg[ 1 ]);
 							if( isRunning.not, {
+								// sometime the \close is too fast?? therefore, insert a sync
+								this.query( "/main", [ \version ]);
+								
 								if( closeWhenDone, { this.sendMsg( addr, \close ); });
 								doneAction.value( msg[ 1 ], if( msg[ 2 ].asString == "", nil, msg[ 2 ]));
 							});
@@ -172,7 +203,7 @@ FScape {
 			arg time, resp, msg;
 			
 			if( msg[ 1 ] == id, {
-				if( cancel.notNil, {Êcancel.stop; });
+				if( cancel.notNil, { cancel.stop; });
 				resp.remove;
 				result			= msg.copyToEnd( 2 );
 				condition.test	= true;
@@ -220,8 +251,8 @@ FScape {
 		if( condition.isNil ) { condition = Condition.new; };
 
 		respDone	= OSCresponderNode( addr, '/done', { arg time, resp, msg;
-			if( msg[ 1 ].asSymbol === path.asSymbol and: {Êmsg[ 2 ].asSymbol === cmd.asSymbol }) {
-				if( cancel.notNil, {Êcancel.stop; });
+			if( msg[ 1 ].asSymbol === path.asSymbol and: { msg[ 2 ].asSymbol === cmd.asSymbol }) {
+				if( cancel.notNil, { cancel.stop; });
 				resp.remove;
 				result			= msg.copyToEnd( 3 );
 				condition.test	= true;
@@ -229,8 +260,8 @@ FScape {
 			};
 		});
 		respFailed = OSCresponderNode( addr, '/failed', { arg time, resp, msg;
-			if( msg[ 1 ].asSymbol === path.asSymbol and: {Êmsg[ 2 ].asSymbol === cmd.asSymbol }) {
-				if( cancel.notNil, {Êcancel.stop; });
+			if( msg[ 1 ].asSymbol === path.asSymbol and: { msg[ 2 ].asSymbol === cmd.asSymbol }) {
+				if( cancel.notNil, { cancel.stop; });
 				resp.remove;
 				result			= nil;
 				condition.test	= true;
@@ -269,7 +300,7 @@ FScape {
 		id = UniqueID.next;
 		resp = OSCresponderNode( addr, '/synced', { arg time, resp, msg;
 			if( msg[ 1 ] == id, {
-				if( cancel.notNil, {Êcancel.stop; });
+				if( cancel.notNil, { cancel.stop; });
 				resp.remove;
 				result			= true;
 				condition.test 	= true;
@@ -343,15 +374,15 @@ FScapeDoc {
 	var <map;
 	var readFile;
 	
-	*new {Êarg map;
+	*new { arg map;
 		^super.new.prInitDoc( map );
 	}
 	
 	prInitDoc { arg argMap;
-		map = argMap ?? {ÊIdentityDictionary.new };
+		map = argMap ?? { IdentityDictionary.new };
 	}
 	
-	at {Êarg key;
+	at { arg key;
 		^map[ key ];
 	}
 	
@@ -359,7 +390,7 @@ FScapeDoc {
 		^map.put( key, value );
 	}
 
-	*read {Êarg file;
+	*read { arg file;
 		var f;
 		
 		f = FScapeDoc.new;
