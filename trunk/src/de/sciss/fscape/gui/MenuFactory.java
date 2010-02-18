@@ -2,7 +2,7 @@
  *  MenuFactory.java
  *  FScape
  *
- *  Copyright (c) 2001-2009 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -88,7 +88,7 @@ import de.sciss.util.Flag;
  *  <code>Main</code> class.
  *
  *  @author		Hanns Holger Rutz
- *  @version	0.72, 08-Aug-09
+ *  @version	0.72, 18-Feb-10
  *
  *  @see	de.sciss.eisenkraut.Main#menuFactory
  */
@@ -124,8 +124,9 @@ extends BasicMenuFactory
 	private static final String MI_FOURIER		= "Fourier Translation";
 	private static final String MI_TRANSL		= "Wavelet Translation";
 	private static final String MI_HILBERT		= "Hilbert Filter";
-	private static final String MI_MOSAIC		="Mosaic";
+	private static final String MI_MOSAIC		= "Mosaic";
 	private static final String MI_SONAGRAMEXP	= "Sonagram Export";
+	private static final String MI_BLEACH		= "Bleach";
 	
 	private static final String M_MOD_TIME		= "Time Domain";
 	private static final String MI_STEPBACK		= "Step Back";
@@ -201,7 +202,8 @@ extends BasicMenuFactory
 		{ new StringItem( "Wavelet",		MI_TRANSL ),		KeyStroke.getKeyStroke( KeyEvent.VK_W, PROC_MODIF ) },
 		{ new StringItem( "Hilbert",		MI_HILBERT ),		KeyStroke.getKeyStroke( KeyEvent.VK_H, PROC_MODIF ) },
 		{ new StringItem( "Mosaic",			MI_MOSAIC ),		null },
-		{ new StringItem( "SonagramExport",	MI_SONAGRAMEXP ),	null }
+		{ new StringItem( "SonagramExport",	MI_SONAGRAMEXP ),	null },
+		{ new StringItem( "Bleach",			MI_BLEACH ),		null }
 	},{
 		{ M_MOD_BANDS },
 		{ new StringItem( "BandSplit",		MI_BANDSPLIT ),		KeyStroke.getKeyStroke( KeyEvent.VK_S, PROC_MODIF ) },
