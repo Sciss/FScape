@@ -399,6 +399,22 @@ public class Util
 		}
 	}
 	
+	public static void reverse( double[][] a, int off, int length )
+	{
+		final int last = off + length - 1;
+		double tmp;
+		double[] b;
+		
+		for( int k = 0; k < a.length; k++ ) {
+			b = a[ k ];
+			for( int i = off, j = last; i < j; i++, j-- ) {
+				tmp = b[ i ];
+				b[ i ] = b[ j ];
+				b[ j ] = tmp;
+			}
+		}
+	}
+	
 	public static float sum( float[] a, int off, int length )
 	{
 		double d = 0.0;

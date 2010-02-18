@@ -47,6 +47,7 @@ import de.sciss.fscape.io.GenericFile;
 import de.sciss.fscape.prop.Presets;
 import de.sciss.fscape.prop.PropertyArray;
 import de.sciss.fscape.session.DocumentFrame;
+import de.sciss.fscape.util.Debug;
 import de.sciss.fscape.util.Param;
 import de.sciss.fscape.util.ParamSpace;
 import de.sciss.fscape.util.Util;
@@ -76,16 +77,18 @@ extends DocumentFrame
 	private static final int PR_FEEDBACKGAIN		= 2;
 //	private static final int PR_ITERATIONS			= 3;
 	private static final int PR_USEANAASFLT			= 0;		// pr.bool
+//	private static final int PR_PRECALC				= 1;
 
-	private static final String PRN_ANAINFILE		= "InFitFile";
+	private static final String PRN_ANAINFILE		= "AnaInFile";
+	private static final String PRN_FLTINFILE		= "FltInFile";
 	private static final String PRN_OUTPUTFILE		= "OutputFile";
-	private static final String PRN_FLTINFILE		= "InPopFile";
 	private static final String PRN_OUTPUTTYPE		= "OutputType";
 	private static final String PRN_OUTPUTRES		= "OutputReso";
-	private static final String PRN_FILTERLENGTH	= "CrossPoints";
+	private static final String PRN_FILTERLENGTH	= "FilterLength";
 //	private static final String PRN_ITERATIONS		= "Iterations";
-	private static final String PRN_FEEDBACKGAIN	= "MutaAmount";
-	private static final String PRN_USEANAASFLT		= "Elitism";
+	private static final String PRN_FEEDBACKGAIN	= "FeedbackGain";
+	private static final String PRN_USEANAASFLT		= "UseAnaAsFilter";
+//	private static final String PRN_PRECALC			= "PreCalc";
 
 	private static final String	prText[]		= { "", "", "" };
 	private static final String	prTextName[]	= { PRN_ANAINFILE, PRN_FLTINFILE, PRN_OUTPUTFILE };
@@ -93,8 +96,8 @@ extends DocumentFrame
 	private static final String	prIntgName[]	= { PRN_OUTPUTTYPE, PRN_OUTPUTRES, PRN_GAINTYPE };
 	private static final Param	prPara[]		= { null, null, null };
 	private static final String	prParaName[]	= { PRN_GAIN, PRN_FILTERLENGTH, PRN_FEEDBACKGAIN };
-	private static final boolean prBool[]		= { true };
-	private static final String	prBoolName[]	= { PRN_USEANAASFLT };
+	private static final boolean prBool[]		= { true /*, true*/ };
+	private static final String	prBoolName[]	= { PRN_USEANAASFLT /*, PRN_PRECALC*/ };
 
 	private static final int GG_ANAINFILE		= GG_OFF_PATHFIELD	+ PR_ANAINFILE;
 	private static final int GG_FLTINFILE		= GG_OFF_PATHFIELD	+ PR_FLTINFILE;
@@ -107,6 +110,7 @@ extends DocumentFrame
 //	private static final int GG_ITERATIONS		= GG_OFF_PARAMFIELD	+ PR_ITERATIONS;
 	private static final int GG_FEEDBACKGAIN	= GG_OFF_PARAMFIELD	+ PR_FEEDBACKGAIN;
 	private static final int GG_USEANAASFLT		= GG_OFF_CHECKBOX	+ PR_USEANAASFLT;
+//	private static final int GG_PRECALC			= GG_OFF_CHECKBOX	+ PR_PRECALC;
 
 	private static	PropertyArray	static_pr		= null;
 	private static	Presets			static_presets	= null;
@@ -153,6 +157,7 @@ extends DocumentFrame
 		final PathField		ggAnaInFile, ggOutputFile, ggFltInFile;
 		final PathField[]	ggInputs;
 		final JCheckBox		ggUseAnaAsFlt;
+//		final JCheckBox		ggPreCalc;
 		final Component[]	ggGain;
 		final ParamField	ggFilterLength, ggFeedbackGain;
 		final ParamSpace	spcFeedbackGain;
@@ -187,7 +192,7 @@ extends DocumentFrame
 		ggAnaInFile.handleTypes( GenericFile.TYPES_SOUND );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Analysis Input", SwingConstants.RIGHT ));
+		gui.addLabel( new JLabel( "Analysis Input:", SwingConstants.RIGHT ));
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
 		gui.addPathField( ggAnaInFile, GG_ANAINFILE, null );
@@ -265,6 +270,14 @@ extends DocumentFrame
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggFeedbackGain, GG_FEEDBACKGAIN, null );
+
+//		con.gridwidth	= 1;
+//		con.weightx		= 0.1;
+//		gui.addLabel( new JLabel( "Pre-Calc Initial Filter:", SwingConstants.RIGHT ));
+//		con.gridwidth	= GridBagConstraints.REMAINDER;
+//		con.weightx		= 0.9;
+//		ggPreCalc		= new JCheckBox();
+//		gui.addCheckbox( ggPreCalc, GG_PRECALC, null );
 		
 		reflectPropertyChanges();
 		
@@ -309,6 +322,8 @@ extends DocumentFrame
 		final double[][]		fltKernel;
 		final float[][]			anaBuf, outBuf, fltBuf;
 		final boolean			absGain			= pr.intg[ PR_GAINTYPE ] == GAIN_ABSOLUTE;
+//		final boolean			preCalc			= pr.bool[ PR_PRECALC ];
+		final boolean			preCalc			= false; // XXX man this shit doesn't do anything. but why???
 		
 		long					framesRead, framesWritten, progOff, progLen;
 		int						chunkLen;
@@ -376,11 +391,94 @@ topLevel: try {
 			}
 
 			// ---- main loop ----
-			framesWritten	= 0L;
-			framesRead		= 0L;
 			progLen			= numFrames * 3 + (absGain ? 0L : numFrames);
 			progOff			= 0L;
 			
+//			R = exp( -SampleDur/t )
+//			t60 = 6.91t
+//			log R = -SampleDur * 6.91 / t60
+//			t60 = -SampleDur * 6.91 / log R
+//			t60 = -(1/SampleRate) * 6.91 / log R
+//			t60 = -(1/SampleRate) * 6.91 / log R
+//			t60 = -6.91 / (log R * SampleRate)
+//			frames = -6.91 / log R
+//			R == (1-r) ???
+//			r = -50.dbamp
+//			-6.91 / log( (1-r) )
+//			r = -80.dbamp
+//			-6.91 / log( (1-r) )
+			if( preCalc ) { // precalc going backwards to the beginning
+//				final long preFrames = Math.max( 0, Math.min( numFrames,
+//				    (long) (-6.91 / Math.log( 1 - feedbackGain ))));
+				final long preFrames = numFrames;
+				progLen += preFrames * 2;
+				framesRead = 0L;
+//System.out.println( "preFrames = " + preFrames );
+				while( threadRunning && (framesRead < preFrames) ) {
+					// read input
+					chunkLen = (int) Math.min( 8192, preFrames - framesRead );
+					anaInF.seekFrame( preFrames - framesRead - chunkLen );
+					anaInF.readFrames( anaBuf, fltLength, chunkLen );
+					framesRead += chunkLen;
+					progOff    += chunkLen;
+
+				if( framesRead == chunkLen ) {
+					final float[] tmp = new float[ anaBuf[ 0 ].length ];
+					for( int i = 0; i < tmp.length; i++ ) {
+						tmp[ i ] = anaBuf[ 0 ][ i ];
+					}
+					Debug.view( tmp, 0, tmp.length, "Fwd" );
+				}
+					
+					Util.reverse( anaBuf, fltLength, chunkLen );
+
+				if( framesRead == chunkLen ) {
+					final float[] tmp = new float[ anaBuf[ 0 ].length ];
+					for( int i = 0; i < tmp.length; i++ ) {
+						tmp[ i ] = anaBuf[ 0 ][ i ];
+					}
+					Debug.view( tmp, 0, tmp.length, "Bwd" );
+				}
+				
+					// process
+					for( int ch = 0; ch < numCh; ch++ ) {
+						anaChanBuf		= anaBuf[ ch ];
+						fltChanKernel	= fltKernel[ ch ];
+						for( int i = 0, k = 0; i < chunkLen; i++ ) {
+							// calc error
+							d1 = 0.0;
+							k  = i;
+							for( int j = 0; j < fltLength; j++, k++ ) {
+								d1 += anaChanBuf[ k ] * fltChanKernel[ j ]; 
+							}
+							errNeg = anaChanBuf[ k ] - d1;
+							// update kernel
+							d1 = errNeg * feedbackGain;
+							k = i;
+							for( int j = 0; j < fltLength; j++, k++ ) {
+								fltChanKernel[ j ] += d1 * anaChanBuf[ k ];
+							}
+						}
+					}
+					progOff += chunkLen;
+				// .... progress ....
+					setProgression( (float) progOff / (float) progLen );
+				}
+			// .... check running ....
+				if( !threadRunning ) break topLevel;
+				
+				Util.reverse( fltKernel, 0, fltLength );
+				anaInF.seekFrame( 0L );
+				
+				final float[] tmp = new float[ fltLength ];
+				for( int i = 0; i < fltLength; i++ ) {
+					tmp[ i ] = (float) fltKernel[ 0 ][ i ];
+				}
+				Debug.view( tmp, 0, fltLength, "Kernel" );
+			}
+			
+			framesWritten	= 0L;
+			framesRead		= 0L;
 			while( threadRunning && (framesWritten < numFrames) ) {
 				// read input
 				chunkLen = (int) Math.min( 8192, numFrames - framesRead );
@@ -389,7 +487,7 @@ topLevel: try {
 					fltInF.readFrames( fltBuf, fltLength, chunkLen );
 				}
 				framesRead += chunkLen;
-				progOff += chunkLen;
+				progOff    += chunkLen;
 				
 				// process
 				for( int ch = 0; ch < numCh; ch++ ) {
@@ -445,7 +543,7 @@ topLevel: try {
 					tmpF.writeFrames( outBuf, 0, chunkLen );
 				}
 				framesWritten += chunkLen;
-				progOff += chunkLen;
+				progOff       += chunkLen;
 			// .... progress ....
 				setProgression( (float) progOff / (float) progLen );
 			}

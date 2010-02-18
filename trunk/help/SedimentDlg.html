@@ -1,0 +1,23 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+        "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<HTML><HEAD>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
+	<TITLE>FScape Help : Sediment</TITLE>
+</HEAD>
+<BODY>
+<H2>Sediment</H2>
+<BLOCKQUOTE>
+Spreads crumbles of one file (pattern) across the timeline of another (control).
+</BLOCKQUOTE>
+<P>To do so, a multipass process is applied: For the duration of the pattern file, sequentially a grain is extracted from this file, having a random duration within the given limits. Next, the whole control file is traversed and the pattern grain correlated against it. The "best" matching position is memorized and the grain is "plotted" at this position in the output file, potentially scaled due to the time-scale setting.
+</P>
+<P>
+Automatic gain control is employed to match the pattern and control grain, where the boosting of the pattern grain is limited by the max-boost setting. To avoid clicks, the an envelope is applied to each pattern grain, using a fade-length determined by the win-size setting. 
+</P>
+<P>
+Determination of the "best" match in multichannel situations is controlled by the multichannel-correlation setting. Finally, the clump parameter can be used to speed up processing. The clump size determines how many grains are generated for each pass through the control file. At the small disadvantage of having several grains of exactly the same size, this clumping saves FFT calculations in the generation of the control file spectra.
+</P>
+<HR>
+<P><EM>last modified:</EM> 18-Feb-10</P>
+</BODY>
+</HTML>
