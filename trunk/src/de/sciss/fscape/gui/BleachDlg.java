@@ -77,7 +77,7 @@ extends DocumentFrame
 	private static final int PR_FEEDBACKGAIN		= 2;
 	private static final int PR_FILTERCLIP			= 3;
 	private static final int PR_USEANAASFLT			= 0;		// pr.bool
-//	private static final int PR_PRECALC				= 1;
+	private static final int PR_INVERSE				= 1;
 
 	private static final String PRN_ANAINFILE		= "AnaInFile";
 	private static final String PRN_FLTINFILE		= "FltInFile";
@@ -88,7 +88,7 @@ extends DocumentFrame
 	private static final String PRN_FILTERCLIP		= "FilterClip";
 	private static final String PRN_FEEDBACKGAIN	= "FeedbackGain";
 	private static final String PRN_USEANAASFLT		= "UseAnaAsFilter";
-//	private static final String PRN_PRECALC			= "PreCalc";
+	private static final String PRN_INVERSE			= "Inverse";
 
 	private static final String	prText[]		= { "", "", "" };
 	private static final String	prTextName[]	= { PRN_ANAINFILE, PRN_FLTINFILE, PRN_OUTPUTFILE };
@@ -96,8 +96,8 @@ extends DocumentFrame
 	private static final String	prIntgName[]	= { PRN_OUTPUTTYPE, PRN_OUTPUTRES, PRN_GAINTYPE };
 	private static final Param	prPara[]		= { null, null, null, null };
 	private static final String	prParaName[]	= { PRN_GAIN, PRN_FILTERLENGTH, PRN_FEEDBACKGAIN, PRN_FILTERCLIP };
-	private static final boolean prBool[]		= { true /*, true*/ };
-	private static final String	prBoolName[]	= { PRN_USEANAASFLT /*, PRN_PRECALC*/ };
+	private static final boolean prBool[]		= { true, false };
+	private static final String	prBoolName[]	= { PRN_USEANAASFLT, PRN_INVERSE };
 
 	private static final int GG_ANAINFILE		= GG_OFF_PATHFIELD	+ PR_ANAINFILE;
 	private static final int GG_FLTINFILE		= GG_OFF_PATHFIELD	+ PR_FLTINFILE;
@@ -110,7 +110,7 @@ extends DocumentFrame
 	private static final int GG_FILTERCLIP		= GG_OFF_PARAMFIELD	+ PR_FILTERCLIP;
 	private static final int GG_FEEDBACKGAIN	= GG_OFF_PARAMFIELD	+ PR_FEEDBACKGAIN;
 	private static final int GG_USEANAASFLT		= GG_OFF_CHECKBOX	+ PR_USEANAASFLT;
-//	private static final int GG_PRECALC			= GG_OFF_CHECKBOX	+ PR_PRECALC;
+	private static final int GG_INVERSE			= GG_OFF_CHECKBOX	+ PR_INVERSE;
 
 	private static	PropertyArray	static_pr		= null;
 	private static	Presets			static_presets	= null;
@@ -157,7 +157,7 @@ extends DocumentFrame
 		final PathField		ggAnaInFile, ggOutputFile, ggFltInFile;
 		final PathField[]	ggInputs;
 		final JCheckBox		ggUseAnaAsFlt;
-//		final JCheckBox		ggPreCalc;
+		final JCheckBox		ggInverse;
 		final Component[]	ggGain;
 		final ParamField	ggFilterLength, ggFeedbackGain, ggFilterClip;
 		final ParamSpace	spcFeedbackGain, spcFilterClip;
@@ -271,22 +271,19 @@ extends DocumentFrame
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggFeedbackGain, GG_FEEDBACKGAIN, null );
 
-//		con.gridwidth	= 1;
-//		con.weightx		= 0.1;
-//		gui.addLabel( new JLabel( "Pre-Calc Initial Filter:", SwingConstants.RIGHT ));
-//		con.gridwidth	= GridBagConstraints.REMAINDER;
-//		con.weightx		= 0.9;
-//		ggPreCalc		= new JCheckBox();
-//		gui.addCheckbox( ggPreCalc, GG_PRECALC, null );
-
 		spcFilterClip	= new ParamSpace( 0.0, Double.POSITIVE_INFINITY, 0.1, Param.DECIBEL_AMP );
 		ggFilterClip	= new ParamField( spcFilterClip );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
 		gui.addLabel( new JLabel( "Filter Clip:", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
-		con.gridwidth	= GridBagConstraints.REMAINDER;
+//		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggFilterClip, GG_FILTERCLIP, null );
+
+		ggInverse		= new JCheckBox( "Inverse Operation (Colorize)" );
+		con.weightx		= 0.9;
+		con.gridwidth	= GridBagConstraints.REMAINDER;
+		gui.addCheckbox( ggInverse, GG_INVERSE, null );
 		
 		reflectPropertyChanges();
 		
@@ -334,6 +331,7 @@ extends DocumentFrame
 		final double			filterMax		= (Param.transform( pr.para[ PR_FILTERCLIP ], Param.ABS_AMP, ampRef, null )).val;
 		final double			filterMin		= -filterMax;
 //		final boolean			preCalc			= pr.bool[ PR_PRECALC ];
+		final boolean			inverse			= pr.bool[ PR_INVERSE ];
 		final boolean			preCalc			= false; // XXX man this shit doesn't do anything. but why???
 		
 		long					framesRead, framesWritten, progOff, progLen;
@@ -518,14 +516,14 @@ System.out.println( "FLIP CLIP NOT YET SUPPORTED HERE" );
 						errNeg = anaChanBuf[ k ] - d1;
 						if( useAnaAsFilter ) {
 							// use straight as output...
-							outChanBuf[ i ] = (float) errNeg;
+							outChanBuf[ i ] = inverse ? (float) d1 : (float) errNeg;
 						} else {
 							// ...or calc output according to filter buffer
 							k  = i;
 							for( int j = 0; j < fltLength; j++, k++ ) {
 								d1 += fltChanBuf[ k ] * fltChanKernel[ j ]; 
 							}
-							outChanBuf[ i ] = (float) (fltChanBuf[ k ] - d1);
+							outChanBuf[ i ] = inverse ? (float) d1 : (float) (fltChanBuf[ k ] - d1);
 						}
 						
 						// update kernel
