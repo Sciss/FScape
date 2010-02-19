@@ -29,7 +29,6 @@
 package de.sciss.fscape.op;
 
 import java.io.*;
-import java.rmi.AlreadyBoundException;
 
 import de.sciss.fscape.gui.*;
 import de.sciss.fscape.prop.*;
@@ -481,7 +480,7 @@ Debug.view( fftBuf2, "time2" );
 			runQuit( e );
 			return;
 		}
-		catch( AlreadyBoundException e ) {
+		catch( SlotAlreadyConnectedException e ) {
 			runQuit( e );
 			return;
 		}

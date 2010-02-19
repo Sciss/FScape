@@ -32,6 +32,8 @@ import java.io.*;
 import java.rmi.*;
 import java.util.*;
 
+import de.sciss.fscape.op.SlotAlreadyConnectedException;
+
 public interface Slots
 {
 	// Flags
@@ -73,7 +75,7 @@ public interface Slots
 	 *	@param destName		Name des Ziel-Slots
 	 */
 	public void linkTo( String thisName, Slots destSlots, String destName )
-	throws SyncFailedException, AlreadyBoundException, NoSuchElementException;
+	throws SyncFailedException, SlotAlreadyConnectedException, NoSuchElementException;
 	
 	public void divorceFrom( String thisName, Slots srcSlots, String srcName )
 	throws NotBoundException, NoSuchElementException;

@@ -44,7 +44,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.io.SyncFailedException;
-import java.rmi.AlreadyBoundException;
 import java.rmi.NotBoundException;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -58,6 +57,7 @@ import javax.swing.JPanel;
 
 import de.sciss.app.AbstractApplication;
 import de.sciss.fscape.op.Operator;
+import de.sciss.fscape.op.SlotAlreadyConnectedException;
 import de.sciss.fscape.spect.SpectStreamSlot;
 import de.sciss.fscape.util.Slots;
 import de.sciss.gui.GUIUtil;
@@ -325,7 +325,7 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
 	public void linkOperators( SpectStreamSlot slot1, SpectStreamSlot slot2 )
 	throws NoSuchElementException,
 		   SyncFailedException,
-		   AlreadyBoundException
+		   SlotAlreadyConnectedException
 	{
 		SpectStreamSlot	foo;
 		OpConnector		con;
@@ -626,7 +626,7 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
 					newOp.dispose();
 					newOp = null;
 				}
-				catch( AlreadyBoundException e2 ) {}	// ist ok, weil schon vom clone() ein Alias erzeugt wurde
+				catch( SlotAlreadyConnectedException e2 ) {}	// ist ok, weil schon vom clone() ein Alias erzeugt wurde
 			}
 			
 		} else if( action == MI_REMOVE ) {							//-------- Remove --------
@@ -729,7 +729,7 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
 					}
 				}
 				catch( NotBoundException e2 ) {}		// whole lotta shakin
-				catch( AlreadyBoundException e3 ) {}	// whole lottaxception
+				catch( SlotAlreadyConnectedException e3 ) {}	// whole lottaxception
 				catch( SyncFailedException e4 ) {}
 				catch( NoSuchElementException e5 ) {}
 			}

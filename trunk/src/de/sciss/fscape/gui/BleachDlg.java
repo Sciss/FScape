@@ -75,7 +75,7 @@ extends DocumentFrame
 	private static final int PR_GAIN				= 0;		// pr.para
 	private static final int PR_FILTERLENGTH		= 1;
 	private static final int PR_FEEDBACKGAIN		= 2;
-//	private static final int PR_ITERATIONS			= 3;
+	private static final int PR_FILTERCLIP			= 3;
 	private static final int PR_USEANAASFLT			= 0;		// pr.bool
 //	private static final int PR_PRECALC				= 1;
 
@@ -85,7 +85,7 @@ extends DocumentFrame
 	private static final String PRN_OUTPUTTYPE		= "OutputType";
 	private static final String PRN_OUTPUTRES		= "OutputReso";
 	private static final String PRN_FILTERLENGTH	= "FilterLength";
-//	private static final String PRN_ITERATIONS		= "Iterations";
+	private static final String PRN_FILTERCLIP		= "FilterClip";
 	private static final String PRN_FEEDBACKGAIN	= "FeedbackGain";
 	private static final String PRN_USEANAASFLT		= "UseAnaAsFilter";
 //	private static final String PRN_PRECALC			= "PreCalc";
@@ -94,8 +94,8 @@ extends DocumentFrame
 	private static final String	prTextName[]	= { PRN_ANAINFILE, PRN_FLTINFILE, PRN_OUTPUTFILE };
 	private static final int	prIntg[]		= { 0, 0, GAIN_UNITY };
 	private static final String	prIntgName[]	= { PRN_OUTPUTTYPE, PRN_OUTPUTRES, PRN_GAINTYPE };
-	private static final Param	prPara[]		= { null, null, null };
-	private static final String	prParaName[]	= { PRN_GAIN, PRN_FILTERLENGTH, PRN_FEEDBACKGAIN };
+	private static final Param	prPara[]		= { null, null, null, null };
+	private static final String	prParaName[]	= { PRN_GAIN, PRN_FILTERLENGTH, PRN_FEEDBACKGAIN, PRN_FILTERCLIP };
 	private static final boolean prBool[]		= { true /*, true*/ };
 	private static final String	prBoolName[]	= { PRN_USEANAASFLT /*, PRN_PRECALC*/ };
 
@@ -107,7 +107,7 @@ extends DocumentFrame
 	private static final int GG_GAINTYPE		= GG_OFF_CHOICE		+ PR_GAINTYPE;
 	private static final int GG_GAIN			= GG_OFF_PARAMFIELD	+ PR_GAIN;
 	private static final int GG_FILTERLENGTH	= GG_OFF_PARAMFIELD	+ PR_FILTERLENGTH;
-//	private static final int GG_ITERATIONS		= GG_OFF_PARAMFIELD	+ PR_ITERATIONS;
+	private static final int GG_FILTERCLIP		= GG_OFF_PARAMFIELD	+ PR_FILTERCLIP;
 	private static final int GG_FEEDBACKGAIN	= GG_OFF_PARAMFIELD	+ PR_FEEDBACKGAIN;
 	private static final int GG_USEANAASFLT		= GG_OFF_CHECKBOX	+ PR_USEANAASFLT;
 //	private static final int GG_PRECALC			= GG_OFF_CHECKBOX	+ PR_PRECALC;
@@ -138,8 +138,8 @@ extends DocumentFrame
 			static_pr.boolName	= prBoolName;
 			static_pr.para		= prPara;
 			static_pr.para[ PR_FILTERLENGTH ]	= new Param(  441.0, Param.NONE );
-//			static_pr.para[ PR_ITERATIONS ]		= new Param(  300.0, Param.NONE );
 			static_pr.para[ PR_FEEDBACKGAIN ]	= new Param(  -60.0, Param.DECIBEL_AMP );
+			static_pr.para[ PR_FILTERCLIP ]		= new Param(   18.0, Param.DECIBEL_AMP );
 			static_pr.paraName	= prParaName;
 //			static_pr.superPr	= DocumentFrame.static_pr;
 
@@ -159,8 +159,8 @@ extends DocumentFrame
 		final JCheckBox		ggUseAnaAsFlt;
 //		final JCheckBox		ggPreCalc;
 		final Component[]	ggGain;
-		final ParamField	ggFilterLength, ggFeedbackGain;
-		final ParamSpace	spcFeedbackGain;
+		final ParamField	ggFilterLength, ggFeedbackGain, ggFilterClip;
+		final ParamSpace	spcFeedbackGain, spcFilterClip;
 
 		gui				= new GUISupport();
 		con				= gui.getGridBagConstraints();
@@ -278,6 +278,15 @@ extends DocumentFrame
 //		con.weightx		= 0.9;
 //		ggPreCalc		= new JCheckBox();
 //		gui.addCheckbox( ggPreCalc, GG_PRECALC, null );
+
+		spcFilterClip	= new ParamSpace( 0.0, Double.POSITIVE_INFINITY, 0.1, Param.DECIBEL_AMP );
+		ggFilterClip	= new ParamField( spcFilterClip );
+		con.gridwidth	= 1;
+		con.weightx		= 0.1;
+		gui.addLabel( new JLabel( "Filter Clip:", SwingConstants.RIGHT ));
+		con.weightx		= 0.4;
+		con.gridwidth	= GridBagConstraints.REMAINDER;
+		gui.addParamField( ggFilterClip, GG_FILTERCLIP, null );
 		
 		reflectPropertyChanges();
 		
@@ -322,6 +331,8 @@ extends DocumentFrame
 		final double[][]		fltKernel;
 		final float[][]			anaBuf, outBuf, fltBuf;
 		final boolean			absGain			= pr.intg[ PR_GAINTYPE ] == GAIN_ABSOLUTE;
+		final double			filterMax		= (Param.transform( pr.para[ PR_FILTERCLIP ], Param.ABS_AMP, ampRef, null )).val;
+		final double			filterMin		= -filterMax;
 //		final boolean			preCalc			= pr.bool[ PR_PRECALC ];
 		final boolean			preCalc			= false; // XXX man this shit doesn't do anything. but why???
 		
@@ -455,6 +466,7 @@ topLevel: try {
 							// update kernel
 							d1 = errNeg * feedbackGain;
 							k = i;
+System.out.println( "FLIP CLIP NOT YET SUPPORTED HERE" );
 							for( int j = 0; j < fltLength; j++, k++ ) {
 								fltChanKernel[ j ] += d1 * anaChanBuf[ k ];
 							}
@@ -520,7 +532,8 @@ topLevel: try {
 						d1 = errNeg * feedbackGain;
 						k = i;
 						for( int j = 0; j < fltLength; j++, k++ ) {
-							fltChanKernel[ j ] += d1 * anaChanBuf[ k ];
+							fltChanKernel[ j ] = Math.max( filterMin, Math.min( filterMax,
+							    fltChanKernel[ j ] + d1 * anaChanBuf[ k ]));
 						}
 					}
 				}

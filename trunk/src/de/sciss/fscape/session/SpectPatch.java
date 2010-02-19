@@ -31,7 +31,6 @@ package de.sciss.fscape.session;
 
 import java.awt.*;
 import java.io.*;
-import java.rmi.AlreadyBoundException;
 import java.util.*;
 
 import de.sciss.common.AppWindow;
@@ -211,7 +210,7 @@ public class SpectPatch
 										}
 									}
 								}
-								catch( AlreadyBoundException e ) {
+								catch( SlotAlreadyConnectedException e ) {
 									success = false;		// noch nichts genaueres XXX
 								}
 								catch( NoSuchElementException e ) {
@@ -245,7 +244,7 @@ public class SpectPatch
 									op2		= (Operator) tempOps.elementAt( op2ID );
 									op2.turnIntoAlias( op );
 								}
-								catch( AlreadyBoundException e ) {
+								catch( SlotAlreadyConnectedException e ) {
 									success = false;		// noch nichts genaueres XXX
 								}
 								catch( SyncFailedException e ) {
@@ -270,7 +269,7 @@ public class SpectPatch
 								op2		= (Operator) tempOps.elementAt( op2ID );
 								op.turnIntoAlias( op2 );
 							}
-							catch( AlreadyBoundException e ) {
+							catch( SlotAlreadyConnectedException e ) {
 								success = false;		// noch nichts genaueres XXX
 							}
 							catch( SyncFailedException e ) {

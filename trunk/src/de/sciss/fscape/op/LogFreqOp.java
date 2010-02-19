@@ -30,7 +30,6 @@ package de.sciss.fscape.op;
 
 import java.io.EOFException;
 import java.io.IOException;
-import java.rmi.AlreadyBoundException;
 import java.util.Random;
 
 import de.sciss.fscape.gui.GroupLabel;
@@ -376,7 +375,7 @@ mainLoop:	while( !threadDead ) {
 			runQuit( e );
 			return;
 		}
-		catch( AlreadyBoundException e ) {
+		catch( SlotAlreadyConnectedException e ) {
 			runQuit( e );
 			return;
 		}

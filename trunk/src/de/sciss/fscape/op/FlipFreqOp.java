@@ -29,7 +29,6 @@
 package de.sciss.fscape.op;
 
 import java.io.*;
-import java.rmi.AlreadyBoundException;
 
 import de.sciss.fscape.gui.*;
 import de.sciss.fscape.prop.*;
@@ -483,7 +482,7 @@ bandLp:			for( int band = 0; band < runInStream.bands; band++ ) {
 			runQuit( e );
 			return;
 		}
-		catch( AlreadyBoundException e ) {
+		catch( SlotAlreadyConnectedException e ) {
 			runQuit( e );
 			return;
 		}

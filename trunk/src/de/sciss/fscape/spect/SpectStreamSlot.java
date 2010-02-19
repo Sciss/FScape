@@ -131,10 +131,10 @@ public class SpectStreamSlot
 	 */
 	public void linkTo( SpectStreamSlot dest )
 	throws	SyncFailedException,
-			AlreadyBoundException
+			SlotAlreadyConnectedException
 	{
 		if( (this.linked != null) || (dest.linked != null) ) {
-			throw new AlreadyBoundException();
+			throw new SlotAlreadyConnectedException();
 		}
 		if( (this.flags & Slots.SLOTS_TYPEMASK) == (dest.flags & Slots.SLOTS_TYPEMASK) ) {
 			throw new SyncFailedException( "" );
@@ -177,14 +177,14 @@ public class SpectStreamSlot
 	 *	diese Methode ruft SpectStream.initWriter() auf! Siehe dort fuer Details
 	 *	wenn ein Reader auf den Stream wartet, wird ihm das signalisiert
 	 *
-	 *	erzeugt eine AlreadyBoundException, wenn der Slot bereits einen Stream fuehrt
+	 *	erzeugt eine SlotAlreadyConnectedException, wenn der Slot bereits einen Stream fuehrt
 	 */
 	public void initWriter( SpectStream strm )
-	throws AlreadyBoundException
+	throws SlotAlreadyConnectedException
 	{
 		synchronized( this ) {
 			if( stream != null ) {			// nanu, schon ein Stream präsent?!
-				throw new AlreadyBoundException( ERR_STILLINUSE );
+				throw new SlotAlreadyConnectedException( ERR_STILLINUSE );
 			}
 			strm.initWriter();
 			ownerThread	= Thread.currentThread();

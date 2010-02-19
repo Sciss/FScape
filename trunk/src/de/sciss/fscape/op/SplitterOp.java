@@ -29,7 +29,6 @@
 package de.sciss.fscape.op;
 
 import java.io.*;
-import java.rmi.AlreadyBoundException;
 
 import de.sciss.fscape.gui.*;
 import de.sciss.fscape.prop.*;
@@ -403,7 +402,7 @@ calcFrame:		for( int i = 0; i < numOut; i++ ) {
 			runQuit( e );
 			return;
 		}
-		catch( AlreadyBoundException e ) {
+		catch( SlotAlreadyConnectedException e ) {
 			runQuit( e );
 			return;
 		}

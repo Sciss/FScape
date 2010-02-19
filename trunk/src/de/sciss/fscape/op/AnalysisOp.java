@@ -33,7 +33,6 @@ import java.awt.FileDialog;
 import java.awt.Frame;
 import java.io.File;
 import java.io.IOException;
-import java.rmi.AlreadyBoundException;
 
 import de.sciss.fscape.gui.GroupLabel;
 import de.sciss.fscape.gui.OpIcon;
@@ -644,7 +643,7 @@ k = 0;
 			runQuit( e );
 			return;
 		}
-		catch( AlreadyBoundException e ) {
+		catch( SlotAlreadyConnectedException e ) {
 			if( runFile != null ) {
 				runFile.cleanUp();
 			}

@@ -278,12 +278,13 @@ extends IconicComponent
 		final int		prog	= (int) (op.getProgress() * 360);
 		final Graphics	g2		= g != null ? g : getGraphics();
 
-		g2.setColor( progColor );
-		g2.drawArc( 1, 1, ICON_WIDTH - 2, ICON_HEIGHT - 2, 90, prog );
-		g2.drawArc( 2, 2, ICON_WIDTH - 4, ICON_HEIGHT - 4, 90, prog );
-
-		if( g == null ) {
-			g2.dispose();
+		if( g2 != null ) {
+			g2.setColor( progColor );
+			g2.drawArc( 1, 1, ICON_WIDTH - 2, ICON_HEIGHT - 2, 90, prog );
+			g2.drawArc( 2, 2, ICON_WIDTH - 4, ICON_HEIGHT - 4, 90, prog );
+			if( g == null ) {
+				g2.dispose();
+			}
 		}
 	}
 

@@ -30,7 +30,6 @@ package de.sciss.fscape.op;
 
 import java.awt.*;
 import java.io.*;
-import java.rmi.AlreadyBoundException;
 
 import de.sciss.fscape.gui.*;
 import de.sciss.fscape.io.GenericFile;
@@ -276,7 +275,7 @@ extends Operator
 			runQuit( e );
 			return;
 		}
-		catch( AlreadyBoundException e ) {
+		catch( SlotAlreadyConnectedException e ) {
 			if( runFile != null ) {
 				runFile.cleanUp();
 			}

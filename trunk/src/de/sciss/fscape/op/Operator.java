@@ -34,7 +34,6 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.io.SyncFailedException;
-import java.rmi.AlreadyBoundException;
 import java.rmi.NotBoundException;
 import java.util.Enumeration;
 import java.util.Map;
@@ -234,6 +233,7 @@ implements Runnable, Slots, Cloneable, Transferable
 			OPERATORS.put( "Tarnish", "TarnishOp" );
 			OPERATORS.put( "Percussion", "PercussionOp" );
 			OPERATORS.put( "Mindmachine", "MindmachineOp" );
+			OPERATORS.put( "Amp Env", "AmpEnvOp" );
 		}
 		return OPERATORS;
 	}
@@ -308,10 +308,10 @@ implements Runnable, Slots, Cloneable, Transferable
 	 *	Erklaert diesen Operator zu einem Alias
 	 *
 	 *	SyncFailedException, wenn "original" nicht dieselben Operator-Subklasse
-	 *	AlreadyBoundException, wenn dieser Op schon ein Alias ist
+	 *	SlotAlreadyConnectedException, wenn dieser Op schon ein Alias ist
 	 */
 	public void turnIntoAlias( Operator orig )
-	throws SyncFailedException, AlreadyBoundException
+	throws SyncFailedException, SlotAlreadyConnectedException
 	{
 		while( orig.getOriginal() != null ) {
 			orig = orig.getOriginal();
@@ -321,7 +321,7 @@ implements Runnable, Slots, Cloneable, Transferable
 			throw new SyncFailedException( ERR_ALIASSYNC );
 		}
 		if( original != null ) {
-			throw new AlreadyBoundException( ERR_ALREADYALIAS );
+			throw new SlotAlreadyConnectedException( ERR_ALREADYALIAS );
 		}
 
 		original = orig;
@@ -572,7 +572,7 @@ System.out.println( icon.getName() + ": aborted because of: " +threadError );
 	}
 
 	public void linkTo( String thisName, Slots destSlots, String destName )
-	throws SyncFailedException, AlreadyBoundException, NoSuchElementException
+	throws SyncFailedException, SlotAlreadyConnectedException, NoSuchElementException
 	{
 		throw new NoSuchElementException();
 	}
@@ -610,7 +610,7 @@ System.out.println( icon.getName() + ": aborted because of: " +threadError );
 		catch( SyncFailedException e3 ) {
 			op.dispose();
 		}
-		catch( AlreadyBoundException e4 ) {
+		catch( SlotAlreadyConnectedException e4 ) {
 			op.dispose();
 		}
 		
