@@ -75,7 +75,7 @@
 			<string>true</string>
 		</dict>
 		<key>VMOptions</key>
-		<string>-Xmx512m -ea</string>
+		<string>-Xmx1024m -ea</string>
 	</dict>
 	<key>NSJavaNeeded</key>
 	<string>YES</string>
