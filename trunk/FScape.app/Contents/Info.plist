@@ -38,7 +38,7 @@
 	<key>CFBundleExecutable</key>
 	<string>FScape</string>
 	<key>CFBundleGetInfoString</key>
-	<string>FScape v0.73, Copyright (c) 2001-2009 by Hanns Holger Rutz. All rights reserved.</string>
+	<string>FScape v0.73, Copyright (c) 2001-2010 by Hanns Holger Rutz. All rights reserved.</string>
 	<key>CFBundleIconFile</key>
 	<string>application.icns</string>
 	<key>CFBundleInfoDictionaryVersion</key>
