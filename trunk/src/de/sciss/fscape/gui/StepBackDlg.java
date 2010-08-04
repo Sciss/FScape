@@ -24,6 +24,7 @@
  *
  *
  *  Changelog:
+ *  	04-Aug-10	corrected marker position (we lost one stepsize per marker)
  */
 
 package de.sciss.fscape.gui;
@@ -52,7 +53,7 @@ import de.sciss.io.Marker;
  *	time slices.
  *
  *  @author		Hanns Holger Rutz
- *  @version	0.64, 06-Dec-04
+ *  @version	0.64, 04-Aug-10
  */
 public class StepBackDlg
 extends DocumentFrame
@@ -625,7 +626,8 @@ findMinLp:					for( j = 0; j < xcorrs.length; j++ ) {
 						} else {
 							j		 = Math.min( inLength, Math.max( 0, inLength - lastCut * corrStep - cutOffset ));	// sample position
 						}
-						lastCut		+= minSpacing + minLoc;
+//						lastCut		+= minSpacing + minLoc;
+						lastCut		+= minSpacing + minLoc + 1; // XXX why + 1? 
 						if( pr.intg[ PR_MODE ] == MODE_RNDDECON ) {
 							k		 = (int) (rnd.nextFloat() * numCuts + 0.5f);
 							markers.add( k, new Marker( j, MARK_CUT ));
