@@ -211,8 +211,8 @@ extends DocumentFrame
 			static_pr.para		= prPara;
 			static_pr.para[ PR_INPUTGAIN1 ]	= new Param(   0.0, Param.DECIBEL_AMP );
 			static_pr.para[ PR_INPUTGAIN2 ]	= new Param(   0.0, Param.DECIBEL_AMP );
-			static_pr.para[ PR_OFFSET1 ]	= new Param(   0.0, Param.OFFSET_MS );
-			static_pr.para[ PR_OFFSET2 ]	= new Param(   0.0, Param.OFFSET_MS );
+			static_pr.para[ PR_OFFSET1 ]	= new Param(   0.0, Param.ABS_MS );
+			static_pr.para[ PR_OFFSET2 ]	= new Param(   0.0, Param.ABS_MS );
 			static_pr.para[ PR_LENGTH1 ]	= new Param( 100.0, Param.FACTOR_TIME );
 			static_pr.para[ PR_LENGTH2 ]	= new Param( 100.0, Param.FACTOR_TIME );
 			static_pr.para[ PR_DRYMIX ]		= new Param(   0.0, Param.FACTOR_AMP );
@@ -265,9 +265,12 @@ extends DocumentFrame
 		
 	// -------- Input-Gadgets --------
 		spcOffset		= new ParamSpace[ 3 ];
-		spcOffset[0]	= Constants.spaces[ Constants.offsetMsSpace ];
-		spcOffset[1]	= Constants.spaces[ Constants.offsetBeatsSpace ];
-		spcOffset[2]	= Constants.spaces[ Constants.offsetTimeSpace ];
+		spcOffset[0]	= new ParamSpace( -36000000.0, 36000000.0, 0.1,   Param.ABS_MS );	// allow negative offset
+		spcOffset[1]	= new ParamSpace(   -240000.0,   240000.0, 0.001, Param.ABS_BEATS );
+		spcOffset[2]	= new ParamSpace(	   -100.0,      100.0, 0.01,  Param.FACTOR_TIME );
+//		spcOffset[0]	= Constants.spaces[ Constants.offsetMsSpace ];
+//		spcOffset[1]	= Constants.spaces[ Constants.offsetBeatsSpace ];
+//		spcOffset[2]	= Constants.spaces[ Constants.offsetTimeSpace ];
 		spcLength		= new ParamSpace[ 4 ];
 		spcLength[0]	= Constants.spaces[ Constants.absMsSpace ];
 		spcLength[1]	= Constants.spaces[ Constants.absBeatsSpace ];
@@ -524,12 +527,14 @@ topLevel: try {
 					inLength[op]	= (int) Math.min( inLength[op], imInStream[op].length );
 				}
 
+				final Param lenRef = new Param(
+				   AudioFileDescr.samplesToMillis( reInStream[op], inLength[op] ), Param.ABS_MS );
 				j				= (int) (AudioFileDescr.millisToSamples( reInStream[op],
 										 (Param.transform( pr.para[ PR_OFFSET1 + op], Param.ABS_MS,
-										  new Param( 0.0, Param.ABS_MS ), null )).val ) + 0.5);
+										                   lenRef, null )).val ) + 0.5);
 				length[op]		= (int) (AudioFileDescr.millisToSamples( reInStream[op],
 										 (Param.transform( pr.para[ PR_LENGTH1 + op], Param.ABS_MS,
-										  new Param( AudioFileDescr.samplesToMillis( reInStream[op], inLength[op] ), Param.ABS_MS ),
+										  lenRef,
 										  null )).val ) + 0.5);
 
 				if( j >= 0 ) {
