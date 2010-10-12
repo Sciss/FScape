@@ -376,7 +376,7 @@ topLevel: try {
 			fadeInOff	= postPos ? initialSkip : initialSkip - fadeLen;
 			fadeOutOff	= postPos ? inLength - finalSkip : inLength - finalSkip - fadeLen;
 
-System.err.println( "copyOff = "+copyOff+"; fadeInOff = "+fadeInOff+"; fadeOutOff = "+fadeOutOff+"; copyLen = "+copyLen );
+//System.err.println( "copyOff = "+copyOff+"; fadeInOff = "+fadeInOff+"; fadeOutOff = "+fadeOutOff+"; copyLen = "+copyLen );
 
 			// output
 			ggOutput	= (PathField) gui.getItemObj( GG_OUTPUTFILE );

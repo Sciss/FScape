@@ -136,6 +136,7 @@ extends BasicMenuFactory
 	private static final String MI_LUECKENBUESSER = "L\u00FCckenb\u00FC\u00DFer";
 	private static final String MI_PEARSONPLOT	="Pearson Plotter";
 	private static final String MI_SEDIMENT		="Sediment";
+	private static final String MI_DRMURKE		="Dr Murke";
 	
 	private static final String M_MOD_BETA		= "Unfinished";
 	private static final String MI_SMPSYN		= "Sample Synthesis";
@@ -245,7 +246,8 @@ extends BasicMenuFactory
 		{ M_MOD_BETA },
 		{ new StringItem( "SmpSyn",			MI_SMPSYN ),		null },
 		{ new StringItem( "TransientExtr",	MI_TRANSEXTR ),		null },
-		{ new StringItem( "LPFilter",		MI_LPFILTER ),		null }
+		{ new StringItem( "LPFilter",		MI_LPFILTER ),		null },
+		{ new StringItem( "DrMurke",		MI_DRMURKE),		null }
 	},{
 		{},
 		{ new StringItem( "Batch",			MI_BATCH ),			KeyStroke.getKeyStroke( KeyEvent.VK_9, PROC_MODIF ) },
