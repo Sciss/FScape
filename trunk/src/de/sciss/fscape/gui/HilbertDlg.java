@@ -400,7 +400,6 @@ topLevel: try {
 			ggOutput.fillStream( reOutStream );
 			reOutF		= AudioFile.openAsWrite( reOutStream );
 			if( pr.intg[ PR_MODE ] == MODE_UNTOUCHED ) {
-				if( ggOutput == null ) throw new IOException( ERR_MISSINGPROP );
 				imOutStream			= new AudioFileDescr( reOutStream );
 				imOutStream.file	= new File( pr.text[ PR_IMOUTPUTFILE ]);
 				imOutF				= AudioFile.openAsWrite( imOutStream );
