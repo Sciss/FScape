@@ -219,7 +219,8 @@ extends BasicMenuFactory
 		{ new StringItem( "SeekEnjoy",		MI_SEEKENJOY ),		null },
 		{ new StringItem( "Lueckenbuesser", MI_LUECKENBUESSER ),null },
 		{ new StringItem( "PearsonPlot",	MI_PEARSONPLOT ),	null },
-		{ new StringItem( "Sediment",		MI_SEDIMENT ),		null }
+		{ new StringItem( "Sediment",		MI_SEDIMENT ),		null },
+		{ new StringItem( "DrMurke",		MI_DRMURKE),		null }
 	},{
 		{ M_MOD_DIST },
 		{ new StringItem( "FreqMod",		MI_FREQMOD ),		KeyStroke.getKeyStroke( KeyEvent.VK_M, PROC_MODIF ) },
@@ -246,8 +247,7 @@ extends BasicMenuFactory
 		{ M_MOD_BETA },
 		{ new StringItem( "SmpSyn",			MI_SMPSYN ),		null },
 		{ new StringItem( "TransientExtr",	MI_TRANSEXTR ),		null },
-		{ new StringItem( "LPFilter",		MI_LPFILTER ),		null },
-		{ new StringItem( "DrMurke",		MI_DRMURKE),		null }
+		{ new StringItem( "LPFilter",		MI_LPFILTER ),		null }
 	},{
 		{},
 		{ new StringItem( "Batch",			MI_BATCH ),			KeyStroke.getKeyStroke( KeyEvent.VK_9, PROC_MODIF ) },

@@ -13,7 +13,7 @@
 	<property name="main-class"		value="de.sciss.fscape.Main"/>
 	<property name="lib.dir"		value="libraries"/>
 	<property name="libraries"		value="${lib.dir}/ScissLib.jar:${lib.dir}/MRJAdapter.jar:${lib.dir}/NetUtil.jar"/>
-	<property name="version"		value="0.73"/>
+	<property name="version"		value="0.74"/>
 	<property name="debug"			value="true"/>
 
 	<target name="clean">
@@ -76,7 +76,7 @@
 
 		<!-- BINARY WINDOWS VERSION -->
 		<zip destfile="${dist.dir}/${ant.project.name}-win-${version}.zip">
-			<zipfileset dir="${parent.dir}" includes="${folder.name}/${jar.file}, ${folder.name}/help/**, ${folder.name}/licenses/**, ${folder.name}/readme.html, ${folder.name}/sounds**, ${folder.name}/SuperCollider/**"/>
+			<zipfileset dir="${parent.dir}" includes="${folder.name}/${jar.file}, ${folder.name}/${ant.project.name}.ico, ${folder.name}/help/**, ${folder.name}/licenses/**, ${folder.name}/readme.html, ${folder.name}/sounds**, ${folder.name}/SuperCollider/**"/>
 		</zip>
 
 		<!-- BINARY LINUX VERSION -->
