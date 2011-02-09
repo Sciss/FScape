@@ -56,6 +56,7 @@ import javax.swing.KeyStroke;
 import de.sciss.fscape.Main;
 import de.sciss.fscape.prop.BasicProperties;
 import de.sciss.fscape.session.DocumentFrame;
+import de.sciss.fscape.session.DocumentHandler;
 import de.sciss.fscape.session.Session;
 import de.sciss.fscape.util.PrefsUtil;
 
@@ -449,13 +450,13 @@ if( doc.getFrame() == null ) {
 	public void openDocument( File f )
 	{
 //		actionOpen.perform( f );
-		openDocument( f, true );
+		openDocument( f, true, null );
 	}
 
 // FFFF
-	public void openDocument( File f, boolean visible )
+	public void openDocument( File f, boolean visible, DocumentHandler.OpenDoneHandler openDoneHandler )
 	{
-		actionOpen.perform( f, visible );
+		actionOpen.perform( f, visible, openDoneHandler );
 	}
 
 // FFFF
@@ -626,7 +627,7 @@ if( f.equals( doc.getFile() )) return doc;
 		public void actionPerformed( ActionEvent e )
 		{
 			File f = queryFile();
-			if( f != null ) perform( f, true );
+			if( f != null ) perform( f, true, null );
 		}
 
 		private File queryFile()
@@ -661,21 +662,19 @@ if( f.equals( doc.getFile() )) return doc;
 		 *  @synchronization	this method must be called in event thread
 		 */
 //		private ProcessingThread perform( File path )
-		protected void perform( File path, boolean visible )
+		protected void perform( File path, boolean visible, DocumentHandler.OpenDoneHandler openDoneHandler )
 		{
-			final ProcessingThread				pt;
-//			final Object[]						args	= new Object[ 4 ];
-			Session								doc;
-//			File								f;
+			final ProcessingThread pt;
 			
 			// check if the document is already open
-			doc = findDocumentForPath( path );
-			if( doc != null ) {
+			final Session docOld = findDocumentForPath( path );
+			if( docOld != null ) {
 				if( visible ) {
-					doc.getFrame().setVisible( true );
-					doc.getFrame().toFront();
+					docOld.getFrame().setVisible( true );
+					docOld.getFrame().toFront();
 				}
 //				return null;
+				if( openDoneHandler != null ) openDoneHandler.openSucceeded( docOld );
 				return;
 			}
 
@@ -694,9 +693,12 @@ pt.putClientArg( "visi", new Boolean( visible ));
 final int result = processRun( pt );
 if( result == DONE ) {
 	processFinished( pt );
+	final Session docNew = (Session) pt.getClientArg( "doc" );
+	if( openDoneHandler != null ) openDoneHandler.openSucceeded( docNew );
 } else {
 //	if( visible ) GUIUtil.displayError( null, (Exception) args[ 3 ], getValue( NAME ).toString() );
 	if( visible ) GUIUtil.displayError( null, pt.getException(), getValue( NAME ).toString() );
+	if( openDoneHandler != null ) openDoneHandler.openFailed();
 }
 
 //				return pt;
@@ -766,7 +768,7 @@ if( result == DONE ) {
 		public void processCancel( ProcessingThread pt ) {}
 		
 		/**
-		 *  When the sesion was successfully
+		 *  When the session was successfully
 		 *  loaded, its name will be put in the
 		 *  Open-Recent menu. All frames' bounds will be
 		 *  restored depending on the users preferences.

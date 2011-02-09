@@ -180,9 +180,10 @@ implements OSCRouter
 ////			OSCRoot.failedArgType( rom, 1 );
 ////		}
 //	}
-	public void oscCmd_open( RoutedOSCMessage rom )
+	public void oscCmd_open( final RoutedOSCMessage rom )
 	{
-		final boolean visible;
+		final boolean 	visible;
+		final int		numCopyArgs	= 2;  // 'open', path
 		int argIdx		= 1;
 		
 		try {
@@ -193,14 +194,25 @@ implements OSCRouter
 			} else {
 				visible = true;
 			}
-			((de.sciss.fscape.gui.MenuFactory) root.getMenuFactory()).openDocument( new File( path ), visible );
+			final OpenDoneHandler odh = new OpenDoneHandler() {
+				public void openSucceeded( Session doc ) {
+					rom.tryReplyDone( numCopyArgs, new Object[] { new Integer( doc.getNodeID() )});
+				}
+
+				public void openFailed() {
+					rom.tryReplyFailed( numCopyArgs );
+				}
+			};
+			((de.sciss.fscape.gui.MenuFactory) root.getMenuFactory()).openDocument( new File( path ), visible, odh );
 		}
 		catch( IndexOutOfBoundsException e1 ) {
 			OSCRoot.failedArgCount( rom );
+			rom.tryReplyFailed( numCopyArgs );
 			return;
 		}
 		catch( ClassCastException e1 ) {
 			OSCRoot.failedArgType( rom, argIdx );
+			rom.tryReplyFailed( numCopyArgs );
 		}
 	}
 
@@ -218,5 +230,10 @@ implements OSCRouter
 //		catch( ClassCastException e1 ) {
 //			OSCServer.failedArgType( rom, 1 );
 //		}
+	}
+	
+	public static interface OpenDoneHandler {
+		public void openSucceeded( Session doc );
+		public void openFailed();
 	}
 }

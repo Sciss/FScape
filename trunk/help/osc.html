@@ -6,7 +6,7 @@
 </head>
 <body>
 <h2>OSC Command Reference</h2>
-<P>as of: 24-jun-06<br>
+<P>as of: 09-feb-11<br>
 <b>warning:</b> OSC command set may be subject to changes.</P>
 <UL>
 <!-- <LI><CODE>/sync &lt;<VAR>id</VAR>&gt;   </CODE>// NOT YET WORKING</LI> -->
@@ -23,7 +23,7 @@
 </LI>
 <LI><CODE>/doc</CODE>
 <UL>
-<LI><CODE>open &lt;(String) <VAR>path</VAR>&gt; [&lt;(int) <VAR>visible</VAR>=(0|1)&gt;]</CODE></LI>
+<LI><CODE>open &lt;(String) <VAR>path</VAR>&gt; [&lt;(int) <VAR>visible</VAR>=(0|1)&gt;]</CODE><br>replies to sender with either <CODE>/done /doc open &lt;<VAR>path</VAR>&gt; &lt;<VAR>(Int) id</VAR>&gt; or <CODE>/failed /doc open &lt;<VAR>path</VAR>&gt;</LI>
 <LI><CODE>new &lt;(String) <VAR>processName</VAR>&gt;</CODE></LI>
 <LI>query properties:
 <TABLE>

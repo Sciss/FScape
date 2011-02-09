@@ -166,10 +166,18 @@ public class RoutedOSCMessage
 		server.send( new OSCMessage( cmd, args ), addr );
 	}
 	
-	public void replyFailed()
-	throws IOException
-	{
-		replyFailed( 0 );
+//	public void replyFailed()
+//	throws IOException
+//	{
+//		replyFailed( 0 );
+//	}
+	
+	public void tryReplyFailed( int argCount ) {
+		try {
+			replyFailed( argCount );
+		} catch( IOException e1 ) {
+			e1.printStackTrace();
+		}
 	}
 
 	public void replyFailed( int argCount )
@@ -183,6 +191,14 @@ public class RoutedOSCMessage
 		server.send( new OSCMessage( OSCRoot.OSC_FAILEDREPLY, args ), addr );
 	}
 	
+	public void tryReplyDone( int copyArgCount, Object[] doneArgs ) {
+		try {
+			replyDone( copyArgCount, doneArgs );
+		} catch( IOException e1 ) {
+			e1.printStackTrace();
+		}
+	}
+
 	public void replyDone( int copyArgCount, Object[] doneArgs )
 	throws IOException
 	{
