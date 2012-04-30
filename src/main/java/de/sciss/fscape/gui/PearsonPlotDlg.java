@@ -2,7 +2,7 @@
  *  PearsonPlotDlg.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -965,7 +965,7 @@ orLp:					for( i = 1; i < chunkLength-1; i++ ) {
 						b1 = (plotIdx2 > plotIdx) || (pass == passes);	// false means easy skipping ;)
 
 						if( b1 ) {
-// System.out.println( "pass "+pass+"; written "+framesWritten+"; idx "+plotIdx+" É "+plotIdx2 );
+// System.out.println( "pass "+pass+"; written "+framesWritten+"; idx "+plotIdx+" ï¿½ "+plotIdx2 );
 
 							// reload output
 							i = Math.min( chunkLength, Math.max( 0, framesWritten2 - framesWritten ));
@@ -995,7 +995,7 @@ orLp:					for( i = 1; i < chunkLength-1; i++ ) {
 									k	= 0;
 								}
 								len	= Math.min( chunkLength, passLen - k + off );
-// System.out.println( "idx "+i+": "+off+" É "+len+"; ("+k+") ");
+// System.out.println( "idx "+i+": "+off+" ï¿½ "+len+"; ("+k+") ");
 								for( ch = 0; ch < outChanNum; ch++ ) {
 									f1			= Float.intBitsToFloat( plotTable[ i++ ]);	// channel gain
 									convBuf1	= ptrnBuf[ ch % iconChanNum ];

@@ -2,7 +2,7 @@
  *  PropertyGUI.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -55,7 +55,7 @@ implements ItemListener
 {
 // -------- public Variablen --------
 
-	// toplevel codes; separator ';' oder '\n' fŸr neue Zeile
+	// toplevel codes; separator ';' oder '\n' fï¿½r neue Zeile
 	public static final int	objGroupLabel	= 'g' << 8 + 'l';	// <Name>
 	public static final int	objLabel		= 'l' << 8 + 'b';	// <Name>
 	public static final int	objJCheckBox		= 'c' << 8 + 'b';	// <Name>
@@ -159,7 +159,7 @@ implements ItemListener
 		int				objID;			// fuer Hash; -1 wenn es nicht registriert werden muss
 		int				autoID;			// automatisch registrieren wenn Listener installiert wird
 		int				toLineEnd;
-		ParamSpace[]	spaces;			// fŸr ParamField
+		ParamSpace[]	spaces;			// fï¿½r ParamField
 
 		Component			cmp	= null;
 		PropertyComponent	prCmp;
@@ -267,7 +267,7 @@ implements ItemListener
 					return;
 				}
 				
-				// Attribute Ÿbersetzen
+				// Attribute ï¿½bersetzen
 				while( attrTok.hasMoreTokens() ) {
 					token		= attrTok.nextToken();
 					attrCode	= token.charAt( 0 ) << 8 + token.charAt( 1 );
@@ -599,7 +599,7 @@ implements ItemListener
 						break;
 					}
 					
-					if( conditionFulfilled ) {		// Bedingung erfŸllt, Cmd ausfŸhren
+					if( conditionFulfilled ) {		// Bedingung erfï¿½llt, Cmd ausfï¿½hren
 					
 						cmdCode	= cmd.charAt( 0 ) << 8 + cmd.charAt( 1 );
 						// generic
@@ -623,7 +623,7 @@ implements ItemListener
 					}
 				}
 			} // alle Befehle zu einer Condition
-		} // nŠchste Befehlskette
+		} // nï¿½chste Befehlskette
 	}
 
 // -------- Interne Klasse zur Verwaltung der Components --------

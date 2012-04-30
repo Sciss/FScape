@@ -2,7 +2,7 @@
  *  SplitterOp.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -129,7 +129,7 @@ extends Operator
 			static_presets = new Presets( getClass(), static_pr.toProperties( true ));
 		}
 		
-		// superclass-Felder Ÿbertragen		
+		// superclass-Felder ï¿½bertragen		
 		opName		= "SplitterOp";
 		prefs		= static_prefs;
 		presets		= static_presets;
@@ -189,10 +189,10 @@ topLevel:
 			// ------------------------------ Input-Slot ------------------------------
 			runInSlot = (SpectStreamSlot) slots.elementAt( SLOT_INPUT );
 			if( runInSlot.getLinked() == null ) {
-				runStop();	// threadDead = true -> folgendes for() wird Ÿbersprungen
+				runStop();	// threadDead = true -> folgendes for() wird ï¿½bersprungen
 			}
-			// diese while Schleife ist nštig, da beim initReader ein Pause eingelegt werden kann
-			// und die InterruptException ausgelšst wird; danach versuchen wir es erneut
+			// diese while Schleife ist nï¿½tig, da beim initReader ein Pause eingelegt werden kann
+			// und die InterruptException ausgelï¿½st wird; danach versuchen wir es erneut
 			for( boolean initDone = false; !initDone && !threadDead; ) {
 				try {
 					runInStream	= runInSlot.getDescr();	// throws InterruptedException
@@ -295,7 +295,7 @@ calcFrame:		for( int i = 0; i < numOut; i++ ) {
 
 						for( int j = 0; j < i; j++ ) {	// evtl. koennen wir Vorgaenger kopieren?
 				
-							// nŠmlich, wenn gleiches Gain und gleiche KanŠle
+							// nï¿½mlich, wenn gleiches Gain und gleiche Kanï¿½le
 							if( (Math.abs( gain[ i ] - gain[ j ]) < 0.01f) &&
 								((pr.intg[ PR_CHANNELS ] == PR_CHANNELS_ALL) ||
 								 ((i % runInStream.chanNum) == (j % runInStream.chanNum))) ) {

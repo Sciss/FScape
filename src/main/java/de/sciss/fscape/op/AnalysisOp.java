@@ -2,7 +2,7 @@
  *  AnalysisOp.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -167,7 +167,7 @@ extends Operator
 			static_presets = new Presets( getClass(), static_pr.toProperties( true ));
 		}
 		
-		// superclass-Felder Ÿbertragen		
+		// superclass-Felder ï¿½bertragen		
 		opName		= "AnalysisOp";
 		prefs		= static_prefs;
 		presets		= static_presets;
@@ -352,7 +352,7 @@ for( i = 0; i <= Filter.WIN_MAX; i++ ) {
 				d4			= chirpAngle * -0.5;						// d3*exp(j d4) = W^(-1/2)
 
 // System.out.println( "2*bands "+(bands*2)+"; chirpLen "+(chirpImpulse.length>>1)+"; fftLength"+fftLength );
-				for( i = 0, j = 0, m = fullFFTlength; i <= fftLength; j++ ) {		// 0 ² n ² M-1
+				for( i = 0, j = 0, m = fullFFTlength; i <= fftLength; j++ ) {		// 0 ï¿½ n ï¿½ M-1
 					k					= j*j;
 					d1					= Math.pow( d3, k );
 					d2					= d4 * k;				// d1*exp(j d2) = W^(-n^2/2) = h(n)

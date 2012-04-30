@@ -2,7 +2,7 @@
  *  PathField.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -704,7 +704,7 @@ implements	ActionListener, ComponentListener, ItemListener, PathListener,
 		shortStr.append( longStr.charAt( 0 ));
 		for( i = 1; (i < j - 1) && (shortStr.length() + j - i > ABBR_LENGTH); i++ ) {
 			c = longStr.charAt( i );
-			if( "aeiouŠšŸ".indexOf( c ) < 0 ) {
+			if( "aeiouï¿½ï¿½ï¿½".indexOf( c ) < 0 ) {
 				shortStr.append( c );
 			}
 		}

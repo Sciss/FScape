@@ -2,7 +2,7 @@
  *  Curve2.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -44,8 +44,8 @@ public class Curve2
 	public static final int	TYPE_UNIPOLAR	= 0x010;
 
 	public	int			flags;
-	public	int			size;		// in x, y ; arrays dŸrfen aber lŠnger sein; mind. 2!
-	public	float[]		xs;			// nur im Bereich 0...1 ; Randpunkte nicht lšschen! Keine doppelten x
+	public	int			size;		// in x, y ; arrays dï¿½rfen aber lï¿½nger sein; mind. 2!
+	public	float[]		xs;			// nur im Bereich 0...1 ; Randpunkte nicht lï¿½schen! Keine doppelten x
 	public	float[]		ys;
 	public	boolean		looped		= false;
 	public	float		loopStart	= 0.0f;
@@ -56,7 +56,7 @@ public class Curve2
 
 	private boolean		valid		= false;
 //	private int			clcLpStart, clcLpEnd;
-	private float[]		yDrv		= null;		// zweite Ableitung fŸr Spline-Interpolation
+	private float[]		yDrv		= null;		// zweite Ableitung fï¿½r Spline-Interpolation
 
 // -------- public Methoden --------
 

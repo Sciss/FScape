@@ -2,7 +2,7 @@
  *  LaguerreDlg.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -413,7 +413,7 @@ topLevel: try {
 			while( ((float) transLen / (float) i) > j ) i++;
 			inputStep	= (int) (((float) transLen / (float) i) + 0.5f);	// DAFx2000 'L'
  			fltLen		= Math.max( winSize, transLen );
-// System.out.println( "inputStep "+inputStep+"; winSize "+winSize+"; transLen "+transLen+"; fltLen "+fltLen+"; warp "+warp+"; § "+f1 );
+// System.out.println( "inputStep "+inputStep+"; winSize "+winSize+"; transLen "+transLen+"; fltLen "+fltLen+"; warp "+warp+"; ï¿½ "+f1 );
 			win			= Filter.createFullWindow( winSize, Filter.WIN_HANNING );		// DAFx2000 (27)
 			outputStep	= inputStep;
 

@@ -2,7 +2,7 @@
  *  EditOpDlg.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -64,7 +64,7 @@ extends BasicDialog
 	private Operator	op;
 	private PropertyGUI	opGUI;
 	
-	private boolean choice = false;			// keine VerŠnderung bei Cancel nštig
+	private boolean choice = false;			// keine Verï¿½nderung bei Cancel nï¿½tig
 	
 	private final EditOpDlg enc_this = this;
 
@@ -123,7 +123,7 @@ extends BasicDialog
 		while( presetNames.hasNext() ) {
 			ggPresets.addItem( (String) presetNames.next() );
 		}
-		ggPresets.setSelectedItem( Presets.DEFAULT );						// default wŠhlen und
+		ggPresets.setSelectedItem( Presets.DEFAULT );						// default wï¿½hlen und
 		ggDelPreset.setEnabled( false );							// DelPreset deaktivieren
 		gui.registerGadget( ggPresets, GG_PRESETS );
 		ggPresets.addItemListener( list );
@@ -185,7 +185,7 @@ extends BasicDialog
 	
 		getContentPane().add( gui );
 
-		// Position und Grš§e aus dem Preferences ermitteln
+		// Position und Grï¿½ï¿½e aus dem Preferences ermitteln
 		setResizable( true );
 
 		addWindowListener( new WindowAdapter() {
@@ -262,13 +262,13 @@ extends BasicDialog
 	// -------- private Variablen --------
 
 		private EditOpDlg dlg;		// Edit-Dialog, der den Listener installiert
-		private GUISupport gui;		// gui, dessen Objecte hier Ÿberwacht werden
+		private GUISupport gui;		// gui, dessen Objecte hier ï¿½berwacht werden
 
 	// -------- public Methoden --------
 
 		/**
 		 *	@param dlg	Edit-Dialog, der den Listener installiert
-		 *	@param gui	zu Ÿberwachendes GUI
+		 *	@param gui	zu ï¿½berwachendes GUI
 		 */
 		public EditOpDlgListener( EditOpDlg dlg, GUISupport gui )
 		{
@@ -388,7 +388,7 @@ extends BasicDialog
 						if( exists ) {
 							i = JOptionPane.showConfirmDialog( enc_this,  "Overwrite existing preset\n\"" +
 													  name + "\"", "Confirm", JOptionPane.YES_NO_OPTION );
-							if( i != 0 ) break topLevel;	// nicht Ÿberschreiben
+							if( i != 0 ) break topLevel;	// nicht ï¿½berschreiben
 						}
 
 						pa		= (PropertyArray) op.getPropertyArray().clone();

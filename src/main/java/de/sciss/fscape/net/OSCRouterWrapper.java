@@ -2,7 +2,7 @@
  *  OSCRouterWrapper.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -98,8 +98,8 @@ implements OSCRouter
 					int argIdx = 2;
 					try {
 						for( ; argIdx < argCnt; argIdx++ ) {
-							oscMethod = r.getClass().getMethod( "oscQuery_" + rom.msg.getArg( argIdx ).toString(), null );
-							replyArgs[ argIdx - 1 ] = oscMethod.invoke( r, null );
+							oscMethod = r.getClass().getMethod( "oscQuery_" + rom.msg.getArg( argIdx ).toString(), (Class[]) null );
+							replyArgs[ argIdx - 1 ] = oscMethod.invoke( r, (Object[]) null );
 						}
 					}
 					catch( NoSuchMethodException e1 ) {

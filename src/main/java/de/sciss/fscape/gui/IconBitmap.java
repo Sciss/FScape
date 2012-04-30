@@ -2,7 +2,7 @@
  *  IconBitmap.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -60,7 +60,7 @@ extends Component
 	/*		Konstruktor
 	 *
 	 *		arg:	fname = Dateiname des Bildes
-	 *				width, height = Breite und Hšhe der Icons in Pixels
+	 *				width, height = Breite und Hï¿½he der Icons in Pixels
 	 */
 	public IconBitmap( Image img, int width, int height )
 	{
@@ -82,7 +82,7 @@ extends Component
 		this( Toolkit.getDefaultToolkit().getImage( fname ), width, height );
 	}
 	
-	/*		Breite und Hšhe der Icons ermitteln
+	/*		Breite und Hï¿½he der Icons ermitteln
 	 *
 	 *		ret: Dimensionen eines Icons
 	 */
@@ -118,7 +118,7 @@ extends Component
 	/*		Position eines Icons in der Bitmap ermitteln
 	 *
 	 *		arg: ID = Icon-ID
-	 *		ret: linke obere Ecke bzw. null bei ungŸltiger ID
+	 *		ret: linke obere Ecke bzw. null bei ungï¿½ltiger ID
 	 */
 	private Point getOffset( int ID )
 	{

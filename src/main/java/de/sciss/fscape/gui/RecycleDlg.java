@@ -2,7 +2,7 @@
  *  RecycleDlg.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -130,10 +130,10 @@ extends DocumentFrame
 	private JTextField ggInfoField;
 
 	private final MessageFormat	msgInfoField		= new MessageFormat(
-		"{0,choice,-1#[É|0#}"+
+		"{0,choice,-1#[ï¿½|0#}"+
 		"{1,choice,0#No regions|1#One region|1<{1,number,integer} regions}"+
 		"{1,choice,0#|1# with total duration of {2}}"+
-		" to recycle{0,choice,-1#É]|0#}",
+		" to recycle{0,choice,-1#ï¿½]|0#}",
 		Locale.US );
 
 // -------- public Methoden --------

@@ -2,7 +2,7 @@
  *  SMPTESynthDlg.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -352,7 +352,7 @@ topLevel: try {
 			smpsPerHalfbit = (int) Math.ceil( outStream.rate / (frames * 160) );
 			calcRate	= frames * 160 * smpsPerHalfbit;
 //			System.out.println( "calculation sample rate is " + calcRate );
-			tau			= 25.0e-6 / Math.log( 9 );	// 25µs rise time --> time constant
+			tau			= 25.0e-6 / Math.log( 9 );	// 25ï¿½s rise time --> time constant
 			alpha		= (float) (1.0 / (tau * calcRate + 1));
 			rf			= calcRate / outStream.rate; // reciprocal resampling factor
 			

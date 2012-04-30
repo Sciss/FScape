@@ -2,7 +2,7 @@
  *  ConvertDlg.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -319,7 +319,7 @@ extends DocumentFrame
 	}
 
 	/*
-	 *	Settings-GUI in AbhŠngigkeit von der jeweiligen Konvertierungs-Art
+	 *	Settings-GUI in Abhï¿½ngigkeit von der jeweiligen Konvertierungs-Art
 	 */
 	protected PropertyGUI createGUI( int type )
 	{
@@ -333,7 +333,7 @@ extends DocumentFrame
 							    ",ac"+PRS_TRANSFORM_FWT+"|21|en|22|di|23|di,"+
 							  "itFast Fourier,itDiscrete Fourier (log. Scale),itFast Wavelet\n"+
 							  "lbFilter;ch,id21,pr"+PRN_FILTER+",itDaubechies 4\n";
-		String	window		= "lbWindow;ch,pr"+PRN_WINDOW+",itHamming,itBlackman,itKaiser §=4,itKaiser §=5,itKaiser §=6,itKaiser §=8\n";
+		String	window		= "lbWindow;ch,pr"+PRN_WINDOW+",itHamming,itBlackman,itKaiser ï¿½=4,itKaiser ï¿½=5,itKaiser ï¿½=6,itKaiser ï¿½=8\n";
 		String	overlap		= "lbOverlap;ch,pr"+PRN_OVERLAP+",it1x,it2x,it4x,it8x,it16x\n";
 		String	bands		= "lbBands;ch,pr"+PRN_BANDS+",it4096,it2048,it1024,it512,it256,it128,it64,it32\n"+
 							  "lbBandwidth [semi];ch,id22,pr"+PRN_BANDWIDTH+",it1/16,it1/12,it1/8,it1/4,it1/2,it1/1\n"+
@@ -466,7 +466,7 @@ extends DocumentFrame
 	}
 
 	/**
-	 *	automatischer Output Name bei geŠndertem Input oder Output-Type
+	 *	automatischer Output Name bei geï¿½ndertem Input oder Output-Type
 	 *	veranlasst Aktivierung / Deaktivierung des Convert-JButtons
 	 *	und passt das Settings-Panel an die Einstellung an
 	 *	(inType muss korrekt sein dafuer!)
@@ -560,13 +560,13 @@ extends DocumentFrame
 		int					smpPerPixel		= 1;	// will be filled with ImageStream-value!
 		
 		// FFT, DFT, FWT
-		double				freqScale		= 0f;	// DFT: Freq.factor von einem Band zum nŠchsthšheren
+		double				freqScale		= 0f;	// DFT: Freq.factor von einem Band zum nï¿½chsthï¿½heren
 		float				img, real;
 		float[]				smpData			= null;
 		float[]				smpData2		= null;	// gewindowte Version
 		float[][]			cos				= null;	// 1. Dimension = Freq-Offset, 2. Dimension = Zeit-Offset
 		float[][]			sin				= null;
-		float[]				fCos, fSin;			// cos/sin mit aufgelšster erster Dimension
+		float[]				fCos, fSin;			// cos/sin mit aufgelï¿½ster erster Dimension
 		float[]				win				= null;	// Window-Funktion
 		
 		float[][]			tempBuf			= null;
@@ -657,7 +657,7 @@ topLevel: try {
 					case PRS_TRANSFORM_DFT:						// .... discrete fourier w/ log scale ....
 						bands--;
 						// what we are doing here: Anhand der Bandbreite und Sampling-Rate die Frequenz
-						// des untersten Bandes errechnen und ggf. nach unten so anpassen, da§ die
+						// des untersten Bandes errechnen und ggf. nach unten so anpassen, daï¿½ die
 						// Tuning Frequenz (masterTune=440 Hz) erreicht wird
 						freqScale	= freqScales[ pr.intg[ PRS_BANDWIDTH ]];
 						loFreq		= (float) (smpRate / (2 * Math.pow( freqScale, bands - 1 )));

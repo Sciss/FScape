@@ -2,7 +2,7 @@
  *  WaveletDlg.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -212,7 +212,7 @@ extends DocumentFrame
 
 		ggScaleGain		= new ParamField( Constants.spaces[ Constants.decibelAmpSpace ]);
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "GainÊper Scale", SwingConstants.RIGHT ));
+		gui.addLabel( new JLabel( "Gainï¿½per Scale", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggScaleGain, GG_SCALEGAIN, null );

@@ -2,7 +2,7 @@
  *  ComplexConvDlg.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -583,7 +583,7 @@ topLevel: try {
 						if( imag ) {
 							if( pr.bool[ PR_CEPSTRAL1 + i ]) {			// take log pre-fft for cepstral filtering
 								if( pr.bool[ PR_HASIMINPUT + i ]) {
-									Fourier.rect2Polar( convBuf2, 0, convBuf2, 0, fullFFTsize );	// Im(ln z)=phi +k2¹
+									Fourier.rect2Polar( convBuf2, 0, convBuf2, 0, fullFFTsize );	// Im(ln z)=phi +k2ï¿½
 									for( int j = 0; j < fullFFTsize; j+=2 ) {						// Re(ln z)=ln r
 										f1 = convBuf2[ j ];
 										if( f1 > 1.266416555e-14f ) {
@@ -594,7 +594,7 @@ topLevel: try {
 										//	fftBuf[ j++ ] /= 32;
 										}
 									}
-								} else {								// only real input, i.e. phi=0¡ or 180¡
+								} else {								// only real input, i.e. phi=0ï¿½ or 180ï¿½
 									for( int j = 0; j < fullFFTsize; ) {
 										f1 = convBuf2[ j ];
 										if( f1 > 1.266416555e-14f ) {

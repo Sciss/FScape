@@ -2,7 +2,7 @@
  *  SpectFrame.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -141,7 +141,7 @@ implements Cloneable
 	
 //		try {
 			switch( flags ) {
-			case FLAGS_SUM:			// Vectoren addieren; zunŠchst Polar ==> Rect
+			case FLAGS_SUM:			// Vectoren addieren; zunï¿½chst Polar ==> Rect
 				for( int i = 0; i < src.data[ 0 ].length; i += 2 ) {
 					destImg  = 0.0;
 					destReal = 0.0;

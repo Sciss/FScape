@@ -2,7 +2,7 @@
  *  Mono2StereoOp.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -113,7 +113,7 @@ extends Operator
 			static_presets = new Presets( getClass(), static_pr.toProperties( true ));
 		}
 				
-		// superclass-Felder Ÿbertragen		
+		// superclass-Felder ï¿½bertragen		
 		opName		= "Mono2StereoOp";
 		prefs		= static_prefs;
 		presets		= static_presets;
@@ -145,7 +145,7 @@ extends Operator
 		// Berechnungs-Grundlagen
 		Param			ampRef			= new Param( 1.0, Param.ABS_AMP );	// transform-Referenz
 		double			gain;
-		int				ch2;						// Source-Kanal fŸr rechten Zielkanal (0 oder 1)
+		int				ch2;						// Source-Kanal fï¿½r rechten Zielkanal (0 oder 1)
 	
 		// Modulations-Variablen
 		boolean			recalc			= true;		// false, wenn sich die Werte nicht geaendert haben
@@ -169,10 +169,10 @@ topLevel:
 			// ------------------------------ Input-Slot ------------------------------
 			runInSlot = (SpectStreamSlot) slots.elementAt( SLOT_INPUT );
 			if( runInSlot.getLinked() == null ) {
-				runStop();	// threadDead = true -> folgendes for() wird Ÿbersprungen
+				runStop();	// threadDead = true -> folgendes for() wird ï¿½bersprungen
 			}
-			// diese while Schleife ist nštig, da beim initReader ein Pause eingelegt werden kann
-			// und die InterruptException ausgelšst wird; danach versuchen wir es erneut
+			// diese while Schleife ist nï¿½tig, da beim initReader ein Pause eingelegt werden kann
+			// und die InterruptException ausgelï¿½st wird; danach versuchen wir es erneut
 			for( boolean initDone = false; !initDone && !threadDead; ) {
 				try {
 					runInStream	= runInSlot.getDescr();	// throws InterruptedException
@@ -183,12 +183,12 @@ topLevel:
 			}
 			if( threadDead ) break topLevel;
 
-			// band-abhŠngige Stereo-Breite
+			// band-abhï¿½ngige Stereo-Breite
 			depthFactor	= new float[ runInStream.bands ];
 			depth		= new float[ runInStream.bands ];
 			// frequency angle depending on bandwidth;
 			freqPhase	= new float[ runInStream.bands ];
-			// Source-Kanal fŸr rechten Zielkanal
+			// Source-Kanal fï¿½r rechten Zielkanal
 			ch2			= 1 % runInStream.chanNum;
 
 			// ------------------------------ Output-Slot ------------------------------

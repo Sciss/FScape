@@ -2,7 +2,7 @@
  *  InputOp.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -127,7 +127,7 @@ extends Operator
 			static_presets = new Presets( getClass(), static_pr.toProperties( true ));
 		}
 		
-		// superclass-Felder Ÿbertragen		
+		// superclass-Felder ï¿½bertragen		
 		opName		= "InputOp";
 		prefs		= static_prefs;
 		presets		= static_presets;
@@ -236,7 +236,7 @@ extends Operator
 			}
 			runInStream.setEstimatedLength( runFrames );
 
-			// ------------------------------ KanŠle ------------------------------
+			// ------------------------------ Kanï¿½le ------------------------------
 			runOutStream = new SpectStream( runInStream );
 			if( pr.intg[ PR_CHANNELS ] != PR_CHANNELS_UNTOUCHED ) {
 				runOutStream.setChannels( 1 );

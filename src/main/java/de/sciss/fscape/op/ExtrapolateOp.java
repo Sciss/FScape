@@ -2,7 +2,7 @@
  *  ExtrapolateOp.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -101,7 +101,7 @@ extends Operator
 			static_presets = new Presets( getClass(), static_pr.toProperties( true ));
 		}
 				
-		// superclass-Felder Ÿbertragen		
+		// superclass-Felder ï¿½bertragen		
 		opName		= "ExtrapolateOp";
 		prefs		= static_prefs;
 		presets		= static_presets;
@@ -151,10 +151,10 @@ topLevel:
 			// ------------------------------ Input-Slot ------------------------------
 			runInSlot = (SpectStreamSlot) slots.elementAt( SLOT_INPUT );
 			if( runInSlot.getLinked() == null ) {
-				runStop();	// threadDead = true -> folgendes for() wird Ÿbersprungen
+				runStop();	// threadDead = true -> folgendes for() wird ï¿½bersprungen
 			}
-			// diese while Schleife ist nštig, da beim initReader ein Pause eingelegt werden kann
-			// und die InterruptException ausgelšst wird; danach versuchen wir es erneut
+			// diese while Schleife ist nï¿½tig, da beim initReader ein Pause eingelegt werden kann
+			// und die InterruptException ausgelï¿½st wird; danach versuchen wir es erneut
 			for( boolean initDone = false; !initDone && !threadDead; ) {
 				try {
 					runInStream	= runInSlot.getDescr();	// throws InterruptedException
@@ -282,7 +282,7 @@ mainLoop:	while( !threadDead ) {
 		runQuit( null );
 	}
 
-	// ---- predic routine from NR ¤13.6 ----
+	// ---- predic routine from NR ï¿½13.6 ----
 
 	/*
 	 *	Given data[dataOff...dataOff+dataLen-1] (!!), and given the data's LP coefficients d[0...m-1] (!!), this routine applies
@@ -345,7 +345,7 @@ mainLoop:	while( !threadDead ) {
 		}
 	}
 
-	// ---- memcof routine from NR ¤13.6 ----
+	// ---- memcof routine from NR ï¿½13.6 ----
 
 	/*
 	 *	Given a real vector of data[dataOff...dataOff+dataLen-1] (!!), and given m, this routine returns m linear prediction
@@ -404,7 +404,7 @@ mainLoop:	while( !threadDead ) {
 		}	
 	}
 
-	// ---- fixrts routine from NR ¤13.6 ----
+	// ---- fixrts routine from NR ï¿½13.6 ----
 
 	/*
 	 *	Given the LP coefficients d[0...m-1] (!!), this routine finds all roots of the characteristic polynomial
@@ -467,12 +467,12 @@ mainLoop:	while( !threadDead ) {
 		}
 	}
 
-	// ---- zroots routine from NR ¤9.5 ----
+	// ---- zroots routine from NR ï¿½9.5 ----
 
 	protected static final float	EXPECTEDERROR2	= 4.0e-6f;
 
 	/*
-	 * Given the degree m and the m+1 complex coefficients a[0...m*2] of the polynomial ·i=0...m(a[i]x^i),
+	 * Given the degree m and the m+1 complex coefficients a[0...m*2] of the polynomial ï¿½i=0...m(a[i]x^i),
 	 * this routine successively calls laguer and finds all m complex roots in roots[0...(m-1)*2] (!!). The
 	 * boolean variable polish should be input as true if polishing (also by Laguerre's method)
 	 * is desired, false if the roots will be subsequently polished by other means.
@@ -546,7 +546,7 @@ mainLoop:	while( !threadDead ) {
 //}
 	}
 
-	// ---- laguer routine from NR ¤9.5 ----
+	// ---- laguer routine from NR ï¿½9.5 ----
 
 	protected static final float	EXPECTEDERROR 	= 1.0e-7f;
 	protected static final int		MR 				= 8;
@@ -555,7 +555,7 @@ mainLoop:	while( !threadDead ) {
 	protected static final float[]	frac			= { 0.0f, 0.5f, 0.25f, 0.75f, 0.13f, 0.38f, 0.62f, 0.88f, 1.0f }; // Fractions used to break a limit cycle. [MR+1]
 
 	/*
-	 * Given the degree m and the m+1 complex coefficients a[0..m] of the polynomial ·i=0...m(a[i]x^i),
+	 * Given the degree m and the m+1 complex coefficients a[0..m] of the polynomial ï¿½i=0...m(a[i]x^i),
 	 * and given a complex value x, this routine improves x by Laguerre's method until it converges,
 	 * within the achievable roundoff limit, to a root of the given polynomial. The number of iterations
 	 * taken is returned as its.

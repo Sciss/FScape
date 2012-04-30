@@ -2,7 +2,7 @@
  *  SpectStreamSlot.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -57,7 +57,7 @@ public class SpectStreamSlot
 // -------- private Variablen --------
 
 	protected int					flags;		// SLOTS_...
-	protected String				name;		// wird zurŸckgegeben Ÿber toString()
+	protected String				name;		// wird zurï¿½ckgegeben ï¿½ber toString()
 	protected Operator				owner;
 	protected Thread				ownerThread	= null;
 
@@ -183,7 +183,7 @@ public class SpectStreamSlot
 	throws SlotAlreadyConnectedException
 	{
 		synchronized( this ) {
-			if( stream != null ) {			// nanu, schon ein Stream prŠsent?!
+			if( stream != null ) {			// nanu, schon ein Stream prï¿½sent?!
 				throw new SlotAlreadyConnectedException( ERR_STILLINUSE );
 			}
 			strm.initWriter();
@@ -273,10 +273,10 @@ public class SpectStreamSlot
 				while( fr == null ) {
 					try {
 //						System.out.println( "framesReadable : " + stream.framesReadable() );
-						if( stream.framesReadable() != 0 ) {	// auch -1, lšst ja EOFException aus
+						if( stream.framesReadable() != 0 ) {	// auch -1, lï¿½st ja EOFException aus
 							fr = stream.readFrame();
 							if( linked.state == STATE_WAITING ) {
-								// geschachtelte synchronized nur, wenn klar ist, da§ der andere wartet!
+								// geschachtelte synchronized nur, wenn klar ist, daï¿½ der andere wartet!
 								synchronized( linked ) {
 									linked.notify();			// yo, du kannst wieder schreiben
 								}
@@ -323,14 +323,14 @@ public class SpectStreamSlot
 			try {
 				while( fr != null ) {
 					try {
-						if( stream.framesWriteable() != 0 ) {	// auch -1, lšst ja EOFException aus
+						if( stream.framesWriteable() != 0 ) {	// auch -1, lï¿½st ja EOFException aus
 							stream.writeFrame( fr );
 							if( spectro != null ) {
 								spectro.addFrame( fr );
 							}
 							fr = null;
 							if( linked.state == STATE_WAITING ) {
-								// geschachtelte synchronized nur, wenn klar ist, da§ der andere wartet!
+								// geschachtelte synchronized nur, wenn klar ist, daï¿½ der andere wartet!
 								synchronized( linked ) {
 									linked.notify();			// yo, du kannst wieder lesen
 								}

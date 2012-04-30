@@ -2,7 +2,7 @@
  *  ImageFile.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -511,8 +511,8 @@ IFD:		for( i = 0; i < entries; i++ ) {
 	/*
 	 *	TIFF-Entry einlesen; Typen-Konvertierung erfolgt automatisch
 	 *
-	 *	einzelne Bytes und Shorts werden rechtsbŸndig formattiert
-	 *	einzelne "Rational"-Typen werden in ein Float konvertiert (zurŸck Ÿber Float.intBitsToFloat())
+	 *	einzelne Bytes und Shorts werden rechtsbï¿½ndig formattiert
+	 *	einzelne "Rational"-Typen werden in ein Float konvertiert (zurï¿½ck ï¿½ber Float.intBitsToFloat())
 	 */
 	protected void readTIFFentry( TIFFentry entry )
 	throws IOException

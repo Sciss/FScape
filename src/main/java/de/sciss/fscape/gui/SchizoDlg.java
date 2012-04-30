@@ -2,7 +2,7 @@
  *  SchizoDlg.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -447,7 +447,7 @@ topLevel: try {
 				}
 			}
 
-			easyPhase		= outChanNum == 2;			// rotation by 180¡ can be calc'ed without trigonometrics
+			easyPhase		= outChanNum == 2;			// rotation by 180ï¿½ can be calc'ed without trigonometrics
 			if( !easyPhase ) {
 				phase		= new double[ outChanNum ][ 2 ];
 				d1			= 0.0;

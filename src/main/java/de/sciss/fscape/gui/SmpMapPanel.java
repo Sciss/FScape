@@ -2,7 +2,7 @@
  *  SmpMapPanel.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -90,7 +90,7 @@ implements ComponentListener, MouseListener, MouseMotionListener
 	private DoublePoint	dragTopLeft;			// Space-Koordinaten
 	private DoublePoint	dragBottomRight;
 
-	// folgende Werte ODER-verknŸpft
+	// folgende Werte ODER-verknï¿½pft
 	private static final int DRAG_NONE	=	0x00;	// no drag
 	private	static final int DRAG_TOP	=	0x01;	// drag top margin
 	private	static final int DRAG_LEFT	=	0x02;	// drag left margin
@@ -611,7 +611,7 @@ implements ComponentListener, MouseListener, MouseMotionListener
 				notifyListener( ACTION_BOXDESELECTED, -1 );
 			}
 
-			if( e.isControlDown() ) {	// PopUp-MenŸ
+			if( e.isControlDown() ) {	// PopUp-Menï¿½
 				// XXX
 			}
 
@@ -623,7 +623,7 @@ implements ComponentListener, MouseListener, MouseMotionListener
 			// neue SmpBox selektieren
 			currentSmpBox.setSelected( SB_STATE_SELECTED );
 
-			if( e.isControlDown() ) {		// PopUp-MenŸ
+			if( e.isControlDown() ) {		// PopUp-Menï¿½
 				// XXX
 
 			} else if( !e.isAltDown() ) {	// prepare Drag
@@ -992,7 +992,7 @@ implements ComponentListener, MouseListener, MouseMotionListener
 	{
 		int			num, i, j;
 		SmpZone		smp;
-		double		velMid, freqMid;				// Space-ReprŠsentation der Parameter x, y
+		double		velMid, freqMid;				// Space-Reprï¿½sentation der Parameter x, y
 		double		velLo, velHi, freqLo, freqHi;	// Space-Rechteck
 		boolean		iHoriz, iVert;					// possible intersections
 		double		velCutLo[], velCutHi[], freqCutLo[], freqCutHi[];	// Verkleinerungsalternativen

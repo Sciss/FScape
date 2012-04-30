@@ -2,7 +2,7 @@
  *  Filter.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -52,7 +52,7 @@ public class Filter
 // -------- private Variablen --------
 
 	protected static final String[] windowNames = {
-		"Hamming", "Blackman", "Kaiser §=4", "Kaiser §=5", "Kaiser §=6", "Kaiser §=8", "Rectangle",
+		"Hamming", "Blackman", "Kaiser ï¿½=4", "Kaiser ï¿½=5", "Kaiser ï¿½=6", "Kaiser ï¿½=8", "Rectangle",
 		"von Hann", "Triangle"
 	};
 	

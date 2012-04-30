@@ -2,7 +2,7 @@
  *  ChangeGainDlg.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -624,12 +624,12 @@ topLevel: try {
 		Integer			cmpJComboBox	= new Integer( complete ? 1 : -1 );
 		Object[]		msgArgs		= { ampDB, rmsDB, cmpJComboBox,
 										new Integer( min ), new Double( absTime ), new Long( maxFrame ) };
-		String			msgPtrn		= new String( "{2,choice,-1#[É|0#}" +
+		String			msgPtrn		= new String( "{2,choice,-1#[ï¿½|0#}" +
 												  "Max amp {0,number,#,##0.0} dBFS @" +
 												  "{3,number,##0}:{4,number,00.000}" +
 												  "{5,choice,-1#+|0#}" + chanTxt + 
 												  "; RMS {1,number,##,##0.0} dB" +
-												  "{2,choice,-1#É]|0#}" );
+												  "{2,choice,-1#ï¿½]|0#}" );
 		MessageFormat	msgForm		= new MessageFormat( msgPtrn );
 														 
 		msgForm.setLocale( Locale.US );

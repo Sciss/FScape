@@ -2,7 +2,7 @@
  *  GUISupport.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -147,7 +147,7 @@ extends JPanel
 	}
 
 	/**
-	 *	Gadget-ID Ÿber gesendetes ComponentEvent
+	 *	Gadget-ID ï¿½ber gesendetes ComponentEvent
 	 *
 	 *	@param e	ComponentEvent, das durch Gadgetklick ausgeloest wurde
 	 *	@return	Gadget-ID, -1 bei Fehler
@@ -163,7 +163,7 @@ extends JPanel
 	}
 
 	/**
-	 *	Gadget-Object Ÿber ID-Parameter aus dem Hash ermitteln
+	 *	Gadget-Object ï¿½ber ID-Parameter aus dem Hash ermitteln
 	 *
 	 *	@param ID	Gadget-ID
 	 *	@return	Componente, null bei Fehler

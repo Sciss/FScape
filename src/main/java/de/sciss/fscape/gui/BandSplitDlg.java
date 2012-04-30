@@ -2,7 +2,7 @@
  *  BandSplitDlg.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -448,7 +448,7 @@ topLevel: try {
 //			}
 
 			// LP = +1.0 fc  -1.0 Zero
-			// HP = +1.0 ¹/2 -1.0 fc
+			// HP = +1.0 ï¿½/2 -1.0 fc
 			// BP = +1.0 fc2 -1.0 fc1
 			
 			// calculate impulse response of the bandpasses

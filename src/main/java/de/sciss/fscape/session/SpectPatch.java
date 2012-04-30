@@ -2,7 +2,7 @@
  *  SpectPatch.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -504,8 +504,8 @@ public class SpectPatch
 			}
 		}
 	//	thread.setPriority( Thread.NORM_PRIORITY );
-		win.stop();		// mšglicherweise wurde gar kein Thread gestartet, der win.stop()
-	}					// aufrufen wŸrde
+		win.stop();		// mï¿½glicherweise wurde gar kein Thread gestartet, der win.stop()
+	}					// aufrufen wï¿½rde
 	
 	/**
 	 *	Operatoren pausieren / Pause beenden

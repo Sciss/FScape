@@ -2,7 +2,7 @@
  *  UnitorOp.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -135,7 +135,7 @@ extends Operator
 			static_presets = new Presets( getClass(), static_pr.toProperties( true ));
 		}
 		
-		// superclass-Felder Ÿbertragen		
+		// superclass-Felder ï¿½bertragen		
 		opName		= "UnitorOp";
 		prefs		= static_prefs;
 		presets		= static_presets;
@@ -726,7 +726,7 @@ mainLoop:	while( !threadDead ) {
 						}
 					}
 					
-		// ---------- letzter Schritt: ggf. Int nach Float zurŸckrechnen bzw. Rect => Polar
+		// ---------- letzter Schritt: ggf. Int nach Float zurï¿½ckrechnen bzw. Rect => Polar
 				
 					if( !wantsInt ) {
 						if( wantsRect ) {

@@ -2,7 +2,7 @@
  *  OpIcon.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -59,7 +59,7 @@ extends IconicComponent
 
 //	private static final String ibName	= "images" + File.separator + "op.gif";		// IconBitmap
 	private static final int ibWidth	= 45;			// Breite der Icons
-	private static final int ibHeight	= 45;			// Hšhe der Icons	
+	private static final int ibHeight	= 45;			// Hï¿½he der Icons	
 
 	private static IconBitmap opib		= null;
 	private static IconicComponent basicIcons[];
@@ -91,9 +91,9 @@ extends IconicComponent
 	public static final int STATE_FRIENDLY	= 4;
 	public static final int STATE_BYPASS	= 5;
 	
-	public static Color progColor	= new Color( 255, 160,   0 );	// Farbe fŸr Progressindicatoren
-	public static Color normalColor	= new Color( 152, 179, 132 );	// Farbe fŸr normale Objekte
-	public static Color selectColor	= new Color( 100, 115, 162 );	// Farbe fŸr selektierte Objekte
+	public static Color progColor	= new Color( 255, 160,   0 );	// Farbe fï¿½r Progressindicatoren
+	public static Color normalColor	= new Color( 152, 179, 132 );	// Farbe fï¿½r normale Objekte
+	public static Color selectColor	= new Color( 100, 115, 162 );	// Farbe fï¿½r selektierte Objekte
 
 // -------- private Variablen --------
 
@@ -122,7 +122,7 @@ extends IconicComponent
 	/**
 	 *	@param owner	Operator who own da icon
 	 *	@param ID		Icon-ID
-	 *	@param iName	Name fŸr den Operator
+	 *	@param iName	Name fï¿½r den Operator
 	 */
 	public OpIcon( Operator op, int ID, String iName )
 	{
@@ -263,7 +263,7 @@ extends IconicComponent
 		basicIcons[ state + statePlus ].paint( g );
 		opib.paint( g, ID, 0, 0 );
 
-		if( !op.threadDead ) {		// wenn Operator "lŠuft", Progress-Indikator zeichnen
+		if( !op.threadDead ) {		// wenn Operator "lï¿½uft", Progress-Indikator zeichnen
 			paintProgress( g );
 		}
 	}

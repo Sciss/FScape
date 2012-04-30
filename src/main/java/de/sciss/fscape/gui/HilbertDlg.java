@@ -2,7 +2,7 @@
  *  HilbertDlg.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -469,7 +469,7 @@ topLevel: try {
 				fftBuf1[ j ]= (float) (2*d1*d2);
 			}
 			Fourier.realTransform( fftBuf1, fftLength, Fourier.INVERSE );
-			// ---- real=>complex + modulation with exp(ismpRate/4 ± antialias) ----
+			// ---- real=>complex + modulation with exp(ismpRate/4 ï¿½ antialias) ----
 			// k is chosen so that the filter-centre is zero degrees, otherwise we introduce phase shift
 			for( i = fftLength - 1, k = i - fltLength.x, j = fftBuf1.length - 1; i >= 0; i--, k-- ) {
 				d1				= -fltShift * k;

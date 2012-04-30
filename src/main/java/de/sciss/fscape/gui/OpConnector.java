@@ -2,7 +2,7 @@
  *  OpConnector.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -71,7 +71,7 @@ implements Dragable
 
 //	private static final String ibName	= "images" + File.separator + "arrows.gif";	// IconBitmap
 	private static final int ibWidth	= 19;			// Breite der Icons
-	private static final int ibHeight	= 19;			// Hšhe der Icons	
+	private static final int ibHeight	= 19;			// Hï¿½he der Icons	
 
 	private static IconBitmap arrowib;
 
@@ -445,7 +445,7 @@ dest:	if( destDist > 0 ) {
 
 				if( (arc >= 0.0) || (arc <= -Math.PI )) break dest;
 
-				// JLabel ŸberprŸfen
+				// JLabel ï¿½berprï¿½fen
 				labB	= ((OpIcon) dest).getLabel().getBounds();
 				dist	= labB.y + (labB.height >> 1) - destLoc.y - (ARROW_HEIGHT>>2)*sin;
 

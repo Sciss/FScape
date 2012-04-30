@@ -2,7 +2,7 @@
  *  StepBackDlg.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -395,7 +395,7 @@ ggCorrFine.setEnabled( false ); // XXX
 		// Smp Init
 		int					inLength, inChanNum;
 		int					framesRead, numCuts, fadeLen, cutOffset;
-		int					lastCut, stopCut, minLoc, spacing, minSpacing, maxSpacing;	// [chunks ˆ corrStep]
+		int					lastCut, stopCut, minLoc, spacing, minSpacing, maxSpacing;	// [chunks ï¿½ corrStep]
 		int					minXFade, maxXFade, corrLength, corrStep;			// [smp]
 		float				minCorr, xcorr, minEnergy;
 		double				energy1, energy2, crossTerm;
@@ -698,7 +698,7 @@ findMinLp:					for( j = 0; j < xcorrs.length; j++ ) {
 					convBuf1	= fftBuf1;
 					fftBuf1		= fftBuf2;
 					fftBuf2		= convBuf1;
-// System.out.println( "cut "+lastCut+" É "+stopCut );
+// System.out.println( "cut "+lastCut+" ï¿½ "+stopCut );
 	
 				// ---------- xfade part ----------
 					if( i > 0 ) {
@@ -953,7 +953,7 @@ volumeLp:				for( j = 0, f1 = 1.122462f; j < 6; j++, f1 *= 1.122462f ) {
 			maxNum		= (int) Math.ceil( inLengthMillis / d2 );
 			meanNum		= (int) Math.ceil( inLengthMillis / ((d1+d2)/2) );
 
-			gui.stringToJTextField( "¿" + meanNum + " (" +minNum + "É" + maxNum + ")", GG_CUTINFO );
+			gui.stringToJTextField( "ï¿½" + meanNum + " (" +minNum + "ï¿½" + maxNum + ")", GG_CUTINFO );
 			
 		} else {
 		

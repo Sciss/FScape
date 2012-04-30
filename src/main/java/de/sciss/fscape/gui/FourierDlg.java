@@ -2,7 +2,7 @@
  *  FourierDlg.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -523,7 +523,7 @@ freqShift = (pr.intg[ PR_DIRECTION ] == DIR_FORWARD) ? 1 : -1;
 
 			// take 75% of free memory, divide by sizeof( float ), divide by 3 (storageFFT needs 3 buffers)
 //			i	= Math.min( dataLen, (int) (Runtime.getRuntime().freeMemory() >> 4) );
-i1 = (int) Math.min( 0x40000000, Math.min( dataLen, ((long) pr.para[ PR_MEMORY ].val << 20) / 12 ));	// ˆ 3x float (=12 bytes)
+i1 = (int) Math.min( 0x40000000, Math.min( dataLen, ((long) pr.para[ PR_MEMORY ].val << 20) / 12 ));	// ï¿½ 3x float (=12 bytes)
 			// power of 2
 			for( memAmount = 4; memAmount <= i1; memAmount <<= 1 ) ;
 			memAmount >>= 1;
@@ -736,13 +736,13 @@ i1 = (int) Math.min( 0x40000000, Math.min( dataLen, ((long) pr.para[ PR_MEMORY ]
 										maxAmp = Math.abs( buf3[ k ]);
 									}
 									convBuf1[ j ] = gain * buf3[ k++ ];
-									convBuf2[ j ] = (float) (buf3[ k++ ] / Math.PI);	// -¹ <= Phi <= +¹ ===> map to -1...+1
+									convBuf2[ j ] = (float) (buf3[ k++ ] / Math.PI);	// -ï¿½ <= Phi <= +ï¿½ ===> map to -1...+1
 								}
 							// ---- gain already known ----
 							} else {
 								for( int j = 0, k = 0; j < chunkLen; j++ ) {
 									convBuf1[ j ] = gain * buf3[ k++ ];
-									convBuf2[ j ] = (float) (buf3[ k++ ] / Math.PI);	// -¹ <= Phi <= +¹ ===> map to -1...+1
+									convBuf2[ j ] = (float) (buf3[ k++ ] / Math.PI);	// -ï¿½ <= Phi <= +ï¿½ ===> map to -1...+1
 								}
 							}
 						// ---- only real ----

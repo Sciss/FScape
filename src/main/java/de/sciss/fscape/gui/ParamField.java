@@ -2,7 +2,7 @@
  *  ParamField.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -59,10 +59,10 @@ implements EventManager.Processor
 
 // -------- private Variablen --------
 
-	private static final String dimTxt[]		= { "", "", "ms", "Hz", "¡" };
+	private static final String dimTxt[]		= { "", "", "ms", "Hz", "ï¿½" };
 	private static final String specialTxt[]	= { "", "beats", "semi", "dB" };
 	private static final String percentTxt	= "%";
-	private static final String relTxt		= "±";
+	private static final String relTxt		= "ï¿½";
 
 //	private static final String	CMD_SETTINGS= "Set";
 //	private static final String	CMD_ABBR	= "Abbr";

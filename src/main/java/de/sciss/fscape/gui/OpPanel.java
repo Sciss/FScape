@@ -2,7 +2,7 @@
  *  OpPanel.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -88,7 +88,7 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
 	protected	int	preferredWidth	= 250;
 	protected	int	preferredHeight	= 150;
 
-	// Popup-MenŸs, die Ÿber dem Panel bzw. einem Op aufspringen	
+	// Popup-Menï¿½s, die ï¿½ber dem Panel bzw. einem Op aufspringen	
 	private PopupStrip popPanel;
 	private PopupStrip popIcon;
 	private PopupStrip popCon;
@@ -152,7 +152,7 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
 		addMouseMotionListener( this );
 		this.win = win;
 
-		// Popup-MenŸs
+		// Popup-Menï¿½s
 		ops = Operator.getOperators();
 		opNames = ops.keySet().iterator();
 		
@@ -830,7 +830,7 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
 		} else {
 			requestFocus();
 
-			if( e.isControlDown() ) {	// PopUp-MenŸ
+			if( e.isControlDown() ) {	// PopUp-Menï¿½
 				popSource	= this;
 				popX		= e.getX();
 				popY		= e.getY();
@@ -851,7 +851,7 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
 		if( (e.getClickCount() == 2) && !e.isAltDown() ) {
 			slot = getLinkAround( e.getX(), e.getY(), true );
 
-			if( slot == null ) {		// kein Link; dann Popup-MenŸ
+			if( slot == null ) {		// kein Link; dann Popup-Menï¿½
 				popSource	= this;
 				popX		= e.getX();
 				popY		= e.getY();
@@ -891,7 +891,7 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
 		OpIcon	opIcon	= (OpIcon) e.getSource();
 		Point	opLoc	= opIcon.getLocation();
 
-		if( e.isControlDown() ) {	// PopUp-MenŸ
+		if( e.isControlDown() ) {	// PopUp-Menï¿½
 			popSource	= opIcon;
 			popX		= e.getX() + opLoc.x;
 			popY		= e.getY() + opLoc.y;
@@ -1026,7 +1026,7 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
 		Vector		slots;
 		String		mName;
 
-		if( e.isControlDown() ) {	// PopUp-MenŸ
+		if( e.isControlDown() ) {	// PopUp-Menï¿½
 			popSource	= opCon;
 			popX		= e.getX() + conLoc.x;
 			popY		= e.getY() + conLoc.y;

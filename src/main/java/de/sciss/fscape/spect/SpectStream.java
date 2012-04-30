@@ -2,7 +2,7 @@
  *  SpectStream.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -115,7 +115,7 @@ public class SpectStream
 	protected static final int	DEFAULT_BUF_SIZE	= 8;	// number of frames
 	
 	protected Vector	activeBuf;	// geschriebene Frames
-	protected Vector	deadBuf;	// nicht mehr benštigte Frames; darauf kann alloc() zurŸckgreifen!
+	protected Vector	deadBuf;	// nicht mehr benï¿½tigte Frames; darauf kann alloc() zurï¿½ckgreifen!
 	protected int		bufSize;	// max. Frame-Zahl in activeBuf und deadBuf
 
 // -------- public Methoden --------

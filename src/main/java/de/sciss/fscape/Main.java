@@ -2,7 +2,7 @@
  *  Main.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -50,14 +50,6 @@ import de.sciss.gui.GUIUtil;
 import de.sciss.gui.HelpFrame;
 import de.sciss.util.Flag;
 
-/**
- *  The <code>Main</code> class contains the java VM
- *  startup static <code>main</code> method which
- *  creates a new instance of <code>Main</code>.
- *
- *  @author		Hanns Holger Rutz
- *  @version	0.74, 02-Nov-10
- */
 public class Main
 extends BasicApplication
 implements OSCRouter
@@ -70,7 +62,7 @@ implements OSCRouter
 	 *
 	 *  @todo   should be saved in the session file as well
 	 */
-	private static final double APP_VERSION		= 0.74;
+	private static final double APP_VERSION		= 0.75;
 
 	/*
 	 *  The MacOS file creator string.

@@ -2,7 +2,7 @@
  *  SpectralFile.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -448,7 +448,7 @@ if( hdr[ hdr_chanNum ] == 2 ) {
 
 		if( (mode & MODE_FILEMASK) == MODE_OUTPUT ) {
 			try {
-				if( length() >= (hdr_sizeof << 2) ) {	// haben wir schon was geschrieben? (= gŸltiger hdr)
+				if( length() >= (hdr_sizeof << 2) ) {	// haben wir schon was geschrieben? (= gï¿½ltiger hdr)
 					seek( hdr_dataBsize << 2 );			// ...dann update file length
 					writeInt( (int) length() - hdr[ hdr_headBsize ]);
 				}

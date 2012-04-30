@@ -2,7 +2,7 @@
  *  ToolIcon.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -51,7 +51,7 @@ extends IconicComponent
 	protected int state;	// Status wie normal, selektiert etc.
 	private int basicID;	// ohne Status Addition
 
-	protected boolean clicked = false;	// fŸr den MouseEvent Listener
+	protected boolean clicked = false;	// fï¿½r den MouseEvent Listener
 
 // -------- public Variablen --------
 
@@ -78,7 +78,7 @@ extends IconicComponent
 	private static final int STATE_FACTOR		= 3;	// private: multiply IDs above widdis one
 
 	protected static final int ibWidth			= 32;			// Breite der Icons
-	protected static final int ibHeight			= 32;			// Hšhe der Icons	
+	protected static final int ibHeight			= 32;			// Hï¿½he der Icons	
 	protected static IconBitmap toolib;
 
 // -------- private Klassenvariablen und -konstruktor --------

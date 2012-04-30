@@ -2,7 +2,7 @@
  *  BasicFrame.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -71,7 +71,7 @@ extends BasicDialog
 
 	protected GUISupport gui;		// Dialog-Oberflaeche
 
-	private boolean choice = false;			// keine VerŠnderung bei Cancel nštig
+	private boolean choice = false;			// keine Verï¿½nderung bei Cancel nï¿½tig
 
 	protected static PropertyArray	static_pr	= null;
 	protected static Presets		presets		= null;
@@ -158,7 +158,7 @@ extends BasicDialog
 		while( presetNames.hasNext() ) {
 			ggPresets.addItem( (String) presetNames.next() );
 		}
-		ggPresets.setSelectedItem( Presets.DEFAULT );						// default wŠhlen und
+		ggPresets.setSelectedItem( Presets.DEFAULT );						// default wï¿½hlen und
 		ggDelPreset.setEnabled( false );							// DelPreset deaktivieren
 		gui.registerGadget( ggPresets, GG_PRESETS );
 		ggPresets.addItemListener( list );
@@ -280,7 +280,7 @@ timeSpace[ 2 ]			= new ParamSpace( timeSpace[ 2 ].inc, timeSpace[ 2 ].max, timeS
 		envelopeToGUI();
 		getContentPane().add( gui );
 
-		// Position und Grš§e aus dem Preferences ermitteln
+		// Position und Grï¿½ï¿½e aus dem Preferences ermitteln
 		setResizable( true );
 
 		addWindowListener( new WindowAdapter() {
@@ -450,7 +450,7 @@ timeSpace[ 2 ]			= new ParamSpace( timeSpace[ 2 ].inc, timeSpace[ 2 ].max, timeS
 
 		/**
 		 *	@param dlg	Edit-Dialog, der den Listener installiert
-		 *	@param gui	zu Ÿberwachendes GUI
+		 *	@param gui	zu ï¿½berwachendes GUI
 		 */
 		public EditEnvDlgListener( EditEnvDlg dlg )
 		{
@@ -680,7 +680,7 @@ timeSpace[ 2 ]			= new ParamSpace( timeSpace[ 2 ].inc, timeSpace[ 2 ].max, timeS
 						if( exists ) {
 							i = JOptionPane.showConfirmDialog( enc_this,  "Overwrite existing preset\n\"" +
 													  name + "\"", "Confirm", JOptionPane.YES_NO_OPTION );
-							if( i != 0 ) break topLevel;	// nicht Ÿberschreiben
+							if( i != 0 ) break topLevel;	// nicht ï¿½berschreiben
 						}
 
 						dlg.GUIToEnvelope();

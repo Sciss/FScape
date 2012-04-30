@@ -2,7 +2,7 @@
  *  Operator.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -66,7 +66,7 @@ implements Runnable, Slots, Cloneable, Transferable
 	public static final String	PACKAGE		= "de.sciss.fscape.op";
 	public static DataFlavor	flavor		= null;				// DataFlavor representing this class
 
-	public static final	int		GUI_PREFS	= 0;				// fŸr createGUI()
+	public static final	int		GUI_PREFS	= 0;				// fï¿½r createGUI()
 	public static final String	PRN_SPECTRO	= "Spectrogram";	// Property-Keynames
 
 	public static final int FLAGS_ALIAS		= 0x01;				// Operator is an Alias-Object
@@ -542,7 +542,7 @@ System.out.println( icon.getName() + ": aborted because of: " +threadError );
 // -------- Slots Methoden --------
 
 	/**
-	 *	@param filter	Jedes gesetzte Flag im filter-Parameter mu§ im Suchobject gesetzt sein!
+	 *	@param filter	Jedes gesetzte Flag im filter-Parameter muï¿½ im Suchobject gesetzt sein!
 	 */
 	public Vector getSlots( int filter )
 	{

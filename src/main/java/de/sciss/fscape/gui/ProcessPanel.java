@@ -2,7 +2,7 @@
  *  ProcessPanel.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -295,7 +295,7 @@ if( state != STATE_RUNNING ) setEnabled( true );
 //			ggProgress.reset();
 			pProgress.resetProgression();
 			procThread = new Thread( proc, proc.toString() );
-			procThread.start();			// ! wenn jemand getState() aufruft, kšnnte nach
+			procThread.start();			// ! wenn jemand getState() aufruft, kï¿½nnte nach
 			state = STATE_WARMUP;		// ! Thread.start() ein STATE_STOPPED fatal sein!!
 		}
 	}

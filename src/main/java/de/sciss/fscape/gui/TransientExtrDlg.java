@@ -2,7 +2,7 @@
  *  TransientExtrDlg.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -539,7 +539,7 @@ topLevel: try {
 				case LPMODE_FILTER:
 					// d(n) = D'*X(n); D = [d0 d1 ... dN]'; X(n) = [x(n-1) x(n-2) ... x(n-N)]'
 					// y(n) = d(n) (Mode=Filter) oder y(n) = x(n) - d(n) (Mode=Residual)
-					// D(n+1) = D(n) - §*d(n)*X(n)
+					// D(n+1) = D(n) - ï¿½*d(n)*X(n)
 					for( ch = 0; ch < inChanNum; ch++ ) {
 						convBuf1 = lpCoeffs1[ ch ];
 						convBuf2 = inBuf[ ch ];
@@ -665,7 +665,7 @@ topLevel: try {
 				// ---- CM filter ----------------------------------------------------------------------
 				if( constMod ) {
 					// y(n) = D'*X(n); D = [d0 d1 ... dN]'; X(n) = [x(n) x(n-1) ... x(n-N+1)]'
-					// D(n+1) = D(n) - §*(y(n)*y(n) - mu)*y(n)*X(n)
+					// D(n+1) = D(n) - ï¿½*(y(n)*y(n) - mu)*y(n)*X(n)
 					for( ch = 0; ch < outChanNum; ch++ ) {
 						convBuf1 = cmCoeffs[ ch ];
 						convBuf2 = cmBuf[ ch ];

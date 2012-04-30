@@ -2,7 +2,7 @@
  *  Spectrogram.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -73,8 +73,8 @@ implements AdjustmentListener, MouseListener, MouseMotionListener, WindowListene
 	private	int			width	= 192;
 	private	int			height	= 128;
 	private int			x		= 0;
-	private int[]		xTime;				// Zeitpunkt, den ein Pixel reprŠsentiert
-	private int			zoom	= 0;		// 2^n vergrš§ert
+	private int[]		xTime;				// Zeitpunkt, den ein Pixel reprï¿½sentiert
+	private int			zoom	= 0;		// 2^n vergrï¿½ï¿½ert
 	private int			maxZoom	= 0;
 	private int			lines	= 0;
 	private int			bottomLine = 0;		// unterste angezeigte Zeile (bei Zoom)
@@ -165,7 +165,7 @@ implements AdjustmentListener, MouseListener, MouseMotionListener, WindowListene
 		synchronized( this ) {
 			stream	= strm;
 			for( maxZoom = 0; (strm.bands >> maxZoom) > height; maxZoom++ );
-			zoom		= Math.max( 0, maxZoom - 1 );		// i.d.R. 10000 Hz, vernŸnftig
+			zoom		= Math.max( 0, maxZoom - 1 );		// i.d.R. 10000 Hz, vernï¿½nftig
 			bottomLine	= 0;
 			freqSpacing	= (strm.hiFreq - strm.loFreq) / strm.bands;
 			updateZoomGG();
@@ -203,14 +203,14 @@ implements AdjustmentListener, MouseListener, MouseMotionListener, WindowListene
 		synchronized( this ) {
 			if( (stream == null) || pausing ) return;			// "died" / Pause
 		
-			if( lines < height ) {				// nicht benutzten Raum lšschen
+			if( lines < height ) {				// nicht benutzten Raum lï¿½schen
 				imgG.setColor( Color.black );
 				imgG.drawLine( x, lines, x, height - 1 );
 			}
 
 			if( stream.chanNum == 1 ) {
 				for( i = bottomLine, y = lines - 1; i < (bottomLine + lines); i++, y-- ) {
-																	// 1.17 fŸr ein wenig Overhead
+																	// 1.17 fï¿½r ein wenig Overhead
 					rgb[ 0 ] = (float) Math.sqrt( fr.data[ 0 ][ i << (zoom + 1) + SpectFrame.AMP ]
 												  * 1.17f );
 					if( rgb[ 0 ] < 0.0f ) rgb[ 0 ] = 0.0f;

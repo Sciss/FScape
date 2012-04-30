@@ -2,7 +2,7 @@
  *  CurvePanel.java
  *  FScape
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -150,7 +150,7 @@ extends JPanel
 				} else if( e.isAltDown() ) {
 					index = getComponentIndex( (Component) e.getSource() );
 					if( (curve.getPoint( index - 1 ) != null) &&
-						(curve.getPoint( index + 1 ) != null) ) {	// Endpunkte nicht lšschen
+						(curve.getPoint( index + 1 ) != null) ) {	// Endpunkte nicht lï¿½schen
 						
 						removePoint( (CurvePoint) e.getSource() );
 					}
@@ -177,7 +177,7 @@ extends JPanel
 						actionComponent.dispatchEvent( parentE );
 					}
 
-					if( e.isControlDown() ) {	// PopUp-MenŸ
+					if( e.isControlDown() ) {	// PopUp-Menï¿½
 						// XXX
 					}
 
@@ -189,7 +189,7 @@ extends JPanel
 					// neuen CurvePoint selektieren
 					currentCurvePoint.setSelected( CP_STATE_SELECTED );
 
-					if( e.isControlDown() ) {		// PopUp-MenŸ
+					if( e.isControlDown() ) {		// PopUp-Menï¿½
 						// XXX
 
 					} else if( !e.isAltDown() ) {	// prepare Drag
