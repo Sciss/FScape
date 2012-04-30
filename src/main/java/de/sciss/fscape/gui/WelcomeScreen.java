@@ -73,7 +73,7 @@ implements HyperlinkListener
 		"still contains a lot of bugs that can possibly damage your files. Use this at your own risk!</p>"+
 		"<p>This screen pops up because I couldn't find any known "+
 		"preferences version, which suggests that you start this application for the first time. Please take a few "+
-		"minutes to read the <EM>readme.html</EM> file and the introductory part of the manual. As a first step before doing "+
+		"minutes to read the <EM>README.md</EM> file and the introductory part of the manual. As a first step before doing "+
 		"anything else, you should adjust your preferences. The preferences pane will show up when you "+
 		"close this window.</p>"+
 		"<p>This software is free software; you can redistribute it and/or "+
