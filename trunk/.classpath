@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<classpath>
-	<classpathentry kind="src" output="classes" path="src"/>
-	<classpathentry kind="lib" path="libraries/ScissLib.jar" sourcepath="/Users/rutz/Documents/workspace/ScissLib/src"/>
-	<classpathentry kind="lib" path="libraries/MRJAdapter.jar"/>
-	<classpathentry kind="lib" path="libraries/NetUtil.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="output" path="bin"/>
-</classpath>
