@@ -18,6 +18,10 @@ crossPaths := false  // this is just a Java project right now!
 
 retrieveManaged := true
 
+libraryDependencies ++= Seq(
+   "de.sciss" %% "submin" % "0.10-SNAPSHOT"
+)
+
 // ---- bundling ----
 
 seq( assemblySettings: _* )

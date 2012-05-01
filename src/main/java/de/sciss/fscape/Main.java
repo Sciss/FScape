@@ -120,6 +120,9 @@ implements OSCRouter
 		}
         
         // ---- init look-and-feel
+        // register submin
+        UIManager.installLookAndFeel( "SubminDark", "de.sciss.submin.SubminDarkLookAndFeel" );
+
 		name = prefs.get( PrefsUtil.KEY_LOOKANDFEEL, null );
 		if( args.length >= 3 && args[ 0 ].equals( "-laf" )) {
 			UIManager.installLookAndFeel( args[ 1 ], args[ 2 ]);
