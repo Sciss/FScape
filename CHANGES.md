@@ -1,5 +1,9 @@
 ## change history
 
+### v0.75 (snapshot -- ongoing)
+
+ - Fixes: ResampleDlg (64 bit frame offsets make it work with long files)
+
 ### v0.74 (nov 2010 -- SVN rev. 69)
 
  - New: Dr Murke

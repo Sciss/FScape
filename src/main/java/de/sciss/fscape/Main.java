@@ -2,7 +2,7 @@
  *  Main.java
  *  FScape
  *
- *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2013 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -120,8 +120,8 @@ implements OSCRouter
 		}
         
         // ---- init look-and-feel
-        // register submin
-        UIManager.installLookAndFeel( "SubminDark", "de.sciss.submin.SubminDarkLookAndFeel" );
+//        // register submin
+//        UIManager.installLookAndFeel( "SubminDark", "de.sciss.submin.SubminDarkLookAndFeel" );
 
 		name = prefs.get( PrefsUtil.KEY_LOOKANDFEEL, null );
 		if( args.length >= 3 && args[ 0 ].equals( "-laf" )) {

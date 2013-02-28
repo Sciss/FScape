@@ -8,31 +8,39 @@ organization := "de.sciss"
 
 description := "A standalone audio rendering software for time domain and spectral signal processing"
 
-homepage := Some( url( "https://github.com/Sciss/FScape" ))
+homepage <<= name { n => Some(url("https://github.com/Sciss/" + n)) }
 
-licenses := Seq( "GPL v2+" -> url( "http://www.gnu.org/licenses/gpl-2.0.txt" ))
+licenses := Seq("GPL v2+" -> url("http://www.gnu.org/licenses/gpl-2.0.txt"))
 
-scalaVersion := "2.9.2"
+scalaVersion := "2.10.0"
 
 crossPaths := false  // this is just a Java project right now!
 
+autoScalaLibrary := false
+
 retrieveManaged := true
 
-libraryDependencies ++= Seq(
-   "de.sciss" %% "submin" % "0.10-SNAPSHOT"
-)
+mainClass in Compile := Some("de.sciss.fscape.Main")
+
+// libraryDependencies ++= Seq(
+//    "de.sciss" %% "submin" % "0.10-SNAPSHOT"
+// )
 
 // ---- bundling ----
 
-seq( assemblySettings: _* )
+seq(assemblySettings: _*)
 
 test in assembly := {}
 
-seq( appbundle.settings: _* )
+seq(appbundle.settings: _*)
 
-appbundle.javaOptions ++= Seq( "-Xmx1024m", "-ea" )
+appbundle.javaOptions ++= Seq("-Xmx1024m", "-ea")
 
-appbundle.icon := Some( file( "FScape.icns" ))
+appbundle.icon := Some(file("FScape.icns"))
+
+appbundle.target <<= baseDirectory
+
+appbundle.mainClass <<= mainClass in Compile
 
 // ---- publishing ----
 
@@ -50,10 +58,10 @@ publishArtifact in Test := false
 
 pomIncludeRepository := { _ => false }
 
-pomExtra :=
+pomExtra <<= name { n =>
 <scm>
-  <url>git@github.com:Sciss/FScape.git</url>
-  <connection>scm:git:git@github.com:Sciss/FScape.git</connection>
+  <url>git@github.com:Sciss/{n}.git</url>
+  <connection>scm:git:git@github.com:Sciss/{n}.git</connection>
 </scm>
 <developers>
    <developer>
@@ -62,3 +70,4 @@ pomExtra :=
       <url>http://www.sciss.de</url>
    </developer>
 </developers>
+}

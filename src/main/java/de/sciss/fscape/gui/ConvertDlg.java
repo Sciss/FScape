@@ -2,7 +2,7 @@
  *  ConvertDlg.java
  *  FScape
  *
- *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2013 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -786,7 +786,7 @@ final int smpPerFrame = (bands - 1) >> overlap;
 
 				switch( inType ) {
 				case TYPE_SPECT:		// ------------------------------ Spect ==> TIFF ------------------------------
-					((ImageStream) outStream).height	= ((SpectStream) inStream).frames;
+					((ImageStream) outStream).height	= (int) ((SpectStream) inStream).frames;
 					((ImageStream) outStream).hRes		= 1f / 72f;
 					((ImageStream) outStream).vRes		= 1f / 72f;
 					((ImageStream) outStream).resUnit	= ImageStream.RES_INCH;

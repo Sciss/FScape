@@ -2,7 +2,7 @@
  *  InputOp.java
  *  FScape
  *
- *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2013 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -152,9 +152,9 @@ extends Operator
 		// Haupt-Variablen fuer den Prozess
 		String			runFileName;
 		SpectralFile	runFile			= null;
-		int 			runStartFrame;		// read-offset
-		int				runFrames;			// read-length
-		int				runFramesRead	= 0;
+		long            runStartFrame;		// read-offset
+		long			runFrames;			// read-length
+		long			runFramesRead	= 0;
 	
 		SpectStreamSlot	runOutSlot;
 		SpectStream		runInStream;
@@ -212,7 +212,7 @@ extends Operator
 			
 			if( pr.bool[ PR_ADJUSTSTART ]) {
 
-				runStartFrame = (int) SpectStream.millisToFrames( runInStream, startShift );
+				runStartFrame = (long) SpectStream.millisToFrames( runInStream, startShift );
 
 				if( runStartFrame >= runInStream.frames ) {
 					// tja, damit sind wir schon am Ende...
@@ -226,7 +226,7 @@ extends Operator
 			// ------------------------------ Endpunkt ------------------------------
 			if( pr.bool[ PR_ADJUSTLENGTH ]) {
 
-				runFrames = (int) SpectStream.millisToFrames( runInStream, outLength );
+				runFrames = (long) SpectStream.millisToFrames( runInStream, outLength );
 																  
 				if( runStartFrame + runFrames > runInStream.frames ) {
 					runFrames = runInStream.frames - runStartFrame;

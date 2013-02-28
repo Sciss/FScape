@@ -2,7 +2,7 @@
  *  ResampleDlg.java
  *  FScape
  *
- *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2013 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -411,9 +411,9 @@ extends DocumentFrame
 		int					ch;
 
 		// Smp Init
-		int					totalInSamples;						// reichen 32 bit?
-		int					inLength;
-		int					framesRead, framesWritten, samplesWritten;
+        long			    totalInSamples;						// reichen 32 bit?
+		long				inLength;
+		long    			framesRead, framesWritten, samplesWritten;
 		int					inBufSize, outBufSize;
 
 		double				inPhase;
@@ -461,7 +461,8 @@ topLevel: try {
 			inF				= AudioFile.openAsRead( new File( pr.text[ PR_INPUTFILE ]));
 			inStream		= inF.getDescr();
 			inChanNum		= inStream.channels;
-			inLength		= (int) inStream.length;
+			inLength		= inStream.length;
+System.out.println("inLength = " + inLength);
 			totalInSamples	= inLength * inChanNum;
 			inRate			= inStream.rate;
 			// this helps to prevent errors from empty files!
@@ -605,9 +606,9 @@ topLevel: try {
 
 		// ----==================== da resampling ====================----
 
-			framesWritten	= 0;
-			samplesWritten	= 0;
-			framesRead		= 0;
+			framesWritten	= 0L;
+			samplesWritten	= 0L;
+			framesRead		= 0L;
 			rsmpFactor		= rateBase.val / inRate;
 			overlap			= overlapSize;
 			offStart		= overlapSize;
@@ -618,7 +619,7 @@ topLevel: try {
 
 			while( threadRunning && !finished ) {
 				// ==================== read input chunk ====================
-				len			= Math.min( inLength - framesRead, inputStep + overlap );
+				len			= (int) Math.min( inLength - framesRead, inputStep + overlap );
 				chunkLength	= offStart + len;
 				inF.readFrames( inBuf, offStart, len );
 				framesRead += len;
@@ -666,7 +667,7 @@ topLevel: try {
 							outTransLen	= Math.max( 1, Math.min( outTransLen, inputStep ));	// outBuf.length limit
 							inputIncr	= outTransLen / rsmpFactor;
 							mFrames	   += inputIncr;
-							mStream.framesRead = (int) mFrames;	// dirty little boy, dirty little boy
+							mStream.framesRead = (long) mFrames;	// dirty little boy, dirty little boy
 		
 						// ae-statikk
 						} else {
@@ -725,7 +726,7 @@ topLevel: try {
 						for( ch = 0; ch < inChanNum; ch++ ) {
 							if( rdOff[ ch ] >= chunkLength ) continue;
 							inTransLen		= chunkLength - rdOff[ ch ];
-							mStream.framesRead = (int) rmFrames[ ch ];	// dirty little boy, dirty little boy
+							mStream.framesRead = (long) rmFrames[ ch ];	// dirty little boy, dirty little boy
 							leftFactor		= mRateMod.calc().val / inRate;
 							rightFactor		= mRightMod.calc().val / inRate;
 							floaty			= (float) ch / (float) (inChanNum - 1);		// gewichtung; (rein theoret. >2 chn. moeglich!!!!)
@@ -793,17 +794,17 @@ topLevel: try {
 				if( rightMod ) {
 					framesWritten = 0;
 					for( ch = 0; ch < inChanNum; ch++ ) {
-						framesWritten = Math.max( framesWritten, (int) floatF[ ch ].getSize() );
+						framesWritten = Math.max( framesWritten, (long) floatF[ ch ].getSize() );
 					}
 					convBuf1 = outBuf[ 0 ];
 					for( i = 0; i < outBufSize; i++ ) {		// create empty space
 						convBuf1[ i ] = 0.0f;
 					}
 					for( ch = 0; ch < inChanNum; ch++ ) {
-						for( i = (int) floatF[ ch ].getSize(); threadRunning && (i < framesWritten); ) {
-							len = Math.min( framesWritten - i, outBufSize );
+						for( long ii = floatF[ ch ].getSize(); threadRunning && (ii < framesWritten); ) {
+							len = (int) Math.min( framesWritten - ii, outBufSize );
 							floatF[ ch ].writeFloats( convBuf1, 0, len );
-							i  += len;
+							ii += len;
 						// .... progress ....
 							setProgression( (float) progOff / (float) progLen );
 						}

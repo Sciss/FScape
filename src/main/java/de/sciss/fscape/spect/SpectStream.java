@@ -2,7 +2,7 @@
  *  SpectStream.java
  *  FScape
  *
- *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2013 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -84,15 +84,15 @@ public class SpectStream
 	/**
 	 *	estimated(!) number of frames; don't rely on this
 	 */
-	public int		frames;
+	public long frames;
 	/**
 	 *	number of frames written to pipe (total, NOT number currently in buffer)
 	 */
-	public int		framesWritten	= 0;
+	public long		framesWritten	= 0L;
 	/**
 	 *	number of frames read from the pipe (total)
 	 */
-	public int		framesRead		= 0;
+	public long		framesRead		= 0L;
 
 	public static final String ERR_NOREADER		= "Reader closed the stream";
 	public static final String ERR_NOWRITER		= "Writer closed the stream";
@@ -273,7 +273,7 @@ public class SpectStream
 	/**
 	 *	Geschaetzte Laenge (im Frames) festlegen
 	 */
-	public void setEstimatedLength( int frames )
+	public void setEstimatedLength( long frames )
 	{
 		this.frames	= frames;
 	}
@@ -362,7 +362,7 @@ public class SpectStream
 	 *	die IOException muss generell abgefangen werden, weil der SpectStream moeglicherweise
 	 *	in der Zukunft auf temporaere Dateien zugreift!
 	 *
-	 *	@param	frame	sollte mit allocFrame(s)() beschafft worden sein!
+	 *	@param	fr  sollte mit allocFrame(s)() beschafft worden sein!
 	 */
 	public void writeFrame( SpectFrame fr )
 	throws	IOException,
@@ -612,7 +612,7 @@ public class SpectStream
 	/**
 	 *	Rechnet Framezahl in Millisekunden um
 	 */
-	public static double framesToMillis( SpectStream stream, int frames )
+	public static double framesToMillis( SpectStream stream, long frames )
 	{
 		return( frames * ((double) stream.smpPerFrame / stream.smpRate) * 1000 );
 	}

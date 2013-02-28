@@ -6,7 +6,7 @@
 
 FScape is a standalone, cross-platform audio rendering software.
 
-FScape is (C)opyright 2001&ndash;2012 by Hanns Holger Rutz. All rights reserved.
+FScape is (C)opyright 2001&ndash;2013 by Hanns Holger Rutz. All rights reserved.
 
 This program is free software; you can redistribute it and/or modify it under the terms of the [GNU General Public License](http://github.com/Sciss/FScape/blob/master/licenses/FScape-License.txt) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
 
@@ -20,7 +20,7 @@ In the binary distribution, you should just be able to double click the `FScape.
 
 ### compiling
 
-FScape now builds with the simple-build-tool (sbt) 0.11.2. It had originally been created for Java 1.4, but probably now relies on features of Java 1.6.
+FScape now builds with the simple-build-tool (sbt) 0.12.
 
  - to compile: `sbt compile`
  - to package: `sbt package`

@@ -2,7 +2,7 @@
  *  SpectralFile.java
  *  FScape
  *
- *  Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2013 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -92,7 +92,7 @@ extends GenericFile
 	protected static final int PVA_DOUBLE		= (8+32);	// 64 bit float data
 
 	protected int bands;	// frameSize / datanum + 1; where datanum = 2 for polar+rect, else 1
-	protected int frames;	// total number
+	protected long frames;	// total number
 	protected int dataOffset;	// MAG, POLAR, RECT = 0, PHASE = 1
 	protected int dataNum;		// MAG, PHASE = 1, POLAR, RECT = 2
 
@@ -201,7 +201,7 @@ if( hdr[ hdr_chanNum ] == 2 ) {
 	 *	Springt zu einem bestimmten Frame
 	 *	(nachfolgende readFrame() und writeFrame()s sind betroffen)
 	 */
-	public void seekFrame( int frame )
+	public void seekFrame( long frame )
 	throws IOException
 	{
 		seek( hdr[ hdr_headBsize ] + frame * hdr[ hdr_frameBsize ] * hdr[ hdr_chanNum ]);
