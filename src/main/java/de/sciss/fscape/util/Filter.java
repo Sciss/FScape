@@ -52,7 +52,7 @@ public class Filter
 // -------- private Variablen --------
 
 	protected static final String[] windowNames = {
-		"Hamming", "Blackman", "Kaiser �=4", "Kaiser �=5", "Kaiser �=6", "Kaiser �=8", "Rectangle",
+		"Hamming", "Blackman", "Kaiser \u03B2=4", "Kaiser \u03B2=5", "Kaiser \u03B2=6", "Kaiser \u03B2=8", "Rectangle",
 		"von Hann", "Triangle"
 	};
 	

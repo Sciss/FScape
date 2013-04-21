@@ -333,7 +333,7 @@ extends DocumentFrame
 							    ",ac"+PRS_TRANSFORM_FWT+"|21|en|22|di|23|di,"+
 							  "itFast Fourier,itDiscrete Fourier (log. Scale),itFast Wavelet\n"+
 							  "lbFilter;ch,id21,pr"+PRN_FILTER+",itDaubechies 4\n";
-		String	window		= "lbWindow;ch,pr"+PRN_WINDOW+",itHamming,itBlackman,itKaiser �=4,itKaiser �=5,itKaiser �=6,itKaiser �=8\n";
+		String	window		= "lbWindow;ch,pr"+PRN_WINDOW+",itHamming,itBlackman,itKaiser \u03B2=4,itKaiser \u03B2=5,itKaiser \u03B2=6,itKaiser \u03B2=8\n";
 		String	overlap		= "lbOverlap;ch,pr"+PRN_OVERLAP+",it1x,it2x,it4x,it8x,it16x\n";
 		String	bands		= "lbBands;ch,pr"+PRN_BANDS+",it4096,it2048,it1024,it512,it256,it128,it64,it32\n"+
 							  "lbBandwidth [semi];ch,id22,pr"+PRN_BANDWIDTH+",it1/16,it1/12,it1/8,it1/4,it1/2,it1/1\n"+

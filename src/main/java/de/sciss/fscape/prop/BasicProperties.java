@@ -36,6 +36,8 @@ import de.sciss.app.AbstractApplication;
 
 import de.sciss.fscape.util.*;
 
+import de.sciss.io.AudioFile;
+import de.sciss.io.AudioFileDescr;
 import net.roydesign.mac.MRJAdapter;
 
 /**
@@ -102,17 +104,27 @@ extends Properties
 		return modified;
 	}
 
-	/**
-	 *	Laedt die Presets von der Festplatte
-	 */
-	public void load()
-	throws IOException
-	{ 
-		synchronized( this ) {
-			load( new FileInputStream( f ));
-			modified = false;
-		}
-	}
+    /**
+     * Loads FScape document from disk
+     */
+    public void load()
+            throws IOException {
+        synchronized (this) {
+            final DataInputStream dis = new DataInputStream(new FileInputStream(f));
+            final String line0 = dis.readLine();
+            if (!(line0.startsWith("#") && line0.contains(header))) {
+                final String message;
+                if (AudioFile.retrieveType(f) == AudioFileDescr.TYPE_UNKNOWN) {
+                    message = "Unknown file format";
+                } else {
+                    message = "This is an audio file.\nYou don't open audio files via the File menu!";
+                }
+                throw new IOException("This file is not an FScape document.\n" + message);
+            }
+            load(dis);
+            modified = false;
+        }
+    }
 
 	/**
 	 *	Sichert die Presets auf der Festplatte
