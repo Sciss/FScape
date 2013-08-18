@@ -5,3 +5,4 @@ project/boot/
 .idea/
 .idea_modules/
 FScape.app
+.lib/

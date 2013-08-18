@@ -56,9 +56,6 @@ import de.sciss.io.AudioFileDescr;
 
 /**
  *	Adaptive whitening filter.
- *
- *  @author		Hanns Holger Rutz
- *  @version	0.72, 18-Feb-10
  */
 public class BleachDlg
 extends DocumentFrame
@@ -77,7 +74,8 @@ extends DocumentFrame
 	private static final int PR_FEEDBACKGAIN		= 2;
 	private static final int PR_FILTERCLIP			= 3;
 	private static final int PR_USEANAASFLT			= 0;		// pr.bool
-	private static final int PR_INVERSE				= 1;
+    private static final int PR_INVERSE				= 1;
+	private static final int PR_TWOWAYS				= 2;
 
 	private static final String PRN_ANAINFILE		= "AnaInFile";
 	private static final String PRN_FLTINFILE		= "FltInFile";
@@ -88,7 +86,8 @@ extends DocumentFrame
 	private static final String PRN_FILTERCLIP		= "FilterClip";
 	private static final String PRN_FEEDBACKGAIN	= "FeedbackGain";
 	private static final String PRN_USEANAASFLT		= "UseAnaAsFilter";
-	private static final String PRN_INVERSE			= "Inverse";
+    private static final String PRN_INVERSE			= "Inverse";
+	private static final String PRN_TWOWAYS         = "TwoWays";
 
 	private static final String	prText[]		= { "", "", "" };
 	private static final String	prTextName[]	= { PRN_ANAINFILE, PRN_FLTINFILE, PRN_OUTPUTFILE };
@@ -96,8 +95,8 @@ extends DocumentFrame
 	private static final String	prIntgName[]	= { PRN_OUTPUTTYPE, PRN_OUTPUTRES, PRN_GAINTYPE };
 	private static final Param	prPara[]		= { null, null, null, null };
 	private static final String	prParaName[]	= { PRN_GAIN, PRN_FILTERLENGTH, PRN_FEEDBACKGAIN, PRN_FILTERCLIP };
-	private static final boolean prBool[]		= { true, false };
-	private static final String	prBoolName[]	= { PRN_USEANAASFLT, PRN_INVERSE };
+	private static final boolean prBool[]		= { true, false, false };
+	private static final String	prBoolName[]	= { PRN_USEANAASFLT, PRN_INVERSE, PRN_TWOWAYS };
 
 	private static final int GG_ANAINFILE		= GG_OFF_PATHFIELD	+ PR_ANAINFILE;
 	private static final int GG_FLTINFILE		= GG_OFF_PATHFIELD	+ PR_FLTINFILE;
@@ -110,7 +109,8 @@ extends DocumentFrame
 	private static final int GG_FILTERCLIP		= GG_OFF_PARAMFIELD	+ PR_FILTERCLIP;
 	private static final int GG_FEEDBACKGAIN	= GG_OFF_PARAMFIELD	+ PR_FEEDBACKGAIN;
 	private static final int GG_USEANAASFLT		= GG_OFF_CHECKBOX	+ PR_USEANAASFLT;
-	private static final int GG_INVERSE			= GG_OFF_CHECKBOX	+ PR_INVERSE;
+    private static final int GG_INVERSE			= GG_OFF_CHECKBOX	+ PR_INVERSE;
+	private static final int GG_TWOWAYS         = GG_OFF_CHECKBOX	+ PR_TWOWAYS;
 
 	private static	PropertyArray	static_pr		= null;
 	private static	Presets			static_presets	= null;
@@ -157,7 +157,7 @@ extends DocumentFrame
 		final PathField		ggAnaInFile, ggOutputFile, ggFltInFile;
 		final PathField[]	ggInputs;
 		final JCheckBox		ggUseAnaAsFlt;
-		final JCheckBox		ggInverse;
+		final JCheckBox		ggInverse, ggTwoWays;
 		final Component[]	ggGain;
 		final ParamField	ggFilterLength, ggFeedbackGain, ggFilterClip;
 		final ParamSpace	spcFeedbackGain, spcFilterClip;
@@ -251,17 +251,17 @@ extends DocumentFrame
 		con.gridwidth	= 1;
 		gui.addLabel( new JLabel( "Filter Length:", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
-//		con.gridwidth	= GridBagConstraints.REMAINDER;
+        //		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggFilterLength, GG_FILTERLENGTH, null );
 
-//		ggIterations	= new ParamField( new ParamSpace[] {
-//			new ParamSpace( 1, 1000000, 1, Param.NONE )});
-//		con.weightx		= 0.1;
-////		con.gridwidth	= 1;
-//		gui.addLabel( new JLabel( "Iterations:", SwingConstants.RIGHT ));
-//		con.weightx		= 0.4;
-//		con.gridwidth	= GridBagConstraints.REMAINDER;
-//		gui.addParamField( ggIterations, GG_ITERATIONS, null );
+        //		ggIterations	= new ParamField( new ParamSpace[] {
+        //			new ParamSpace( 1, 1000000, 1, Param.NONE )});
+        //		con.weightx		= 0.1;
+        ////		con.gridwidth	= 1;
+        //		gui.addLabel( new JLabel( "Iterations:", SwingConstants.RIGHT ));
+        //		con.weightx		= 0.4;
+        //		con.gridwidth	= GridBagConstraints.REMAINDER;
+        //		gui.addParamField( ggIterations, GG_ITERATIONS, null );
 
 		spcFeedbackGain	= new ParamSpace( Double.NEGATIVE_INFINITY, 0.0, 0.1, Param.DECIBEL_AMP );
 		ggFeedbackGain	= new ParamField( spcFeedbackGain );
@@ -277,12 +277,25 @@ extends DocumentFrame
 		con.weightx		= 0.1;
 		gui.addLabel( new JLabel( "Filter Clip:", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
-//		con.gridwidth	= GridBagConstraints.REMAINDER;
+        //		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggFilterClip, GG_FILTERCLIP, null );
 
-		ggInverse		= new JCheckBox( "Inverse Operation (Colorize)" );
-		con.weightx		= 0.9;
-		con.gridwidth	= GridBagConstraints.REMAINDER;
+        ggTwoWays		= new JCheckBox();
+        con.gridwidth	= 1;
+        con.weightx		= 0.1;
+        gui.addLabel( new JLabel( "Two Ways (Backward-Forward):", SwingConstants.RIGHT ));
+        con.weightx		= 0.4;
+        con.gridwidth	= GridBagConstraints.REMAINDER;
+        gui.addCheckbox( ggTwoWays, GG_TWOWAYS, null );
+
+        con.gridwidth	= 2;
+        gui.addLabel( new JLabel());
+		ggInverse		= new JCheckBox();
+        con.gridwidth	= 1;
+        con.weightx		= 0.1;
+        gui.addLabel( new JLabel( "Inverse Operation (Colorize):", SwingConstants.RIGHT ));
+        con.weightx		= 0.4;
+        con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addCheckbox( ggInverse, GG_INVERSE, null );
 		
 		reflectPropertyChanges();
@@ -315,10 +328,10 @@ extends DocumentFrame
 		AudioFile				anaInF			= null;
 		AudioFile				outF			= null;
 		AudioFile				fltInF			= null;
-		final AudioFile			tmpF;
+		final AudioFile			tmpF, tmpF2;
 		final AudioFileDescr	anaInDescr, outDescr;
 		final int				numCh;
-		final long				anaInLength, numFrames;
+		final long				anaInLength, fltInLength, numFrames;
 		final boolean			useAnaAsFilter	= pr.bool[ PR_USEANAASFLT ];
 		final PathField			ggOutput;
 		final int				fltLength		= (int) pr.para[ PR_FILTERLENGTH ].val;
@@ -332,6 +345,7 @@ extends DocumentFrame
 		final double			filterMin		= -filterMax;
 //		final boolean			preCalc			= pr.bool[ PR_PRECALC ];
 		final boolean			inverse			= pr.bool[ PR_INVERSE ];
+        final boolean           twoWays         = pr.bool[ PR_TWOWAYS ];
 		final boolean			preCalc			= false; // XXX man this shit doesn't do anything. but why???
 		
 		long					framesRead, framesWritten, progOff, progLen;
@@ -342,7 +356,7 @@ extends DocumentFrame
 		float					gain;
 		float					maxAmp			= 0.0f;
 		
-topLevel: try {
+        topLevel: try {
 
 		// ---- open input, output; init ----
 			// analysis input
@@ -365,10 +379,11 @@ topLevel: try {
 				if( numCh != fltInDescr.channels ) {
 					throw new IOException( ERR_CHANNELS );
 				}
-				numFrames	= Math.min( anaInLength, fltInDescr.length );
+                fltInLength = fltInDescr.length;
 			} else {
-				numFrames	= anaInLength;
+                fltInLength = anaInLength;
 			}
+            numFrames	= Math.min( anaInLength, fltInLength );
 
 			// output
 			ggOutput	= (PathField) gui.getItemObj( GG_OUTPUTFILE );
@@ -388,6 +403,11 @@ topLevel: try {
 				gain	= 1f;
 				tmpF	= createTempFile( outDescr );
 			}
+            if (twoWays) {
+                tmpF2   = createTempFile( outDescr );
+            } else {
+                tmpF2   = null;
+            }
 			
 			fltKernel	= new double[ numCh ][ fltLength ];
 			// FFFFFBBBBBBBBB
@@ -400,29 +420,29 @@ topLevel: try {
 			}
 
 			// ---- main loop ----
-			progLen			= numFrames * 3 + (absGain ? 0L : numFrames);
+			progLen			= numFrames * 3 + (absGain ? 0L : numFrames) + (twoWays ? numFrames << 1 : 0L);
 			progOff			= 0L;
 			
-//			R = exp( -SampleDur/t )
-//			t60 = 6.91t
-//			log R = -SampleDur * 6.91 / t60
-//			t60 = -SampleDur * 6.91 / log R
-//			t60 = -(1/SampleRate) * 6.91 / log R
-//			t60 = -(1/SampleRate) * 6.91 / log R
-//			t60 = -6.91 / (log R * SampleRate)
-//			frames = -6.91 / log R
-//			R == (1-r) ???
-//			r = -50.dbamp
-//			-6.91 / log( (1-r) )
-//			r = -80.dbamp
-//			-6.91 / log( (1-r) )
+            //			R = exp( -SampleDur/t )
+            //			t60 = 6.91t
+            //			log R = -SampleDur * 6.91 / t60
+            //			t60 = -SampleDur * 6.91 / log R
+            //			t60 = -(1/SampleRate) * 6.91 / log R
+            //			t60 = -(1/SampleRate) * 6.91 / log R
+            //			t60 = -6.91 / (log R * SampleRate)
+            //			frames = -6.91 / log R
+            //			R == (1-r) ???
+            //			r = -50.dbamp
+            //			-6.91 / log( (1-r) )
+            //			r = -80.dbamp
+            //			-6.91 / log( (1-r) )
 			if( preCalc ) { // precalc going backwards to the beginning
-//				final long preFrames = Math.max( 0, Math.min( numFrames,
-//				    (long) (-6.91 / Math.log( 1 - feedbackGain ))));
+                //				final long preFrames = Math.max( 0, Math.min( numFrames,
+                //				    (long) (-6.91 / Math.log( 1 - feedbackGain ))));
 				final long preFrames = numFrames;
 				progLen += preFrames * 2;
 				framesRead = 0L;
-//System.out.println( "preFrames = " + preFrames );
+                //System.out.println( "preFrames = " + preFrames );
 				while( threadRunning && (framesRead < preFrames) ) {
 					// read input
 					chunkLen = (int) Math.min( 8192, preFrames - framesRead );
@@ -464,7 +484,7 @@ topLevel: try {
 							// update kernel
 							d1 = errNeg * feedbackGain;
 							k = i;
-System.out.println( "FLIP CLIP NOT YET SUPPORTED HERE" );
+                            System.out.println( "FLIP CLIP NOT YET SUPPORTED HERE" );
 							for( int j = 0; j < fltLength; j++, k++ ) {
 								fltChanKernel[ j ] += d1 * anaChanBuf[ k ];
 							}
@@ -489,13 +509,34 @@ System.out.println( "FLIP CLIP NOT YET SUPPORTED HERE" );
 			
 			framesWritten	= 0L;
 			framesRead		= 0L;
+
+            AudioFile readFltInF    = fltInF;
+            AudioFile writeOutF     = twoWays ? tmpF2 : (absGain ? outF : tmpF);
+
+            boolean isSecondPass    = false;
+
 			while( threadRunning && (framesWritten < numFrames) ) {
 				// read input
 				chunkLen = (int) Math.min( 8192, numFrames - framesRead );
-				anaInF.readFrames( anaBuf, fltLength, chunkLen );
-				if( !useAnaAsFilter ) {
-					fltInF.readFrames( fltBuf, fltLength, chunkLen );
-				}
+                if (twoWays && !isSecondPass) {
+                    anaInF.seekFrame(numFrames - framesRead - chunkLen);
+                    anaInF.readFrames(anaBuf, fltLength, chunkLen);
+                    Util.reverse(anaBuf, fltLength, chunkLen);
+                } else {
+                    anaInF.readFrames( anaBuf, fltLength, chunkLen );
+                }
+
+                // two ways + separate filter: read reversed in both passes
+                // two ways + same file      : read reversed in second pass, don't read in first pass
+                // one way  + separate filter: read filter filter
+                // one way  + same file      : don't read
+                if (twoWays && (isSecondPass || !useAnaAsFilter)) {
+                    readFltInF.seekFrame(numFrames - framesRead - chunkLen);
+                    readFltInF.readFrames(fltBuf, fltLength, chunkLen);
+                    Util.reverse(fltBuf, fltLength, chunkLen);
+                } else if( !useAnaAsFilter ) {
+                    readFltInF.readFrames( fltBuf, fltLength, chunkLen );
+                }
 				framesRead += chunkLen;
 				progOff    += chunkLen;
 				
@@ -512,7 +553,7 @@ System.out.println( "FLIP CLIP NOT YET SUPPORTED HERE" );
 						for( int j = 0; j < fltLength; j++, k++ ) {
 							d1 += anaChanBuf[ k ] * fltChanKernel[ j ]; 
 						}
-//						err = d1 - anaChanBuf[ k ];
+                        // err = d1 - anaChanBuf[ k ];
 						errNeg = anaChanBuf[ k ] - d1;
 						if( useAnaAsFilter ) {
 							// use straight as output...
@@ -538,10 +579,10 @@ System.out.println( "FLIP CLIP NOT YET SUPPORTED HERE" );
 				progOff += chunkLen;
 
 				// handle overlap
-//				Util.copy( anaBuf, fltLength, anaBuf, 0, chunkLen );
+                // Util.copy( anaBuf, fltLength, anaBuf, 0, chunkLen );
 				Util.copy( anaBuf, 8192, anaBuf, 0, fltLength );
 				if( !useAnaAsFilter ) {
-//					Util.copy( fltBuf, fltLength, fltBuf, 0, chunkLen );
+                    // Util.copy( fltBuf, fltLength, fltBuf, 0, chunkLen );
 					Util.copy( fltBuf, 8192, fltBuf, 0, fltLength );
 				}
 				
@@ -549,14 +590,24 @@ System.out.println( "FLIP CLIP NOT YET SUPPORTED HERE" );
 				maxAmp = Math.max( maxAmp, Util.maxAbs( outBuf, 0, chunkLen ));
 				if( absGain ) {
 					Util.mult( outBuf, 0, chunkLen, gain );
-					outF.writeFrames( outBuf, 0, chunkLen );
-				} else {
-					tmpF.writeFrames( outBuf, 0, chunkLen );
-				}
+                }
+                writeOutF.writeFrames( outBuf, 0, chunkLen );
+
 				framesWritten += chunkLen;
 				progOff       += chunkLen;
 			// .... progress ....
 				setProgression( (float) progOff / (float) progLen );
+
+                if (twoWays && framesRead == numFrames && !isSecondPass) {
+                    assert (framesWritten == numFrames);
+                    writeOutF.flush();
+                    anaInF.seekFrame(0L);
+                    readFltInF      = writeOutF;
+                    writeOutF       = absGain ? outF : tmpF;
+                    framesRead      = 0L;
+                    framesWritten   = 0L;
+                    isSecondPass    = true;
+                }
 			}
 		// .... check running ....
 			if( !threadRunning ) break topLevel;
@@ -567,9 +618,10 @@ System.out.println( "FLIP CLIP NOT YET SUPPORTED HERE" );
 			if( !absGain ) {
 				gain	 = (float) (Param.transform( pr.para[ PR_GAIN ], Param.ABS_AMP,
 									new Param( 1.0 / maxAmp, Param.ABS_AMP ), null )).val;
-				normalizeAudioFile( tmpF, outF, anaBuf, gain, 1.0f );
-				deleteTempFile( tmpF );
+				normalizeAudioFile( writeOutF, outF, anaBuf, gain, 1.0f );
 			}
+            if (tmpF  != null) deleteTempFile(tmpF );
+            if (tmpF2 != null) deleteTempFile(tmpF2);
 
 			outF.close();
 			outF		= null;

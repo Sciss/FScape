@@ -1,8 +1,8 @@
 ![logo](http://sciss.de/fscape/application.png)
 
-## FScape
+# FScape
 
-### statement
+## statement
 
 FScape is a standalone, cross-platform audio rendering software.
 
@@ -14,13 +14,13 @@ This program is distributed in the hope that it will be useful, but _without any
 
 To contact the author, send an email to `contact at sciss.de`. For project status, API and current version,visit the [GitHub](http://github.com/Sciss/FScape) and [SourceForge](http://sourceforge.net/projects/fscape/) pages.
 
-### running
+## running
 
 In the binary distribution, you should just be able to double click the `FScape.jar` file, or `FScape.app` on OS X.
 
-### compiling
+## compiling
 
-FScape now builds with the simple-build-tool (sbt) 0.12.
+FScape now builds with the [sbt](http://www.scala-sbt.org/) 0.12. You can use the provided `sbt` shell script if you do not want to install sbt on your system.
 
  - to compile: `sbt compile`
  - to package: `sbt package`
@@ -32,7 +32,7 @@ For OSC communication, FScape uses the NetUtil library, which is licensed under 
 
 FScape uses the [ScissLib](https://github.com/Sciss/ScissLib) library which is licensed under the GNU General Public License, and Steve Roy's [MRJAdapter](http://homepage.mac.com/sroy/mrjadapter/) which is published under the Artistic License.
 
-### documentation
+## documentation
 
 There's no real manual, but a basic online help hypertext starts from `help/index.html`. This help is also accessible from the help menu within the application.
 
