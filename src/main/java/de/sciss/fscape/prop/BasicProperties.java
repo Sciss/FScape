@@ -111,16 +111,20 @@ extends Properties
             throws IOException {
         synchronized (this) {
             final DataInputStream dis = new DataInputStream(new FileInputStream(f));
-            final String line0 = dis.readLine();
-            if (!(line0.startsWith("#") && line0.contains(header))) {
-                final String message;
-                if (AudioFile.retrieveType(f) == AudioFileDescr.TYPE_UNKNOWN) {
-                    message = "Unknown file format";
-                } else {
-                    message = "This is an audio file.\nYou don't open audio files via the File menu!";
+            String line = "";
+            do {
+                line = dis.readLine();
+                if (!line.startsWith("#")) {
+                    final String message;
+                    if (AudioFile.retrieveType(f) == AudioFileDescr.TYPE_UNKNOWN) {
+                        message = "Unknown file format";
+                    } else {
+                        message = "This is an audio file.\nYou don't open audio files via the File menu!";
+                    }
+                    throw new IOException("This file is not an FScape document.\n" + message);
                 }
-                throw new IOException("This file is not an FScape document.\n" + message);
-            }
+            } while (!line.contains(header));
+
             load(dis);
             modified = false;
         }

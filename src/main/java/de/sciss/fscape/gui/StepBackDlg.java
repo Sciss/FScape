@@ -953,7 +953,7 @@ volumeLp:				for( j = 0, f1 = 1.122462f; j < 6; j++, f1 *= 1.122462f ) {
 			maxNum		= (int) Math.ceil( inLengthMillis / d2 );
 			meanNum		= (int) Math.ceil( inLengthMillis / ((d1+d2)/2) );
 
-			gui.stringToJTextField( "�" + meanNum + " (" +minNum + "�" + maxNum + ")", GG_CUTINFO );
+			gui.stringToJTextField( "\u2300" + meanNum + " (" +minNum + "\u2013" + maxNum + ")", GG_CUTINFO );
 			
 		} else {
 		
