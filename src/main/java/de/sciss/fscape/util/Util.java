@@ -33,15 +33,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- *  @author		Hanns Holger Rutz
- *  @version	0.71, 18-Jan-09
- */
 public class Util
 {
 	/**
-	 *	Check if a certain int value is an element of a
-	 *	specific int array
+	 *	Checks if a certain int value is an element of a
+	 *	specific int array.
 	 *
 	 *	@param	val		value to seek for in array
 	 *	@param	array	may be any size, may not be null
@@ -56,8 +52,8 @@ public class Util
 	}
 
 	/**
-	 *	Check if a certain String value is an element of a
-	 *	specific String array
+	 *	Checks if a certain String value is an element of a
+	 *	specific String array.
 	 *
 	 *	@param	val		value to seek for in array
 	 *	@param	array	may be any size, may not be null
@@ -337,15 +333,26 @@ public class Util
 		}
 	}
 	
+    /** Clear two dimensional array. */
+    public static void clear(double[][] a) {
+        double[] b;
 
-	/**
+        for (int i = 0; i < a.length; i++) {
+            b = a[i];
+            for (int j = 0; j < b.length; j++) {
+                b[j] = 0.0;
+            }
+        }
+    }
+
+    /**
 	 *	Zweidimensionales Array loeschen
 	 */
 	public static void clear( float[][] a, int off, int length )
 	{
 		final int stop = off + length;
 		float[] b;
-	
+
 		for( int i = 0; i < a.length; i++ ) {
 			b = a[ i ];
 			for( int j = off; j < stop; j++ ) {
@@ -354,7 +361,29 @@ public class Util
 		}
 	}
 
-	/**
+    /** Clears two dimensional array. */
+    public static void clear(double[][] a, int off, int length) {
+        final int stop = off + length;
+        double[] b;
+
+        for (int i = 0; i < a.length; i++) {
+            b = a[i];
+            for (int j = off; j < stop; j++) {
+                b[j] = 0.0;
+            }
+        }
+    }
+
+    /** Clears one dimensioal array. */
+    public static void clear(double[] a, int off, int length) {
+        final int stop = off + length;
+
+        for (int j = off; j < stop; j++) {
+            a[j] = 0.0;
+        }
+    }
+
+    /**
 	 *	Eindimensionales Array loeschen
 	 */
 	public static void clear( float[] a, int off, int length )

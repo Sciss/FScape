@@ -346,8 +346,7 @@ extends DocumentFrame
 //		final boolean			preCalc			= pr.bool[ PR_PRECALC ];
 		final boolean			inverse			= pr.bool[ PR_INVERSE ];
         final boolean           twoWays         = pr.bool[ PR_TWOWAYS ];
-		final boolean			preCalc			= false; // XXX man this shit doesn't do anything. but why???
-		
+
 		long					framesRead, framesWritten, progOff, progLen;
 		int						chunkLen;
 		float[]					anaChanBuf, outChanBuf, fltChanBuf;
@@ -422,152 +421,73 @@ extends DocumentFrame
 			// ---- main loop ----
 			progLen			= numFrames * 3 + (absGain ? 0L : numFrames) + (twoWays ? numFrames << 1 : 0L);
 			progOff			= 0L;
-			
-            //			R = exp( -SampleDur/t )
-            //			t60 = 6.91t
-            //			log R = -SampleDur * 6.91 / t60
-            //			t60 = -SampleDur * 6.91 / log R
-            //			t60 = -(1/SampleRate) * 6.91 / log R
-            //			t60 = -(1/SampleRate) * 6.91 / log R
-            //			t60 = -6.91 / (log R * SampleRate)
-            //			frames = -6.91 / log R
-            //			R == (1-r) ???
-            //			r = -50.dbamp
-            //			-6.91 / log( (1-r) )
-            //			r = -80.dbamp
-            //			-6.91 / log( (1-r) )
-			if( preCalc ) { // precalc going backwards to the beginning
-                //				final long preFrames = Math.max( 0, Math.min( numFrames,
-                //				    (long) (-6.91 / Math.log( 1 - feedbackGain ))));
-				final long preFrames = numFrames;
-				progLen += preFrames * 2;
-				framesRead = 0L;
-                //System.out.println( "preFrames = " + preFrames );
-				while( threadRunning && (framesRead < preFrames) ) {
-					// read input
-					chunkLen = (int) Math.min( 8192, preFrames - framesRead );
-					anaInF.seekFrame( preFrames - framesRead - chunkLen );
-					anaInF.readFrames( anaBuf, fltLength, chunkLen );
-					framesRead += chunkLen;
-					progOff    += chunkLen;
 
-				if( framesRead == chunkLen ) {
-					final float[] tmp = new float[ anaBuf[ 0 ].length ];
-					for( int i = 0; i < tmp.length; i++ ) {
-						tmp[ i ] = anaBuf[ 0 ][ i ];
-					}
-					Debug.view( tmp, 0, tmp.length, "Fwd" );
-				}
-					
-					Util.reverse( anaBuf, fltLength, chunkLen );
-
-				if( framesRead == chunkLen ) {
-					final float[] tmp = new float[ anaBuf[ 0 ].length ];
-					for( int i = 0; i < tmp.length; i++ ) {
-						tmp[ i ] = anaBuf[ 0 ][ i ];
-					}
-					Debug.view( tmp, 0, tmp.length, "Bwd" );
-				}
-				
-					// process
-					for( int ch = 0; ch < numCh; ch++ ) {
-						anaChanBuf		= anaBuf[ ch ];
-						fltChanKernel	= fltKernel[ ch ];
-						for( int i = 0, k = 0; i < chunkLen; i++ ) {
-							// calc error
-							d1 = 0.0;
-							k  = i;
-							for( int j = 0; j < fltLength; j++, k++ ) {
-								d1 += anaChanBuf[ k ] * fltChanKernel[ j ]; 
-							}
-							errNeg = anaChanBuf[ k ] - d1;
-							// update kernel
-							d1 = errNeg * feedbackGain;
-							k = i;
-                            System.out.println( "FLIP CLIP NOT YET SUPPORTED HERE" );
-							for( int j = 0; j < fltLength; j++, k++ ) {
-								fltChanKernel[ j ] += d1 * anaChanBuf[ k ];
-							}
-						}
-					}
-					progOff += chunkLen;
-				// .... progress ....
-					setProgression( (float) progOff / (float) progLen );
-				}
-			// .... check running ....
-				if( !threadRunning ) break topLevel;
-				
-				Util.reverse( fltKernel, 0, fltLength );
-				anaInF.seekFrame( 0L );
-				
-				final float[] tmp = new float[ fltLength ];
-				for( int i = 0; i < fltLength; i++ ) {
-					tmp[ i ] = (float) fltKernel[ 0 ][ i ];
-				}
-				Debug.view( tmp, 0, fltLength, "Kernel" );
-			}
-			
 			framesWritten	= 0L;
 			framesRead		= 0L;
 
+            AudioFile readAnaInF    = anaInF;
             AudioFile readFltInF    = fltInF;
             AudioFile writeOutF     = twoWays ? tmpF2 : (absGain ? outF : tmpF);
 
             boolean isSecondPass    = false;
 
-			while( threadRunning && (framesWritten < numFrames) ) {
-				// read input
-				chunkLen = (int) Math.min( 8192, numFrames - framesRead );
-                if (twoWays && !isSecondPass) {
-                    anaInF.seekFrame(numFrames - framesRead - chunkLen);
-                    anaInF.readFrames(anaBuf, fltLength, chunkLen);
+            while (threadRunning && (framesWritten < numFrames)) {
+                chunkLen = (int) Math.min(8192, numFrames - framesRead);
+
+                // two ways + separate filter: (1) read reversed ana (2) read _forward_ ana
+                // two ways + same file      : (1) read reversed ana (2) read _forward_ ana
+                // one way  + separate filter: (1) read ana
+                // one way  + same file      : (1) read ana
+                if (twoWays && (/* useAnaAsFilter || */ !isSecondPass)) {
+                    readAnaInF.seekFrame(numFrames - framesRead - chunkLen);
+                    readAnaInF.readFrames(anaBuf, fltLength, chunkLen);
                     Util.reverse(anaBuf, fltLength, chunkLen);
                 } else {
-                    anaInF.readFrames( anaBuf, fltLength, chunkLen );
+                    readAnaInF.readFrames(anaBuf, fltLength, chunkLen);
                 }
 
-                // two ways + separate filter: read reversed in both passes
-                // two ways + same file      : read reversed in second pass, don't read in first pass
-                // one way  + separate filter: read filter filter
-                // one way  + same file      : don't read
+                // two ways + separate filter: (1) read reversed flt (2) read reversed flt/prev-out
+                // two ways + same file      : (1) do not read       (2) read reversed flt/prev-out
+                // one way  + separate filter: (1) read filter
+                // one way  + same file      : (1) don't read
                 if (twoWays && (isSecondPass || !useAnaAsFilter)) {
                     readFltInF.seekFrame(numFrames - framesRead - chunkLen);
                     readFltInF.readFrames(fltBuf, fltLength, chunkLen);
                     Util.reverse(fltBuf, fltLength, chunkLen);
-                } else if( !useAnaAsFilter ) {
-                    readFltInF.readFrames( fltBuf, fltLength, chunkLen );
+                } else if (!useAnaAsFilter) {
+                    readFltInF.readFrames(fltBuf, fltLength, chunkLen);
                 }
 				framesRead += chunkLen;
 				progOff    += chunkLen;
 				
 				// process
-				for( int ch = 0; ch < numCh; ch++ ) {
-					anaChanBuf		= anaBuf[ ch ];
-					fltChanKernel	= fltKernel[ ch ];
-					outChanBuf		= outBuf[ ch ];
-					fltChanBuf		= fltBuf[ ch ];
-					for( int i = 0, k = 0; i < chunkLen; i++ ) {
-						// calc error
-						d1 = 0.0;
-						k  = i;
-						for( int j = 0; j < fltLength; j++, k++ ) {
-							d1 += anaChanBuf[ k ] * fltChanKernel[ j ]; 
-						}
+                for (int ch = 0; ch < numCh; ch++) {
+                    anaChanBuf      = anaBuf[ch];
+                    fltChanKernel   = fltKernel[ch];
+                    outChanBuf      = outBuf[ch];
+                    fltChanBuf      = fltBuf[ch];
+                    for (int i = 0; i < chunkLen; i++) {
+                        // calc error
+                        d1 = 0.0;
+                        int k = i;
+                        for (int j = 0; j < fltLength; j++, k++) {
+                            d1 += anaChanBuf[k] * fltChanKernel[j];
+                        }
                         // err = d1 - anaChanBuf[ k ];
-						errNeg = anaChanBuf[ k ] - d1;
-						if( useAnaAsFilter ) {
-							// use straight as output...
-							outChanBuf[ i ] = inverse ? (float) d1 : (float) errNeg;
-						} else {
-							// ...or calc output according to filter buffer
-							k  = i;
-							for( int j = 0; j < fltLength; j++, k++ ) {
-								d1 += fltChanBuf[ k ] * fltChanKernel[ j ]; 
-							}
-							outChanBuf[ i ] = inverse ? (float) d1 : (float) (fltChanBuf[ k ] - d1);
-						}
-						
-						// update kernel
+                        errNeg = anaChanBuf[k] - d1;
+                        if (useAnaAsFilter) {
+                            // use straight as output...
+                            outChanBuf[i] = inverse ? (float) d1 : (float) errNeg;
+                        } else {
+                            // ...or calc output according to filter buffer
+                            k = i;
+                            for (int j = 0; j < fltLength; j++, k++) {
+                                d1 += fltChanBuf[k] * fltChanKernel[j];
+                            }
+                            outChanBuf[i] = inverse ? (float) d1 : (float) (fltChanBuf[k] - d1);
+                        }
+
+                        // update kernel
 						d1 = errNeg * feedbackGain;
 						k = i;
 						for( int j = 0; j < fltLength; j++, k++ ) {
@@ -602,7 +522,11 @@ extends DocumentFrame
                     assert (framesWritten == numFrames);
                     writeOutF.flush();
                     anaInF.seekFrame(0L);
+                    Util.clear(fltKernel);
+                    Util.clear(fltBuf);
+                    Util.clear(anaBuf);
                     readFltInF      = writeOutF;
+                    // if (useAnaAsFilter) readAnaInF = writeOutF;
                     writeOutF       = absGain ? outF : tmpF;
                     framesRead      = 0L;
                     framesWritten   = 0L;
