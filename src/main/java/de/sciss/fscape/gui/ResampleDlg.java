@@ -413,7 +413,7 @@ extends DocumentFrame
 		// Smp Init
         long			    totalInSamples;						// reichen 32 bit?
 		long				inLength;
-		long    			framesRead, framesWritten, samplesWritten;
+		long    			framesRead, framesWritten;
 		int					inBufSize, outBufSize;
 
 		double				inPhase;
@@ -607,7 +607,7 @@ System.out.println("inLength = " + inLength);
 		// ----==================== da resampling ====================----
 
 			framesWritten	= 0L;
-			samplesWritten	= 0L;
+			// samplesWritten	= 0L;
 			framesRead		= 0L;
 			rsmpFactor		= rateBase.val / inRate;
 			overlap			= overlapSize;
@@ -755,7 +755,7 @@ System.out.println("inLength = " + inLength);
 
 							// ---- write to temp ----
 							floatF[ ch ].writeFloats( outBuf[ ch ], 0, outTransLen );
-							samplesWritten += outTransLen;
+							// samplesWritten += outTransLen;
 						} // for channels
 					} while( rInputIncr > 0.0 );
 
@@ -781,7 +781,7 @@ System.out.println("inLength = " + inLength);
 	
 			inF.close();
 			inF			= null;
-			inStream	= null;
+			// inStream	= null;
 
 			if( (pr.intg[ PR_GAINTYPE ] == GAIN_UNITY) || rightMod ) {
 				gain = (float) (Param.transform( pr.para[ PR_GAIN ], Param.ABS_AMP,
@@ -794,7 +794,7 @@ System.out.println("inLength = " + inLength);
 				if( rightMod ) {
 					framesWritten = 0;
 					for( ch = 0; ch < inChanNum; ch++ ) {
-						framesWritten = Math.max( framesWritten, (long) floatF[ ch ].getSize() );
+						framesWritten = Math.max( framesWritten, floatF[ ch ].getSize());
 					}
 					convBuf1 = outBuf[ 0 ];
 					for( i = 0; i < outBufSize; i++ ) {		// create empty space
@@ -866,8 +866,8 @@ System.out.println("inLength = " + inLength);
 	 */
 	protected void setInput( String fname )
 	{
-		AudioFile		f		= null;
-		AudioFileDescr		stream	= null;
+		AudioFile		f;
+		AudioFileDescr	stream;
 
 		ParamField		ggSlave;
 		Param			ref;

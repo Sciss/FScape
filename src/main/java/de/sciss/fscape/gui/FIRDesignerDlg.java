@@ -58,9 +58,6 @@ import de.sciss.io.Marker;
  *	that be written out as IR files
  *	to be used in the convolution modules.
  *
- *  @author		Hanns Holger Rutz
- *  @version	0.71, 14-Nov-07
- *
  *	@todo		support calculation for minimum phase
  *	@todo		automatically truncate file size if zero samples are at the end (minimum phase)
  */
@@ -302,21 +299,21 @@ implements VectorPanel.Client
 				ParamField	pf;
 				JComboBox	ch;
 				JCheckBox	cb;
-				boolean		b	= (currentFlt != null);
-				boolean		b2;
+				// boolean		b	= (currentFlt != null);
+				// boolean		b2;
 				FilterBox	flt;
 
 				switch( ID ) {
 				case GG_CIRCUIT:
 					val = e.getActionCommand();
 					cmd	= CMD_UNKNOWN;
-					if( val == CircuitPanel.ACTION_BOXSELECTED ) {
+					if(val.equals(CircuitPanel.ACTION_BOXSELECTED)) {
 						cmd = CMD_SELECTED;
-					} else if( val == CircuitPanel.ACTION_BOXDESELECTED ) {
+					} else if(val.equals(CircuitPanel.ACTION_BOXDESELECTED)) {
 						cmd = CMD_DESELECTED;
-					} else if( val == CircuitPanel.ACTION_BOXCREATED ) {
+					} else if(val.equals(CircuitPanel.ACTION_BOXCREATED)) {
 						cmd = CMD_CREATED;
-					} else if( val == CircuitPanel.ACTION_BOXDELETED ) {
+					} else if(val.equals(CircuitPanel.ACTION_BOXDELETED)) {
 						cmd = CMD_DELETED;
 					}
 
@@ -333,9 +330,9 @@ implements VectorPanel.Client
 
 				// ---- display new values ----
 
-					b	= (flt != null);
+					boolean b = (flt != null);
 					if( b ) {
-						b2	= true;
+						// b2 = true;
 //						b3	= true;
 						ch	= (JComboBox) gui.getItemObj( GG_FILTERTYPE );
 						if( ch != null ) {
@@ -346,7 +343,7 @@ implements VectorPanel.Client
 								// THRU
 							case FilterBox.FLT_LOWPASS:
 							case FilterBox.FLT_HIGHPASS:
-								b2 = false;				// !!
+								// b2 = false;				// !!
 								break;
 							}
 						}
@@ -377,7 +374,7 @@ implements VectorPanel.Client
 						cb	= (JCheckBox) gui.getItemObj( GG_OVERTONES );
 						if( cb != null ) {
 							cb.setSelected( flt.overtones );
-							b2 = (b2 && flt.overtones);		// !!
+							// b2 = (b2 && flt.overtones);		// !!
 						}
 						pf	= (ParamField) gui.getItemObj( GG_OTLIMIT );
 						if( pf != null ) {
@@ -415,9 +412,9 @@ implements VectorPanel.Client
 		box				= Box.createHorizontalBox();
 		ggGain			= createGadgets( GGTYPE_GAIN );
 		panel.addGadget( new JLabel( "Gain", SwingConstants.RIGHT ));
-		gui.registerGadget( (ParamField) ggGain[ 0 ], GG_GAIN );
+		gui.registerGadget(ggGain[ 0 ], GG_GAIN );
 		((ParamField) ggGain[ 0 ]).addParamListener( paramL );
-		gui.registerGadget( (JComboBox) ggGain[ 1 ], GG_GAINTYPE );
+		gui.registerGadget(ggGain[ 1 ], GG_GAINTYPE );
 		((JComboBox) ggGain[ 1 ]).addItemListener( il );
 		box.add( ggGain[ 0 ]);
 		box.add( ggGain[ 1 ]);
@@ -553,9 +550,9 @@ pageBox.add( box );
 		panel.addGadget( ggWindow );
 
 		ggQuality		= new JComboBox();
-		for( int i = 0; i < QUAL_NAMES.length; i++ ) {
-			ggQuality.addItem( QUAL_NAMES[ i ]);
-		}
+        for (String QUAL_NAME : QUAL_NAMES) {
+            ggQuality.addItem(QUAL_NAME);
+        }
 		panel.addGadget( new JLabel( "Filter Length", SwingConstants.RIGHT ));
 		gui.registerGadget( ggQuality, GG_QUALITY );
 		ggQuality.addItemListener( il );
@@ -611,7 +608,7 @@ pageBox.add( box );
 		float			f1;
 
 		Param			ampRef			= new Param( 1.0, Param.ABS_AMP );			// transform-Referenz
-		float			gain			= 1.0f;								 		// gain abs amp
+		float			gain; //		= 1.0f;								 		// gain abs amp
 		
 		java.util.List markers;
 		
@@ -756,8 +753,8 @@ topLevel: try {
 			outStream.setProperty( AudioFileDescr.KEY_MARKERS, markers );
 			outF = AudioFile.openAsWrite( outStream );
 
-			for( int framesWritten = 0, len = 0; threadRunning && (framesWritten < outLength); ) {
-				len				 = Math.min( 8192, outLength - framesWritten );
+			for( int framesWritten = 0; threadRunning && (framesWritten < outLength); ) {
+				int len			 = Math.min( 8192, outLength - framesWritten );
 				outF.writeFrames( outBufWrap, framesWritten, len );
 				framesWritten	+= len;
 				progOff			+= len;
@@ -771,7 +768,7 @@ topLevel: try {
 
 			outF.close();
 			outF		= null;
-			outStream	= null;
+			// outStream	= null;
 		// .... check running ....
 			if( !threadRunning ) break topLevel;
 
@@ -788,7 +785,7 @@ topLevel: try {
 			outStream	= null;
 			System.gc();
 
-			setError( new Exception( ERR_MEMORY ));;
+			setError( new Exception( ERR_MEMORY ));
 		}
 
 	// ---- cleanup (topLevel) ----
@@ -845,7 +842,7 @@ topLevel: try {
 			Fourier.realTransform( outBuf, fftLength, Fourier.FORWARD );
 		}
 		
-		impBuf			= null;
+		// impBuf			= null;
 
 // System.err.println( "length = "+fftLength );
 
@@ -922,7 +919,7 @@ topLevel: try {
 //System.err.println( "now min = "+min+"; max = "+max );
 		}
 		
-		outBuf			= null;
+		// outBuf			= null;
 
 		if( hlog ) {
 			space = VectorSpace.createLogLinSpace( fmin, fmax, fc, min, max, null, null, null, null );
@@ -935,15 +932,15 @@ topLevel: try {
 
 	public String formatHText( double x, boolean hlog )
 	{
-		return( msgHertz.format( new Object[] { new Double( x )}));
+		return( msgHertz.format( new Object[] {x}));
 	}
 
 	public String formatVText( double y, boolean vlog )
 	{
 		if( vlog ) {
-			return( msgDecibel.format( new Object[] { new Double( y )}));
+			return( msgDecibel.format( new Object[] {y}));
 		} else {
-			return( msgPlain.format( new Object[] { new Double( y )}));
+			return( msgPlain.format( new Object[] {y}));
 		}
 	}
 				

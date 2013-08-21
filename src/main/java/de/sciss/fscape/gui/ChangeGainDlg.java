@@ -619,17 +619,16 @@ topLevel: try {
 //		if( maxAmp > 0.0 ) {
 //			power				   *= 1000.0 / (maxAmp * maxAmp);	// "normalized"
 //		}
-		Double			ampDB		= new Double( 20 * Math.log( maxAmp ) / Constants.ln10 );
-		Double			rmsDB		= new Double( 10 * Math.log( power ) / Constants.ln10 );
-		Integer			cmpJComboBox	= new Integer( complete ? 1 : -1 );
-		Object[]		msgArgs		= { ampDB, rmsDB, cmpJComboBox,
-										new Integer( min ), new Double( absTime ), new Long( maxFrame ) };
-		String			msgPtrn		= new String( "{2,choice,-1#[�|0#}" +
-												  "Max amp {0,number,#,##0.0} dBFS @" +
-												  "{3,number,##0}:{4,number,00.000}" +
-												  "{5,choice,-1#+|0#}" + chanTxt + 
-												  "; RMS {1,number,##,##0.0} dB" +
-												  "{2,choice,-1#�]|0#}" );
+		Double			ampDB		= 20 * Math.log(maxAmp) / Constants.ln10;
+		Double			rmsDB		= 10 * Math.log(power ) / Constants.ln10;
+		Integer			cmpJComboBox	= complete ? 1 : -1;
+		Object[]		msgArgs		= { ampDB, rmsDB, cmpJComboBox, min, absTime, maxFrame};
+		String			msgPtrn		= "{2,choice,-1#[\u2026|0#}" +
+                "Max amp {0,number,#,##0.0} dBFS @" +
+                "{3,number,##0}:{4,number,00.000}" +
+                "{5,choice,-1#+|0#}" + chanTxt +
+                "; RMS {1,number,##,##0.0} dB" +
+                "{2,choice,-1#\u2026]|0#}";
 		MessageFormat	msgForm		= new MessageFormat( msgPtrn );
 														 
 		msgForm.setLocale( Locale.US );
