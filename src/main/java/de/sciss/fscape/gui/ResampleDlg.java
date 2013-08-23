@@ -462,7 +462,7 @@ topLevel: try {
 			inStream		= inF.getDescr();
 			inChanNum		= inStream.channels;
 			inLength		= inStream.length;
-System.out.println("inLength = " + inLength);
+// System.out.println("inLength = " + inLength);
 			totalInSamples	= inLength * inChanNum;
 			inRate			= inStream.rate;
 			// this helps to prevent errors from empty files!

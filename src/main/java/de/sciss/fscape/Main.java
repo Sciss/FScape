@@ -62,7 +62,7 @@ implements OSCRouter
 	 *
 	 *  @todo   should be saved in the session file as well
 	 */
-	private static final double APP_VERSION		= 0.75;
+	private static final double APP_VERSION		= 1.0;
 
 	/*
 	 *  The MacOS file creator string.

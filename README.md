@@ -12,7 +12,11 @@ This program is free software; you can redistribute it and/or modify it under th
 
 This program is distributed in the hope that it will be useful, but _without any warranty_ without even the implied warranty of _merchantability_ or _fitness for a particular purpose_. See the GNU General Public License for more details.
 
-To contact the author, send an email to `contact at sciss.de`. For project status, API and current version,visit the [GitHub](http://github.com/Sciss/FScape) and [SourceForge](http://sourceforge.net/projects/fscape/) pages.
+To contact the author, send an email to `contact at sciss.de`. For project status, API and current version visit [github.com/Sciss/FScape](http://github.com/Sciss/FScape).
+
+## downloading
+
+A binary version of FScape for Linux, OS X and Windows is provided through
 
 ## running
 
@@ -28,11 +32,14 @@ FScape now builds with the [sbt](http://www.scala-sbt.org/) 0.12. You can use th
  - to make a standalone jar: `sbt assembly`
  - to make an OS X app bundle: `sbt appbundle`
 
+## source code distribution
+
+FScape's GPL'ed source code is made available throught [github.com/Sciss/FScape](http://github.com/Sciss/FScape).
+
 For OSC communication, FScape uses the NetUtil library, which is licensed under the GNU Lesser General Public License (LGPL). The compiled library is included, for sourcecode and details visit [sourceforge.net/projects/netutil/](http://sourceforge.net/projects/netutil/).
 
-FScape uses the [ScissLib](https://github.com/Sciss/ScissLib) library which is licensed under the GNU General Public License, and Steve Roy's [MRJAdapter](http://homepage.mac.com/sroy/mrjadapter/) which is published under the Artistic License.
+FScape uses the ScissLib library which is licensed under the GNU General Public License, source code provided through [github.com/Sciss/ScissLib](https://github.com/Sciss/ScissLib), and Steve Roy's MRJAdapter published under the Artistic License, source code provided through [java.net/projects/mrjadapter/sources/svn/show](https://java.net/projects/mrjadapter/sources/svn/show).
 
 ## documentation
 
 There's no real manual, but a basic online help hypertext starts from `help/index.html`. This help is also accessible from the help menu within the application.
-

@@ -2,7 +2,7 @@ import AssemblyKeys._ // put this at the top of the file
 
 name := "FScape"
 
-version := "0.75-SNAPSHOT"
+version := "1.0.0"
 
 organization := "de.sciss"
 
@@ -31,6 +31,10 @@ mainClass in Compile := Some("de.sciss.fscape.Main")
 seq(assemblySettings: _*)
 
 test in assembly := {}
+
+target in assembly <<= baseDirectory
+
+jarName in assembly <<= (name, version) map { _ + "-" + _ + ".jar" }
 
 seq(appbundle.settings: _*)
 
