@@ -16,7 +16,7 @@ To contact the author, send an email to `contact at sciss.de`. For project statu
 
 ## downloading
 
-A binary version of FScape for Linux, OS X and Windows is provided through
+A binary version of FScape for Linux, OS X and Windows is provided through [Bintray](https://bintray.com/sciss/generic/FScape).
 
 ## running
 
