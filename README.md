@@ -43,3 +43,5 @@ FScape uses the ScissLib library which is licensed under the GNU General Public 
 ## documentation
 
 There's no real manual, but a basic online help hypertext starts from `help/index.html`. This help is also accessible from the help menu within the application.
+
+A short screencast is available on [Vimeo](https://vimeo.com/26509124).
