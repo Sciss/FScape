@@ -2,7 +2,7 @@
  *  SmpSynDlg.java
  *  FScape
  *
- *  Copyright (c) 2001-2013 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2014 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -59,7 +59,7 @@ import de.sciss.io.Region;
  *  @version	0.64, 06-Dec-04
  */
 public class SmpSynDlg
-extends DocumentFrame
+extends ModulePanel
 {
 // -------- public Variablen --------
 
@@ -383,7 +383,7 @@ extends DocumentFrame
 						// ---- load current SmpZone ----
 							smp = ((SmpMapPanel) e.getSource()).getSample( smpID );
 							if( smp == null ) {
-								GUIUtil.displayError( getWindow(), new IllegalStateException( ERR_CORRUPTED ), String.valueOf( smpID ));
+								GUIUtil.displayError( getComponent(), new IllegalStateException( ERR_CORRUPTED ), String.valueOf( smpID ));
 								return;
 							}
 
@@ -404,7 +404,7 @@ extends DocumentFrame
 									if( currentSmp.uniqueID == smpID ) break;
 								}
 								if( (currentSmp == null) || (currentSmp.uniqueID != smpID) ) {
-									GUIUtil.displayError( getWindow(), new NoSuchElementException( ERR_CORRUPTED ), String.valueOf( smpID ));
+									GUIUtil.displayError( getComponent(), new NoSuchElementException( ERR_CORRUPTED ), String.valueOf( smpID ));
 									return;
 								}
 
@@ -457,7 +457,7 @@ extends DocumentFrame
 								if( currentSmp.uniqueID == smpID ) break;
 							}
 							if( (currentSmp == null) || (currentSmp.uniqueID != smpID) ) {
-								GUIUtil.displayError( getWindow(), new NoSuchElementException( ERR_CORRUPTED ), String.valueOf( ID ));
+								GUIUtil.displayError( getComponent(), new NoSuchElementException( ERR_CORRUPTED ), String.valueOf( ID ));
 								return;
 							}
 							samples.removeElement( currentSmp );
@@ -515,7 +515,7 @@ extends DocumentFrame
 							break;
 
 						case CMD_UNKNOWN:
-							GUIUtil.displayError( getWindow(), new NoSuchMethodException( ERR_CORRUPTED ), String.valueOf( ID ));
+							GUIUtil.displayError( getComponent(), new NoSuchMethodException( ERR_CORRUPTED ), String.valueOf( ID ));
 							return;
 						}
 						break;
@@ -914,7 +914,7 @@ final double maxNew = freqSpace.fitValue( 22050.0 );
 		
 		} catch( IOException e1 ) {
 
-			GUIUtil.displayError( getWindow(), e1, getTitle() );
+			GUIUtil.displayError( getComponent(), e1, getTitle() );
 			return;
 		}
 
@@ -953,7 +953,7 @@ final double maxNew = freqSpace.fitValue( 22050.0 );
 		
 		} catch( IOException e1 ) {
 
-			GUIUtil.displayError( getWindow(), e1, getTitle() );
+			GUIUtil.displayError( getComponent(), e1, getTitle() );
 			return;
 		}
 

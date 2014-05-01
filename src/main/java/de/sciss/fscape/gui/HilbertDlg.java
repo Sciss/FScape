@@ -2,7 +2,7 @@
  *  HilbertDlg.java
  *  FScape
  *
- *  Copyright (c) 2001-2013 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2014 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -47,7 +47,7 @@ import de.sciss.fscape.io.FloatFile;
 import de.sciss.fscape.io.GenericFile;
 import de.sciss.fscape.prop.Presets;
 import de.sciss.fscape.prop.PropertyArray;
-import de.sciss.fscape.session.DocumentFrame;
+import de.sciss.fscape.session.ModulePanel;
 import de.sciss.fscape.spect.Fourier;
 import de.sciss.fscape.util.Constants;
 import de.sciss.fscape.util.Envelope;
@@ -71,7 +71,7 @@ import de.sciss.io.IOUtil;
  *  @version	0.72, 21-Jan-09
  */
 public class HilbertDlg
-extends DocumentFrame
+extends ModulePanel
 {
 // -------- private Variablen --------
 
@@ -307,7 +307,7 @@ extends DocumentFrame
 		con.weightx		= 0.4;
 		gui.addParamField( ggFreqModDepth, GG_FREQMODDEPTH, null );
 
-		ggFreqEnv		= new EnvIcon( getWindow() );
+		ggFreqEnv		= new EnvIcon( getComponent() );
 		con.weightx		= 0.1;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addGadget( ggFreqEnv, GG_FREQENV );

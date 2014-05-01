@@ -2,7 +2,7 @@
  *  SonagramExportDlg.java
  *  FScape
  *
- *  Copyright (c) 2001-2013 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2014 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -44,7 +44,7 @@ import de.sciss.fscape.io.ImageFile;
 import de.sciss.fscape.io.ImageStream;
 import de.sciss.fscape.prop.Presets;
 import de.sciss.fscape.prop.PropertyArray;
-import de.sciss.fscape.session.DocumentFrame;
+import de.sciss.fscape.session.ModulePanel;
 import de.sciss.fscape.spect.ConstQ;
 import de.sciss.fscape.util.Constants;
 import de.sciss.fscape.util.MathUtil;
@@ -64,7 +64,7 @@ import de.sciss.io.AudioFileDescr;
  *  @todo		image resolution (8-bit vs 16-bit) is not saved
  */
 public class SonagramExportDlg
-extends DocumentFrame
+extends ModulePanel
 {
 // -------- private Variablen --------
 

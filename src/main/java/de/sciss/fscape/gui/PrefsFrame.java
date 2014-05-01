@@ -2,7 +2,7 @@
  *  PrefsFrame.java
  *  FScape
  *
- *  Copyright (c) 2001-2013 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2014 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -52,6 +52,7 @@ import de.sciss.app.AbstractWindow;
 import de.sciss.app.PreferenceEntrySync;
 import de.sciss.common.AppWindow;
 import de.sciss.common.BasicWindowHandler;
+import de.sciss.fscape.Application;
 import de.sciss.io.IOUtil;
 import de.sciss.net.OSCChannel;
 import de.sciss.util.Flag;
@@ -87,9 +88,6 @@ extends AppWindow
 
 	/**
 	 *  Creates a new preferences frame
-	 *
-	 *  @param  root	application root
-	 *  @param  doc		session document
 	 */
     public PrefsFrame()
     {
@@ -98,10 +96,11 @@ extends AppWindow
 		setTitle( getResourceString( "framePrefs" ));
 
 		final Container					cp		= getContentPane();
-		final de.sciss.app.Application	app		= AbstractApplication.getApplication();
+		// final de.sciss.app.Application	app		= AbstractApplication.getApplication();
 		final OSCRoot					osc;
 		final Flag						haveWarned			= new Flag( false );
 		final String					txtWarnLookAndFeel	= getResourceString( "warnLookAndFeelUpdate" );
+        final Preferences userPrefs = Application.userPrefs;
 
 		JPanel							p, tabWrap;
 		SpringPanel						tab;
@@ -135,7 +134,7 @@ extends AppWindow
 		tab.gridAdd( ggPath, 1, row );
 
 		row++;
-		prefs   = app.getUserPrefs();
+		prefs   = userPrefs;
 		key2	= "prefsAudioFileFormat";
 		lb		= new JLabel( getResourceString( key2 ), SwingConstants.TRAILING );
 		tab.gridAdd( lb, 0, row );
@@ -164,7 +163,7 @@ extends AppWindow
 		tab.gridAdd( b, 1, row, -1, 1 );
 
 		row++;
-		prefs   = app.getUserPrefs();
+		prefs   = userPrefs;
 		key2	= "prefsHeadroom";
 		key		= "headroom";
 		lb		= new JLabel( getResourceString( key2 ), SwingConstants.TRAILING );
@@ -215,7 +214,7 @@ extends AppWindow
 		tab.gridAdd( b, 1, row, -1, 1 );
 
 		row++;
-		prefs   = app.getUserPrefs();
+		prefs   = userPrefs;
         key     = PrefsUtil.KEY_LOOKANDFEEL;
 		key2	= "prefsLookAndFeel";
 		title	= getResourceString( key2 );
@@ -319,18 +318,18 @@ extends AppWindow
 
 		setDefaultCloseOperation( WindowConstants.DO_NOTHING_ON_CLOSE );
 		init();
-		app.addComponent( Main.COMP_PREFS, this );
+		// app.addComponent( Main.COMP_PREFS, this );
     }
 
 	public void dispose()
 	{
-		AbstractApplication.getApplication().removeComponent( Main.COMP_PREFS );
+		// AbstractApplication.getApplication().removeComponent( Main.COMP_PREFS );
 		super.dispose();
 	}
 
 	private static String getResourceString( String key )
 	{
-		return AbstractApplication.getApplication().getResourceString( key );
+		return key; // return AbstractApplication.getApplication().getResourceString( key );
 	}
 
 	private static class WarnPrefsChange

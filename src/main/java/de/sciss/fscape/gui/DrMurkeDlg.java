@@ -2,7 +2,7 @@
  *  DrMurkeDlg.java
  *  FScape
  *
- *  Copyright (c) 2001-2013 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2014 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -46,7 +46,7 @@ import javax.swing.SwingConstants;
 import de.sciss.fscape.io.GenericFile;
 import de.sciss.fscape.prop.Presets;
 import de.sciss.fscape.prop.PropertyArray;
-import de.sciss.fscape.session.DocumentFrame;
+import de.sciss.fscape.session.ModulePanel;
 import de.sciss.fscape.util.Constants;
 import de.sciss.fscape.util.Param;
 import de.sciss.fscape.util.ParamSpace;
@@ -58,7 +58,7 @@ import de.sciss.io.AudioFileDescr;
  *  @version	0.74, 03-Nov-10
  */
 public class DrMurkeDlg
-extends DocumentFrame
+extends ModulePanel
 {
 // -------- private Variablen --------
 	private static final boolean verbose = false;

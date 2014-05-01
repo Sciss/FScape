@@ -2,7 +2,7 @@
  *  BatchDlg.java
  *  FScape
  *
- *  Copyright (c) 2001-2013 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2014 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -71,6 +71,7 @@ import javax.swing.text.DefaultFormatter;
 
 import de.sciss.app.AbstractApplication;
 import de.sciss.app.DocumentHandler;
+import de.sciss.fscape.session.ModulePanel;
 import de.sciss.gui.GUIUtil;
 import de.sciss.util.Flag;
 
@@ -78,7 +79,6 @@ import de.sciss.fscape.proc.ProcessorEvent;
 import de.sciss.fscape.proc.ProcessorListener;
 import de.sciss.fscape.prop.Presets;
 import de.sciss.fscape.prop.PropertyArray;
-import de.sciss.fscape.session.DocumentFrame;
 import de.sciss.fscape.session.Session;
 import de.sciss.fscape.util.Util;
 
@@ -90,7 +90,7 @@ import de.sciss.fscape.util.Util;
  *  @version	0.73, 27-Jun-09
  */
 public class BatchDlg
-extends DocumentFrame
+extends ModulePanel
 {
 // -------- private Variablen --------
 
@@ -246,7 +246,7 @@ extends DocumentFrame
 					bObj = (BatchObject) batchVector.get( batchTable.getSelectedRow() );
 					if( bObj.command != BatchObject.CMD_MODULE ) break;
 
-					DocumentFrame procWin;
+					ModulePanel procWin;
 					try {
 						procWin = getProcInstance( bObj, null );
 						procWin.fillGUI();
@@ -342,7 +342,7 @@ extends DocumentFrame
 //							Object[]		modules		= Util.iterToArray( winIter );
 final DocumentHandler dh = AbstractApplication.getApplication().getDocumentHandler();
 //final Object[] modules = new Object[ dh.getDocumentCount() ];
-final DocumentFrame[] modules = new DocumentFrame[ dh.getDocumentCount() ];
+final ModulePanel[] modules = new ModulePanel[ dh.getDocumentCount() ];
 for( int m = 0; m < modules.length; m++ ) {
 	modules[ m ] = ((Session) dh.getDocument( m )).getFrame();
 }
@@ -370,19 +370,19 @@ for( int m = 0; m < modules.length; m++ ) {
 							winNames	= new String[ winNum ];
 							for( i = 0; i < winNum; i++ ) {
 //								winNames[ i ] = ((Frame) modules[ i ]).getTitle();
-								winNames[ i ] = modules[ i ].getTitle();
+								winNames[ i ] = modules[ i ].getModuleName(); // .getTitle();
 							}
 			
 							if( winNum > 1 ) {		// only prompt if there's a real choice ;)
-								dlg = new ListDlg( getWindow(), "Choose Module", winNames );
+								dlg = new ListDlg( getComponent(), "Choose Module", winNames );
 								i	= dlg.getList();
 							} else {
 								i	= winNum - 1;
 							}
 							if( i < 0 ) return;		// cancel
 							bObj.modObj.name		= winNames[ i ];
-							((DocumentFrame) modules[ i ]).fillPropertyArray();
-							pa						= ((DocumentFrame) modules[ i ]).getPropertyArray();
+							((ModulePanel) modules[ i ]).fillPropertyArray();
+							pa						= ((ModulePanel) modules[ i ]).getPropertyArray();
 							bObj.modObj.prParam		= pa.toProperties( true );
 							bObj.modObj.modClass	= modules[ i ].getClass().getName();
 							v = new ArrayList();
@@ -626,7 +626,7 @@ tb.setFloatable( false );
 		int				line;
 		int				lines		= batchVector.size();
 		BatchObject		bObj, bObj2;
-		DocumentFrame	procWin;
+		ModulePanel procWin;
 		Exception		cmdErr;
 		int				errorCount = 0;
 		Component		c;
@@ -864,14 +864,14 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 		paramTM.setParam( modParam );
 	}
 	
-	protected DocumentFrame getProcInstance( BatchObject bObj, List loops )
+	protected ModulePanel getProcInstance( BatchObject bObj, List loops )
 	throws ClassNotFoundException, InstantiationException, IllegalAccessException
 	{
-		DocumentFrame procWin;
+		ModulePanel procWin;
 		int i, j;
 		PropertyArray pa;
 		
-		procWin	= (DocumentFrame) Class.forName( bObj.modObj.modClass ).newInstance();
+		procWin	= (ModulePanel) Class.forName( bObj.modObj.modClass ).newInstance();
 		pa = procWin.getPropertyArray();
 		pa.fromProperties( true, bObj.modObj.prParam );
 		for( i = 0; i <  bObj.modObj.modParam.length; i++ ) {

@@ -2,7 +2,7 @@
  *  SerialKillaDlg.java
  *  FScape
  *
- *  Copyright (c) 2001-2013 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2014 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -55,7 +55,7 @@ import de.sciss.io.AudioFileDescr;
  *  @version	0.71, 14-Nov-07
  */
 public class SerialKillaDlg
-extends DocumentFrame
+extends ModulePanel
 {
 	// Properties (defaults)
 	private static final int PR_INPUTFILE		= 0;		// pr.text

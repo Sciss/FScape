@@ -2,7 +2,7 @@
  *  AmpShaperDlg.java
  *  FScape
  *
- *  Copyright (c) 2001-2013 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2014 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -50,7 +50,7 @@ import de.sciss.io.IOUtil;
  *  @version	0.71, 14-Nov-07
  */
 public class AmpShaperDlg
-extends DocumentFrame
+extends ModulePanel
 {
 // -------- private Variablen --------
 
@@ -340,7 +340,7 @@ extends DocumentFrame
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addChoice( ggMode, GG_MODE, il );
 
-		ggEnv			= new EnvIcon( getWindow() );
+		ggEnv			= new EnvIcon( getComponent() );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
 		gui.addLabel( new JLabel( "Envelope", SwingConstants.RIGHT ));
@@ -358,7 +358,7 @@ extends DocumentFrame
 		gui.addParamField( ggMaxChange, GG_MAXCHANGE, null );
 
 		ggRightChan		= new JCheckBox( "Right chan." );
-		ggRightChanEnv	= new EnvIcon( getWindow() );
+		ggRightChanEnv	= new EnvIcon( getComponent() );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
 		gui.addCheckbox( ggRightChan, GG_RIGHTCHAN, il );

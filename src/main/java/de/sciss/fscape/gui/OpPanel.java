@@ -2,7 +2,7 @@
  *  OpPanel.java
  *  FScape
  *
- *  Copyright (c) 2001-2013 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2014 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -534,7 +534,7 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
 			op.dispose();
 		}
 		catch( Exception e1 ) {
-			GUIUtil.displayError( win.getWindow(), e1, "lostOwnership" );
+			GUIUtil.displayError( win.getComponent(), e1, "lostOwnership" );
 		}
 	}
                           
@@ -568,7 +568,7 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
 										  InputEvent.BUTTON1_MASK, 0, 0, 2, false ));
 			
 		} else if( action == MI_RENAME ) {							//-------- Rename --------
-			opName = JOptionPane.showInputDialog( win.getWindow(), "Rename Operator", popSource.getName() );
+			opName = JOptionPane.showInputDialog( win.getComponent(), "Rename Operator", popSource.getName() );
 			if( opName != null ) {
 				renameOperator( ((OpIcon) popSource).getOperator(), opName );
 			}
@@ -634,7 +634,7 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
 			aliases	= op.getAliases();
 
 			if( aliases.hasMoreElements() ) {
-				i = JOptionPane.showOptionDialog( win.getWindow(), "You have made aliases from this Operator.\n" +
+				i = JOptionPane.showOptionDialog( win.getComponent(), "You have made aliases from this Operator.\n" +
 							"Do you want to remove them or shall they\n" +
 							"be transformed to genuine objects?", "Request",
 							JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
@@ -676,7 +676,7 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
 					newOp = (Operator) newOp.clone();
 				}
 				catch( Exception e1 ) {
-					GUIUtil.displayError( win.getWindow(), e1, action );
+					GUIUtil.displayError( win.getComponent(), e1, action );
 				}
 			}
               			
@@ -696,7 +696,7 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
 									opName ).newInstance();
 					}
 					catch( Exception e1 ) {
-						GUIUtil.displayError( win.getWindow(), e1, action );
+						GUIUtil.displayError( win.getComponent(), e1, action );
 					}
 				}
 
@@ -823,7 +823,7 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
 					mouseDragged( e );		// sofort den Pfeil zeichnen
 	
 				} catch( NotBoundException e1 ) {
-					GUIUtil.displayError( win.getWindow(), e1, "panelPressed" );
+					GUIUtil.displayError( win.getComponent(), e1, "panelPressed" );
 				}
 			}
 
@@ -929,7 +929,7 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
 			op1	= opIcon.getOperator();
 			op2	= op1.getOriginal();
 			if( op2 != null ) {
-				i = JOptionPane.showOptionDialog( win.getWindow(), "Aliases cannot be edited.\n" + 
+				i = JOptionPane.showOptionDialog( win.getComponent(), "Aliases cannot be edited.\n" +
 						"Do you want to edit the original Operator\n" +
 						"or shall this Alias be transformed\n" +
 						"into a genuine object?", "Request",
@@ -956,7 +956,7 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
 			}
 
 //			GUISupport.sendComponentAsleep( win );
-			opDlg = new EditOpDlg( win.getWindow(), op1 );
+			opDlg = new EditOpDlg( win.getComponent(), op1 );
 			opDlg.setVisible( true );
 			if( opDlg.getChoice() ) {
 				updateOperator( op1 );
@@ -999,7 +999,7 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
 	
 						}
 						catch( Exception e1 ) {
-							GUIUtil.displayError( win.getWindow(), e1, "link" );
+							GUIUtil.displayError( win.getComponent(), e1, "link" );
 						}
 						break;
 	

@@ -2,7 +2,7 @@
  *  Session.java
  *  FScape
  *
- *  Copyright (c) 2001-2013 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2014 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -91,34 +91,18 @@ implements OSCRouter	// EventManager.Processor
 //	public final SessionCollection			selectedTracks	= new SessionCollection();
 //
 //	private Transport						transport		= null;
-	private DocumentFrame					frame			= null;
+	private ModulePanel frame			= null;
 	
 	// --- actions ---
 
 	private final ActionSave			actionSave;
-// XXX FFFF
-//	private final actionCutClass			actionCut;
-//	private final actionCopyClass			actionCopy;
-//	private final actionPasteClass			actionPaste;
-//	private final actionDeleteClass			actionDelete;
-//	private final actionSilenceClass		actionSilence;
-//	private final actionTrimClass			actionTrim;
 
 	// ---  ---
-	private final de.sciss.app.UndoManager	undo			= new de.sciss.app.UndoManager( this );
+	// private final de.sciss.app.UndoManager	undo			= new de.sciss.app.UndoManager( this );
 	private boolean							dirty			= false;
 
 	private final Session					enc_this		= this;
 
-// XXX FFFF
-//	public static final int					EDIT_INSERT		= 0;
-//	public static final int					EDIT_OVERWRITE	= 1;
-//	public static final int					EDIT_MIX		= 2;
-//	
-//	private static final String[]			EDITMODES		= { "Insert", "Overwrite", "Mix" };
-//	
-//	private int								editMode		= EDIT_INSERT;
-	
 	private static int						nodeIDAlloc		= 0;
 	private final int						nodeID;
 
@@ -130,78 +114,17 @@ implements OSCRouter	// EventManager.Processor
 
 	public Session()
 	{
-// XXX FFFF
-//		this.afds					= afds;
-//		if( displayAFD == null ) {
-//			this.displayAFD			= new AudioFileDescr();
-//			autoCreateDisplayDescr();
-//		} else {
-//			this.displayAFD			= displayAFD;
-//		}
-		
 		nodeID				= ++nodeIDAlloc;
 		
 		osc					= new OSCRouterWrapper( null, this );
-// XXX FFFF
-//		timeline			= new Timeline( this );
-//		markerTrack			= new MarkerTrack( this );
-//		markers				= (MarkerTrail) markerTrack.getTrail();
-//		tracks.add( null, markerTrack );
 
 		actionSave			= new ActionSave();
-// XXX FFFF
-//		actionCut			= new actionCutClass();
-//		actionCopy			= new actionCopyClass();
-//		actionPaste			= new actionPasteClass();
-//		actionDelete		= new actionDeleteClass();
-//		actionSilence		= new actionSilenceClass();
-//		actionTrim			= new actionTrimClass();
-//
-//		timeline.setRate( this, this.displayAFD.rate );
-//		timeline.setLength( this, this.displayAFD.length );
-//		timeline.setVisibleSpan( this, new Span( 0, this.displayAFD.length ));
-//		selectedTracks.add( this, markerTrack );
 	}
 	
 	public int getNodeID()
 	{
 		return nodeID;
 	}
-	
-// XXX FFFF
-//	public void setEditMode( int mode )
-//	{
-//		editMode = mode;
-//	}
-//	
-//	public int getEditMode()
-//	{
-//		return editMode;
-//	}
-	
-//	public Session( AudioFileDescr[] afds, AudioFileDescr displayAFD )
-//	{
-//		this.displayAFD	= displayAFD;
-//		this.afds		= afds;
-//		init();
-//	}
-
-//	public Session( AudioFile af )
-//	{
-//		this.afd	= af.getDescr();
-//		init();
-//	}
-
-// XXX FFFF
-//	public Transport getTransport()
-//	{
-//		return transport;
-//	}
-//
-//	public void setTransport( Transport transport )
-//	{
-//		this.transport	= transport;
-//	}
 
 	/**
 	 * 	Checks if a process is currently running. This method should be called
@@ -249,7 +172,7 @@ implements OSCRouter	// EventManager.Processor
 	 * 	can exist at a time. To ensure that no other thread is running,
 	 * 	call <code>checkProcess()</code>.
 	 * 
-	 * 	@param	currentPT	the thread to launch
+	 * 	@param	process	the thread to launch
 	 * 	@throws	IllegalMonitorStateException	if called from outside the event thread
 	 * 	@throws	IllegalStateException			if another process is still running
 	 * 	@see	#checkProcess()
@@ -271,12 +194,12 @@ implements OSCRouter	// EventManager.Processor
 		currentPT.start();
 	}
 
-	public DocumentFrame getFrame()
+	public ModulePanel getFrame()
 	{
 		return frame;
 	}
 
-	public void setFrame( DocumentFrame frame )
+	public void setFrame( ModulePanel frame )
 	{
 		this.frame = frame;
 	}
@@ -428,7 +351,7 @@ implements OSCRouter	// EventManager.Processor
 
 	private void updateTitle()
 	{
-		if( frame != null ) frame.updateTitle();
+		// if( frame != null ) frame.updateTitle();
 	}
 
 // XXX FFFF
@@ -581,7 +504,7 @@ implements OSCRouter	// EventManager.Processor
 		}
 	
 		frame.setVisible( true );
-		frame.toFront();
+		// frame.toFront();
 //		frame.requestFocus();
 	}
 
@@ -713,14 +636,15 @@ implements OSCRouter	// EventManager.Processor
 		return AbstractApplication.getApplication();
 	}
 
-	public de.sciss.app.UndoManager getUndoManager()
-	{
-		return undo;
-	}
+    public de.sciss.app.UndoManager getUndoManager()
+    {
+        throw new IllegalStateException("Not implemented");
+        // return undo;
+    }
 
 	public void dispose()
 	{
-		undo.discardAllEdits();
+		// undo.discardAllEdits();
 
 		if( osc != null ) {
 			osc.remove();

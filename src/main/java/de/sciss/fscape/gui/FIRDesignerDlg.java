@@ -2,7 +2,7 @@
  *  FIRDesignerDlg.java
  *  FScape
  *
- *  Copyright (c) 2001-2013 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2014 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -62,7 +62,7 @@ import de.sciss.io.Marker;
  *	@todo		automatically truncate file size if zero samples are at the end (minimum phase)
  */
 public class FIRDesignerDlg
-extends DocumentFrame
+extends ModulePanel
 implements VectorPanel.Client
 {
 // -------- public Variablen --------

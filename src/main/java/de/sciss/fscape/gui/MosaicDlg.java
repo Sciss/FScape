@@ -2,7 +2,7 @@
  *  MosaicDlg.java
  *  FScape
  *
- *  Copyright (c) 2001-2013 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2014 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -54,7 +54,7 @@ import javax.swing.SwingConstants;
 import de.sciss.fscape.io.GenericFile;
 import de.sciss.fscape.prop.Presets;
 import de.sciss.fscape.prop.PropertyArray;
-import de.sciss.fscape.session.DocumentFrame;
+import de.sciss.fscape.session.ModulePanel;
 import de.sciss.fscape.spect.ConstQ;
 import de.sciss.fscape.spect.Fourier;
 import de.sciss.fscape.util.Constants;
@@ -75,7 +75,7 @@ import de.sciss.io.Marker;
  *  @version	0.72, 20-Jun-09
  */
 public class MosaicDlg
-extends DocumentFrame
+extends ModulePanel
 {
 // -------- private Variablen --------
 

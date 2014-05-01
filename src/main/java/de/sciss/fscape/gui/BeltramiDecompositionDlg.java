@@ -2,7 +2,7 @@
  *  BeltramiDecompositionDlg.java
  *  FScape
  *
- *  Copyright (c) 2001-2013 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2014 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -52,7 +52,7 @@ import javax.swing.SwingConstants;
 import de.sciss.fscape.io.GenericFile;
 import de.sciss.fscape.prop.Presets;
 import de.sciss.fscape.prop.PropertyArray;
-import de.sciss.fscape.session.DocumentFrame;
+import de.sciss.fscape.session.ModulePanel;
 import de.sciss.fscape.util.Constants;
 import de.sciss.fscape.util.Filter;
 import de.sciss.fscape.util.Param;
@@ -69,7 +69,7 @@ import de.sciss.io.AudioFileDescr;
  *  			vector (row in u multiplied by s-gain), or hue and saturation
  */
 public class BeltramiDecompositionDlg
-extends DocumentFrame
+extends ModulePanel
 {
 // -------- private Variablen --------
 	// corresponding R code:

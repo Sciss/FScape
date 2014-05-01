@@ -2,18 +2,25 @@ package de.sciss.fscape
 
 import de.sciss.desktop.impl.{WindowImpl, SwingApplicationImpl}
 import de.sciss.desktop._
-import scala.swing.{Action, Swing}
+import scala.swing.{Component, Action, Swing}
 import Swing._
 import scala.swing.event.Key
-import de.sciss.fscape.session.{Session, DocumentFrame}
+import de.sciss.fscape.session.{Session, ModulePanel}
 import scala.util.control.NonFatal
-import javax.swing.KeyStroke
-import scala.Some
+import javax.swing.{UIManager, KeyStroke}
 
 object FScape extends SwingApplicationImpl("FScape") {
   type Document = Session
 
   override protected def init(): Unit = {
+    try {
+      val web = "com.alee.laf.WebLookAndFeel"
+      UIManager.installLookAndFeel("Web Look And Feel", web)
+      UIManager.setLookAndFeel(web) // Prefs.lookAndFeel.getOrElse(Prefs.defaultLookAndFeel).getClassName)
+    } catch {
+      case NonFatal(_) =>
+    }
+    de.sciss.fscape.Application.userPrefs = de.sciss.desktop.Escape.prefsPeer(userPrefs)
     val f = new MainWindow
     f.front()
   }
@@ -127,11 +134,12 @@ object FScape extends SwingApplicationImpl("FScape") {
 
   def newDocument(key: String, text: String): Unit = {
     try {
-      val clz     = Class.forName(s"de.sciss.fscape.gui.${key}Dlg")
-      val procWin	= clz.newInstance().asInstanceOf[DocumentFrame]
-      documentHandler.addDocument(procWin.getDocument())
-      procWin.setVisible(true)
-      procWin.toFront()
+      val clz       = Class.forName(s"de.sciss.fscape.gui.${key}Dlg")
+      val modPanel	= clz.newInstance().asInstanceOf[ModulePanel]
+      documentHandler.addDocument(modPanel.getDocument())
+      val modWin    = new ModuleWindow(modPanel)
+      modWin.pack()
+      modWin.front()
     } catch {
       case NonFatal(e) =>
         val dlg = DialogSource.Exception(e -> s"New $text")
@@ -144,5 +152,12 @@ object FScape extends SwingApplicationImpl("FScape") {
     accelerator = Some(stroke)
 
     def apply(): Unit = newDocument(key = key, text = text)
+  }
+
+  private final class ModuleWindow(panel: ModulePanel) extends WindowImpl {
+    def handler: WindowHandler = FScape.windowHandler
+
+    contents  = Component.wrap(panel)
+    title     = panel.getModuleName
   }
 }

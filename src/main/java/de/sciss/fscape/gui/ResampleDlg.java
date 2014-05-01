@@ -2,7 +2,7 @@
  *  ResampleDlg.java
  *  FScape
  *
- *  Copyright (c) 2001-2013 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2014 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -53,7 +53,7 @@ import de.sciss.io.IOUtil;
  *  @version	0.64, 06-Dec-04
  */
 public class ResampleDlg
-extends DocumentFrame
+extends ModulePanel
 {
 // -------- private Variablen --------
 
@@ -313,7 +313,7 @@ extends DocumentFrame
 		con.weightx		= 0.5;
 		con.gridwidth	= 2;
 		gui.addParamField( ggRateModDepth, GG_RATEMODDEPTH, paramL );
-		ggRateModEnv	= new EnvIcon( getWindow() );
+		ggRateModEnv	= new EnvIcon( getComponent() );
 		con.weightx		= 0.0;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addGadget( ggRateModEnv, GG_RATEMODENV );
@@ -330,7 +330,7 @@ extends DocumentFrame
 		con.weightx		= 0.5;
 		con.gridwidth	= 2;
 		gui.addParamField( ggRightChanModDepth, GG_RIGHTCHANMODDEPTH, paramL );
-		ggRightChanModEnv= new EnvIcon( getWindow() );
+		ggRightChanModEnv= new EnvIcon( getComponent() );
 		con.weightx		= 0.0;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addGadget( ggRightChanModEnv, GG_RIGHTCHANMODENV );

@@ -2,7 +2,7 @@
  *  FourierDlg.java
  *  FScape
  *
- *  Copyright (c) 2001-2013 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2014 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -50,7 +50,7 @@ import de.sciss.fscape.io.FloatFile;
 import de.sciss.fscape.io.GenericFile;
 import de.sciss.fscape.prop.Presets;
 import de.sciss.fscape.prop.PropertyArray;
-import de.sciss.fscape.session.DocumentFrame;
+import de.sciss.fscape.session.ModulePanel;
 import de.sciss.fscape.spect.Fourier;
 import de.sciss.fscape.util.Param;
 import de.sciss.fscape.util.ParamSpace;
@@ -69,7 +69,7 @@ import de.sciss.io.Marker;
  *  @version	0.72, 23-Jan-09
  */
 public class FourierDlg
-extends DocumentFrame
+extends ModulePanel
 {
 // -------- public Variablen --------
 

@@ -2,7 +2,7 @@
  *  SmpMapPanel.java
  *  FScape
  *
- *  Copyright (c) 2001-2013 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2014 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -35,7 +35,7 @@ import java.util.*;
 import javax.swing.*;
 
 import de.sciss.fscape.*;
-import de.sciss.fscape.session.DocumentFrame;
+import de.sciss.fscape.session.ModulePanel;
 import de.sciss.fscape.util.*;
 
 import de.sciss.app.AbstractApplication;
@@ -385,8 +385,8 @@ implements ComponentListener, MouseListener, MouseMotionListener
 					if( smpOld.uniqueID == smp.uniqueID ) break;
 				}
 				if( (smpOld == null) || (smpOld.uniqueID != smp.uniqueID) ) {
-					GUIUtil.displayError( (JFrame) AbstractApplication.getApplication().getComponent( Main.COMP_MAIN ),
-										  new NoSuchElementException( DocumentFrame.ERR_CORRUPTED ), "setSample" );
+					GUIUtil.displayError( this, // (JFrame) AbstractApplication.getApplication().getComponent( Main.COMP_MAIN ),
+										  new NoSuchElementException( ModulePanel.ERR_CORRUPTED ), "setSample" );
 					return false;
 				}
 
@@ -405,8 +405,8 @@ implements ComponentListener, MouseListener, MouseMotionListener
 			if( newIndex == -1 ) {	// restore old one
 				newIndex = smpMap.addSample( smpOld );
 				if( newIndex == -1 ) {	// fatal error
-					GUIUtil.displayError( (JFrame) AbstractApplication.getApplication().getComponent( Main.COMP_MAIN ),
-											 new IllegalStateException( DocumentFrame.ERR_CORRUPTED ), "setSample" );
+					GUIUtil.displayError( this, // (JFrame) AbstractApplication.getApplication().getComponent( Main.COMP_MAIN ),
+											 new IllegalStateException( ModulePanel.ERR_CORRUPTED ), "setSample" );
 
 					currentSmpBox.setSelected( SB_STATE_NORMAL );
 					currentSmpBox = dummyBox;
@@ -1222,9 +1222,9 @@ implements ComponentListener, MouseListener, MouseMotionListener
 		{
 			super();
 
-//			fnt			= AbstractApplication.getApplication().getWindowHandler().getDefaultFont(); // Main.getFont( Main.FONT_ICON );
-			fnt = AbstractApplication.getApplication().getGraphicsHandler().getFont( GraphicsHandler.FONT_SYSTEM | GraphicsHandler.FONT_SMALL );
-			setFont( fnt );
+			// fnt = AbstractApplication.getApplication().getGraphicsHandler().getFont( GraphicsHandler.FONT_SYSTEM | GraphicsHandler.FONT_SMALL );
+            // setFont( fnt );
+            Font fnt = getFont();
 			fntMetr		= getFontMetrics( fnt );
 	
 			setSelected( SmpMapPanel.SB_STATE_NORMAL );

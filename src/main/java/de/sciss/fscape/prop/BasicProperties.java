@@ -2,7 +2,7 @@
  *  BasicProperties.java
  *  FScape
  *
- *  Copyright (c) 2001-2013 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2014 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -34,11 +34,11 @@ import java.util.*;
 
 import de.sciss.app.AbstractApplication;
 
+import de.sciss.fscape.Application;
 import de.sciss.fscape.util.*;
 
 import de.sciss.io.AudioFile;
 import de.sciss.io.AudioFileDescr;
-import net.roydesign.mac.MRJAdapter;
 
 /**
  *	Abgeleitete Properties-Klasse zur Verwaltung von Presets
@@ -142,8 +142,8 @@ extends Properties
 	
 		synchronized( this ) {
 			if( force || modified ) {
-				if( f.exists() && AbstractApplication.getApplication().getUserPrefs().getBoolean( PrefsUtil.KEY_BACKUP, false )) {
-					f2 = new File( AbstractApplication.getApplication().getUserPrefs().get( PrefsUtil.KEY_BAKDIR, "" ), f.getName() );
+				if( f.exists() && Application.userPrefs.getBoolean(PrefsUtil.KEY_BACKUP, false)) {
+					f2 = new File(Application.userPrefs.get(PrefsUtil.KEY_BAKDIR, ""), f.getName() );
 					copyFile( f, f2 );
 				}
 				try {
@@ -158,9 +158,9 @@ extends Properties
 					modified = false;
 				}
 	
-				try {
-					MRJAdapter.setFileType( f.getAbsoluteFile(), "FScP" ); // Constants.OSTypePrefs );
-				} catch( IOException e ) { /* ignored */}		// Filetype nicht wichtig
+//				try {
+//					MRJAdapter.setFileType( f.getAbsoluteFile(), "FScP" ); // Constants.OSTypePrefs );
+//				} catch( IOException e ) { /* ignored */}		// Filetype nicht wichtig
 			}
 		}
 	}

@@ -2,7 +2,7 @@
  *  TrajectoryDlg.java
  *  FScape
  *
- *  Copyright (c) 2001-2013 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2014 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -48,7 +48,7 @@ import de.sciss.io.AudioFileDescr;
  *  @version	0.64, 06-Dec-04
  */
 public class TrajectoryDlg
-extends DocumentFrame
+extends ModulePanel
 {
 // -------- private Variablen --------
 

@@ -2,7 +2,7 @@
  *  SpectPatch.java
  *  FScape
  *
- *  Copyright (c) 2001-2013 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2014 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -603,13 +603,14 @@ public class SpectPatch
 			ops.removeElement( op );
 		}
 		op.dispose();
-//		setModified( true );
 	}
 
-	public AppWindow getWindow()
-	{
-		return win;
-	}
+    public ModulePanel getModule() { return win; }
+
+    //	public AppWindow getWindow()
+    //	{
+    //		return win;
+    //	}
 
 	/**
 	 *	(Datei)namen des Dokuments ermitteln

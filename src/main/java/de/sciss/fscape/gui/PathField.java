@@ -2,7 +2,7 @@
  *  PathField.java
  *  FScape
  *
- *  Copyright (c) 2001-2013 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2014 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -40,8 +40,8 @@ import javax.swing.*;
 import de.sciss.app.AbstractApplication;
 import de.sciss.app.BasicEvent;
 import de.sciss.app.EventManager;
+import de.sciss.fscape.Application;
 import de.sciss.gui.ColouredTextField;
-import de.sciss.gui.PathButton;
 import de.sciss.gui.PathEvent;
 import de.sciss.gui.PathListener;
 import de.sciss.io.AudioFileDescr;
@@ -122,7 +122,7 @@ implements	ActionListener, ComponentListener, ItemListener, PathListener,
 	private GridBagConstraints	con;
 	private IOTextField			ggPath;
 //	private PathIcon			ggChoose;
-	private PathButton			ggChoose;
+	private SelectPathButton			ggChoose;
 	private ColouredTextField	ggFormat	= null;
 	private VirtualChoice		ggType		= null;
 	private VirtualChoice		ggRes		= null;
@@ -165,8 +165,8 @@ implements	ActionListener, ComponentListener, ItemListener, PathListener,
 		lay				= new GridBagLayout();
 		con				= new GridBagConstraints();
 		ggPath			= new IOTextField();
-		ggChoose		= new PathButton( type, dlgTxt );
-		ggChoose.addPathListener( this );
+        ggChoose        = new SelectPathButton(type, dlgTxt);
+        ggChoose.addPathListener( this );
 		
 		setLayout( lay );
 		con.fill		= GridBagConstraints.HORIZONTAL;
@@ -797,7 +797,7 @@ implements	ActionListener, ComponentListener, ItemListener, PathListener,
 	protected String udirScheme( String orig, String udirPr )
 	{
 		int		i;
-		String	udir = AbstractApplication.getApplication().getUserPrefs().get( udirPr, null );
+		String	udir = Application.userPrefs.get(udirPr, null);
 	
 		if( udir == null ) return orig;
 	
@@ -981,8 +981,7 @@ implements	ActionListener, ComponentListener, ItemListener, PathListener,
 				} else {
 					String dir = getPath().getParent();
 					if( dir != null ) {
-						AbstractApplication.getApplication().getUserPrefs().put( "UserDir" + idx, dir );
-//						Ichnograph.prefs.put( PrefsUtil.KEY_USERDIR + idx, dir );
+						Application.userPrefs.put( "UserDir" + idx, dir );
 						if( visualFeedback.isRunning() ) {
 							visualFeedback.restart();
 						} else {

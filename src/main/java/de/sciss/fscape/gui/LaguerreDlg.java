@@ -2,7 +2,7 @@
  *  LaguerreDlg.java
  *  FScape
  *
- *  Copyright (c) 2001-2013 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2014 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -57,7 +57,7 @@ import de.sciss.io.IOUtil;
  *  @version	0.71, 14-Nov-07
  */
 public class LaguerreDlg
-extends DocumentFrame
+extends ModulePanel
 {
 // -------- private Variablen --------
 
@@ -286,7 +286,7 @@ extends DocumentFrame
 		con.weightx		= 0.4;
 		gui.addParamField( ggWarpModDepth, GG_WARPMODDEPTH, paramL );
 
-		ggWarpEnv		= new EnvIcon( getWindow() );
+		ggWarpEnv		= new EnvIcon( getComponent() );
 		con.weightx		= 0.1;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addGadget( ggWarpEnv, GG_WARPENV );

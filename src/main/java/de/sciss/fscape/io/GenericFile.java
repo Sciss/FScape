@@ -2,7 +2,7 @@
  *  GenericFile.java
  *  FScape
  *
- *  Copyright (c) 2001-2013 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2014 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -35,8 +35,6 @@ import de.sciss.io.AudioFile;
 import de.sciss.io.AudioFileDescr;
 
 import de.sciss.fscape.spect.SpectralFile;
-
-import net.roydesign.mac.MRJAdapter;
 
 /**
  *  @version	0.71, 10-Sep-08
@@ -401,10 +399,10 @@ extends RandomAccessFile
 					if( readInt() == MOV_MAGIC ) {
 						type = MODE_MOV;
 					} else {				// QT may use File Resource for Movie Identification
-						osType = MRJAdapter.getFileType( file.getAbsoluteFile() );
-						if( osType.equals( FILETYPESTR[ MODE_MOV >> TYPESHIFT ])) {
-							type = MODE_MOV;
-						}
+//						osType = MRJAdapter.getFileType( file.getAbsoluteFile() );
+//						if( osType.equals( FILETYPESTR[ MODE_MOV >> TYPESHIFT ])) {
+//							type = MODE_MOV;
+//						}
 					}
 					break;
 				}

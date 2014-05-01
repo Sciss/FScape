@@ -2,7 +2,7 @@
  *  RotationDlg.java
  *  FScape
  *
- *  Copyright (c) 2001-2013 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2014 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -57,7 +57,7 @@ import de.sciss.io.IOUtil;
  *				chunks at once
  */
 public class RotationDlg
-extends DocumentFrame
+extends ModulePanel
 {
 // -------- private Variablen --------
 

@@ -2,7 +2,7 @@
  *  ConvolutionDlg.java
  *  FScape
  *
- *  Copyright (c) 2001-2013 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2014 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -56,7 +56,7 @@ import de.sciss.io.Span;
  *  @version	0.71, 12-May-08
  */
 public class ConvolutionDlg
-extends DocumentFrame
+extends ModulePanel
 {
 // -------- private Variablen --------
 
@@ -359,7 +359,7 @@ extends DocumentFrame
 		gui.addLabel( new JLabel( "# of IRs in file", SwingConstants.RIGHT ));
 		con.weightx		= 0.8;
 		gui.addParamField( ggIRNumber, GG_IRNUMBER, null );
-		ggIRModEnv		= new EnvIcon( getWindow() );
+		ggIRModEnv		= new EnvIcon( getComponent() );
 		con.weightx		= 0.0;
 		gui.addGadget( ggIRModEnv, GG_IRMODENV );
 		con.weightx		= 0.1;

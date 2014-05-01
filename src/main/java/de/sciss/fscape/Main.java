@@ -2,7 +2,7 @@
  *  Main.java
  *  FScape
  *
- *  Copyright (c) 2001-2013 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2014 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -51,10 +51,9 @@ import de.sciss.gui.HelpFrame;
 import de.sciss.util.Flag;
 
 public class Main
-extends BasicApplication
-implements OSCRouter
-{
-	private static final String APP_NAME	= "FScape";
+//        extends BasicApplication
+        implements OSCRouter {
+    private static final String APP_NAME	= "FScape";
 
 	/*
 	 *  Current version of the application. This is stored
@@ -71,42 +70,34 @@ implements OSCRouter
 	
 	/**
 	 *  Value for add/getComponent(): the preferences frame
-	 *
-	 *  @see	#getComponent( Object )
 	 */
 	public static final Object					COMP_PREFS		= PrefsFrame.class.getName();
 	/**
 	 *  Value for add/getComponent(): the about box
-	 *
-	 *  @see	#getComponent( Object )
 	 */
 	public static final Object					COMP_ABOUTBOX	= AboutBox.class.getName();
-	/**
-	 *  Value for add/getComponent(): the main log frame
-	 *
-	 *  @see	#getComponent( Object )
-	 */
-	public static final Object					COMP_MAIN		= MainFrame.class.getName();
+//	/**
+//	 *  Value for add/getComponent(): the main log frame
+//	 */
+//	public static final Object					COMP_MAIN		= MainFrame.class.getName();
 	/**
 	 *  Value for add/getComponent(): the online help display frame
-	 *
-	 *  @see	#getComponent( Object )
 	 */
 	public static final Object					COMP_HELP  		= HelpFrame.class.getName();
 
 	private final OSCRouterWrapper				osc;
 	private static final String					OSC_MAIN		= "main";
 
-	private final ProcessingThread.Listener		quitAfterSaveListener;
+	// private final ProcessingThread.Listener		quitAfterSaveListener;
 	
 	public Main( String[] args )
 	{
-		super( Main.class, APP_NAME );
+		// super( Main.class, APP_NAME );
 	
 		final java.util.List		warnings;
-		final Preferences			prefs			= getUserPrefs();
+		final Preferences			prefs			= Application.userPrefs; // getUserPrefs();
 		final double				prefsVersion;
-		final MainFrame				mainFrame;
+		// final MainFrame				mainFrame;
 		final OSCRoot				oscServer;
 		String						name;
 		
@@ -141,33 +132,30 @@ implements OSCRouter
 //		cacheManager		= new CacheManager( prefs.node( CacheManager.DEFAULT_NODE ));
 //		superCollider		= new SuperColliderClient( this );
 
-		init();
+		// init();
 
 		// ---- listeners ----
 
-		quitAfterSaveListener = new ProcessingThread.Listener() {
-			public void processStarted( ProcessingThread.Event e ) {}
-
-			// if the saving was successfull, we will call closeAll again
-			public void processStopped( ProcessingThread.Event e )
-			{
-				if( e.isDone() ) {
-					quit();
-				}
-			}
-		};
+//		quitAfterSaveListener = new ProcessingThread.Listener() {
+//			public void processStarted( ProcessingThread.Event e ) {}
+//
+//			// if the saving was successfull, we will call closeAll again
+//			public void processStopped( ProcessingThread.Event e )
+//			{
+//				if( e.isDone() ) {
+//					quit();
+//				}
+//			}
+//		};
 
 		// ---- component views ----
 
-		mainFrame   = new MainFrame();
-		((BasicWindowHandler) getWindowHandler()).setDefaultBorrower( mainFrame );
-// FFFF
-//		paletteCtrlRoom = new ControlRoomFrame();
-//        frameObserver	= new ObserverPalette();
+		// mainFrame   = new MainFrame();
+		// ((BasicWindowHandler) getWindowHandler()).setDefaultBorrower( mainFrame );
 
-		if( prefsVersion == 0.0 ) { // means no preferences found, so display splash screen
-    		new de.sciss.fscape.gui.WelcomeScreen( this );
-		}
+        //		if( prefsVersion == 0.0 ) { // means no preferences found, so display splash screen
+        //    		new de.sciss.fscape.gui.WelcomeScreen( this );
+        //		}
 
 		if( warnings != null ) {
 			for( int i = 0; i < warnings.size(); i++ ) {
@@ -178,43 +166,42 @@ implements OSCRouter
 		oscServer.init();
 	}
 
-	protected BasicMenuFactory createMenuFactory()
-	{
-		return new MenuFactory( this );
-	}
+//	protected BasicMenuFactory createMenuFactory()
+//	{
+//		return new MenuFactory( this );
+//	}
 	
-	protected DocumentHandler createDocumentHandler()
-	{
-		return new de.sciss.fscape.session.DocumentHandler( this );
-	}
+//	protected DocumentHandler createDocumentHandler()
+//	{
+//		return new de.sciss.fscape.session.DocumentHandler( this );
+//	}
 	
-	protected BasicWindowHandler createWindowHandler()
-	{
-		return new BasicWindowHandler( this );
-	}
+//	protected BasicWindowHandler createWindowHandler()
+//	{
+//		return new BasicWindowHandler( this );
+//	}
 	
 	private boolean forcedQuit = false;
 
-	public synchronized void quit()
-	{
-		final Flag				confirmed	= new Flag( false );
-		final ProcessingThread	pt			= getMenuFactory().closeAll( forcedQuit, confirmed );
+//	public synchronized void quit()
+//	{
+//		final Flag				confirmed	= new Flag( false );
+//		final ProcessingThread	pt			= getMenuFactory().closeAll( forcedQuit, confirmed );
+//
+//		if( pt != null ) {
+//			pt.addListener( quitAfterSaveListener );
+//			pt.start();
+//		} else if( confirmed.isSet() ) {
+//			OSCRoot.getInstance().quit();
+////			super.quit();
+//		}
+//	}
 
-		if( pt != null ) {
-			pt.addListener( quitAfterSaveListener );
-			pt.start();
-		} else if( confirmed.isSet() ) {
-			OSCRoot.getInstance().quit();
-//			superCollider.quit();
-			super.quit();
-		}
-	}
-
-	public void forceQuit()
-	{
-		forcedQuit = true;
-		this.quit();
-	}
+//	public void forceQuit()
+//	{
+//		forcedQuit = true;
+//		this.quit();
+//	}
 
 	private void lookAndFeelUpdate( String className )
 	{
@@ -283,21 +270,21 @@ implements OSCRouter
 		osc.oscRemoveRouter( subRouter );
 	}
 
-	public void oscCmd_quit( RoutedOSCMessage rom )
-	{
-		try {
-			if( rom.msg.getArgCount() > 1 ) {
-				if( ((Number) rom.msg.getArg( 1 )).intValue() != 0 ) {
-					forceQuit();
-					return;
-				}
-			}
-			quit();
-		}
-		catch( ClassCastException e1 ) {
-			OSCRoot.failedArgType( rom, 1 );
-		}
-	}
+//	public void oscCmd_quit( RoutedOSCMessage rom )
+//	{
+//		try {
+//			if( rom.msg.getArgCount() > 1 ) {
+//				if( ((Number) rom.msg.getArg( 1 )).intValue() != 0 ) {
+//					forceQuit();
+//					return;
+//				}
+//			}
+//			quit();
+//		}
+//		catch( ClassCastException e1 ) {
+//			OSCRoot.failedArgType( rom, 1 );
+//		}
+//	}
 	
 	public Object oscQuery_version()
 	{
