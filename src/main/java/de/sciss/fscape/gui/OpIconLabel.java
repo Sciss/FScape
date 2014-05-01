@@ -52,8 +52,8 @@ extends JComponent
 	private String		labName;
 	private int			labNameWidth	= 0;
 	private int			opFlags;
-	private Font		fnt;
-	private FontMetrics	fntMetr;
+    //	private Font		fnt;
+    //	private FontMetrics	fntMetr;
 
 	private OpIcon		icon;
 
@@ -67,6 +67,8 @@ extends JComponent
 		this.icon		= icon;
 		this.labName	= labName;
 		opFlags			= icon.getOperator().getFlags();
+
+        setFont(UIManager.getFont("Label.font"));
 
 newVisualProps();
 //		new DynamicAncestorAdapter( new DynamicPrefChangeManager(
@@ -82,15 +84,18 @@ newVisualProps();
 		setFocus( false );
 	}
 
-	public void setName( String labName )
-	{
-		this.labName = labName;
-		labNameWidth = fntMetr.stringWidth( labName );
-		setSize( getPreferredSize() );
-		updateLocation();
-	}
-	
-	public String getName()
+    public void setName(String labName) {
+        this.labName = labName;
+        Font fnt = getFont();
+        if (fnt != null) {
+            FontMetrics fntMetr = getFontMetrics(getFont());
+            labNameWidth = fntMetr.stringWidth(labName);
+            setSize(getPreferredSize());
+            updateLocation();
+        }
+    }
+
+    public String getName()
 	{
 		return labName;
 	}
@@ -136,12 +141,14 @@ newVisualProps();
 	public void paintComponent( Graphics g )
 	{
 		super.paintComponent( g );
-	
+
+        FontMetrics fntMetr = g.getFontMetrics();
 		g.drawString( labName, 2, fntMetr.getAscent() );
 	}
 
 	public Dimension getPreferredSize()
 	{
+        FontMetrics fntMetr = getFontMetrics(getFont());
 		return new Dimension( labNameWidth + 4, fntMetr.getHeight() );
 	}
 	public Dimension getMinimumSize()
@@ -166,9 +173,9 @@ newVisualProps();
 			fnt = new Font( fnt.getName(), Font.ITALIC, fnt.getSize() );
 		}
 		// setFont( fnt );
-		fntMetr = getFontMetrics( fnt );
-		setName( labName );
-		if( isVisible() ) repaint();
-	}
+        // fntMetr = getFontMetrics(fnt);
+        setName(labName);
+        if (isVisible()) repaint();
+    }
 }
 // class OpIconLabel

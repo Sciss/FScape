@@ -50,7 +50,6 @@ import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.event.MouseInputAdapter;
 
-import de.sciss.gui.Axis;
 import de.sciss.gui.VectorSpace;
 
 /**

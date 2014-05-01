@@ -214,7 +214,7 @@ extends ModulePanel
 		con.fill		= GridBagConstraints.BOTH;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		
-		gui.addLabel( new JLabel( "Fuck the genfood mafia", SwingConstants.RIGHT ));
+		// gui.addLabel( new JLabel( "Fuck the genfood mafia", SwingConstants.RIGHT ));
 		
 	gui.addLabel( new GroupLabel( "Waveform I/O", GroupLabel.ORIENT_HORIZONTAL,
 								  GroupLabel.BRACE_NONE ));

@@ -49,13 +49,9 @@ import de.sciss.util.ParamSpace;
 
 import de.sciss.fscape.io.GenericFile;
 import de.sciss.fscape.net.OSCRoot;
-import de.sciss.fscape.util.PrefsUtil;
-import de.sciss.gui.CoverGrowBox;
-import de.sciss.gui.HelpButton;
 import de.sciss.gui.PrefCheckBox;
 import de.sciss.gui.PrefComboBox;
 import de.sciss.gui.PrefParamField;
-import de.sciss.gui.PrefPathField;
 import de.sciss.gui.SpringPanel;
 import de.sciss.gui.StringItem;
 
@@ -67,8 +63,8 @@ import de.sciss.gui.StringItem;
  *  @author		Hanns Holger Rutz
  *  @version	0.73, 09-Aug-09
  */
-public class PrefsFrame
-extends JFrame
+public class PrefsPanel
+extends JPanel
 {
 	private static final ParamSpace	spcIntegerFromZero = new ParamSpace( 0, Double.POSITIVE_INFINITY, 1, 0, 0, 0 );
 //	private static final ParamSpace	spcIntegerFromOne  = new ParamSpace( 1, Double.POSITIVE_INFINITY, 1, 0, 0, 1 );
@@ -76,16 +72,16 @@ extends JFrame
 	/**
 	 *  Creates a new preferences frame
 	 */
-    public PrefsFrame()
+    public PrefsPanel()
     {
-		// super( SUPPORT );
+		super(new BorderLayout());
+        setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
 
-		setTitle( getResourceString( "framePrefs" ));
-
-		final Container					cp		= getContentPane();
+		final Container					cp		= this; // getContentPane();
 		final OSCRoot					osc;
 		final Flag						haveWarned			= new Flag( false );
-		final String					txtWarnLookAndFeel	= getResourceString( "warnLookAndFeelUpdate" );
+		final String					txtWarnLookAndFeel	=
+                "For Look-and-Feel changes to take effect,\nthe application must be restarted.";
         final Preferences userPrefs = Application.userPrefs;
 
 		JPanel							p, tabWrap;
@@ -103,7 +99,7 @@ extends JFrame
 		String							key, key2, title;
 		int								row;
 
-		ggTabPane			= new JTabbedPane();
+		// ggTabPane			= new JTabbedPane();
 
 		// ---------- global pane ----------
 
@@ -113,16 +109,16 @@ extends JFrame
 		prefs   = IOUtil.getUserPrefs();
 		key		= IOUtil.KEY_TEMPDIR;
 		key2	= "prefsTmpDir";
-		lb		= new JLabel( getResourceString( key2 ), SwingConstants.TRAILING );
+		lb		= new JLabel("Temporary Folder:", SwingConstants.TRAILING );
 		tab.gridAdd( lb, 0, row );
-		ggPath	= new PrefPathField( PathField.TYPE_FOLDER, getResourceString( key2 ));
+		ggPath	= new PrefPathField( PathField.TYPE_FOLDER, "Temporary Folder");
 		ggPath.setPreferences( prefs, key );
 		tab.gridAdd( ggPath, 1, row );
 
 		row++;
 		prefs   = userPrefs;
 		key2	= "prefsAudioFileFormat";
-		lb		= new JLabel( getResourceString( key2 ), SwingConstants.TRAILING );
+		lb		= new JLabel("Default Audio File Format:", SwingConstants.TRAILING );
 		tab.gridAdd( lb, 0, row );
 		b		= Box.createHorizontalBox();
 		ggChoice = new PrefComboBox();
@@ -152,7 +148,7 @@ extends JFrame
 		prefs   = userPrefs;
 		key2	= "prefsHeadroom";
 		key		= "headroom";
-		lb		= new JLabel( getResourceString( key2 ), SwingConstants.TRAILING );
+		lb		= new JLabel("Default Headroom:", SwingConstants.TRAILING );
 		tab.gridAdd( lb, 0, row );
 		ggParam  = new PrefParamField();
 		ggParam.addSpace( ParamSpace.spcAmpDecibels );
@@ -165,17 +161,17 @@ extends JFrame
 		key		= OSCRoot.KEY_ACTIVE;
 //		key2	= "prefsOSCActive";
 		key2	= "prefsOSCServer";
-		lb		= new JLabel( getResourceString( key2 ), SwingConstants.TRAILING );
+		lb		= new JLabel("OSC Server:", SwingConstants.TRAILING );
 		tab.gridAdd( lb, 0, row );
 		b		= Box.createHorizontalBox();
-		ggCheckBox = new PrefCheckBox( getResourceString( "prefsOSCActive" ));
+		ggCheckBox = new PrefCheckBox("Active");
 		ggCheckBox.setPreferences( prefs, key );
 //		tab.gridAdd( ggCheckBox, 1, row, -1, 1 );
 		b.add( ggCheckBox );
 
 		key		= OSCRoot.KEY_PROTOCOL;
 		key2	= "prefsOSCProtocol";
-		lb		= new JLabel( getResourceString( key2 ), SwingConstants.TRAILING );
+		lb		= new JLabel("Protocol:", SwingConstants.TRAILING );
 //		tab.gridAdd( lb, 2, row );
 		b.add( Box.createHorizontalStrut( 16 ));
 		b.add( lb );
@@ -188,7 +184,7 @@ extends JFrame
 
 		key		= OSCRoot.KEY_PORT;
 		key2	= "prefsOSCPort";
-		lb		= new JLabel( getResourceString( key2 ), SwingConstants.TRAILING );
+		lb		= new JLabel("Port:", SwingConstants.TRAILING );
 //		tab.gridAdd( lb, 4, row );
 		b.add( Box.createHorizontalStrut( 16 ));
 		b.add( lb );
@@ -199,60 +195,60 @@ extends JFrame
 		b.add( ggParam );
 		tab.gridAdd( b, 1, row, -1, 1 );
 
-		row++;
-		prefs   = userPrefs;
-        key     = PrefsUtil.KEY_LOOKANDFEEL;
-		key2	= "prefsLookAndFeel";
-		title	= getResourceString( key2 );
-		lb		= new JLabel( title, SwingConstants.TRAILING );
-		tab.gridAdd( lb, 0, row );
-		ggChoice = new PrefComboBox();
-		lafInfos = UIManager.getInstalledLookAndFeels();
-        for( int i = 0; i < lafInfos.length; i++ ) {
-            ggChoice.addItem( new StringItem( lafInfos[i].getClassName(), lafInfos[i].getName() ));
-        }
-		ggChoice.setPreferences( prefs, key );
-		ggChoice.addActionListener( new WarnPrefsChange( ggChoice, ggChoice, haveWarned, txtWarnLookAndFeel, title ));
-		tab.gridAdd( ggChoice, 1, row, -1, 1 );
+        //		row++;
+        //		prefs   = userPrefs;
+        //        key     = PrefsUtil.KEY_LOOKANDFEEL;
+        //		key2	= "prefsLookAndFeel";
+        //		title	= "Look-and-Feel:";
+        //		lb		= new JLabel( title, SwingConstants.TRAILING );
+        //		tab.gridAdd( lb, 0, row );
+        //		ggChoice = new PrefComboBox();
+        //		lafInfos = UIManager.getInstalledLookAndFeels();
+        //        for( int i = 0; i < lafInfos.length; i++ ) {
+        //            ggChoice.addItem( new StringItem( lafInfos[i].getClassName(), lafInfos[i].getName() ));
+        //        }
+        //		ggChoice.setPreferences( prefs, key );
+        //		ggChoice.addActionListener( new WarnPrefsChange( ggChoice, ggChoice, haveWarned, txtWarnLookAndFeel, title ));
+        //		tab.gridAdd( ggChoice, 1, row, -1, 1 );
 
 		row++;
        	key		= "lafdecoration"; // BasicWindowHandler.KEY_LAFDECORATION;
 		key2	= "prefsLAFDecoration";
-		title	= getResourceString( key2 );
-		ggCheckBox  = new PrefCheckBox( title );
-		ggCheckBox.setPreferences( prefs, key );
+		title	= "Look-and-Feel Window Decoration";
+        ggCheckBox = new PrefCheckBox(title);
+        ggCheckBox.setPreferences( prefs, key );
 		tab.gridAdd( ggCheckBox, 1, row, -1, 1 );
 		ggCheckBox.addActionListener( new WarnPrefsChange( ggCheckBox, ggCheckBox, haveWarned, txtWarnLookAndFeel, title ));
 
-		row++;
-       	key		= "internalframes"; // BasicWindowHandler.KEY_INTERNALFRAMES;
-		key2	= "prefsInternalFrames";
-		title	= getResourceString( key2 );
-//		lb		= new JLabel( title, JLabel.TRAILING );
-//		tab.gridAdd( lb, 0, row );
-		ggCheckBox  = new PrefCheckBox( title );
-		ggCheckBox.setPreferences( prefs, key );
-		tab.gridAdd( ggCheckBox, 1, row, -1, 1 );
-		ggCheckBox.addActionListener( new WarnPrefsChange( ggCheckBox, ggCheckBox, haveWarned, txtWarnLookAndFeel, title ));
+        //		row++;
+        //       	key		= "internalframes"; // BasicWindowHandler.KEY_INTERNALFRAMES;
+        //		key2	= "prefsInternalFrames";
+        //		title	= getResourceString( key2 );
+        ////		lb		= new JLabel( title, JLabel.TRAILING );
+        ////		tab.gridAdd( lb, 0, row );
+        //		ggCheckBox  = new PrefCheckBox( title );
+        //		ggCheckBox.setPreferences( prefs, key );
+        //		tab.gridAdd( ggCheckBox, 1, row, -1, 1 );
+        //		ggCheckBox.addActionListener( new WarnPrefsChange( ggCheckBox, ggCheckBox, haveWarned, txtWarnLookAndFeel, title ));
 
-		row++;
-       	key		= CoverGrowBox.KEY_INTRUDINGSIZE;
-		key2	= "prefsIntrudingSize";
-//		lb		= new JLabel( getResourceString( key2 ), JLabel.TRAILING );
-//		tab.gridAdd( lb, 0, row );
-		ggCheckBox  = new PrefCheckBox( getResourceString( key2 ));
-		ggCheckBox.setPreferences( prefs, key );
-		tab.gridAdd( ggCheckBox, 1, row, -1, 1 );
+        //		row++;
+        //       	key		= CoverGrowBox.KEY_INTRUDINGSIZE;
+        //		key2	= "prefsIntrudingSize";
+        ////		lb		= new JLabel( getResourceString( key2 ), JLabel.TRAILING );
+        ////		tab.gridAdd( lb, 0, row );
+        //		ggCheckBox  = new PrefCheckBox( getResourceString( key2 ));
+        //		ggCheckBox.setPreferences( prefs, key );
+        //		tab.gridAdd( ggCheckBox, 1, row, -1, 1 );
 
-		row++;
-       	key		= "floatingpalettes"; // BasicWindowHandler.KEY_FLOATINGPALETTES;
-		key2	= "prefsFloatingPalettes";
-//		lb		= new JLabel( getResourceString( key2 ), JLabel.TRAILING );
-//		tab.gridAdd( lb, 0, row );
-		ggCheckBox  = new PrefCheckBox( getResourceString( key2 ));
-		ggCheckBox.setPreferences( prefs, key );
-		tab.gridAdd( ggCheckBox, 1, row, -1, 1 );
-		ggCheckBox.addActionListener( new WarnPrefsChange( ggCheckBox, ggCheckBox, haveWarned, txtWarnLookAndFeel, title ));
+        //		row++;
+        //       	key		= "floatingpalettes"; // BasicWindowHandler.KEY_FLOATINGPALETTES;
+        //		key2	= "prefsFloatingPalettes";
+        ////		lb		= new JLabel( getResourceString( key2 ), JLabel.TRAILING );
+        ////		tab.gridAdd( lb, 0, row );
+        //		ggCheckBox  = new PrefCheckBox( getResourceString( key2 ));
+        //		ggCheckBox.setPreferences( prefs, key );
+        //		tab.gridAdd( ggCheckBox, 1, row, -1, 1 );
+        //		ggCheckBox.addActionListener( new WarnPrefsChange( ggCheckBox, ggCheckBox, haveWarned, txtWarnLookAndFeel, title ));
 
 //		row++;
 //  	prefs   = GUIUtil.getUserPrefs();
@@ -268,9 +264,10 @@ extends JFrame
 		tabWrap = new JPanel( new BorderLayout() );
 		tabWrap.add( tab, BorderLayout.NORTH );
 		p		= new JPanel( new FlowLayout( FlowLayout.RIGHT ));
-		p.add( new HelpButton( key2 ));
+		// p.add( new HelpButton( key2 ));
 		tabWrap.add( p, BorderLayout.SOUTH );
-		ggTabPane.addTab( getResourceString( key2 ), null, tabWrap, null );
+
+        // ggTabPane.addTab("General", null, tabWrap, null);
 
 		// ---------- generic gadgets ----------
 
@@ -288,7 +285,7 @@ extends JFrame
 //			buttonPanel.add( Box.createHorizontalStrut( 16 ));
 //		}
 
-		cp.add( ggTabPane, BorderLayout.CENTER );
+		cp.add( tabWrap /* ggTabPane */, BorderLayout.CENTER );
 
 		// ---------- listeners ----------
 		
@@ -300,20 +297,20 @@ extends JFrame
 //			}
 //		});
 
-		setDefaultCloseOperation( WindowConstants.DO_NOTHING_ON_CLOSE );
+		// setDefaultCloseOperation( WindowConstants.DO_NOTHING_ON_CLOSE );
 		// init();
 		// app.addComponent( Main.COMP_PREFS, this );
     }
 
-	public void dispose()
-	{
-		super.dispose();
-	}
+    //	public void dispose()
+    //	{
+    //		super.dispose();
+    //	}
 
-	private static String getResourceString( String key )
-	{
-		return key;
-	}
+    //	private static String getResourceString( String key )
+    //	{
+    //		return key;
+    //	}
 
 	private static class WarnPrefsChange
 	implements ActionListener

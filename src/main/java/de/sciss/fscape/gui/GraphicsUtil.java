@@ -162,7 +162,6 @@ public class GraphicsUtil
 	/**
 	 *  MacOS X Aqua style bar gradient with a size of 15 pixels
 	 *
-	 *  @see	de.sciss.eisenkraut.timeline.TimelineAxis
 	 *  @todo   this should look different on Windows and Linux
 	 *			depending on their VM's chrome.
 	 */
@@ -248,8 +247,6 @@ public class GraphicsUtil
 	 *				length is to be calculated
 	 *  @return		the length as given by the distance
 	 *				of the start point to the end point
-	 *
-	 *  @see	java.awt.geom.Paint2D#distance( double, double, double, double )
 	 */
 	public static double getLineLength( Line2D ln )
 	{

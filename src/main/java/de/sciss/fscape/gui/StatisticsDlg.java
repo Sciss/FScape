@@ -57,7 +57,6 @@ import de.sciss.fscape.spect.Fourier;
 import de.sciss.fscape.util.Constants;
 import de.sciss.fscape.util.Filter;
 import de.sciss.fscape.util.Util;
-import de.sciss.gui.Axis;
 import de.sciss.gui.VectorSpace;
 
 import de.sciss.io.AudioFile;

@@ -1,28 +1,26 @@
 package de.sciss.fscape.gui;
 
-import java.awt.Component;
-import java.awt.Dialog;
-import java.awt.FileDialog;
-import java.awt.Frame;
+import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.MouseEvent;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.Path2D;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JComponent;
-import javax.swing.SwingUtilities;
-import javax.swing.TransferHandler;
+import javax.swing.*;
 import javax.swing.event.MouseInputAdapter;
 
 import de.sciss.app.BasicEvent;
 import de.sciss.app.EventManager;
-import de.sciss.gui.ModificationButton;
 import de.sciss.gui.PathEvent;
 import de.sciss.gui.PathListener;
+import de.sciss.icons.raphael.Shapes;
 
 // import net.roydesign.ui.FolderDialog;
 
@@ -42,7 +40,7 @@ import de.sciss.gui.PathListener;
  *  @see		java.awt.FileDialog
  */
 public class SelectPathButton
-        extends ModificationButton
+        extends JButton
         implements EventManager.Processor
 {
     private File				path	= null;
@@ -57,32 +55,58 @@ public class SelectPathButton
 
     public SelectPathButton()
     {
-        this( PathField.TYPE_INPUTFILE );
+        this(PathField.TYPE_INPUTFILE);
     }
 
-    public SelectPathButton( int type )
-    {
-        super( SHAPE_LIST );
-        this.type   = type;
+    public SelectPathButton(int type) {
+        super(); // SHAPE_LIST);
+        this.type = type;
+
+        Path2D p = new GeneralPath();
+        Shapes.Search(p);
+        // Shapes.ListView(p);
+        // Shapes.Picker(p);
+        final Shape icnShp = p.createTransformedShape(AffineTransform.getScaleInstance(0.5, 0.5));
+
+        setIcon(new Icon() {
+            @Override
+            public void paintIcon(Component c, Graphics g, int x, int y) {
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setColor(isEnabled() ? Color.black : Color.gray);
+                g2.translate(x, y);
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+                g2.fill(icnShp);
+                g2.translate(-x, -y);
+            }
+
+            @Override
+            public int getIconWidth() {
+                return 16;
+            }
+
+            @Override
+            public int getIconHeight() {
+                return 16;
+            }
+        });
 
         setToolTipText("Choose File...");
-        setTransferHandler( new PathTransferHandler() );
+        setTransferHandler(new PathTransferHandler());
 
         final MouseInputAdapter mia = new MouseInputAdapter() {
             private MouseEvent dndInit = null;
             private boolean dndStarted = false;
 
-            public void mousePressed( MouseEvent e )
-            {
-                dndInit		= e;
-                dndStarted	= false;
+            public void mousePressed(MouseEvent e) {
+                dndInit     = e;
+                dndStarted  = false;
             }
 
-            public void mouseReleased( MouseEvent e )
-            {
-                if( !dndStarted && contains( e.getPoint() )) showFileChooser();
-                dndInit		= null;
-                dndStarted	= false;
+            public void mouseReleased(MouseEvent e) {
+                if (!dndStarted && contains(e.getPoint())) showFileChooser();
+                dndInit     = null;
+                dndStarted  = false;
             }
 
             public void mouseDragged( MouseEvent e )
@@ -98,8 +122,8 @@ public class SelectPathButton
             }
         };
 
-        addMouseListener( mia );
-        addMouseMotionListener( mia );
+        addMouseListener      (mia);
+        addMouseMotionListener(mia);
     }
 
     /**
@@ -111,14 +135,12 @@ public class SelectPathButton
      *					<code>PathField.TYPE_INPUT</code>
      *  @param  dlgTxt  text to display in the file chooser dialog or <code>null</code>
      */
-    public SelectPathButton( int type, String dlgTxt )
-    {
-        this( type );
-        setDialogText( dlgTxt );
+    public SelectPathButton(int type, String dlgTxt) {
+        this(type);
+        setDialogText(dlgTxt);
     }
 
-    public void setDialogText( String dlgTxt )
-    {
+    public void setDialogText(String dlgTxt) {
         this.dlgTxt = dlgTxt;
     }
 
@@ -128,8 +150,7 @@ public class SelectPathButton
      *
      *  @param  path	the new path for the button
      */
-    public void setPath( File path )
-    {
+    public void setPath(File path) {
         this.path = path;
     }
 
@@ -139,10 +160,9 @@ public class SelectPathButton
      *
      *  @param  path	the new path for the button and the event
      */
-    protected void setPathAndDispatchEvent( File path )
-    {
-        setPath( path );
-        elm.dispatchEvent( new PathEvent( this, PathEvent.CHANGED, System.currentTimeMillis(), path ));
+    protected void setPathAndDispatchEvent(File path) {
+        setPath(path);
+        elm.dispatchEvent(new PathEvent(this, PathEvent.CHANGED, System.currentTimeMillis(), path));
     }
 
     /**
@@ -153,8 +173,7 @@ public class SelectPathButton
      *  @return the button's path or <code>null</code>
      *			if no path was set or the file chooser was cancelled
      */
-    public File getPath()
-    {
+    public File getPath() {
         return path;
     }
 
@@ -164,8 +183,7 @@ public class SelectPathButton
      *
      * 	@param	filter	the new filter or null to remove an existing filter
      */
-    public void setFilter( FilenameFilter filter )
-    {
+    public void setFilter(FilenameFilter filter) {
         this.filter = filter;
     }
 
@@ -174,8 +192,7 @@ public class SelectPathButton
      *
      * 	@return	the current filter or null if no filter is installed
      */
-    public FilenameFilter getFilter()
-    {
+    public FilenameFilter getFilter() {
         return filter;
     }
 
@@ -190,9 +207,8 @@ public class SelectPathButton
      *  @param  listener	the <code>PathListener</code> to register
      *  @see	de.sciss.app.EventManager#addListener( Object )
      */
-    public void addPathListener( PathListener listener )
-    {
-        elm.addListener( listener );
+    public void addPathListener(PathListener listener) {
+        elm.addListener(listener);
     }
 
     /**
@@ -202,21 +218,19 @@ public class SelectPathButton
      *  @param  listener	the <code>PathListener</code> to unregister
      *  @see	de.sciss.app.EventManager#removeListener( Object )
      */
-    public void removePathListener( PathListener listener )
-    {
-        elm.removeListener( listener );
+    public void removePathListener(PathListener listener) {
+        elm.removeListener(listener);
     }
 
-    public void processEvent( BasicEvent e )
-    {
+    public void processEvent(BasicEvent e) {
         PathListener listener;
         int i;
 
-        for( i = 0; i < elm.countListeners(); i++ ) {
-            listener = (PathListener) elm.getListener( i );
-            switch( e.getID() ) {
+        for (i = 0; i < elm.countListeners(); i++) {
+            listener = (PathListener) elm.getListener(i);
+            switch (e.getID()) {
                 case PathEvent.CHANGED:
-                    listener.pathChanged( (PathEvent) e );
+                    listener.pathChanged((PathEvent) e);
                     break;
                 default:
                     assert false : e.getID();
@@ -224,22 +238,20 @@ public class SelectPathButton
         } // for( i = 0; i < elm.countListeners(); i++ )
     }
 
-    protected void showDialog( Dialog dlg )
-    {
-        dlg.setVisible( true );
+    protected void showDialog(Dialog dlg) {
+        dlg.setVisible(true);
     }
 
-    protected void showFileChooser()
-    {
-        File		p;
-        FileDialog	fDlg;
-        String		fDir, fFile; // , fPath;
+    protected void showFileChooser() {
+        File p;
+        FileDialog fDlg;
+        String fDir, fFile; // , fPath;
 //		int			i;
-        Component	win;
+        Component win;
 
-        for( win = this; !(win instanceof Frame); ) {
-            win = SwingUtilities.getWindowAncestor( win );
-            if( win == null ) return;
+        for (win = this; !(win instanceof Frame); ) {
+            win = SwingUtilities.getWindowAncestor(win);
+            if (win == null) return;
         }
 
         p = getPath();

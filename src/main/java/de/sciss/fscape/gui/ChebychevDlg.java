@@ -327,7 +327,7 @@ extends ModulePanel
 		p2			= new JPanel( new BorderLayout() );
 		b			= Box.createVerticalBox();
 		for( int i = 0; i < SLIDER_NUM; i++ ) {
-			ggShape = new SpectSlider( MAX_HARMON, 59, 59 );
+			ggShape = new SpectSlider( MAX_HARMON, 32 /* 59 */, 59 );
 			shapePanel.add( ggShape );
 			gui.registerGadget( ggShape, GG_SPECTSLIDER1 + i );
 		}

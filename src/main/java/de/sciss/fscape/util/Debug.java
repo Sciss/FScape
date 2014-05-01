@@ -34,8 +34,8 @@ import javax.swing.Box;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import de.sciss.fscape.gui.Axis;
 import de.sciss.fscape.gui.VectorDisplay;
-import de.sciss.gui.Axis;
 import de.sciss.gui.VectorSpace;
 
 /**
