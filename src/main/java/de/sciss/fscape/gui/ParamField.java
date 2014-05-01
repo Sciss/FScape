@@ -113,7 +113,14 @@ ggNumber = new NumberField();
 ggNumber.setSpace( currentSpace );
 //ggNumber.setNumber( paraToNumber( para ));
 //		ggJog	= new DataWheel( ggNumber );
-		ggJog	= new Jog();
+		ggJog	= new Jog() {
+            @Override
+            public void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+                super.paintComponent(g);
+            }
+        };
 		ggUnits	= new JComboBox();
 		lbUnits = new JLabel();
 

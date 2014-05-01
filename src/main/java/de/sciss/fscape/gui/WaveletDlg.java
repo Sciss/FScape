@@ -212,7 +212,7 @@ extends DocumentFrame
 
 		ggScaleGain		= new ParamField( Constants.spaces[ Constants.decibelAmpSpace ]);
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "Gain�per Scale", SwingConstants.RIGHT ));
+		gui.addLabel( new JLabel( "Gain per Scale", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggScaleGain, GG_SCALEGAIN, null );

@@ -69,7 +69,7 @@ import de.sciss.io.Marker;
 
 /**
  *	Processing module for approaching a file (fit input)
- *	throw evolution using a genetic algorithm.
+ *	through evolution using a genetic algorithm.
  *
  *  @author		Hanns Holger Rutz
  *  @version	0.72, 20-Jun-09

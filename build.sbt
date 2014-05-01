@@ -2,7 +2,7 @@ import AssemblyKeys._ // put this at the top of the file
 
 name             := "FScape"
 
-version          := "1.0.1-SNAPSHOT"
+version          := "1.1.0-SNAPSHOT"
 
 organization     := "de.sciss"
 
@@ -12,15 +12,20 @@ homepage         := Some(url("https://github.com/Sciss/" + name.value))
 
 licenses         := Seq("GPL v2+" -> url("http://www.gnu.org/licenses/gpl-2.0.txt"))
 
-scalaVersion     := "2.10.3"
+scalaVersion     := "2.11.0"
 
-crossPaths       := false  // this is just a Java project right now!
-
-autoScalaLibrary := false
+javacOptions    ++= Seq("-source", "1.6", "-target", "1.6")
 
 // retrieveManaged := true
 
 mainClass in Compile := Some("de.sciss.fscape.Main")
+
+libraryDependencies ++= Seq(
+  "de.sciss" %  "weblaf"      % "1.27",
+  "de.sciss" %% "desktop-mac" % "0.5.2",
+  "de.sciss" %  "scisslib"    % "1.0.0",
+  "de.sciss" %  "netutil"     % "1.0.0"
+)
 
 // ---- bundling ----
 
