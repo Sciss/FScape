@@ -80,9 +80,9 @@ extends AbstractRenderPlugIn
 		return true;
 	}
 
-	public void init( de.sciss.app.Document doc, Preferences p )
+	public void init( Preferences p )
 	{
-		super.init( doc, p );
+		super.init( p );
 		prefs	= p;
 	}
 
@@ -95,8 +95,7 @@ extends AbstractRenderPlugIn
 		final PrefComboBox		ggFilter	= new PrefComboBox();
 		final PrefNumberField	ggThresh	= new PrefNumberField();
 		final PrefCheckBox		ggSubDry	= new PrefCheckBox();
-//		final Application		app			= AbstractApplication.getApplication();
-		
+
 		ggGain.setSpace( NumberSpace.genericDoubleSpace );
 		ggGainType.addItem( new StringItem( GAIN_NORMALIZED, "normalized" ));
 		ggGainType.addItem( new StringItem( GAIN_ABSOLUTE, "immediate" ));

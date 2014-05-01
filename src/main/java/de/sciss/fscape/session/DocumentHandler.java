@@ -40,14 +40,13 @@
 //import de.sciss.fscape.*;
 //import de.sciss.fscape.net.*;
 //
-//import de.sciss.app.Document;
 //
 ///**
 // *  @author		Hanns Holger Rutz
 // *  @version	0.71, 14-Nov-07
 // */
 //public class DocumentHandler
-//extends de.sciss.app.AbstractDocumentHandler
+//extends AbstractDocumentHandler
 //implements OSCRouter
 //{
 //	private static final String OSC_DOC			= "doc";

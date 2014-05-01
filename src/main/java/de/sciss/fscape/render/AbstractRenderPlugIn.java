@@ -35,8 +35,6 @@ import java.io.IOException;
 import java.util.prefs.*;
 import javax.swing.*;
 
-import de.sciss.app.Document;
-
 // @version	0.56, 15-Sep-05
 public abstract class AbstractRenderPlugIn
 implements RenderPlugIn
@@ -60,7 +58,7 @@ implements RenderPlugIn
 	/**
 	 *	Sub-classes should call super.init() !
 	 */
-	public void init( Document doc, Preferences prefs )
+	public void init( /* Document doc, */ Preferences prefs )
 	{
 		// nothing
 	}

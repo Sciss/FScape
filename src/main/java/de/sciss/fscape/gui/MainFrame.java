@@ -40,13 +40,7 @@
 //import java.util.*;
 //import javax.swing.*;
 //import de.sciss.fscape.*;
-//import de.sciss.app.AbstractApplication;
-//import de.sciss.app.AbstractWindow;
-//import de.sciss.app.Application;
-//import de.sciss.common.AppWindow;
-//import de.sciss.common.BasicApplication;
 //
-//import de.sciss.gui.AbstractWindowHandler;
 //import de.sciss.gui.CoverGrowBox;
 //import de.sciss.gui.GUIUtil;
 //import de.sciss.gui.LogTextArea;

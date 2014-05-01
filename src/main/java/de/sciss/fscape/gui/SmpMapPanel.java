@@ -30,16 +30,14 @@ package de.sciss.fscape.gui;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.NoSuchElementException;
+import java.util.Vector;
 import javax.swing.*;
 
-import de.sciss.fscape.*;
 import de.sciss.fscape.session.ModulePanel;
-import de.sciss.fscape.util.*;
 
-import de.sciss.app.AbstractApplication;
-import de.sciss.app.GraphicsHandler;
+import de.sciss.fscape.util.*;
 import de.sciss.gui.GUIUtil;
 
 /**
@@ -86,9 +84,9 @@ implements ComponentListener, MouseListener, MouseMotionListener
 	private int			dragOriginY;			// last coordinates
 	private Rectangle	dragBounds	= null;
 	private Rectangle	dragRubber;
-	private SmpZone		dragSmp;
+	private SmpZone dragSmp;
 	private DoublePoint	dragTopLeft;			// Space-Koordinaten
-	private DoublePoint	dragBottomRight;
+	private DoublePoint dragBottomRight;
 
 	// folgende Werte ODER-verkn�pft
 	private static final int DRAG_NONE	=	0x00;	// no drag
@@ -110,8 +108,8 @@ implements ComponentListener, MouseListener, MouseMotionListener
 	protected static final int SB_STATE_SELECTED	= 3;
 	protected static final int SB_STATE_UNKNOWN		= -1;
 
-	protected SmpMap	smpMap;
-	protected Vector	smpBoxes;	// !selbe Indices wie smpMap
+	protected SmpMap smpMap;
+	protected Vector smpBoxes;	// !selbe Indices wie smpMap
 	protected Dimension	dim;		// Panel-Size; vom Component-Listener geupdated
 	protected double	vSpaceLog;	// ln( vSpace.max / vSpace.min) fuer logarithmische Skala wichtig
 
@@ -384,11 +382,10 @@ implements ComponentListener, MouseListener, MouseMotionListener
 					smpOld = smpMap.getSample( index );
 					if( smpOld.uniqueID == smp.uniqueID ) break;
 				}
-				if( (smpOld == null) || (smpOld.uniqueID != smp.uniqueID) ) {
-					GUIUtil.displayError( this, // (JFrame) AbstractApplication.getApplication().getComponent( Main.COMP_MAIN ),
-										  new NoSuchElementException( ModulePanel.ERR_CORRUPTED ), "setSample" );
-					return false;
-				}
+                if ((smpOld == null) || (smpOld.uniqueID != smp.uniqueID)) {
+                    GUIUtil.displayError(this, new NoSuchElementException(ModulePanel.ERR_CORRUPTED), "setSample");
+                    return false;
+                }
 
 				sb.setSelected( SB_STATE_NORMAL );
 				sb = (SmpBox) smpBoxes.elementAt( index );
@@ -405,8 +402,7 @@ implements ComponentListener, MouseListener, MouseMotionListener
 			if( newIndex == -1 ) {	// restore old one
 				newIndex = smpMap.addSample( smpOld );
 				if( newIndex == -1 ) {	// fatal error
-					GUIUtil.displayError( this, // (JFrame) AbstractApplication.getApplication().getComponent( Main.COMP_MAIN ),
-											 new IllegalStateException( ModulePanel.ERR_CORRUPTED ), "setSample" );
+                    GUIUtil.displayError(this, new IllegalStateException(ModulePanel.ERR_CORRUPTED), "setSample");
 
 					currentSmpBox.setSelected( SB_STATE_NORMAL );
 					currentSmpBox = dummyBox;
@@ -1222,8 +1218,6 @@ implements ComponentListener, MouseListener, MouseMotionListener
 		{
 			super();
 
-			// fnt = AbstractApplication.getApplication().getGraphicsHandler().getFont( GraphicsHandler.FONT_SYSTEM | GraphicsHandler.FONT_SMALL );
-            // setFont( fnt );
             Font fnt = getFont();
 			fntMetr		= getFontMetrics( fnt );
 	

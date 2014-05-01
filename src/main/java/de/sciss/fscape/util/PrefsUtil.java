@@ -34,17 +34,25 @@
  
 package de.sciss.fscape.util;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import java.util.*;
-import java.util.prefs.*;
-import javax.swing.*;
-import org.w3c.dom.*;
-
-import de.sciss.app.*;
+import de.sciss.fscape.Application;
 import de.sciss.fscape.gui.PathField;
-import de.sciss.io.*;
+import de.sciss.io.IOUtil;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.StringTokenizer;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 
 /**
  *	A helper class for programme preferences. It
@@ -140,7 +148,7 @@ public class PrefsUtil
 
 	public static java.util.List createDefaults( Preferences mainPrefs, double lastVersion )
 	{
-		File					f;
+		File f;
 //		String					value;
 //		Preferences				childPrefs, childPrefs2;
 //		final String			fs			= File.separator;
@@ -160,20 +168,20 @@ public class PrefsUtil
 		putBooleanDontOverwrite( mainPrefs, KEY_BACKUP, true );
 
 		if( mainPrefs.get( KEY_BAKDIR, null ) == null ) {
-			f = new File( new File( System.getProperty( "user.home" ), AbstractApplication.getApplication().getName() ), "bak" );
+			f = new File( new File( System.getProperty( "user.home" ), Application.name ), "bak" );
 			if( !f.isDirectory() ) {
 				try {
 					IOUtil.createEmptyDirectory( f );
 				}
 				catch( IOException e1 ) {
-					warnings.add( f.getAbsolutePath() + " : " + AbstractApplication.getApplication().getResourceString( "errMakeDir" ));
+					warnings.add( f.getAbsolutePath() + " : Could not create directory");
 				}
 			}
 			putDontOverwrite( mainPrefs, KEY_BAKDIR, f.getAbsolutePath() );
 		}
 
 		// save current version
-		mainPrefs.putDouble( KEY_VERSION, AbstractApplication.getApplication().getVersion() );
+		mainPrefs.put(KEY_VERSION, Application.version);
 
 		putDontOverwrite( mainPrefs, "audioFileRes", PathField.getSoundResID( 1 ));
 		putDontOverwrite( mainPrefs, "audioFileRate", PathField.getSoundRateID( 2 ));
@@ -243,7 +251,7 @@ public class PrefsUtil
 */
 	public static Rectangle stringToRectangle( String value )
 	{
-		Rectangle		rect	= null;
+		Rectangle rect	= null;
 		StringTokenizer tok;
 		
 		if( value != null ) {
@@ -388,7 +396,7 @@ public class PrefsUtil
 		AbstractAction a = new AbstractAction( "Dump preferences tree" ) {
 			public void actionPerformed( ActionEvent e )
 			{
-				debugDump( AbstractApplication.getApplication().getUserPrefs() );
+				debugDump( Application.userPrefs );
 			}
 			
 			private void debugDump( Preferences prefs )
@@ -434,7 +442,7 @@ public class PrefsUtil
 	{
 		String[]	keys;
 		String[]	children;
-		Element		childElement, entry;
+		Element childElement, entry;
 		String		value;
 		int			i;
 
@@ -478,9 +486,9 @@ public class PrefsUtil
 								Element rootElement, Map options )
 	throws IOException
 	{
-		NodeList	nl, nl2;
+		NodeList nl, nl2;
 		Element		childElement, entry;
-		Node		node;
+		Node node;
 		int			i, j;
 
 		try {

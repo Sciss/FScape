@@ -69,8 +69,7 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 import javax.swing.text.DefaultFormatter;
 
-import de.sciss.app.AbstractApplication;
-import de.sciss.app.DocumentHandler;
+import de.sciss.fscape.Application;
 import de.sciss.fscape.session.ModulePanel;
 import de.sciss.gui.GUIUtil;
 import de.sciss.util.Flag;
@@ -274,8 +273,8 @@ extends ModulePanel
 						for( i = 0; i < rows.length; i++ ) {
 							dup[i] = new BatchObject( (BatchObject) batchVector.get( rows[i] ));
 						}
-						AbstractApplication.getApplication().getClipboard().setContents(
-							new BatchObjectArray( dup ), cbo );
+						Application.clipboard.setContents(
+                                new BatchObjectArray(dup), cbo);
 							
 						if( ID == GG_CMDCUT ) {
 							for( boolean finished = false; !finished; ) {
@@ -302,7 +301,7 @@ extends ModulePanel
 					i = batchTable.getSelectedRow() + 1;
 					i = i == 0 ? batchVector.size() : i;
 					try {
-						t = AbstractApplication.getApplication().getClipboard().getContents( enc_this );
+						t = Application.clipboard.getContents(enc_this);
 						if( t != null ) {
 							if( t.isDataFlavorSupported( BatchObjectArray.flavor )) {
 								dup = (BatchObject[]) t.getTransferData( BatchObjectArray.flavor );
@@ -340,11 +339,12 @@ extends ModulePanel
 
 //							Iterator		winIter		= MainMenu.getWindows();
 //							Object[]		modules		= Util.iterToArray( winIter );
-final DocumentHandler dh = AbstractApplication.getApplication().getDocumentHandler();
+final Application.DocumentHandler dh = Application.documentHandler;
 //final Object[] modules = new Object[ dh.getDocumentCount() ];
-final ModulePanel[] modules = new ModulePanel[ dh.getDocumentCount() ];
+final Session[] docs = dh.getDocuments();
+final ModulePanel[] modules = new ModulePanel[ docs.length];
 for( int m = 0; m < modules.length; m++ ) {
-	modules[ m ] = ((Session) dh.getDocument( m )).getFrame();
+	modules[ m ] = docs[m].getFrame();
 }
 							String[]		winNames;
 							ListDlg			dlg;

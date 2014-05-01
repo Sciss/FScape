@@ -49,8 +49,6 @@ import java.util.Vector;
 
 import javax.swing.JPanel;
 
-import de.sciss.app.AbstractApplication;
-import de.sciss.app.GraphicsHandler;
 import de.sciss.fscape.op.Operator;
 import de.sciss.fscape.spect.SpectStreamSlot;
 import de.sciss.fscape.util.Constants;
@@ -184,7 +182,7 @@ implements Dragable
 
 newVisualProps();
 //		new DynamicAncestorAdapter( new DynamicPrefChangeManager(
-//			AbstractApplication.getApplication().getUserPrefs(),
+//			Application.userPrefs,
 //			new String[] { MainPrefs.KEY_ICONFONT }, new LaterInvocationManager.Listener() {
 //
 //			public void laterInvocation( Object o )
@@ -552,9 +550,7 @@ dest:	if( destDist > 0 ) {
 	private void newVisualProps()
 	{
 		if( labName != null ) {
-//			fnt = AbstractApplication.getApplication().getWindowHandler().getDefaultFont(); // Main.getFont( Main.FONT_ICON );
-			fnt = AbstractApplication.getApplication().getGraphicsHandler().getFont( GraphicsHandler.FONT_SYSTEM | GraphicsHandler.FONT_SMALL );
-			setFont( fnt );
+            Font fnt = getFont();
 			fntMetr = getFontMetrics( fnt );
 
 			width		= fntMetr.stringWidth( labName ) + 4;

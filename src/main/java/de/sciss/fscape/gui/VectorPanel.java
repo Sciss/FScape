@@ -52,7 +52,6 @@ import javax.swing.event.MouseInputAdapter;
 
 import de.sciss.gui.Axis;
 import de.sciss.gui.VectorSpace;
-import de.sciss.app.AbstractApplication;
 
 /**
  *	GUI container with a VectorDisplay,
@@ -98,8 +97,7 @@ implements TopPainter
 		Box								box;
 		ActionListener					actionListener;
 		MouseInputAdapter				mouseListener;
-		final de.sciss.app.Application	app	= AbstractApplication.getApplication();
-	
+
 		this.client		= client;
 	
 		// ---- create vector display ----
@@ -113,16 +111,6 @@ implements TopPainter
 				ggVectorDisplay.requestFocus();
 				redrawCrosshair( e );
 			}
-
-//			public void mouseEntered( MouseEvent e )
-//			{
-//				ggVectorDisplay.setCursor( csrCrossHair );
-//			}
-//
-//			public void mouseExited( MouseEvent e )
-//			{
-//				ggVectorDisplay.setCursor( null );
-//			}
 
 			public void mouseDragged( MouseEvent e )
 			{
@@ -144,17 +132,17 @@ implements TopPainter
 				}
 			};
 			if( (flags & FLAG_UPDATE_GADGET) != 0 ) {
-				ggUpdate		= new JButton( app.getResourceString( "buttonUpdate" ));
+				ggUpdate		= new JButton("Update");
 				ggUpdate.addActionListener( actionListener );
 				buttonPane.add( ggUpdate );
 			}
 			if( (flags & FLAG_HLOG_GADGET) != 0 ) {
-				ggHLog		= new JCheckBox( app.getResourceString( "labelHLog" ));
+				ggHLog		= new JCheckBox("Horiz.log.");
 				ggHLog.addActionListener( actionListener );
 				buttonPane.add( ggHLog );
 			}
 			if( (flags & FLAG_VLOG_GADGET) != 0 ) {
-				ggVLog		= new JCheckBox( app.getResourceString( "labelVLog" ));
+				ggVLog		= new JCheckBox("Vert.log.");
 				ggVLog.addActionListener( actionListener );
 				buttonPane.add( ggVLog );
 			}

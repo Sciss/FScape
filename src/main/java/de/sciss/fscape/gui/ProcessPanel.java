@@ -38,10 +38,8 @@ import javax.swing.*;
 
 import de.sciss.fscape.proc.*;
 
-import de.sciss.app.AbstractApplication;
 import de.sciss.app.BasicEvent;
 import de.sciss.app.EventManager;
-import de.sciss.gui.CoverGrowBox;
 import de.sciss.gui.GUIUtil;
 import de.sciss.gui.ProgressComponent;
 
@@ -97,8 +95,6 @@ implements EventManager.Processor
 		
 		this.pProgress	= pProgress;
 
-		// final de.sciss.app.Application	app			= AbstractApplication.getApplication();
-		
 		actionClose		= new ActionClose("Close");
 		actionProcess	= new ActionProcess();
 

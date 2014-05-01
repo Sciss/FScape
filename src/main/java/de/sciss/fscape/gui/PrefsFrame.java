@@ -38,31 +38,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.prefs.Preferences;
 
-import javax.swing.Box;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.SwingConstants;
-import javax.swing.UIManager;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 
-import de.sciss.app.AbstractApplication;
-import de.sciss.app.AbstractWindow;
 import de.sciss.app.PreferenceEntrySync;
-import de.sciss.common.AppWindow;
-import de.sciss.common.BasicWindowHandler;
 import de.sciss.fscape.Application;
 import de.sciss.io.IOUtil;
 import de.sciss.net.OSCChannel;
 import de.sciss.util.Flag;
 import de.sciss.util.ParamSpace;
 
-import de.sciss.fscape.Main;
 import de.sciss.fscape.io.GenericFile;
 import de.sciss.fscape.net.OSCRoot;
 import de.sciss.fscape.util.PrefsUtil;
-import de.sciss.gui.AbstractWindowHandler;
 import de.sciss.gui.CoverGrowBox;
 import de.sciss.gui.HelpButton;
 import de.sciss.gui.PrefCheckBox;
@@ -81,7 +68,7 @@ import de.sciss.gui.StringItem;
  *  @version	0.73, 09-Aug-09
  */
 public class PrefsFrame
-extends AppWindow
+extends JFrame
 {
 	private static final ParamSpace	spcIntegerFromZero = new ParamSpace( 0, Double.POSITIVE_INFINITY, 1, 0, 0, 0 );
 //	private static final ParamSpace	spcIntegerFromOne  = new ParamSpace( 1, Double.POSITIVE_INFINITY, 1, 0, 0, 1 );
@@ -91,12 +78,11 @@ extends AppWindow
 	 */
     public PrefsFrame()
     {
-		super( SUPPORT );
+		// super( SUPPORT );
 
 		setTitle( getResourceString( "framePrefs" ));
 
 		final Container					cp		= getContentPane();
-		// final de.sciss.app.Application	app		= AbstractApplication.getApplication();
 		final OSCRoot					osc;
 		final Flag						haveWarned			= new Flag( false );
 		final String					txtWarnLookAndFeel	= getResourceString( "warnLookAndFeelUpdate" );
@@ -230,7 +216,7 @@ extends AppWindow
 		tab.gridAdd( ggChoice, 1, row, -1, 1 );
 
 		row++;
-       	key		= BasicWindowHandler.KEY_LAFDECORATION;
+       	key		= "lafdecoration"; // BasicWindowHandler.KEY_LAFDECORATION;
 		key2	= "prefsLAFDecoration";
 		title	= getResourceString( key2 );
 		ggCheckBox  = new PrefCheckBox( title );
@@ -239,7 +225,7 @@ extends AppWindow
 		ggCheckBox.addActionListener( new WarnPrefsChange( ggCheckBox, ggCheckBox, haveWarned, txtWarnLookAndFeel, title ));
 
 		row++;
-       	key		= BasicWindowHandler.KEY_INTERNALFRAMES;
+       	key		= "internalframes"; // BasicWindowHandler.KEY_INTERNALFRAMES;
 		key2	= "prefsInternalFrames";
 		title	= getResourceString( key2 );
 //		lb		= new JLabel( title, JLabel.TRAILING );
@@ -259,7 +245,7 @@ extends AppWindow
 		tab.gridAdd( ggCheckBox, 1, row, -1, 1 );
 
 		row++;
-       	key		= BasicWindowHandler.KEY_FLOATINGPALETTES;
+       	key		= "floatingpalettes"; // BasicWindowHandler.KEY_FLOATINGPALETTES;
 		key2	= "prefsFloatingPalettes";
 //		lb		= new JLabel( getResourceString( key2 ), JLabel.TRAILING );
 //		tab.gridAdd( lb, 0, row );
@@ -303,33 +289,30 @@ extends AppWindow
 //		}
 
 		cp.add( ggTabPane, BorderLayout.CENTER );
-//        cp.add( buttonPanel, BorderLayout.SOUTH );
-		AbstractWindowHandler.setDeepFont( cp );
 
 		// ---------- listeners ----------
 		
-		addListener( new AbstractWindow.Adapter() {
-			public void windowClosing( AbstractWindow.Event e )
-			{
-				setVisible( false );
-				dispose();
-			}
-		});
+//		addListener( new AbstractWindow.Adapter() {
+//			public void windowClosing( AbstractWindow.Event e )
+//			{
+//				setVisible( false );
+//				dispose();
+//			}
+//		});
 
 		setDefaultCloseOperation( WindowConstants.DO_NOTHING_ON_CLOSE );
-		init();
+		// init();
 		// app.addComponent( Main.COMP_PREFS, this );
     }
 
 	public void dispose()
 	{
-		// AbstractApplication.getApplication().removeComponent( Main.COMP_PREFS );
 		super.dispose();
 	}
 
 	private static String getResourceString( String key )
 	{
-		return key; // return AbstractApplication.getApplication().getResourceString( key );
+		return key;
 	}
 
 	private static class WarnPrefsChange

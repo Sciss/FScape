@@ -64,8 +64,6 @@ public class SpectPatch
 	private Vector				ops;					// Operatoren
 	private ThreadGroup			opThreadGroup = null;	// deren Thread-Gruppe
 
-//	private static final String	FILE_HEADER	= AbstractApplication.getApplication().getName() + " document; do not edit manually.";
-
 	private static final String	FILE_OP		= "Op";		// Erkennungs-Strings
 	private static final String	FILE_OPHEAD	= "Head";
 	private static final String	FILE_OPPROP	= "Prop";

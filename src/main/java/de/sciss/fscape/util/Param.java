@@ -139,13 +139,13 @@ implements Cloneable
 	{
 //		String val;
 //	
-//		val = AbstractApplication.getApplication().getUserPrefs().get( MainPrefs.KEY_FREQSCALE, null );
+//		val = Application.userPrefs.get( MainPrefs.KEY_FREQSCALE, null );
 //		if( val != null ) {
 //			freqScale	= Param.valueOf( val ).val;
 //		} else {
 			freqScale	= 12.0;
 //		}
-//		val = AbstractApplication.getApplication().getUserPrefs().get( MainPrefs.KEY_TIMESCALE, null );
+//		val = Application.userPrefs.get( MainPrefs.KEY_TIMESCALE, null );
 //		if( val != null ) {
 //			timeScale	= Param.valueOf( val ).val;
 //		} else {

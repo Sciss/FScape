@@ -28,18 +28,18 @@
 
 package de.sciss.fscape.gui;
 
+import de.sciss.fscape.prop.PropertyArray;
+import de.sciss.fscape.util.Constants;
+import de.sciss.fscape.util.Param;
+import de.sciss.fscape.util.ParamSpace;
+
 import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import java.util.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.io.File;
+import java.util.Hashtable;
+import java.util.StringTokenizer;
 import javax.swing.*;
-
-import de.sciss.app.AbstractApplication;
-import de.sciss.app.AbstractWindow;
-
-import de.sciss.fscape.*;
-import de.sciss.fscape.prop.*;
-import de.sciss.fscape.util.*;
 
 /**
  *	Another idea to simplify GUI creation which kind
@@ -104,8 +104,8 @@ implements ItemListener
 
 // -------- private Variablen --------
 
-	protected PropertyArray	pr;
-	protected Hashtable		hID;		// key = ID, value = PropertyComponent
+	protected PropertyArray pr;
+	protected Hashtable hID;		// key = ID, value = PropertyComponent
 	protected Hashtable		hObj;		// key = Component
 	protected Hashtable		hPropName;	// key = Properties-Keyname
 
@@ -134,10 +134,7 @@ implements ItemListener
 	{
 		super( -1 );
 
-//		this.pr = pr;
-		
-		final Component parent = // ((AbstractWindow) AbstractApplication.getApplication().getComponent( Main.COMP_MAIN )).getWindow();
-		    SwingUtilities.windowForComponent(this);
+		final Component parent = SwingUtilities.windowForComponent(this);
 
 		hObj			= new Hashtable();
 		hID				= new Hashtable();

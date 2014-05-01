@@ -32,8 +32,6 @@ import java.awt.*;
 import java.io.*;
 import java.util.*;
 
-import de.sciss.app.AbstractApplication;
-
 import de.sciss.fscape.Application;
 import de.sciss.fscape.util.*;
 

@@ -35,8 +35,6 @@ import java.io.IOException;
 import java.util.prefs.*;
 import javax.swing.JComponent;
 
-import de.sciss.app.Document;
-
 public interface RenderPlugIn
 {
 	public String getName();
@@ -46,11 +44,8 @@ public interface RenderPlugIn
 	/**
 	 *  This gets called right after the
 	 *  instantiation of a new render module
-	 *
-	 *	@param	root	Application root
-	 *	@param	doc		Session document
 	 */
-	public void init( Document doc, Preferences prefs );
+	public void init( Preferences prefs );
 
 	public void dispose();
 

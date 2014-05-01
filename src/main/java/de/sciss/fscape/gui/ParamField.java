@@ -558,7 +558,7 @@ ggNumber.setNumber( paraToNumber( para ));
 				} else if( (cmd == CMD_UVAL[0]) || (cmd == CMD_UVAL[1]) ||
 						   (cmd == CMD_UVAL[2]) || (cmd == CMD_UVAL[3]) ) {
 
-					String	uval = AbstractApplication.getApplication().getUserPrefs().get( cmd, null );
+					String	uval = Application.userPrefs.get( cmd, null );
 					if( uval != null ) {
 						setParam( Param.valueOf( uval ));
 					}
@@ -581,7 +581,7 @@ ggNumber.setNumber( paraToNumber( para ));
 					if( cmd == mParam[ 0 ][ i ]) {
 						para = getParam();
 						String uval = para.toString();
-						AbstractApplication.getApplication().getUserPrefs().put( CMD_UVAL[ i-1 ], uval );
+						Application.userPrefs.put( CMD_UVAL[ i-1 ], uval );
 						break;
 					}
 				}

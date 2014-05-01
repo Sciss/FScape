@@ -8,6 +8,8 @@ import scala.swing.event.Key
 import de.sciss.fscape.session.{Session, ModulePanel}
 import scala.util.control.NonFatal
 import javax.swing.{UIManager, KeyStroke}
+import java.awt.datatransfer.Clipboard
+import java.awt.Toolkit
 
 object FScape extends SwingApplicationImpl("FScape") {
   type Document = Session
@@ -20,7 +22,17 @@ object FScape extends SwingApplicationImpl("FScape") {
     } catch {
       case NonFatal(_) =>
     }
-    de.sciss.fscape.Application.userPrefs = de.sciss.desktop.Escape.prefsPeer(userPrefs)
+
+    // ---- bridge to Java world ----
+    import de.sciss.fscape.Application
+    Application.userPrefs = de.sciss.desktop.Escape.prefsPeer(userPrefs)
+    Application.name      = FScape.name
+    Application.version   = "1.0.1" // XXX TODO - read from BuildInfo
+    Application.clipboard = Toolkit.getDefaultToolkit.getSystemClipboard
+    Application.documentHandler = new Application.DocumentHandler {
+      def getDocuments: Array[Session] = new Array(0) // XXX TODO
+    }
+
     val f = new MainWindow
     f.front()
   }

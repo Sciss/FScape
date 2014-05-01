@@ -30,15 +30,7 @@
 
 package de.sciss.fscape.gui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.FontMetrics;
-import java.awt.Graphics2D;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import java.awt.Point;
+import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
@@ -68,8 +60,6 @@ import de.sciss.fscape.util.Util;
 import de.sciss.gui.Axis;
 import de.sciss.gui.VectorSpace;
 
-import de.sciss.app.AbstractApplication;
-import de.sciss.app.GraphicsHandler;
 import de.sciss.io.AudioFile;
 import de.sciss.io.AudioFileDescr;
 import de.sciss.io.IOUtil;
@@ -376,9 +366,8 @@ extends ModulePanel
 
 		initGUI( this, FLAGS_PRESETS | FLAGS_PROGBAR, gui );
 
-//		fntMetr			= getFontMetrics( Main.getFont( Main.FONT_GUI ));	// XXX
-//		fntMetr			= getFontMetrics( AbstractApplication.getApplication().getWindowHandler().getDefaultFont() );
-		fntMetr			= getComponent().getFontMetrics( AbstractApplication.getApplication().getGraphicsHandler().getFont( GraphicsHandler.FONT_SYSTEM | GraphicsHandler.FONT_SMALL ));
+        Font fnt = getFont();
+		fntMetr = getComponent().getFontMetrics(fnt);
 	}
 
 	/**

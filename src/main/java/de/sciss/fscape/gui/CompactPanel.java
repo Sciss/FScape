@@ -32,7 +32,6 @@ package de.sciss.fscape.gui;
 import java.awt.*;
 import javax.swing.*;
 
-import de.sciss.app.AbstractApplication;
 import de.sciss.gui.GUIUtil;
 
 /**
@@ -73,7 +72,7 @@ extends JPanel
 	 */
 	public Component add( Component comp )
 	{
-		throw new AWTError( AbstractApplication.getApplication().getResourceString( "errCompactPanelAdd" ));
+		throw new AWTError("CompactPanel.add");
 	}
 
 	/**
@@ -81,7 +80,7 @@ extends JPanel
 	 */
 	public Component add( Component comp, int index )
 	{
-		throw new AWTError( AbstractApplication.getApplication().getResourceString( "errCompactPanelAdd" ));
+		throw new AWTError("CompactPanel.add");
 	}
 	
 	public void addEmptyColumn()

@@ -60,11 +60,6 @@
 //import de.sciss.fscape.session.Session;
 //import de.sciss.fscape.util.PrefsUtil;
 //
-//import de.sciss.app.AbstractApplication;
-//import de.sciss.app.AbstractWindow;
-//import de.sciss.common.BasicApplication;
-//import de.sciss.common.BasicMenuFactory;
-//import de.sciss.common.ProcessingThread;
 //import de.sciss.gui.GUIUtil;
 //import de.sciss.gui.MenuAction;
 //import de.sciss.gui.MenuGroup;

@@ -30,25 +30,26 @@
 
 package de.sciss.fscape.gui;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.beans.*;
-import java.io.*;
-import java.util.*;
-import javax.swing.*;
-
-import de.sciss.app.AbstractApplication;
 import de.sciss.app.BasicEvent;
 import de.sciss.app.EventManager;
 import de.sciss.fscape.Application;
+import de.sciss.fscape.io.GenericFile;
+import de.sciss.fscape.io.ImageStream;
+import de.sciss.fscape.spect.SpectStream;
+import de.sciss.fscape.util.Util;
 import de.sciss.gui.ColouredTextField;
 import de.sciss.gui.PathEvent;
 import de.sciss.gui.PathListener;
 import de.sciss.io.AudioFileDescr;
 
-import de.sciss.fscape.io.*;
-import de.sciss.fscape.spect.*;
-import de.sciss.fscape.util.*;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.io.IOException;
+import java.util.Vector;
 
 /**
  *	GUI component containg a path string,
@@ -61,7 +62,7 @@ import de.sciss.fscape.util.*;
  */
 public class PathField
 extends JPanel
-implements	ActionListener, ComponentListener, ItemListener, PathListener,
+implements ActionListener, ComponentListener, ItemListener, PathListener,
 			EventManager.Processor
 {
 // -------- public Variablen --------
@@ -118,7 +119,7 @@ implements	ActionListener, ComponentListener, ItemListener, PathListener,
 	private static final String[] movRateTxt= { "8 fps", "10 fps", "12 fps", "15 fps", "24 fps",
 												"25 fps", "29.97 fps", "30 fps" };
 
-	private GridBagLayout		lay;
+	private GridBagLayout lay;
 	private GridBagConstraints	con;
 	private IOTextField			ggPath;
 //	private PathIcon			ggChoose;
@@ -335,7 +336,7 @@ implements	ActionListener, ComponentListener, ItemListener, PathListener,
 		afd.file		= getPath();
 	
 		if( ggType != null ) {
-			afd.type	= GenericFile.getAudioFileType( getType() );
+			afd.type	= GenericFile.getAudioFileType(getType());
 		}
 		if( ggRes != null ) {
 			idx = ggRes.getSelectedIndex();
@@ -704,7 +705,7 @@ implements	ActionListener, ComponentListener, ItemListener, PathListener,
 		shortStr.append( longStr.charAt( 0 ));
 		for( i = 1; (i < j - 1) && (shortStr.length() + j - i > ABBR_LENGTH); i++ ) {
 			c = longStr.charAt( i );
-			if( "aeiou���".indexOf( c ) < 0 ) {
+			if( "aeiouäöü".indexOf( c ) < 0 ) {
 				shortStr.append( c );
 			}
 		}
@@ -874,7 +875,7 @@ implements	ActionListener, ComponentListener, ItemListener, PathListener,
 						for( i = 0; i < sndResTxt.length; i++ ) {
 							ggRes.addItem( sndResTxt[ i ]);
 						}
-					} else if( Util.isValueInArray( mode, GenericFile.TYPES_IMAGE )) {	// --- image ----
+					} else if( Util.isValueInArray(mode, GenericFile.TYPES_IMAGE)) {	// --- image ----
 						for( i = 0; i < imgResTxt.length; i++ ) {
 							ggRes.addItem( imgResTxt[ i ]);
 						}
@@ -981,7 +982,7 @@ implements	ActionListener, ComponentListener, ItemListener, PathListener,
 				} else {
 					String dir = getPath().getParent();
 					if( dir != null ) {
-						Application.userPrefs.put( "UserDir" + idx, dir );
+						Application.userPrefs.put("UserDir" + idx, dir);
 						if( visualFeedback.isRunning() ) {
 							visualFeedback.restart();
 						} else {

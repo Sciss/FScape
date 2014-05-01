@@ -55,7 +55,7 @@ import java.util.Vector;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import de.sciss.app.AbstractApplication;
+import de.sciss.fscape.Application;
 import de.sciss.fscape.op.Operator;
 import de.sciss.fscape.op.SlotAlreadyConnectedException;
 import de.sciss.fscape.spect.SpectStreamSlot;
@@ -576,14 +576,14 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
 		} else if( action == MI_CUT ) {								//-------- Cut --------
 			op = (Operator) ((OpIcon) popSource).getOperator().clone();
 			if( op != null ) {
-				AbstractApplication.getApplication().getClipboard().setContents( op, this );
+				Application.clipboard.setContents(op, this);
 				removeOperator( ((OpIcon) popSource).getOperator() );
 			}
 
 		} else if( action == MI_COPY ) {							//-------- Copy --------
 			op = (Operator) ((OpIcon) popSource).getOperator().clone();
 			if( op != null ) {
-				AbstractApplication.getApplication().getClipboard().setContents( op, this );
+				Application.clipboard.setContents(op, this);
 			}
 
 		} else if( action == MI_DUPL ) {							//-------- Duplicate --------
@@ -669,7 +669,7 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
 			removeOperator( op );
 
 		} else if( action == MI_PASTE ) {							//-------- Paste --------
-			clip = AbstractApplication.getApplication().getClipboard().getContents( this );
+			clip = Application.clipboard.getContents(this);
 			if( clip != null ) {
 				try {
 					newOp = (Operator) clip.getTransferData( Operator.flavor );

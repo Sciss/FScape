@@ -206,8 +206,6 @@ implements Processor, EventManager.Processor, ProgressComponent
     public ModulePanel(String procTitle) {
         super(new BorderLayout(0, 2));
 
-		// app					= (BasicApplication) AbstractApplication.getApplication();
-
 		this.procTitle		= procTitle;
 		this.doc			= new Session();
 		
@@ -404,13 +402,6 @@ implements Processor, EventManager.Processor, ProgressComponent
     //		}
     //	}
 	
-    //	private MenuGroup getPresetMenu()
-    //	{
-    //		final MenuRoot mr = ((BasicApplication) AbstractApplication.getApplication()).getMenuBarRoot();
-    //		final MenuGroup mg = (MenuGroup) mr.get( "presets" );
-    //		return mg;
-    //	}
-	
 	private String createPresetMenuID( String name )
 	{
 		return( "preset_" + name );  // warning: don't use period
@@ -520,7 +511,6 @@ implements Processor, EventManager.Processor, ProgressComponent
 	protected String getResourceString( String key )
 	{
         return key;
-		// return AbstractApplication.getApplication().getResourceString( key );
 	}
 
 	/*

@@ -316,7 +316,7 @@ extends RandomAccessFile
 //	protected int getDefaultBufSize()
 //	{
 //		int	i = Math.max( 0, Math.min( BUFSIZE.length - 1,
-//					AbstractApplication.getApplication().getUserPrefs().getInt( MainPrefs.KEY_IOBUFSIZE, 0 )));
+//					Application.userPrefs.getInt( MainPrefs.KEY_IOBUFSIZE, 0 )));
 //
 //		return BUFSIZE[ i ];
 //	}

@@ -28,12 +28,10 @@
 
 package de.sciss.fscape.gui;
 
+import de.sciss.fscape.op.Operator;
+
 import java.awt.*;
 import javax.swing.*;
-
-import de.sciss.app.AbstractApplication;
-import de.sciss.app.GraphicsHandler;
-import de.sciss.fscape.op.*;
 
 /**
  *	GUI element representing the text label
@@ -72,7 +70,7 @@ extends JComponent
 
 newVisualProps();
 //		new DynamicAncestorAdapter( new DynamicPrefChangeManager(
-//			AbstractApplication.getApplication().getUserPrefs(),
+//			Application.userPrefs,
 //			new String[] { MainPrefs.KEY_ICONFONT }, new LaterInvocationManager.Listener() {
 //
 //			public void laterInvocation( Object o )
@@ -163,12 +161,11 @@ newVisualProps();
 
 	private void newVisualProps()
 	{
-//		fnt = AbstractApplication.getApplication().getWindowHandler().getDefaultFont(); // Main.getFont( Main.FONT_ICON );
-		fnt = AbstractApplication.getApplication().getGraphicsHandler().getFont( GraphicsHandler.FONT_SYSTEM | GraphicsHandler.FONT_SMALL );
+        Font fnt = getFont();
 		if( (opFlags & Operator.FLAGS_ALIAS) != 0 ) {		// Alia in kursiv
 			fnt = new Font( fnt.getName(), Font.ITALIC, fnt.getSize() );
 		}
-		setFont( fnt );
+		// setFont( fnt );
 		fntMetr = getFontMetrics( fnt );
 		setName( labName );
 		if( isVisible() ) repaint();

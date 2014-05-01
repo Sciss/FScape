@@ -41,8 +41,7 @@ import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
 import java.util.regex.Pattern;
 
-import de.sciss.app.AbstractApplication;
-//import de.sciss.jcollider.OSCResponderNode;
+import de.sciss.fscape.Application;
 import de.sciss.net.OSCChannel;
 import de.sciss.net.OSCListener;
 import de.sciss.net.OSCMessage;
@@ -212,7 +211,7 @@ implements OSCRouter, OSCListener, Runnable, PreferenceChangeListener
 //				rcv.startListening();
 				serv.addOSCListener( this );
 				serv.start();
-				System.out.println( AbstractApplication.getApplication().getName() + " " +
+				System.out.println( Application.name + " " +
 									getResourceString( "oscRcvAt" ) + " " + protocol.toUpperCase() + " " + getResourceString( "oscPort" ) + " " + port );
 			}
 			catch( IOException e1 ) {
@@ -241,7 +240,7 @@ implements OSCRouter, OSCListener, Runnable, PreferenceChangeListener
 	
 	public static String getResourceString( String key )
 	{
-		return AbstractApplication.getApplication().getResourceString( key );
+		return key;
 	}
 
 	public void send( OSCPacket p, SocketAddress addr )
@@ -317,29 +316,7 @@ implements OSCRouter, OSCListener, Runnable, PreferenceChangeListener
 			if( running ) {
 				serv.dispose();
 				serv = null;
-//				try {
-//					rcv.stopListening();
-//					System.out.println( AbstractApplication.getApplication().getName() + " " +
-//										getResourceString( "oscStoppedRcv" ));
-//				}
-//				catch( IOException e1 ) {
-//					System.err.println( e1.getLocalizedMessage() );
-//				}
-//				try {
-//					dch.close();
-//				}
-//				catch( IOException e1 ) {
-//					System.err.println( e1.getLocalizedMessage() );
-//				}
-// FFF
-//				if( gui != null ) {
-//					gui.dispose();
-//					gui = null;
-//				}
 				running = false;
-//				rcv		= null;
-//				trns	= null;
-//				dch		= null;
 			}
 		}
 	}

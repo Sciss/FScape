@@ -33,8 +33,7 @@ import java.awt.event.*;
 import java.util.prefs.Preferences;
 import javax.swing.*;
 
-import de.sciss.app.AbstractApplication;
-
+import de.sciss.fscape.Application;
 import de.sciss.fscape.util.*;
 
 /**
@@ -60,8 +59,8 @@ extends JDialog
 		super( determineFrame( parent ), title, mode );
 
 		String  className   = getClass().getName();
-		classPrefs			= AbstractApplication.getApplication().getUserPrefs().node(
-								className.substring( className.lastIndexOf( '.' ) + 1 ) + nodeSuffix );
+		classPrefs			= Application.userPrefs.node(
+                className.substring(className.lastIndexOf('.') + 1) + nodeSuffix);
 		
 		ComponentListener	cmpListener;
 		WindowListener		winListener;
@@ -104,7 +103,7 @@ extends JDialog
 		addWindowListener( winListener );
 
 //		new DynamicAncestorAdapter( new DynamicPrefChangeManager(
-//			AbstractApplication.getApplication().getUserPrefs(),
+//			Application.userPrefs,
 //			new String[] { MainPrefs.KEY_GUIFONT }, new LaterInvocationManager.Listener() {
 //
 //			public void laterInvocation( Object o )

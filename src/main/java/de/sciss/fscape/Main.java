@@ -21,12 +21,6 @@
  *
  *	For further information, please contact Hanns Holger Rutz at
  *	contact@sciss.de
- *
- *
- *  Changelog:
- *		06-Dec-04	prefs version check
- *		20-May-05	subclasses de.sciss.app.AbstractApplication
- *		02-Jun-05	includes the static main call from removed FScape.class
  */
 
 package de.sciss.fscape;
@@ -38,17 +32,6 @@ import javax.swing.UIManager;
 import de.sciss.fscape.gui.*;
 import de.sciss.fscape.net.*;
 import de.sciss.fscape.util.*;
-
-import de.sciss.app.DocumentHandler;
-import de.sciss.common.AppWindow;
-import de.sciss.common.BasicApplication;
-import de.sciss.common.BasicMenuFactory;
-import de.sciss.common.BasicWindowHandler;
-import de.sciss.common.ProcessingThread;
-import de.sciss.gui.AboutBox;
-import de.sciss.gui.GUIUtil;
-import de.sciss.gui.HelpFrame;
-import de.sciss.util.Flag;
 
 public class Main
 //        extends BasicApplication
@@ -68,22 +51,22 @@ public class Main
 	 */
 	private static final String					CREATOR			= "FSc ";
 	
-	/**
-	 *  Value for add/getComponent(): the preferences frame
-	 */
-	public static final Object					COMP_PREFS		= PrefsFrame.class.getName();
-	/**
-	 *  Value for add/getComponent(): the about box
-	 */
-	public static final Object					COMP_ABOUTBOX	= AboutBox.class.getName();
+//	/**
+//	 *  Value for add/getComponent(): the preferences frame
+//	 */
+//	public static final Object					COMP_PREFS		= PrefsFrame.class.getName();
+//	/**
+//	 *  Value for add/getComponent(): the about box
+//	 */
+//	public static final Object					COMP_ABOUTBOX	= AboutBox.class.getName();
 //	/**
 //	 *  Value for add/getComponent(): the main log frame
 //	 */
 //	public static final Object					COMP_MAIN		= MainFrame.class.getName();
-	/**
-	 *  Value for add/getComponent(): the online help display frame
-	 */
-	public static final Object					COMP_HELP  		= HelpFrame.class.getName();
+//	/**
+//	 *  Value for add/getComponent(): the online help display frame
+//	 */
+//	public static final Object					COMP_HELP  		= HelpFrame.class.getName();
 
 	private final OSCRouterWrapper				osc;
 	private static final String					OSC_MAIN		= "main";
@@ -120,7 +103,7 @@ public class Main
 			UIManager.installLookAndFeel( args[ 1 ], args[ 2 ]);
 			if( name == null ) name = args[ 2 ];
 		}
-		lookAndFeelUpdate( prefs.get( PrefsUtil.KEY_LOOKANDFEEL, name ));
+//		lookAndFeelUpdate( prefs.get( PrefsUtil.KEY_LOOKANDFEEL, name ));
 
 //		JFrame.setDefaultLookAndFeelDecorated( true );
 
@@ -203,18 +186,18 @@ public class Main
 //		this.quit();
 //	}
 
-	private void lookAndFeelUpdate( String className )
-	{
-		if( className != null ) {
-			try {
-				UIManager.setLookAndFeel( className );
-				AppWindow.lookAndFeelUpdate();
-			}
-			catch( Exception e1 ) {
-				GUIUtil.displayError( null, e1, null );
-			}
-		}
-    }
+//	private void lookAndFeelUpdate( String className )
+//	{
+//		if( className != null ) {
+//			try {
+//				UIManager.setLookAndFeel( className );
+//				AppWindow.lookAndFeelUpdate();
+//			}
+//			catch( Exception e1 ) {
+//				GUIUtil.displayError( null, e1, null );
+//			}
+//		}
+//    }
 
 	/**
 	 *  java VM starting method. does some
