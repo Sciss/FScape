@@ -59,6 +59,19 @@ appbundle.documents    += appbundle.Document(
   extensions = Seq("fsc")
 )
 
+// ---- build info source generator ----
+
+buildInfoSettings
+
+sourceGenerators in Compile <+= buildInfo
+
+buildInfoKeys := Seq(name, organization, version, scalaVersion, description,
+  BuildInfoKey.map(homepage) { case (k, opt) => k -> opt.get },
+  BuildInfoKey.map(licenses) { case (_, Seq((lic, _))) => "license" -> lic }
+)
+
+buildInfoPackage := "de.sciss.fscape"
+
 // ---- publishing ----
 
 publishMavenStyle := true

@@ -5,6 +5,7 @@ import de.sciss.fscape.session.Session;
 import java.awt.datatransfer.Clipboard;
 import java.util.prefs.Preferences;
 
+// bridge from Scala desktop
 public class Application {
     public static Preferences userPrefs;
     public static String name;

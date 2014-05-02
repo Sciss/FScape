@@ -1,22 +1,10 @@
 /*
  *  ModulePanel.java
- *  FScape
+ *  (FScape)
  *
  *  Copyright (c) 2001-2014 Hanns Holger Rutz. All rights reserved.
  *
- *	This software is free software; you can redistribute it and/or
- *	modify it under the terms of the GNU General Public License
- *	as published by the Free Software Foundation; either
- *	version 2, june 1991 of the License, or (at your option) any later version.
- *
- *	This software is distributed in the hope that it will be useful,
- *	but WITHOUT ANY WARRANTY; without even the implied warranty of
- *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *	General Public License for more details.
- *
- *	You should have received a copy of the GNU General Public
- *	License (gpl.txt) along with this software; if not, write to the Free Software
- *	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *  This software is published under the GNU General Public License v3+
  *
  *
  *	For further information, please contact Hanns Holger Rutz at
@@ -474,24 +462,22 @@ implements Processor, EventManager.Processor, ProgressComponent
         }
     }
 
-    public ProcessingThread closeDocument( boolean force, Flag wasClosed )
-    {
-        if( !force ) {
-            final ProcessingThread pt = confirmUnsaved( getResourceString( "menuClose" ), wasClosed );
-            if( pt != null ) {
-                pt.addListener( closeAfterSaveListener );
+    public ProcessingThread closeDocument(boolean force, Flag wasClosed) {
+        if (!force) {
+            final ProcessingThread pt = confirmUnsaved(getResourceString("menuClose"), wasClosed);
+            if (pt != null) {
+                pt.addListener(closeAfterSaveListener);
                 return pt;
             }
         }
-        if( wasClosed.isSet() ) {
+        if (wasClosed.isSet()) {
             documentClosed();
         }
         return null;
     }
 
-    protected void documentClosed()
-    {
-        disposed = true;	// important to avoid "too late window messages" to be processed; fucking swing doesn't kill them despite listener being removed
+    protected void documentClosed() {
+        disposed = true;    // important to avoid "too late window messages" to be processed; fucking swing doesn't kill them despite listener being removed
         // this.removeListener( winListener );
         // app.getDocumentHandler().removeDocument( this, doc );	// invokes doc.dispose() and hence this.dispose()
     }
@@ -783,8 +769,8 @@ implements Processor, EventManager.Processor, ProgressComponent
             }
         }
 
-        if( success ) {
-            fileChanged( f );
+        if (success) {
+            fileChanged(f);
         }
         return success;
     }
@@ -794,8 +780,7 @@ implements Processor, EventManager.Processor, ProgressComponent
      *
      *	@return		true on success
      */
-    protected boolean saveFile( File f )
-    {
+    public boolean saveFile(File f) {
         PropertyArray	pa;
         BasicProperties	preset;
         boolean			visible		= isVisible();
@@ -830,15 +815,14 @@ implements Processor, EventManager.Processor, ProgressComponent
             }
         }
 
-        if( success ) {
-            fileChanged( f );
+        if (success) {
+            fileChanged(f);
         }
         return success;
     }
 
-    private void fileChanged( File f )
-    {
-        doc.setFile( f );
+    private void fileChanged(File f) {
+        doc.setFile(f);
         // updateTitle();
     }
 
@@ -1495,143 +1479,6 @@ implements Processor, EventManager.Processor, ProgressComponent
     //		{
     //			final ProcessingThread pt = closeDocument( false, new Flag( false ));
     //			if( pt != null ) pt.start();
-    //		}
-    //	}
-
-    //	private class ActionSave
-    //	extends MenuAction
-    //	{
-    //		protected ActionSave()
-    //		{
-    //			super();
-    //		}
-    //
-    //		/**
-    //		 *  Saves a Session. If the file
-    //		 *  wasn't saved before, a file chooser
-    //		 *  is shown before.
-    //		 */
-    //		public void actionPerformed( ActionEvent e )
-    //		{
-    //			File f = doc.getFile();
-    //
-    //			if( f == null ) {
-    //				f = actionSaveAs.query( f, false, false, null );
-    //			}
-    //			if( f != null ) {
-    //				perform( getValue( NAME ).toString(), f, false, false );
-    //			}
-    //		}
-    //
-    //		protected boolean perform( String name, File f, boolean asCopy, boolean openAfterSave )
-    //		{
-    //			final boolean success = saveFile( f );
-    //			if( asCopy ) {
-    //				System.err.println( "WARNING: asCopy : NOT YET WORKING" );
-    //			}
-    //			if( openAfterSave ) {
-    //				System.err.println( "WARNING: openAfterSave : NOT YET WORKING" );
-    //			}
-    //			return success;
-    //		}
-    //	}
-
-    //	// action for the Save-Session-As menu item
-    //	private class ActionSaveAs
-    //	extends MenuAction
-    //	{
-    //		private final boolean	asCopy;
-    //		private final boolean	selection;
-    //		private final Flag		openAfterSave;
-    //
-    //		protected ActionSaveAs( boolean asCopy, boolean selection )
-    //		{
-    //			if( selection && !asCopy ) throw new IllegalArgumentException();
-    //
-    //			this.asCopy		= asCopy;
-    //			this.selection	= selection;
-    //			openAfterSave	= new Flag( false );
-    //		}
-    //
-    //		/*
-    //		 *  Query a file name from the user and save the Session
-    //		 */
-    //		public void actionPerformed( ActionEvent e )
-    //		{
-    //			final File f = query( doc.getFile(), asCopy, selection, openAfterSave );
-    //			if( f != null ) {
-    //				actionSave.perform( getValue( NAME ).toString(), f, asCopy, openAfterSave.isSet() );
-    //			}
-    //		}
-    //
-    //		/**
-    //		 *  Open a file chooser so the user
-    //		 *  can select a new output file and format for the session.
-    //		 *
-    //		 *  @return the AudioFileDescr representing the chosen file path
-    //		 *			and format or <code>null</code>
-    //		 *			if the dialog was cancelled.
-    //		 */
-    //		protected File query( File protoType, boolean cpy, boolean sel, Flag open )
-    //		{
-    //			final FileDialog			fDlg;
-    //			File						f, f2;
-    //			int							i, result;
-    //			String						str;
-    //			String[]					queryOptions;
-    //
-    //			if( protoType == null ) {
-    //				f	= new File( System.getProperty( "user.home" ));
-    //				f2	= new File( f, "Desktop" );
-    //				f	= new File( f2.isDirectory() ? f2 : f, getResourceString( "frameUntitled" ));
-    //			} else {
-    //				if( cpy || sel ) {
-    //					str	= protoType.getName();
-    //					i	= str.lastIndexOf( '.' );
-    //					if( i == -1 ) i = str.length();
-    //					f	= new File( protoType.getParentFile(), str.substring( 0, i ) +
-    //						 (sel ? getResourceString( "fileDlgCut" ) : " " + getResourceString( "fileDlgCopy" )));
-    //				} else {
-    //					f	= protoType;
-    //				}
-    //			}
-    //
-    //			f = IOUtil.setFileSuffix( f, "fsc" );
-    //
-    //			if( (protoType == null) || cpy || sel ) {	// create non-existent file name
-    //				f = IOUtil.nonExistentFileVariant( f, -1, sel ? null : " ", null );
-    //			}
-    //
-    //			if( cpy ) {
-    //			}
-    //
-    //			Frame fuckingAWT = new Frame();
-    //			fDlg = new FileDialog( fuckingAWT, getValue( NAME ).toString(), FileDialog.SAVE );
-    //			fDlg.setDirectory( f.getParent() );
-    //			fDlg.setFile( f.getName() );
-    //
-    //			fDlg.setVisible( true );
-    //			fuckingAWT.dispose();
-    //
-    //if( cpy ) open.set( false );
-    //
-    //			if( fDlg.getFile() != null ) {
-    //				f = new File( fDlg.getDirectory(), fDlg.getFile() );
-    //				fDlg.dispose();
-    //				if( f.exists() ) {
-    //					queryOptions = new String[] { getResourceString( "buttonOverwrite" ),
-    //												  getResourceString( "buttonCancel" )};
-    //					result = JOptionPane.showOptionDialog( getWindow(), getResourceString( "warnFileExists" ) +
-    //						":\n" + f.getAbsolutePath() + "\n" + getResourceString( "warnOverwriteFile" ),
-    //						getValue( NAME ).toString(), JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,
-    //						null, queryOptions, queryOptions[1] );
-    //					if( result != 0 ) return null;
-    //				}
-    //				return f;
-    //			} else {
-    //				fDlg.dispose();
-    //				return null;
-    //			}
     //		}
     //	}
 

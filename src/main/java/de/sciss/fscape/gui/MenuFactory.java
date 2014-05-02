@@ -1,6 +1,6 @@
 ///*
 // *  MenuFactory.java
-// *  FScape
+// *  (FScape)
 // *
 // *  Copyright (c) 2001-2014 Hanns Holger Rutz. All rights reserved.
 // *

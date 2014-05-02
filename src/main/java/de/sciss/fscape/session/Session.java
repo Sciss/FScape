@@ -1,22 +1,10 @@
 /*
  *  Session.java
- *  FScape
+ *  (FScape)
  *
  *  Copyright (c) 2001-2014 Hanns Holger Rutz. All rights reserved.
  *
- *	This software is free software; you can redistribute it and/or
- *	modify it under the terms of the GNU General Public License
- *	as published by the Free Software Foundation; either
- *	version 2, june 1991 of the License, or (at your option) any later version.
- *
- *	This software is distributed in the hope that it will be useful,
- *	but WITHOUT ANY WARRANTY; without even the implied warranty of
- *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *	General Public License for more details.
- *
- *	You should have received a copy of the GNU General Public
- *	License (gpl.txt) along with this software; if not, write to the Free Software
- *	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *  This software is published under the GNU General Public License v3+
  *
  *
  *	For further information, please contact Hanns Holger Rutz at
@@ -53,15 +41,11 @@ import javax.swing.undo.UndoManager;
  */
 public class Session
 // extends BasicDocument
-implements OSCRouter    // EventManager.Processor
+        implements OSCRouter    // EventManager.Processor
 {
-	private ModulePanel frame			= null;
-	
-	// --- actions ---
+    private ModulePanel frame = null;
 
-	private final ActionSave			actionSave;
-
-	// ---  ---
+    // ---  ---
 	private boolean							dirty			= false;
 
 	private final Session					enc_this		= this;
@@ -78,10 +62,7 @@ implements OSCRouter    // EventManager.Processor
 	public Session()
 	{
 		nodeID				= ++nodeIDAlloc;
-		
 		osc					= new OSCRouterWrapper( null, this );
-
-		actionSave			= new ActionSave();
 	}
 	
 	public int getNodeID()
@@ -189,11 +170,6 @@ implements OSCRouter    // EventManager.Processor
 	private void updateTitle()
 	{
 		// if( frame != null ) frame.updateTitle();
-	}
-
-	public ProcessingThread procSave( String name, Span span, AudioFileDescr[] afds, boolean asCopy )
-	{
-		return actionSave.initiate( name, span, afds, asCopy );
 	}
 
 	private String getResourceString( String key )
@@ -404,44 +380,5 @@ implements OSCRouter    // EventManager.Processor
 			this.dirty = dirty;
 			updateTitle();
 		}
-	}
-	
-// ------------------ internal classes ------------------
-	
-	protected class ActionSave
-	implements ProcessingThread.Client
-	{
-		/**
-		 *  Initiate the save process.
-		 *  Transport is stopped before, if it was running.
-		 *  On success, undo history is purged and
-		 *  <code>setModified</code> and <code>updateTitle</code>
-		 *  are called, and the file is added to
-		 *  the Open-Recent menu. Note that returned
-		 *	process has not yet been started, as to allow
-		 *	other objects to add listeners. So it's the
-		 *	job of the caller to invoke the processing thread's
-		 *	<code>start</code> method.
-		 *
-		 *  @synchronization	this method is to be called in the event thread
-		 */
-		protected ProcessingThread initiate( String name, Span span, AudioFileDescr[] afds, boolean asCopy )
-		{
-			final ProcessingThread pt;
-		
-			pt				= new ProcessingThread( this, getFrame(), name );
-pt.putClientArg( "afds", afds );
-pt.putClientArg( "doc", enc_this );
-pt.putClientArg( "copy", new Boolean( asCopy ));
-			return pt;
-		}
-
-		public int processRun( ProcessingThread context )
-		{
-return FAILED;
-        }
-
-		public void processFinished( ProcessingThread context ) {}
-		public void processCancel( ProcessingThread context ) {}
 	}
 }

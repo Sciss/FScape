@@ -1,23 +1,37 @@
+/*
+ *  FScape.scala
+ *  (FScape)
+ *
+ *  Copyright (c) 2001-2014 Hanns Holger Rutz. All rights reserved.
+ *
+ *  This software is published under the GNU General Public License v3+
+ *
+ *
+ *	For further information, please contact Hanns Holger Rutz at
+ *	contact@sciss.de
+ */
+
 package de.sciss.fscape
 
 import de.sciss.desktop.impl.{LogWindowImpl, WindowImpl, SwingApplicationImpl}
 import de.sciss.desktop._
 import scala.swing._
 import Swing._
-import scala.swing.event.Key
+import scala.swing.event.{MouseClicked, Key}
 import de.sciss.fscape.session.{Session, ModulePanel}
 import scala.util.control.NonFatal
 import javax.swing.{ImageIcon, UIManager, KeyStroke}
 import java.awt.{Color, GraphicsEnvironment, Toolkit}
 import com.alee.laf.checkbox.WebCheckBoxStyle
 import com.alee.laf.progressbar.WebProgressBarStyle
-import com.alee.laf.StyleConstants
 import de.sciss.fscape.gui.PrefsPanel
 import de.sciss.fscape.net.{RoutedOSCMessage, OSCRouter, OSCRouterWrapper, OSCRoot}
 import scala.collection.breakOut
-import scala.Some
 import de.sciss.desktop.Menu
 import de.sciss.desktop.Window
+import de.sciss.file._
+import de.sciss.io.IOUtil
+import java.net.URL
 
 object FScape extends SwingApplicationImpl("FScape") {
   App =>
@@ -25,6 +39,16 @@ object FScape extends SwingApplicationImpl("FScape") {
   type Document = Session
 
   private var osc = null: OSCRouterWrapper
+
+  lazy val version: String = buildInfoString("version")
+
+  private def buildInfoString(key: String): String = try {
+    val clazz = Class.forName("de.sciss.fscape.BuildInfo")
+    val m     = clazz.getMethod(key)
+    m.invoke(null).toString
+  } catch {
+    case NonFatal(e) => "?"
+  }
 
   override protected def init(): Unit = {
     try {
@@ -51,7 +75,7 @@ object FScape extends SwingApplicationImpl("FScape") {
     import de.sciss.fscape.Application
     Application.userPrefs = de.sciss.desktop.Escape.prefsPeer(userPrefs)
     Application.name      = App.name
-    Application.version   = "1.0.1" // XXX TODO - read from BuildInfo
+    Application.version   = App.version
     Application.clipboard = Toolkit.getDefaultToolkit.getSystemClipboard
     Application.documentHandler = new Application.DocumentHandler {
       def getDocuments: Array[Session] = new Array(0) // XXX TODO
@@ -159,9 +183,9 @@ object FScape extends SwingApplicationImpl("FScape") {
       .add(Item("open", ActionOpen))
       .add(ActionOpen.recentMenu)
       .addLine()
-      .add(Item("close", proxy("Close" -> (menu1 + Key.W))))
+      .add(Item("close",   proxy("Close"      -> (menu1         + Key.W))))
       .add(Item("close-all", actionCloseAll))
-      .add(Item("save", proxy("Save" -> (menu1 + Key.S))))
+      .add(Item("save"   , proxy("Save"       -> (menu1         + Key.S))))
       .add(Item("save-as", proxy("Save As..." -> (menu1 + shift + Key.S))))
 
     if (itQuit.visible) gFile.addLine().add(itQuit)
@@ -187,14 +211,59 @@ object FScape extends SwingApplicationImpl("FScape") {
       .add(Item("redo", proxy("Redo" -> keyRedo)))
     if (itPrefs.visible /* && Desktop.isLinux */) gEdit.addLine().add(itPrefs)
 
-    Root().add(gFile).add(gNewModule).add(gEdit)
+    val gWindow = Group("window", "Window")
+
+    val itAbout = Item.About(App) {
+      val addr    = "www.sciss.de/fscape"
+      val url     = s"http://$addr/"
+      val version = Application.version
+      val html =
+        s"""<html><center>
+           |<font size=+1><b>About ${App.name}</b></font><p>
+           |Version $version<p>
+           |<p>
+           |Copyright (c) 2001&ndash;2014 Hanns Holger Rutz.<p>
+           |This software is published under the GNU General Public License v3+<p>
+           |<p>
+           |<a href="$url">$addr</a>
+           |""".stripMargin
+      val lb = new Label(html) {
+        // cf. http://stackoverflow.com/questions/527719/how-to-add-hyperlink-in-jlabel
+        // There is no way to directly register a HyperlinkListener, despite hyper links
+        // being rendered... A simple solution is to accept any mouse click on the label
+        // to open the corresponding website.
+        cursor = java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR)
+        listenTo(mouse.clicks)
+        reactions += {
+          case MouseClicked(_, _, _, 1, false) => Desktop.browseURI(new URL(url).toURI)
+        }
+      }
+
+      OptionPane.message(message = lb.peer).show(None /* Some(frame) */)
+    }
+
+    val gHelp = Group("help", "Help")
+    if (itAbout.visible) gHelp.add(itAbout).addLine()
+    gHelp.add(Item("index", ActionHelpIndex))
+
+    Root()
+      .add(gFile)
+      .add(gNewModule)
+      .add(gEdit)
+      .add(gWindow)
+      .add(gHelp)
   }
 
   private class MainWindow extends WindowImpl {
     def handler: WindowHandler = App.windowHandler
 
     title = App.name
-    contents = new Label(null, new ImageIcon(App.getClass.getResource("application.png")), Alignment.Leading)
+    contents = new BoxPanel(Orientation.Horizontal) {
+      background = Color.black
+      contents += HGlue
+      contents += new Label(null, new ImageIcon(App.getClass.getResource("application.png")), Alignment.Leading)
+      contents += HGlue
+    }
     resizable = false
     pack() // size  = (400, 400)
     // placeWindow(this, 0.0f, 0.0f, 0)
@@ -240,6 +309,13 @@ object FScape extends SwingApplicationImpl("FScape") {
     }
   }
 
+  private var forcedQuit = false
+
+  private def forceQuit(): Unit = {
+    forcedQuit = true
+    quit()
+  }
+
   private class ActionModule(key: String, text: String, stroke: Option[KeyStroke]) extends Action(text) {
     accelerator = stroke
 
@@ -258,18 +334,83 @@ object FScape extends SwingApplicationImpl("FScape") {
   }
 
   private final class ModuleWindow(panel: ModulePanel) extends WindowImpl {
+    window =>
+
     def handler: WindowHandler = App.windowHandler
 
     contents  = Component.wrap(panel)
-    title     = panel.getModuleName
+
+    def updateTitle(): Unit = {
+      val m     = panel.getModuleName
+      val fOpt  = Option(document.getFile)
+      title     = fOpt.fold(m) { f => s"$m - ${f.base}" }
+    }
+
+    updateTitle()
+
+    bindMenus(
+      "file.save"     -> ActionSave,
+      "file.save-as"  -> ActionSaveAs
+    )
+
     pack()
     // centerOnScreen(this)
     placeWindow(this, 0.5f, 0.333f, 0)
+
+    def document: Document = panel.getDocument
+
+    private def saveFile(f: File): Unit =
+      if (panel.saveFile(f)) {
+        updateTitle()
+        file  = Some(f)
+        // dirty = false
+        ActionOpen.recentFiles.add(f)
+      }
+
+    private object ActionSave extends Action("Save") {
+      def apply(): Unit = {
+        val doc = document
+        val f0  = Option(doc.getFile)
+        val f   = f0.orElse(ActionSaveAs.query(None))
+        f.foreach(saveFile)
+      }
+    }
+
+    private object ActionSaveAs extends Action("Save As...") {
+      def apply(): Unit = {
+        query(Option(document.getFile)).foreach(saveFile)
+      }
+
+      /** Opens a file chooser so the user
+        * can select a new output file and format for the session.
+        *
+        * @return the AudioFileDescr representing the chosen file path
+        *         and format or <code>None</code>
+        *         if the dialog was cancelled.
+        */
+      def query(protoType: Option[File]): Option[File] = {
+        val f0 = protoType.getOrElse {
+          val dir = userHome / "Documents"
+          val f1 = if (dir.isDirectory) dir / "Untitled.fsc" else new File("Untitled.fsc")
+          IOUtil.nonExistentFileVariant(f1, -1, " ", null)
+        }
+
+        val f = f0.replaceExt("fsc")
+
+        val fDlg = FileDialog.save(init = Some(f), title = "Save Document")
+        fDlg.show(Some(window))
+      }
+    }
+  }
+
+  private object ActionHelpIndex extends Action("Index") {
+    def apply(): Unit =
+      Desktop.browseURI((file("help") / "index.html").toURI)
   }
 
   // ---------------- OSCRouter interface ----------------
-    private object OSCRouterImpl extends OSCRouter {
-      def oscGetPathComponent(): String = "main"
+  private object OSCRouterImpl extends OSCRouter {
+    def oscGetPathComponent(): String = "main"
 
     def oscRoute(rom: RoutedOSCMessage): Unit = osc.oscRoute(rom)
 
@@ -279,21 +420,19 @@ object FScape extends SwingApplicationImpl("FScape") {
     def oscRemoveRouter(subRouter: OSCRouter): Unit =
       osc.oscRemoveRouter(subRouter)
 
-    //	public void oscCmd_quit( RoutedOSCMessage rom )
-    //	{
-    //		try {
-    //			if( rom.msg.getArgCount() > 1 ) {
-    //				if( ((Number) rom.msg.getArg( 1 )).intValue() != 0 ) {
-    //					forceQuit();
-    //					return;
-    //				}
-    //			}
-    //			quit();
-    //		}
-    //		catch( ClassCastException e1 ) {
-    //			OSCRoot.failedArgType( rom, 1 );
-    //		}
-    //	}
+    	def oscCmd_quit(rom: RoutedOSCMessage): Unit = {
+    		try {
+    			if( rom.msg.getArgCount > 1 ) {
+            if (rom.msg.getArg(1).asInstanceOf[Number].intValue() != 0) {
+              forceQuit()
+              return
+            }
+          }
+    			quit()
+    		} catch {
+          case e1: ClassCastException => OSCRoot.failedArgType(rom, 1)
+    		}
+    	}
 
     def oscQuery_version(): Any = Application.version
   }
