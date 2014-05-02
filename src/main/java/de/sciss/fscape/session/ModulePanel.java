@@ -90,7 +90,7 @@ implements Processor, EventManager.Processor, ProgressComponent
 // -------- private Variablen --------
 
     protected static final int FLAGS_TOOLBAR		= 0x01;
-    protected static final int FLAGS_PRESETS		= 0x03;		// (0x02 + FLAGS_TOOLBAR)
+    protected static final int FLAGS_PRESETS		= 0x02; // 0x03;		// (0x02 + FLAGS_TOOLBAR)
     protected static final int FLAGS_PROGBAR		= 0x04;
     protected static final int FLAGS_NORESIZE		= 0x08;
     protected static final int FLAGS_NOPRESETLOAD	= 0x10;

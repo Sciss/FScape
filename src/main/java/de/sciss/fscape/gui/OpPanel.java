@@ -13,12 +13,7 @@
 
 package de.sciss.fscape.gui;
 
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.Transferable;
@@ -56,14 +51,13 @@ import de.sciss.gui.GUIUtil;
  *  @version	0.72, 04-Jan-09
  */
 public class OpPanel
-extends JPanel
-implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
-{
-// -------- public Variablen --------
+        extends JPanel
+        implements ClipboardOwner, ActionListener, MouseListener, MouseMotionListener {
+// -------- public --------
 
     public static final String OBJ_NAME = "OpPanel";
 
-// -------- private Variablen --------
+// -------- private --------
 
     private SpectPatchDlg win;
 
@@ -113,7 +107,7 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
     protected String[]  optionsAliasDel		= { "Cancel", "Remove", "Transform" };
     protected String[]  optionsAliasEdit	= { "Cancel", "Original", "Transform" };
 
-// -------- public Methoden --------
+// -------- public --------
     // public Operator addOperator( Operator op );
     // public void removeOperator( Operator op );
     // public void renameOperator( Operator op, String name );
@@ -121,8 +115,7 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
     // public void updateOperator( Operator op );
     // public OpIcon getOpIconAt( int x, int y );
 
-    public OpPanel( SpectPatchDlg win )
-    {
+    public OpPanel(SpectPatchDlg win) {
         super();
 
         Map			ops;
@@ -131,13 +124,13 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
         vIcon	= new Vector();
         hCon 	= new Hashtable();
 
-        setLayout( null );
+        setLayout(null);
 
         addMouseListener( this );
         addMouseMotionListener( this );
         this.win = win;
 
-        // Popup-Men�s
+        // Popup-Menus
         ops = Operator.getOperators();
         opNames = ops.keySet().iterator();
 
@@ -166,10 +159,9 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
         return OBJ_NAME;
     }
 
-    public void clear()
-    {
-        vIcon	= new Vector();
-        hCon 	= new Hashtable();
+    public void clear() {
+        vIcon = new Vector();
+        hCon = new Hashtable();
         removeAll();
     }
 
@@ -262,7 +254,7 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
             con = getConnector( slot );
             con.drawArrow( false );
             con.adjustLocation();
-            con.drawArrow( true );
+            // con.drawArrow( true );
             validateSize( con );
         }
 
@@ -272,15 +264,14 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
     }
 
     /**
-     *	OpConnector verschieben
+     * OpConnector verschieben
      */
-    public void moveConnector( OpConnector con, int x, int y )
-    {
-        con.drawArrow( false );
-        con.setLocation( x, y );
-        con.drawArrow( true );
+    public void moveConnector(OpConnector con, int x, int y) {
+        con.drawArrow(false);
+        con.setLocation(x, y);
+        con.drawArrow(true);
 
-        validateSize( con );
+        validateSize(con);
 
 //		win.getDoc().setModified( true );
     }
@@ -328,12 +319,12 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
         con.addMouseListener( this );
         con.addMouseMotionListener( this );
 
-        synchronized( hCon ) {
-            hCon.put( slot1, con );
+        synchronized (hCon) {
+            hCon.put(slot1, con);
         }
-        add( con );
-        validateSize( con );
-        con.drawArrow( true );
+        add(con);
+        validateSize(con);
+        con.drawArrow(true);
 
 //		win.getDoc().setModified( true );
     }
@@ -379,10 +370,10 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
     {
         Component c = getComponentAt( x, y );
         if( (c != null) && (c != this) ) {	// ignore myself
-            if( c.toString() == OpIcon.OBJ_NAME ) {
+            if(c.toString().equals(OpIcon.OBJ_NAME)) {
                 return (OpIcon) c;
             }
-            if( c.toString() == OpIconLabel.OBJ_NAME ) {
+            if(c.toString().equals(OpIconLabel.OBJ_NAME)) {
                 return ((OpIconLabel) c).getOpIcon();
             }
         }
@@ -440,10 +431,10 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
                  (dest.x <= lab.x - dest.width)    ||
                  (dest.y <= lab.y - dest.height)) )	continue;	// genaue Berechnung
 
-            if( c.toString() == OpIcon.OBJ_NAME ) {
+            if (c.toString().equals(OpIcon.OBJ_NAME)) {
                 return (OpIcon) c;
             }
-            if( c.toString() == OpIconLabel.OBJ_NAME ) {
+            if (c.toString().equals(OpIconLabel.OBJ_NAME)) {
                 return ((OpIconLabel) c).getOpIcon();
             }
         }
@@ -457,19 +448,24 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
 //		paint( g );
 //	}
 
-    public void paintComponent( Graphics g )
-    {
-        super.paintComponent( g );
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        //        g.setColor(Color.red);
+        //        g.fillRect(0, 0, getWidth(), getHeight());
 
         Enumeration cons;
-        OpConnector	con;
+        OpConnector con;
 
-        synchronized( hCon ) {
-            cons	= hCon.elements();
-            while( cons.hasMoreElements() ) {
+        Graphics2D g2 = (Graphics2D) g;
 
-                con	= (OpConnector) cons.nextElement();
-                con.drawArrow( true );
+        synchronized (hCon) {
+            cons = hCon.elements();
+            while (cons.hasMoreElements()) {
+                // System.out.println("DRAW");
+                con = (OpConnector) cons.nextElement();
+                // con.drawArrow(true);
+                con.drawArrowCorrect(g2);
             }
         }
     }
@@ -548,30 +544,30 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
 
         if( !isEnabled() ) return;	// not while running the operators
 
-        if( action == MI_EDIT ) {
-            mouseClicked( new MouseEvent( popSource, MouseEvent.MOUSE_CLICKED, 0,		// Doppelklick
-                                          InputEvent.BUTTON1_MASK, 0, 0, 2, false ));
+        if (action.equals(MI_EDIT)) {
+            mouseClicked(new MouseEvent(popSource, MouseEvent.MOUSE_CLICKED, 0,        // Doppelklick
+                    InputEvent.BUTTON1_MASK, 0, 0, 2, false));
 
-        } else if( action == MI_RENAME ) {							//-------- Rename --------
-            opName = JOptionPane.showInputDialog( win.getComponent(), "Rename Operator", popSource.getName() );
+        } else if (action.equals(MI_RENAME)) {                            //-------- Rename --------
+            opName = JOptionPane.showInputDialog(win.getComponent(), "Rename Operator", popSource.getName());
             if( opName != null ) {
-                renameOperator( ((OpIcon) popSource).getOperator(), opName );
+                renameOperator(((OpIcon) popSource).getOperator(), opName);
             }
 
-        } else if( action == MI_CUT ) {								//-------- Cut --------
+        } else if (action.equals(MI_CUT)) {                                //-------- Cut --------
             op = (Operator) ((OpIcon) popSource).getOperator().clone();
             if( op != null ) {
                 Application.clipboard.setContents(op, this);
-                removeOperator( ((OpIcon) popSource).getOperator() );
+                removeOperator(((OpIcon) popSource).getOperator());
             }
 
-        } else if( action == MI_COPY ) {							//-------- Copy --------
+        } else if (action.equals(MI_COPY)) {                            //-------- Copy --------
             op = (Operator) ((OpIcon) popSource).getOperator().clone();
             if( op != null ) {
                 Application.clipboard.setContents(op, this);
             }
 
-        } else if( action == MI_DUPL ) {							//-------- Duplicate --------
+        } else if (action.equals(MI_DUPL)) {                            //-------- Duplicate --------
             newOp = (Operator) ((OpIcon) popSource).getOperator().clone();
 
             if( newOp != null ) {
@@ -596,7 +592,7 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
                 }
             }
 
-        } else if( action == MI_MAKEALIAS ) {						//-------- Make Alias --------
+        } else if (action.equals(MI_MAKEALIAS)) {                        //-------- Make Alias --------
             op		= ((OpIcon) popSource).getOperator();
             newOp	= (Operator) op.clone();
 
@@ -611,10 +607,12 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
                     newOp.dispose();
                     newOp = null;
                 }
-                catch( SlotAlreadyConnectedException e2 ) {}	// ist ok, weil schon vom clone() ein Alias erzeugt wurde
+                catch( SlotAlreadyConnectedException e2 ) {
+                    // ist ok, weil schon vom clone() ein Alias erzeugt wurde
+                }
             }
 
-        } else if( action == MI_REMOVE ) {							//-------- Remove --------
+        } else if (action.equals(MI_REMOVE)) {                            //-------- Remove --------
             op		= ((OpIcon) popSource).getOperator();
             aliases	= op.getAliases();
 
@@ -651,9 +649,9 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
                     return;
                 }
             }
-            removeOperator( op );
+            removeOperator(op);
 
-        } else if( action == MI_PASTE ) {							//-------- Paste --------
+        } else if (action.equals(MI_PASTE)) {                            //-------- Paste --------
             clip = Application.clipboard.getContents(this);
             if( clip != null ) {
                 try {
@@ -665,14 +663,14 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
                 }
             }
 
-        } else if( action == MI_HIDE ) {
+        } else if(action.equals(MI_HIDE)) {
             popSource.dispatchEvent( new MouseEvent( popSource, MouseEvent.MOUSE_CLICKED,
                                               System.currentTimeMillis(), InputEvent.ALT_MASK,
                                               0, 0, 1, false ));
 
         } else {													//-------- unknown ---
 
-            if( popSource.toString() == OpPanel.OBJ_NAME ) {					// "new"
+            if(popSource.toString().equals(OpPanel.OBJ_NAME)) {					// "new"
                 ops = Operator.getOperators();
                 opName = (String) ops.get( action );
                 if( opName != null ) {
@@ -685,7 +683,7 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
                     }
                 }
 
-            } else if( popSource.toString() == OpConnector.OBJ_NAME ) {		// change slot
+            } else if(popSource.toString().equals(OpConnector.OBJ_NAME)) {		// change slot
 
                 bounds = popSource.getBounds();
                 try {
@@ -713,10 +711,18 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
                         }
                     }
                 }
-                catch( NotBoundException e2 ) {}		// whole lotta shakin
-                catch( SlotAlreadyConnectedException e3 ) {}	// whole lottaxception
-                catch( SyncFailedException e4 ) {}
-                catch( NoSuchElementException e5 ) {}
+                catch( NotBoundException e2 ) {
+                    // whole lotta shakin
+                }
+                catch( SlotAlreadyConnectedException e3 ) {
+                    // whole lottaxception
+                }
+                catch( SyncFailedException e4 ) {
+                    // ignore
+                }
+                catch( NoSuchElementException e5 ) {
+                    // ignore
+                }
             }
         }
 
@@ -857,9 +863,9 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
                 popX		= e.getX();
                 popY		= e.getY();
 
-                this.add( popNew );
-                popNew.show( this, e.getX(), e.getY() );
-                this.remove( popNew );
+                this.add(popNew);
+                popNew.show(this, e.getX(), e.getY());
+                this.remove(popNew);
 
             } else {					// Link ==> evtl. Connector sichtbar machen
 
@@ -867,18 +873,18 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
 //				if( (con != null) && !con.isVisible() ) {
                 if( con != null ) {
 
-                    con.drawArrow( false );
+                    con.drawArrow(false);
                     dim = con.getSize();
-                    con.setLocation( e.getX() - (dim.width >> 1), e.getY() - (dim.height >> 1) );
-                    con.setVisible( true );
-                    con.drawArrow( true );
+                    con.setLocation(e.getX() - (dim.width >> 1), e.getY() - (dim.height >> 1));
+                    con.setVisible(true);
+                    // con.drawArrow( true );
 
                     updateOperator( slot.getOwner() );
                 }
             }
 
-        } else if( dragContext != null ) {
-            dragContext.mouseReleased( e );
+        } else if (dragContext != null) {
+            dragContext.mouseReleased(e);
             dragContext = null;
         }
 
@@ -1080,7 +1086,7 @@ implements	ClipboardOwner, ActionListener, MouseListener, MouseMotionListener
 
             con.drawArrow (false);
             con.setVisible(false);
-            con.drawArrow (true );
+            // con.drawArrow (true );
 
             updateOperator(con.getOrigin().getOwner());
 

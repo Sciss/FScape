@@ -47,9 +47,8 @@ import de.sciss.fscape.util.Slots;
  *  @version	0.72, 21-Jan-09
  */
 public class OpConnector
-extends JPanel // JComponent
-implements Dragable
-{
+        extends JPanel // JComponent
+        implements Dragable {
 // -------- private Klassenvariablen --------
 
 //	private static final String ibName	= "images" + File.separator + "arrows.gif";	// IconBitmap
@@ -123,14 +122,14 @@ implements Dragable
 		srcOp		= origin.getOwner();
 		srcIcon		= (OpIcon) srcOp.getIcon();
 		srcName		= origin.toString();
-		if( srcName == Slots.SLOTS_DEFWRITER ) {
+		if(srcName.equals(Slots.SLOTS_DEFWRITER)) {
 			srcName	= "";
 		}
 		
 		destOp		= target.getOwner();
 		destIcon	= (OpIcon) destOp.getIcon();
 		destName	= target.toString();
-		if( destName == Slots.SLOTS_DEFREADER ) {
+		if(destName.equals(Slots.SLOTS_DEFREADER)) {
 			destName = "";
 		}
 
@@ -275,75 +274,101 @@ newVisualProps();
 		setLocation( newThis.x, newThis.y );
 	}
 
-	public void paintComponent( Graphics g )
-	{
-		super.paintComponent( g );
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
 //System.err.println( "paintComponent" );
-	
-		final int w = getWidth();
-		final int h = getHeight();
-	
-		g.clearRect( 0, 0, w, h );
-		g.draw3DRect( 1, 1, width - 3, height - 3, true );
-		g.setColor( Color.black );
-		g.drawRect( 0, 0, width - 1, height - 1 );
-		
-		if( labName != null ) {
+        Graphics2D g2 = (Graphics2D) g;
+
+        // drawArrowCorrect(g2);   // XXX TODO
+
+        final int w = getWidth();
+        final int h = getHeight();
+
+        g.clearRect(0, 0, w, h);
+        g.draw3DRect(1, 1, width - 3, height - 3, true);
+        g.setColor(Color.black);
+        g.drawRect(0, 0, width - 1, height - 1);
+
+        if (labName != null) {
 //System.err.println( "drawing string "+labName );
-			g.drawString( labName, 2, fntMetr.getAscent() );
-		}
-	}
+            g.drawString(labName, 2, fntMetr.getAscent());
+        }
+    }
+
+    public void drawArrowCorrect(Graphics2D g) {
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setColor(Color.black);
+
+        if (isVisible()) {
+            g.drawLine(srcP.x, srcP.y, thisP.x, thisP.y);
+            drawArrow(g, thisP.x, thisP.y, destP.x, destP.y, true);
+        } else {
+            drawArrow(g, srcP.x, srcP.y, destP.x, destP.y, true);
+        }
+
+        //        // src
+        //        Point tempP = isVisible() ? thisP : destP;
+        //        g.setColor(Color.black);
+        //        g.drawLine(srcP.x - srcLoc.x, srcP.y - srcLoc.y,
+        //                tempP.x - srcLoc.x, tempP.y - srcLoc.y);
+        //
+        //        // dest
+        //        tempP = isVisible() ? thisP : srcP;
+        //        g.setColor(Color.black);
+        //        drawArrow(g, tempP.x - destLoc.x, tempP.y - destLoc.y,
+        //                destP.x - destLoc.x, destP.y - destLoc.y, true);
+        //        // destIcon.repaint();
+    }
 
 	/**
 	 *	Zeichnet den Pfeil zwischen den zum Connector
 	 *	gehoerenden Icons; nimmt dazu getParent().getGraphics();
 	 *
 	 *	@param	mode	false, um statt mit schwarz zu zeichnen, den Pfeil zu loeschen
-	 */	 
-	public void drawArrow( boolean mode )
-	{
-		final Container		c = getParent();
-		Graphics2D			g;
-		Point				tempP;
+	 */
+    public void drawArrow(boolean mode) {
+        final Container c = getParent();
+        Graphics2D g;
+        Point tempP;
 
-		if( c != null ) {
-			g	= (Graphics2D) c.getGraphics();
-			if( g != null ) {
-				g.setRenderingHint( RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON );
-				g.setColor( mode ? Color.black : c.getBackground() );
-				if( isVisible() ) {
-					g.drawLine( srcP.x, srcP.y, thisP.x, thisP.y );
-					drawArrow( g, thisP.x, thisP.y, destP.x, destP.y, mode );
-				} else {
-					drawArrow( g, srcP.x, srcP.y, destP.x, destP.y, mode );
-				}
-				g.dispose();
-			}
+        if (c != null) {
+            g = (Graphics2D) c.getGraphics();
+            if (g != null) {
+                g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g.setColor(mode ? Color.black : c.getBackground());
+                if (isVisible()) {
+                    g.drawLine(srcP.x, srcP.y, thisP.x, thisP.y);
+                    drawArrow(g, thisP.x, thisP.y, destP.x, destP.y, mode);
+                } else {
+                    drawArrow(g, srcP.x, srcP.y, destP.x, destP.y, mode);
+                }
+                g.dispose();
+            }
 
 //			loc	= srcIcon.getLocation();
-			g	= (Graphics2D) srcIcon.getGraphics();
-			if( g != null ) {
-				g.setRenderingHint( RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON );
-				tempP = isVisible() ? thisP : destP;
-				g.setColor( mode ? Color.black : c.getBackground() );
-				g.drawLine( srcP.x - srcLoc.x, srcP.y - srcLoc.y,
-							tempP.x - srcLoc.x, tempP.y - srcLoc.y );
-				g.dispose();
-			}
+            g = (Graphics2D) srcIcon.getGraphics();
+            if (g != null) {
+                g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                tempP = isVisible() ? thisP : destP;
+                g.setColor(mode ? Color.black : c.getBackground());
+                g.drawLine(srcP.x - srcLoc.x, srcP.y - srcLoc.y,
+                        tempP.x - srcLoc.x, tempP.y - srcLoc.y);
+                g.dispose();
+            }
 
 //			loc	= destIcon.getLocation();
-			g	= (Graphics2D) destIcon.getGraphics();
-			if( g != null ) {
-				g.setRenderingHint( RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON );
-				tempP = isVisible() ? thisP : srcP;
-				g.setColor( mode ? Color.black : c.getBackground() );
-				drawArrow( g, tempP.x - destLoc.x, tempP.y - destLoc.y,
-							  destP.x - destLoc.x, destP.y - destLoc.y, mode );
-				g.dispose();
-				if( !mode ) destIcon.repaint();	// since we may have cleared a part of the icon
-			}
-		}
-	}
+            g = (Graphics2D) destIcon.getGraphics();
+            if (g != null) {
+                g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                tempP = isVisible() ? thisP : srcP;
+                g.setColor(mode ? Color.black : c.getBackground());
+                drawArrow(g, tempP.x - destLoc.x, tempP.y - destLoc.y,
+                        destP.x - destLoc.x, destP.y - destLoc.y, mode);
+                g.dispose();
+                if (!mode) destIcon.repaint();    // since we may have cleared a part of the icon
+            }
+        }
+    }
 
 	/**
 	 *	Zeichnet einen Pfeil mit den exakt angegebenen Koordinaten
@@ -402,7 +427,7 @@ newVisualProps();
 
 		if( srcDist > 0 ) {
 			name = src.toString();
-			if( name == OpIcon.OBJ_NAME ) {		// "runde" Form
+			if(name.equals(OpIcon.OBJ_NAME)) {		// "runde" Form
 				srcLoc.translate( (int) (((srcB.width >> 1)  + srcDist) * cos),
 								  (int) (((srcB.height >> 1) + srcDist) * sin) );
 			} else {							// "eckig"
@@ -422,7 +447,7 @@ newVisualProps();
 dest:	if( destDist > 0 ) {
 
 			name = dest.toString();
-			if( name == OpIcon.OBJ_NAME ) {		// "runde" Form
+			if(name.equals(OpIcon.OBJ_NAME)) {		// "runde" Form
 				destLoc.translate( (int) -(((destB.width >> 1)  + destDist + (ARROW_WIDTH>>1)) * cos),
 								   (int) -(((destB.height >> 1) + destDist + (ARROW_HEIGHT>>1)) * sin) );
 

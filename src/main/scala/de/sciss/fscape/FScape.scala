@@ -61,7 +61,8 @@ object FScape extends SwingApplicationImpl("FScape") {
     WebCheckBoxStyle   .animated            = false
     WebProgressBarStyle.progressTopColor    = Color.lightGray
     WebProgressBarStyle.progressBottomColor = Color.gray
-    WebProgressBarStyle.highlightWhite      = new Color(255, 255, 255, 48)
+    // XXX TODO: how to really turn of animation?
+    WebProgressBarStyle.highlightWhite      = new Color(255, 255, 255, 0) // 48)
     WebProgressBarStyle.highlightDarkWhite  = new Color(255, 255, 255, 0)
     // StyleConstants.animate = false
 

@@ -103,7 +103,7 @@ public class ProgressBar
      */
     public void setText(String altString) {
         this.altString = altString;
-        setString(altString);
+        setString(altString == null ? "" : altString);
         // setStringPainted( altString != null );
     }
 
@@ -176,7 +176,7 @@ public class ProgressBar
         setIndeterminate(false);
         setProgression(0f);
         setPaint(null);
-        setString(null);
+        // setString(""); // null);
         timePainted = false;
         // setStringPainted( false );
         setText(null);
@@ -214,7 +214,7 @@ public class ProgressBar
     public void finish(int result) {
         setIndeterminate(false);
         setValue(maximum);
-        setString(null);
+        setString(""); // null);
         timePainted = false;
         // setStringPainted(false);
 

@@ -77,7 +77,7 @@ extends ModulePanel
 	private static final String	prIntgName[]		= { PRN_OUTPUTTYPE, PRN_OUTPUTRES, PRN_MODE, PRN_GAINTYPE };
 	private static final Param	prPara[]			= { new Param( 2.0, Param.NONE ),
 														null };
-	private static final String	prParaName[]		= { PRN_REPEATS, PRN_GAINTYPE };
+	private static final String	prParaName[]		= { PRN_REPEATS, PRN_GAIN };
 	private static final boolean prBool[]			= { false };
 	private static final String	prBoolName[]		= { PRN_SUBDRY };
 
