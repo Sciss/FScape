@@ -2,18 +2,22 @@ package de.sciss.fscape
 
 import de.sciss.desktop.impl.{LogWindowImpl, WindowImpl, SwingApplicationImpl}
 import de.sciss.desktop._
-import scala.swing.{Component, Action, Swing}
+import scala.swing._
 import Swing._
 import scala.swing.event.Key
 import de.sciss.fscape.session.{Session, ModulePanel}
 import scala.util.control.NonFatal
-import javax.swing.{UIManager, KeyStroke}
+import javax.swing.{ImageIcon, UIManager, KeyStroke}
 import java.awt.{Color, GraphicsEnvironment, Toolkit}
 import com.alee.laf.checkbox.WebCheckBoxStyle
 import com.alee.laf.progressbar.WebProgressBarStyle
 import com.alee.laf.StyleConstants
 import de.sciss.fscape.gui.PrefsPanel
 import de.sciss.fscape.net.{RoutedOSCMessage, OSCRouter, OSCRouterWrapper, OSCRoot}
+import scala.collection.breakOut
+import scala.Some
+import de.sciss.desktop.Menu
+import de.sciss.desktop.Window
 
 object FScape extends SwingApplicationImpl("FScape") {
   App =>
@@ -134,6 +138,12 @@ object FScape extends SwingApplicationImpl("FScape") {
     ))
   )
 
+  private lazy val moduleNames: Map[String, String] = modules.flatMap { case (_, _, vec) =>
+    vec.map { case (key, n, _) => (key, n) }
+  } (breakOut)
+
+  def moduleName(key: String): String = moduleNames.getOrElse(key, key)
+
   //      { M_MOD_BETA },
   //      { new StringItem( "SmpSyn",			MI_SMPSYN ),		null },
   //      { new StringItem( "TransientExtr",	MI_TRANSEXTR ),		null },
@@ -147,6 +157,7 @@ object FScape extends SwingApplicationImpl("FScape") {
 
     val gFile   = Group("file"  , "File")
       .add(Item("open", ActionOpen))
+      .add(ActionOpen.recentMenu)
       .addLine()
       .add(Item("close", proxy("Close" -> (menu1 + Key.W))))
       .add(Item("close-all", actionCloseAll))
@@ -183,10 +194,15 @@ object FScape extends SwingApplicationImpl("FScape") {
     def handler: WindowHandler = App.windowHandler
 
     title = App.name
-    size  = (400, 400)
+    contents = new Label(null, new ImageIcon(App.getClass.getResource("application.png")), Alignment.Leading)
+    resizable = false
+    pack() // size  = (400, 400)
     // placeWindow(this, 0.0f, 0.0f, 0)
 
-    closeOperation = Window.CloseExit
+    closeOperation  = Window.CloseIgnore
+    reactions += {
+      case Window.Closing(_) => App.quit()
+    }
   }
 
   private def ActionPreferences(): Unit = {
@@ -206,33 +222,28 @@ object FScape extends SwingApplicationImpl("FScape") {
     println("TODO: close all")
   }
 
-  def newDocument(key: String, text: String): Unit = {
+  def newDocument(key: String): Option[ModulePanel] = {
+    val text = moduleName(key)
     try {
       val clz       = Class.forName(s"de.sciss.fscape.gui.${key}Dlg")
       val modPanel	= clz.newInstance().asInstanceOf[ModulePanel]
       documentHandler.addDocument(modPanel.getDocument())
       val modWin    = new ModuleWindow(modPanel)
       modWin.front()
+      Some(modPanel)
     } catch {
       case NonFatal(e) =>
         val dlg = DialogSource.Exception(e -> s"New $text")
         dlg.show(None)
+        None
         // GUIUtil.displayError(null, e1, getResourceString("menuNew"));
-    }
-  }
-
-  private object ActionOpen extends Action("Open...") {
-    accelerator = Some(menu1 + Key.O)
-
-    def apply(): Unit = {
-      println("TODO: Open")
     }
   }
 
   private class ActionModule(key: String, text: String, stroke: Option[KeyStroke]) extends Action(text) {
     accelerator = stroke
 
-    def apply(): Unit = newDocument(key = key, text = text)
+    def apply(): Unit = newDocument(key)
   }
 
   private def centerOnScreen(w: Window): Unit = placeWindow(w, 0.5f, 0.5f, 0)
