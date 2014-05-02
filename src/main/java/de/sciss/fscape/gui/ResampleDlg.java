@@ -306,7 +306,7 @@ extends ModulePanel
 		ggRightChan		= new JCheckBox();
 		con.gridwidth	= 2;
 		con.weightx		= 0.5;
-		gui.addLabel( new JLabel( "Destinct right channel mod.", SwingConstants.RIGHT ));
+		gui.addLabel( new JLabel( "Distinct right channel mod.", SwingConstants.RIGHT ));
 		con.weightx		= 0.0;
 		con.gridwidth	= 1;
 		gui.addCheckbox( ggRightChan, GG_RIGHTCHAN, il );
@@ -329,8 +329,8 @@ extends ModulePanel
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addLabel( new JLabel() );
 
-		ggKeepHeader	= new JCheckBox( "Keep old rate in header" );
-		con.weightx		= 0.0;
+        ggKeepHeader = new JCheckBox("Change Pitch/Speed");
+        con.weightx		= 0.0;
 		con.gridwidth	= 1;
 		gui.addLabel( new JLabel() );
 		con.weightx		= 0.5;

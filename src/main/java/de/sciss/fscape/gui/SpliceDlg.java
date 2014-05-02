@@ -102,7 +102,7 @@ extends ModulePanel
 	 */
 	public SpliceDlg()
 	{
-		super( "Splice" );
+		super("Slice");
 		init2();
 	}
 	
@@ -224,7 +224,7 @@ extends ModulePanel
 		gui.addCheckbox( ggCheck, GG_SEPARATEFILES, il );
 
 	// -------- Settings-Gadgets --------
-	gui.addLabel( new GroupLabel( "Splice Settings", GroupLabel.ORIENT_HORIZONTAL,
+	gui.addLabel( new GroupLabel( "Slice Settings", GroupLabel.ORIENT_HORIZONTAL,
 								  GroupLabel.BRACE_NONE ));
 
 		spcLength		= new ParamSpace[ 3 ];
@@ -253,7 +253,7 @@ extends ModulePanel
 		ggParam			= new ParamField( spcLength );
 		con.weightx		= 0.1;
 		con.gridwidth	= 1;
-		gui.addLabel( new JLabel( "Splice Length", SwingConstants.RIGHT ));
+		gui.addLabel( new JLabel( "Slice Length", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		gui.addParamField( ggParam, GG_SPLICELENGTH, null );
 
@@ -289,7 +289,7 @@ extends ModulePanel
 
 		ggParam			= new ParamField( new ParamSpace( 1, Double.POSITIVE_INFINITY, 1, Param.NONE ));
 		con.weightx		= 0.1;
-		gui.addLabel( new JLabel( "# of Splices", SwingConstants.RIGHT ));
+		gui.addLabel( new JLabel( "# of Slices", SwingConstants.RIGHT ));
 		con.weightx		= 0.4;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addParamField( ggParam, GG_AUTONUM, null );
@@ -587,4 +587,3 @@ topLevel: try {
 //		return( fileNameForm.format( FILENAMEPTRN, fileNameArgs ));
 //	}
 }
-// class SpliceDlg

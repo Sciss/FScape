@@ -1,0 +1,5 @@
+# Statistics
+
+<BLOCKQUOTE>This module allows you to calculate and plot some overall parameters of a sound file, such as its average spectrum or the differentiated phase spectrum and histogram of samples (elongation).</BLOCKQUOTE>
+
+Record size specifies the size of the data set. E.g., when you calculate the amplitude spectrum, the module will take FFTs of this size throughout the sound file and then average them. Note that due to a bug, the axis settings (logarithmic frequency and/or amplitude scaling) have to be set *before* running the analysis. Also note that the "View channels" gadget has no effect at the moment, the module always analysis *channel 1* (even for stereo or multichannel files), this has to be fixed in the future. Also note that due to a GUI bug, sometimes the display disappears, then you should resize the window a bit. The display is always normalized so the strongest frequency band corresponds to zero decibels. You can drag the mouse pointer over the display to see how strong a certain frequency is. Keep alt Alt (Option) key pressed to freely move in the freq/amp plane.

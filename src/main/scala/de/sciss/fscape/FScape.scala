@@ -252,7 +252,7 @@ object FScape extends SwingApplicationImpl("FScape") {
     if (itAbout.visible) gHelp.add(itAbout).addLine()
     gHelp
       .add(Item("index", ActionHelpIndex))
-      .add(Item("module", proxy("Module Documentation")))
+      .add(Item("module", proxy("Module Documentation" -> (menu1 + Key.Slash))))
 
     Root()
       .add(gFile)

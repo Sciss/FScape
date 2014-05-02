@@ -149,13 +149,12 @@ extends ModulePanel
 	/**
 	 *	!! setVisible() bleibt dem Aufrufer ueberlassen
 	 */
-	public ChebychevDlg()
-	{
-		super( "Chebychev Waveshaping" );
-		init2();
-	}
-	
-	protected void buildGUI()
+    public ChebychevDlg() {
+        super("Chebyshev Waveshaping");
+        init2();
+    }
+
+    protected void buildGUI()
 	{
 		// einmalig PropertyArray initialisieren
 		if( static_pr == null ) {
