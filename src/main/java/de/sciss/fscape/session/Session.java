@@ -158,14 +158,15 @@ public class Session
 		file = f;
 	}
 
-	public String getName()
-	{
-		if( file != null ) {
-			return file.getName();
-		} else {
-			return getResourceString( "frameUntitled" );
-		}
-	}
+    public String getName() {
+        if (file != null) {
+            String f = file.getName();
+            int i = f.lastIndexOf('.');
+            return i < 0 ? f : f.substring(0, i);
+        } else {
+            return getResourceString("Untitled");
+        }
+    }
 
 	private void updateTitle()
 	{
@@ -357,16 +358,11 @@ public class Session
 //			osc = null;
 		}
 	
-// XXX FFFF
-//		if( transport != null ) {
-//			transport.quit();
-//			transport = null;
+//		if( frame != null ) {
+////			frame.setVisible( false );
+//			frame.dispose();
+//			frame = null;
 //		}
-		if( frame != null ) {
-//			frame.setVisible( false );
-			frame.dispose();
-			frame = null;
-		}
 	}
 
 	public boolean isDirty()

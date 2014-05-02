@@ -34,14 +34,6 @@ object ActionOpen extends Action("Open...") {
 
   private def fullTitle = "Open Document"
 
-  /** Registers the document with the recent files menu and the document handler.
-    * Does _not_ open a view directly. This should be done by listening to the document handler.
-    */
-  def openGUI(doc: App.Document): Unit = {
-    recentFiles.add(doc.getFile)
-    App.documentHandler.addDocument(doc)
-  }
-
   def recentFiles: RecentFiles  = _recent
   def recentMenu : Menu.Group   = _recent.menu
 
@@ -53,8 +45,8 @@ object ActionOpen extends Action("Open...") {
 
   def perform(f: File): Unit =
     App.documentHandler.documents.find(_.getFile == f).fold(openRead(f)) { doc =>
-      // DocumentViewHandler.instance.getWindow(doc)
-      //   .foreach(_.window.front())
+      App.documentViewHandler.getWindow(doc)
+        .foreach(_.front())
     }
 
   private def openRead(f: File): Unit =
@@ -71,7 +63,7 @@ object ActionOpen extends Action("Open...") {
         val key   = className.substring(keyI + 1, className.length - 3)
         App.newDocument(key).foreach { mod =>
           mod.loadFile(f)
-          openGUI(mod.getDocument)
+          recentFiles.add(mod.getDocument.getFile)  // must be after loadFile
         }
 
       } else {

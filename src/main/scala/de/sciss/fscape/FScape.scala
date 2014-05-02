@@ -67,7 +67,7 @@ object FScape extends SwingApplicationImpl("FScape") {
 
     /* val logWin: LogWindowImpl = */ new LogWindowImpl {
       def handler: WindowHandler = App.windowHandler
-      placeWindow(this, 0f, 1f, 0)
+      GUI.placeWindow(this, 0f, 1f, 0)
     }
     System.setErr(Console.err)  // por que?
 
@@ -78,7 +78,7 @@ object FScape extends SwingApplicationImpl("FScape") {
     Application.version   = App.version
     Application.clipboard = Toolkit.getDefaultToolkit.getSystemClipboard
     Application.documentHandler = new Application.DocumentHandler {
-      def getDocuments: Array[Session] = new Array(0) // XXX TODO
+      def getDocuments: Array[Session] = documentHandler.documents.toArray
     }
 
     // --- osc ----
@@ -173,11 +173,15 @@ object FScape extends SwingApplicationImpl("FScape") {
   //      { new StringItem( "TransientExtr",	MI_TRANSEXTR ),		null },
   //      { new StringItem( "LPFilter",		MI_LPFILTER ),		null }
 
+  def menuRoot: Menu.Root = menuFactory
+
   protected lazy val menuFactory: Menu.Root = {
     import Menu._
 
     val itPrefs = Item.Preferences(App)(ActionPreferences())
     val itQuit  = Item.Quit(App)
+
+    Desktop.addQuitAcceptor(closeAll())
 
     val gFile   = Group("file"  , "File")
       .add(Item("open", ActionOpen))
@@ -250,7 +254,7 @@ object FScape extends SwingApplicationImpl("FScape") {
       .add(gFile)
       .add(gNewModule)
       .add(gEdit)
-      .add(gWindow)
+      // XXX TODO: .add(gWindow)
       .add(gHelp)
   }
 
@@ -270,7 +274,7 @@ object FScape extends SwingApplicationImpl("FScape") {
 
     closeOperation  = Window.CloseIgnore
     reactions += {
-      case Window.Closing(_) => App.quit()
+      case Window.Closing(_) => tryQuit()
     }
   }
 
@@ -287,9 +291,7 @@ object FScape extends SwingApplicationImpl("FScape") {
     def apply(): Unit = closeAll()
   }
 
-  def closeAll(): Unit = {
-    println("TODO: close all")
-  }
+  def closeAll(): Boolean = documentViewHandler.windows.forall(_.tryClose())
 
   def newDocument(key: String): Option[ModulePanel] = {
     val text = moduleName(key)
@@ -297,7 +299,7 @@ object FScape extends SwingApplicationImpl("FScape") {
       val clz       = Class.forName(s"de.sciss.fscape.gui.${key}Dlg")
       val modPanel	= clz.newInstance().asInstanceOf[ModulePanel]
       documentHandler.addDocument(modPanel.getDocument())
-      val modWin    = new ModuleWindow(modPanel)
+      val modWin    = new DocumentWindow(modPanel)
       modWin.front()
       Some(modPanel)
     } catch {
@@ -316,97 +318,22 @@ object FScape extends SwingApplicationImpl("FScape") {
     quit()
   }
 
+  def tryQuit(): Unit = if (Desktop.mayQuit()) quit()
+
   private class ActionModule(key: String, text: String, stroke: Option[KeyStroke]) extends Action(text) {
     accelerator = stroke
 
     def apply(): Unit = newDocument(key)
   }
 
-  private def centerOnScreen(w: Window): Unit = placeWindow(w, 0.5f, 0.5f, 0)
-
-  private def placeWindow(w: Window, horizontal: Float, vertical: Float, padding: Int): Unit = {
-    val ge  = GraphicsEnvironment.getLocalGraphicsEnvironment
-    val bs  = ge.getMaximumWindowBounds
-    val b   = w.size
-    val x   = (horizontal * (bs.width  - padding * 2 - b.width )).toInt + bs.x + padding
-    val y   = (vertical   * (bs.height - padding * 2 - b.height)).toInt + bs.y + padding
-    w.location = (x, y)
-  }
-
-  private final class ModuleWindow(panel: ModulePanel) extends WindowImpl {
-    window =>
-
-    def handler: WindowHandler = App.windowHandler
-
-    contents  = Component.wrap(panel)
-
-    def updateTitle(): Unit = {
-      val m     = panel.getModuleName
-      val fOpt  = Option(document.getFile)
-      title     = fOpt.fold(m) { f => s"$m - ${f.base}" }
-    }
-
-    updateTitle()
-
-    bindMenus(
-      "file.save"     -> ActionSave,
-      "file.save-as"  -> ActionSaveAs
-    )
-
-    pack()
-    // centerOnScreen(this)
-    placeWindow(this, 0.5f, 0.333f, 0)
-
-    def document: Document = panel.getDocument
-
-    private def saveFile(f: File): Unit =
-      if (panel.saveFile(f)) {
-        updateTitle()
-        file  = Some(f)
-        // dirty = false
-        ActionOpen.recentFiles.add(f)
-      }
-
-    private object ActionSave extends Action("Save") {
-      def apply(): Unit = {
-        val doc = document
-        val f0  = Option(doc.getFile)
-        val f   = f0.orElse(ActionSaveAs.query(None))
-        f.foreach(saveFile)
-      }
-    }
-
-    private object ActionSaveAs extends Action("Save As...") {
-      def apply(): Unit = {
-        query(Option(document.getFile)).foreach(saveFile)
-      }
-
-      /** Opens a file chooser so the user
-        * can select a new output file and format for the session.
-        *
-        * @return the AudioFileDescr representing the chosen file path
-        *         and format or <code>None</code>
-        *         if the dialog was cancelled.
-        */
-      def query(protoType: Option[File]): Option[File] = {
-        val f0 = protoType.getOrElse {
-          val dir = userHome / "Documents"
-          val f1 = if (dir.isDirectory) dir / "Untitled.fsc" else new File("Untitled.fsc")
-          IOUtil.nonExistentFileVariant(f1, -1, " ", null)
-        }
-
-        val f = f0.replaceExt("fsc")
-
-        val fDlg = FileDialog.save(init = Some(f), title = "Save Document")
-        fDlg.show(Some(window))
-      }
-    }
-  }
-
   private object ActionHelpIndex extends Action("Index") {
     def apply(): Unit =
       Desktop.browseURI((file("help") / "index.html").toURI)
   }
+
+  private lazy val docViewH = new DocumentViewHandler
+
+  def documentViewHandler: DocumentViewHandler = docViewH
 
   // ---------------- OSCRouter interface ----------------
   private object OSCRouterImpl extends OSCRouter {
@@ -428,7 +355,7 @@ object FScape extends SwingApplicationImpl("FScape") {
               return
             }
           }
-    			quit()
+    			tryQuit()
     		} catch {
           case e1: ClassCastException => OSCRoot.failedArgType(rom, 1)
     		}

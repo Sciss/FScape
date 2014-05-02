@@ -571,37 +571,39 @@ implements Processor, EventManager.Processor, ProgressComponent
         }
     }
 
-    private boolean confirmAbortProc( String actionName )
-    {
-        if( pp.getState() == ProcessPanel.STATE_STOPPED ) return true;
+    public boolean isRunning() { return pp.getState() != ProcessPanel.STATE_STOPPED; }
 
-        int								choice;
-        String							name;
+    private boolean confirmAbortProc(String actionName) {
+        if (pp.getState() == ProcessPanel.STATE_STOPPED) return true;
 
-        name	= doc.getName();
+        int choice;
+        String name;
 
-        choice = JOptionPane.showOptionDialog(getComponent(), name + " :\n" + getResourceString( "optionDlgAbortProc" ),
-                                               actionName, JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null,
-                                               null, null );
-        switch( choice ) {
-        case JOptionPane.CLOSED_OPTION:
-        case JOptionPane.NO_OPTION:		// cancel
-            return false;
+        name = doc.getName();
 
-        case JOptionPane.YES_OPTION:	// abort
-            for( int i = 0; i < 20; i++ ) {
-                pp.stop();
-                try {
-                    Thread.sleep( 1000 );
+        choice = JOptionPane.showOptionDialog(getComponent(), name + " :\n" + getResourceString("optionDlgAbortProc"),
+                actionName, JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null,
+                null, null);
+        switch (choice) {
+            case JOptionPane.CLOSED_OPTION:
+            case JOptionPane.NO_OPTION:         // cancel
+                return false;
+
+            case JOptionPane.YES_OPTION:        // abort
+                for (int i = 0; i < 20; i++) {
+                    pp.stop();
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e1) {
+                        // ignore
+                    }
+                    if (pp.getState() == ProcessPanel.STATE_STOPPED) return true;
                 }
-                catch( InterruptedException e1 ) {}
-                if( pp.getState() == ProcessPanel.STATE_STOPPED ) return true;
-            }
-            return false;
+                return false;
 
-        default:
-            assert false : choice;
-            return false;
+            default:
+                assert false : choice;
+                return false;
         }
     }
 
