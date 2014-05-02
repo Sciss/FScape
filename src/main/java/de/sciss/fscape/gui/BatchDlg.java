@@ -536,7 +536,7 @@ tb.setFloatable( false );
         batchCR     = new BatchCellRenderer();
 
         // int[] prefWidth = { 16, 64, 256, 48, 48 };
-		int[] prefWidth = { 56, 112, 256, 96, 118 };
+		int[] prefWidth = { 60, 112, 256, 96, 118 };
 		for ( i = 0; i < prefWidth.length; i++) {
 			column = batchTable.getColumnModel().getColumn( i );
 			column.setPreferredWidth( prefWidth[i] );

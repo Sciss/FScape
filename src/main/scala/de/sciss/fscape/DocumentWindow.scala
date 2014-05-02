@@ -66,12 +66,13 @@ final class DocumentWindow(val module: ModulePanel) extends WindowImpl {
     val title   = "Module Help"
     try {
       // println(prefix)
-      val url = App.getClass.getResource(s"help/$prefix.md")
-      if (url == null) {
+      val is1 = App.getClass.getResourceAsStream(s"help/$prefix.md")
+      if (is1 == null) {
         // quick work-around for missing md conversions
-        val url1 = App.getClass.getResource(s"help/${prefix}Dlg.html")
-        if (url1 != null) {
-          val md = Source.fromFile(url1.toURI, "UTF-8").mkString
+        val is2 = App.getClass.getResourceAsStream(s"help/${prefix}Dlg.html")
+        if (is2 != null) {
+          val md = Source.fromInputStream(is2, "UTF-8").mkString
+          is2.close()
           App.browseHTML(title0 = title, source = md)
           return
         }
@@ -83,7 +84,8 @@ final class DocumentWindow(val module: ModulePanel) extends WindowImpl {
         )
         return
       }
-      val md = Source.fromFile(url.toURI, "UTF-8").mkString
+      val md = Source.fromInputStream(is1, "UTF-8").mkString
+      is1.close()
       App.browseMarkdown(title0 = title, source = md)
 
     } catch {

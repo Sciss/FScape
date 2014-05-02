@@ -32,6 +32,7 @@ import de.sciss.desktop.Window
 import de.sciss.file._
 import java.net.URL
 import org.pegdown.PegDownProcessor
+import de.sciss.fscape.util.Param
 
 object FScape extends SwingApplicationImpl("FScape") {
   App =>
@@ -65,6 +66,17 @@ object FScape extends SwingApplicationImpl("FScape") {
     WebProgressBarStyle.highlightWhite      = new Color(255, 255, 255, 0) // 48)
     WebProgressBarStyle.highlightDarkWhite  = new Color(255, 255, 255, 0)
     // StyleConstants.animate = false
+
+    // set some default preferences
+    if (userPrefs.get[String]("headroom").isEmpty) {
+      val gain = new de.sciss.util.Param(-0.2, de.sciss.util.ParamSpace.spcAmpDecibels.unit)
+      userPrefs.put("headroom", gain.toString)
+    }
+    if (userPrefs.get[String]("audioFileRes").isEmpty) {
+      userPrefs.put("audioFileType", "AIFF")
+      userPrefs.put("audioFileRes" , "int24")
+      userPrefs.put("audioFileRate", "44100.0")
+    }
 
     /* val logWin: LogWindowImpl = */ new LogWindowImpl {
       def handler: WindowHandler = App.windowHandler
