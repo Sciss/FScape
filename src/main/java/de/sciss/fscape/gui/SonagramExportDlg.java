@@ -109,7 +109,7 @@ extends ModulePanel
 	 */
 	public SonagramExportDlg()
 	{
-		super( "SonagramExport" );
+		super( "Sonogram Export" );
 		init2();
 	}
 	
@@ -190,7 +190,7 @@ extends ModulePanel
 		ggOutputFile.handleTypes( GenericFile.TYPES_IMAGE );
 		ggInputs		= new PathField[ 1 ];
 		ggInputs[ 0 ]	= ggInputFile;
-		ggOutputFile.deriveFrom( ggInputs, "$D0$F0Sona$E" );
+		ggOutputFile.deriveFrom( ggInputs, "$D0$F0Sono$E" );
 		con.gridwidth	= 1;
 		con.weightx		= 0.1;
 		gui.addLabel( new JLabel( "Image output", SwingConstants.RIGHT ));
@@ -474,4 +474,3 @@ if( inChanNum != 1 ) throw new EOFException( ERR_MONO );
 
 // -------- private Methoden --------
 }
-// class SonagramExportDlg

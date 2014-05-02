@@ -1,0 +1,13 @@
+# Spectral Patcher
+
+<BLOCKQUOTE>The core of the original FScape version 0.1. It provides a patcher in which unit generators can be connected that operate on a FFT transformed slices of a sound.</BLOCKQUOTE>
+
+Double click to open a popup window showing all available modules. You will have at least one _Analyze_ and one _Synthesize_ unit if you plan to start from a regular time domain sound file and go back to the time domain in the end.
+
+Press+Drag a module to change its position. Alt+Press+Drag on a module to drag a connection line from source module to target module. Alt+Click on the connection line to delete the connection. Double click on the connection line to add a helper breakpoint. Double click on a module to open its settings dialog. Ctrl+Click or Right-click on a module to bring up a popup menu. The popup menu allows you to delete, rename, copy, paste and duplicate modules. Alias modules cannot be edited but always share their settings with its originators.
+
+## Modules
+
+Input+Output file read and write spectral data files, you cannot load or save sound files with them (use Analysis/Synthesis instead). You can load analysis files from SoundHack or save analysis files for later processing (e.g. using the Convert-Files module). I'm not sure if FScape will accept CSound analysis files?
+
+Splitter and Unitor will split one input into several outputs and vice versa. Envelope will calculate the spectral envelope of its input. Contrast will emphasize strong partials. Cepstral calculates the cepstrum and high pass filters it, ideally removing the resonances, but I never got it working right. Zoom is nice and will just shrink the spectrum but taking out a specified portion, the output file will be shorter and pitched up just like in resampling. Shrink is similar but "resamples" the spectrum. Flip-Freq will work only with tonal sounds and not noise, it can alter the harmonic relationships by reversing bands and stretching/ shrinking them. Tarnish is very nice and works well with speech, it attenuates harmonics and thus kind of keeps the noisy parts. Convolve: convolution in frequency domain, which is multiplication in time domain, but not necessarily circular convolution. Mindmachine, I cannot remember what the exact algorithm is, but you can create nice spheric sounds. Smear will repeat STFT frames with a given attenuation. Extrapolate doesn't work(?). Percussion is nice: It captures the resonance of each spectral frame. Choose a very high frame size, like 65556 samples; then use the synthesized output sound file as a filter for convolution.
