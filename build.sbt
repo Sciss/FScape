@@ -2,7 +2,7 @@ import AssemblyKeys._ // put this at the top of the file
 
 name             := "FScape"
 
-version          := "1.1.0-SNAPSHOT"
+version          := "1.1.0"
 
 organization     := "de.sciss"
 
