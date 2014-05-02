@@ -25,6 +25,7 @@ libraryDependencies ++= Seq(
   "de.sciss" %% "desktop-mac"         % "0.5.2",
   // "de.sciss" %% "audiowidgets-swing"  % "1.6.2",
   "de.sciss" %% "raphael-icons"       % "1.0.2",
+  "de.sciss" %% "fileutil"            % "1.1.1",
   "de.sciss" %  "scisslib"            % "1.0.0",
   "de.sciss" %  "netutil"             % "1.0.0"
 )
