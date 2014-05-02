@@ -68,6 +68,14 @@ final class DocumentWindow(val module: ModulePanel) extends WindowImpl {
       // println(prefix)
       val url = App.getClass.getResource(s"help/$prefix.md")
       if (url == null) {
+        // quick work-around for missing md conversions
+        val url1 = App.getClass.getResource(s"help/${prefix}Dlg.html")
+        if (url1 != null) {
+          val md = Source.fromFile(url1.toURI, "UTF-8").mkString
+          App.browseHTML(title0 = title, source = md)
+          return
+        }
+
         Dialog.showMessage(
           message     = s"No module help file found for ${module.getModuleName}.",
           title       = title,

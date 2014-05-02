@@ -1,0 +1,21 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN"
+        "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<HTML><HEAD><TITLE>FScape Help : CD Verification</TITLE></HEAD>
+<BODY>
+<A NAME="top"></A><H2>CD Verification</H2>
+<BLOCKQUOTE>
+I use this module to verify the quality of burned CD Audio media. The common burning programme on Mac OS X, Toast, is not capable of verifying them.
+</BLOCKQUOTE>
+<P>
+While all good players will automatically use error correction when reading CDs, you can import CDs with error correction disabled to see how good the medium actually is. On Mac, you can do this for example with iTunes by disabling the error correction in the importing preferences. This module will compare a re-imported audio CD with the original sound file which was used for burning. When verifying multi-track CDs, you have to concatenate all re-imported tracks first, using the Concat module (zero offset, zero overlap, 100% chunk length, no cross-fade).
+</P><P>
+CD players/recorders turn out to produce a variable gap before the actual audio content when re-importing the tracks. This gap can be as low as 24 samples (half millisecond; measured on an external firewire burner) or as high as almost 700 samples (equivalent to 15 milliseconds; measured on an iMac G4). FScape will automatically correlate the two files and skip the initial gap in the re-imported file. If for some reason, you get an error message saying that FScape failed to sync the files, you could try to increase the maximum initial gap size.
+</P><P>
+This module will not produce any audio output. Instead it posts a message in the console when verification was successfully completed (i.e. original and copy are 100% identical) or shows an error message if discrepancies where encountered. If you check the &quot;Quick Abort&quot; gadget, the process terminates immediately, if at least one sample in both files differed, otherwise verification is carried out to the end of the files.
+</P><P>
+Due to rounding errors when concatenating the files or such, you may encounter discrepancies on the least-significant-bit (LSB) of the two sound files, something you will usually ignore in verification, so the &quot;Ignore LSB toggle&quot; gadget is checked by default. Note that when a reading error occurs when re-importing the audio CD, discrepancies are always way higher than the LSB, usually between -80 dBFS and -40 dBFS, so it's safe to keep this option checked.
+</P><P>
+&quot;What if my CD wasn't verified?&quot; - Well, that's up to you. You may wish to use other media, or you just ignore the result because you rely on the error correction of CD players, or you just throw the CD away before shipping them to people, if you run a label or this is a CD you send for an important application ;-)
+</P>
+</BODY>
+</HTML>

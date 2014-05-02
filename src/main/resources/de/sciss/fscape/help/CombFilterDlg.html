@@ -1,0 +1,14 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN"
+        "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<HTML><HEAD><TITLE>FScape Help : Comb Filter</TITLE></HEAD>
+<BODY>
+<A NAME="top"></A><H2>Comb Filter</H2>
+<BLOCKQUOTE>
+A quite simple IIR filter that creates resonances at a basic frequency and all multiples of this
+frequency. Useful for hum removal.
+</BLOCKQUOTE>
+<P><EM>Waveform I/O:</EM> The usual input output stuff.</P>
+<P><EM>Frequency and Q:</EM> A comb filter will notch a frequency and all its linearly spaced overtones. I don't know if this a bug of my algorithm but the notch spectrum is shifted upwards by I think 50% of the fundamental frequency. Thus for hum removal if you choose 50 Hz, you'll get notches at 75 Hz, 125 Hz, 175 Hz etc. So for effective hum removal you'll have to shift the input sound up 25 Hz using the Hilbert, Comb filter it, then shift it down again. But every tiny audio app has a good hum filter nowadays, so I'm not sure if you'll want to use this module at all. The Quality is the amount of feedback in the filter, higher Q's give deeper notches.</P>
+<P><EM>Dry/Wet mix:</EM> You can subtract the original sound from the comb filtered sound by increasing the dry mix and inverting the original signal.</P>
+</BODY>
+</HTML>

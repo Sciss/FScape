@@ -30,7 +30,6 @@ import scala.collection.breakOut
 import de.sciss.desktop.Menu
 import de.sciss.desktop.Window
 import de.sciss.file._
-import de.sciss.io.IOUtil
 import java.net.URL
 import org.pegdown.PegDownProcessor
 
@@ -263,10 +262,13 @@ object FScape extends SwingApplicationImpl("FScape") {
   }
 
   def browseMarkdown(title0: String, source: String): Unit = {
-    val mdp   = new PegDownProcessor
-    val html  = mdp.markdownToHtml(source)
+    val mdp  = new PegDownProcessor
+    val html = mdp.markdownToHtml(source)
+    browseHTML(title0 = title0, source = html)
+  }
 
-    val p = new EditorPane("text/html", html) {
+  def browseHTML(title0: String, source: String): Unit = {
+    val p = new EditorPane("text/html", source) {
       editable = false
       border = Swing.EmptyBorder(8)
     }

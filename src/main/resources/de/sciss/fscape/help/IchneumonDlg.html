@@ -1,0 +1,13 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN"
+        "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<HTML><HEAD><TITLE>FScape Help : Ichneumon</TITLE></HEAD>
+<BODY>
+<A NAME="top"></A><H2>Ichneumon</H2>
+<BLOCKQUOTE>
+What can you do when you segment a sound into tiny bits separated by zero crossings? Here's one idea: go back from each zero crossing until you find a local maximum or minimum. Also go forward until you find a local maximum or minimum. The apply a resampling to this part of the wave.
+</BLOCKQUOTE>
+<HR>
+<P><EM>Min/ Max rsmp:</EM> The minimum and maximum resampling factors. There some decision algorithm inside that tries to find out whether a wave crossing a zero is "fast" or "transient" or whether it moves slowly. Depending on this analysis, a resampling value between min and max is chosen. Can't remember now which was which.</P>
+<P><EM>Quality:</EM> length of the sinc interpolation for the resampling algorithm. (see Resample-Module).</P>
+</BODY>
+</HTML>

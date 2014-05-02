@@ -1,0 +1,25 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN"
+        "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<HTML><HEAD><TITLE>FScape Help : Batch Processor</TITLE></HEAD>
+<BODY>
+<H2>Batch Processor</H2>
+<BLOCKQUOTE>
+This module lets you create a list of modules which will be processed one after another.
+It is helpful because the modules cannot be linked directly. E.g. you can assemble a
+forward fourier transform followed by amplitude flattening and inverse transform. Hit the
+"Start" button and go to sleep for a couple of hours...
+</BLOCKQUOTE>
+<P><EM>Batch list:</EM> Click "Add" to add a new entry. The list is processed top down. Elements can have different command types. To change a command type keep the mouse pressed over the "Command" column. The lines are numbered for convenience. The "Object" column contains the command arguments. The "On Error" column specifies the behaviour if the command fails, i.e. if a module aborts or a file deletion cannot be completed.</P>
+<P><EM>Command "Module"</EM>: Choosing this type will bring up a dialog with all currently opened module windows. Selecting a module and hitting "ok" will copy all the module's settings. Changing the module window's setting after this "paste" action will not have any effect. If you need to modify the module's parameters again, you'll have to create a new module dialog by hitting the "Edit" button and re-adding the module to the batch list.</P>
+<P><EM>Command "Delete file"</EM>: You can use this to delete temporary files which aren't used any more. The full path has to be given in the "Object" column. Usefull to free harddisk space during extensive batches.</P>
+<P><EM>Commands "Begin Loop" and "End Loop"</EM>: These command must be added as corresponding pairs. Command lines between a begin/end block are repeated. The number of repeats is given in the "Object" column of the begin command. The format is something like "A = 1 TO 9" which means the block is repeated 9 times. The looping variable, i.e. "A" in this case, can be used to specify variable filenames in the block, see below. The "End Loop" command must have the same variable name as the corresponding "Begin Loop" command.</P>
+<P><EM>Command "Label"</EM>: Labels are target positions in the batch that can be accessed in two ways: in the error handling configuration of a module you can specify that if an error occurs the batch should jump to a certain label. The name of the label is given in the "Error Label" column and the "On Error" column must be set to the "Skip To" item. Besides you can use the batch command "Skip to" to jump to a certain label.</P>
+<P><EM>Command "Skip To"</EM>: Branches to the given label name.</P>
+<HR>
+<P><EM>Editing the batch list:</EM> New batch commands are inserted by hitting "Add", the default command is a label and can be switched by keeping the mouse pressed over the "Command" column. Cut/Copy/Paste can be used to delete or duplicate items or to move them to a different position in the batch list. Dragging items is not possible at the moment, therefore to move an item, cut it, select the predecessor row of the target position and hit "paste". The "Edit" button brings up the parameters window of a module command. Changing the parameters has no effect on the batch list unless you re-add that module.</P>
+<HR>
+<P><EM>Module Parameter Settings</EM>: This table contains all known file arguments of a module and is a convenient mechanism for adjusting the paths of input/output files of a module without having to re-open the dialog using the "Edit" command. Usually you'll build a reusable batch list and then subsequently only exchange the initial input files and final output files. Between looping statements, placeholders can be used. For example inside a loop of variable "A", any path name can contain the string "$A" which will be replaced on the fly by the integer value representing the loop iteration. This is usefull for processing a bunch of files with the same module. FScape will determine the maximum number of characters used by the iteration variable and left-pad with "0" characters. That means, if your loop variable runs from 1 to 5, the "$A" will be replaced subsequently by the strings "1", "2", ... "5". If your loop variable runs from 1 to 15, the "$A" will be replaced subsequently by the strings "01", "02", "03" ... "15". Keep this in mind when naming files.</P>
+<HR>
+<P><EM>Control Settings</EM>: "Visible modules" specifies that the corresponding module parameters windows be opened during the processing of a module. This can be a visual help for learning how batches work. However note that in this case the batch will be interrupted by visual requests (such as a gain overdrive warning dialog at the end of a module process)! "Console Output" specifies that each batch entry that is processed be output on the console text display. In MacOS 9 the console would automatically be opened upon text output. This doesn't happen in MacOS X any more, the only way at the moment of using this feature is to launch FScape from a terminal window! This will be fixed some time in the future.</P>
+</BODY>
+</HTML>
