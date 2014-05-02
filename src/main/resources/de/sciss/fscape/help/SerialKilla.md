@@ -1,0 +1,4 @@
+# Serial Killer
+
+<BLOCKQUOTE>Though serialism is something considered history of the 50s, it's still present in contemporary music in a subtle way. When you have a traditional score, all you see is pitch and duration. Even a sonogram is difficult to interpret in terms of noise and other features. I was trying to gather information from some pieces regarding this noisiness. This module will analyze some sound characteristics: Noise, Tilt (spectral focus) and spectral energy (A-weighted). These parameters are output as regular sound files, so they can be used to drive other modules as control parameters, in particular they are used in conjunction with the _Seek + Enjoy_ module.
+</BLOCKQUOTE>

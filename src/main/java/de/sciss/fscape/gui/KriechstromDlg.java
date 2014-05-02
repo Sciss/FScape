@@ -355,7 +355,7 @@ extends ModulePanel
 		con.weightx		= 0.4;
 		con.gridwidth	= 4;
 		gui.addParamField( ggMaxChunkLen, GG_MAXCHUNKLEN, null );
-		ggLenUpdate		= new JCheckBox( "Instaneous length update" );
+		ggLenUpdate		= new JCheckBox( "Instantaneous length update" );
 		con.weightx		= 0.5;
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		gui.addCheckbox( ggLenUpdate, GG_LENUPDATE, null );
