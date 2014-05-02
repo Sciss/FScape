@@ -58,9 +58,9 @@ object FScape extends SwingApplicationImpl("FScape") {
     } catch {
       case NonFatal(_) =>
     }
-    WebCheckBoxStyle.animated = false
-    WebProgressBarStyle.progressTopColor    = Color.gray
-    WebProgressBarStyle.progressBottomColor = Color.darkGray
+    WebCheckBoxStyle   .animated            = false
+    WebProgressBarStyle.progressTopColor    = Color.lightGray
+    WebProgressBarStyle.progressBottomColor = Color.gray
     WebProgressBarStyle.highlightWhite      = new Color(255, 255, 255, 48)
     WebProgressBarStyle.highlightDarkWhite  = new Color(255, 255, 255, 0)
     // StyleConstants.animate = false
@@ -181,7 +181,7 @@ object FScape extends SwingApplicationImpl("FScape") {
     val itPrefs = Item.Preferences(App)(ActionPreferences())
     val itQuit  = Item.Quit(App)
 
-    Desktop.addQuitAcceptor(closeAll())
+    Desktop.addQuitAcceptor(closeAll("Quit"))
 
     val gFile   = Group("file"  , "File")
       .add(Item("open", ActionOpen))
@@ -291,7 +291,7 @@ object FScape extends SwingApplicationImpl("FScape") {
     def apply(): Unit = closeAll()
   }
 
-  def closeAll(): Boolean = documentViewHandler.windows.forall(_.tryClose())
+  def closeAll(title: String = "Close All"): Boolean = documentViewHandler.windows.forall(_.tryClose(title))
 
   def newDocument(key: String): Option[ModulePanel] = {
     val text = moduleName(key)

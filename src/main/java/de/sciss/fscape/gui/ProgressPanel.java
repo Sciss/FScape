@@ -27,7 +27,6 @@ import java.awt.geom.Path2D;
 import javax.swing.*;
 
 import de.sciss.gui.GUIUtil;
-import de.sciss.gui.ProgressBar;
 import de.sciss.gui.ProgressComponent;
 import de.sciss.icons.raphael.Shapes;
 
@@ -99,9 +98,8 @@ implements ProgressComponent
         pb.resume();
     }
 
-    public void setPaint( Paint c )
-    {
-        pb.setPaint( c );
+    public void setPaint(Paint c) {
+        pb.setPaint(c);
     }
 
 // ---------------- ProgressComponent interface ---------------- 
@@ -142,9 +140,8 @@ implements ProgressComponent
         ggCancel.setEnabled( false );
     }
 
-    public void setProgressionText( String text )
-    {
-        lb.setText( text );
+    public void setProgressionText(String text) {
+        lb.setText(text);
     }
 
     public void displayError( Exception e, String processName )

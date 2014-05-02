@@ -3,11 +3,16 @@ package de.sciss.fscape
 import de.sciss.fscape.session.ModulePanel
 import de.sciss.desktop.impl.WindowImpl
 import de.sciss.desktop._
-import scala.swing.{Button, Action, Component}
+import scala.swing._
 import de.sciss.file._
 import de.sciss.io.IOUtil
 import de.sciss.fscape.{FScape => App}
-import scala.Some
+import javax.swing.SwingUtilities
+import de.sciss.swingplus.OverlayPanel
+import de.sciss.desktop.Window
+import de.sciss.desktop.Menu
+import Swing._
+import de.sciss.fscape.proc.{ProcessorEvent, ProcessorAdapter}
 
 final class DocumentWindow(val module: ModulePanel) extends WindowImpl {
   window =>
@@ -60,23 +65,59 @@ final class DocumentWindow(val module: ModulePanel) extends WindowImpl {
     document.dispose()
   }
 
-  def tryClose(): Boolean = {
+  def tryClose(title: String = "Close Document"): Boolean = {
     if (module.isRunning) {
-      val ggStop  = Button("Abort Rendering") {
-        println("abort...")
+      def closeDialog(): Unit = {
+        val w = SwingUtilities.getWindowAncestor(opt.peer)
+        w.dispose()
       }
-      val ggCancel = Button("Cancel")()
-      val entries = Seq(ggStop, ggCancel)
-      val opt = OptionPane(message = s"<html><b>${document.getName}</b><p>The module is rendering.",
-        optionType = OptionPane.Options.OkCancel,
-        messageType = OptionPane.Message.Question, entries = entries)
+
+      lazy val ggCancel: Button = Button("Cancel")(closeDialog())
+
+      lazy val ggBusy: ProgressBar = new ProgressBar {
+        preferredSize = {
+          val d = ggCancel.preferredSize
+          d.width = 32
+          d
+        }
+        indeterminate = true
+        visible       = false
+      }
+
+      lazy val pOver: OverlayPanel = new OverlayPanel {
+        contents += HStrut(32)
+        contents += ggBusy
+      }
+
+      lazy val ggStop: Button = Button("Abort Rendering") {
+        ggBusy.visible  = true
+        ggStop.text     = "Aborting..."
+        module.stop()
+      }
+
+      lazy val entries = Seq(HStrut(32), ggCancel, ggStop, pOver)
+      lazy val opt: OptionPane[OptionPane.Result.Value] =
+        OptionPane(message = s"<html><b>${window.title}</b><p>The module is rendering.",
+          optionType = OptionPane.Options.OkCancel,
+          messageType = OptionPane.Message.Question, entries = entries)
       opt.title = "Close Document"
       front()
-      val res = opt.show(Some(this))
-      println(s"Result: $res")
+
+      val li = new ProcessorAdapter {
+        override def processorStopped(e: ProcessorEvent): Unit = {
+          closeDialog()
+        }
+      }
+
+      module.addProcessorListener(li)
+      /* val res = */ opt.show(Some(this))
+      module.removeProcessorListener(li)
+      // println(s"Result: $res")
     }
-    dispose()
-    true
+
+    val ok = !module.isRunning
+    if (ok) dispose()
+    ok
   }
 
   def document: App.Document = module.getDocument
