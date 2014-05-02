@@ -77,31 +77,9 @@ object ActionOpen extends Action("Open...") {
     } catch {
       case NonFatal(e) =>
         Dialog.showMessage(
-          message     = s"Unable to create new document ${f.path}\n\n${formatException(e)}",
+          message     = s"Unable to create new document ${f.path}\n\n${GUI.formatException(e)}",
           title       = fullTitle,
           messageType = Dialog.Message.Error
         )
     }
-
-  private def wordWrap(s: String, margin: Int = 80): String = {
-    if (s == null) return "" // fuck java
-    val sz = s.length
-    if (sz <= margin) return s
-    var i = 0
-    val sb = new StringBuilder
-    while (i < sz) {
-      val j = s.lastIndexOf(" ", i + margin)
-      val found = j > i
-      val k = if (found) j else i + margin
-      sb.append(s.substring(i, math.min(sz, k)))
-      i = if (found) k + 1 else k
-      if (i < sz) sb.append('\n')
-    }
-    sb.toString()
-  }
-
-  private def formatException(e: Throwable): String = {
-    e.getClass.toString + " :\n" + wordWrap(e.getMessage) + "\n" +
-      e.getStackTrace.take(10).map("   at " + _).mkString("\n")
-  }
 }

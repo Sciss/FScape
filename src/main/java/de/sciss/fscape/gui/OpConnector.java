@@ -95,7 +95,6 @@ public class OpConnector
 	private	int				width;			// of this component
 	private int				height;
 
-	private Font			fnt;
 	private FontMetrics		fntMetr;
 
 // -------- public Methoden ---------
@@ -276,8 +275,6 @@ newVisualProps();
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-//System.err.println( "paintComponent" );
-        Graphics2D g2 = (Graphics2D) g;
 
         // drawArrowCorrect(g2);   // XXX TODO
 
@@ -305,19 +302,6 @@ newVisualProps();
         } else {
             drawArrow(g, srcP.x, srcP.y, destP.x, destP.y, true);
         }
-
-        //        // src
-        //        Point tempP = isVisible() ? thisP : destP;
-        //        g.setColor(Color.black);
-        //        g.drawLine(srcP.x - srcLoc.x, srcP.y - srcLoc.y,
-        //                tempP.x - srcLoc.x, tempP.y - srcLoc.y);
-        //
-        //        // dest
-        //        tempP = isVisible() ? thisP : srcP;
-        //        g.setColor(Color.black);
-        //        drawArrow(g, tempP.x - destLoc.x, tempP.y - destLoc.y,
-        //                destP.x - destLoc.x, destP.y - destLoc.y, true);
-        //        // destIcon.repaint();
     }
 
 	/**

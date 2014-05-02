@@ -32,6 +32,7 @@ import de.sciss.desktop.Window
 import de.sciss.file._
 import de.sciss.io.IOUtil
 import java.net.URL
+import org.pegdown.PegDownProcessor
 
 object FScape extends SwingApplicationImpl("FScape") {
   App =>
@@ -249,7 +250,9 @@ object FScape extends SwingApplicationImpl("FScape") {
 
     val gHelp = Group("help", "Help")
     if (itAbout.visible) gHelp.add(itAbout).addLine()
-    gHelp.add(Item("index", ActionHelpIndex))
+    gHelp
+      .add(Item("index", ActionHelpIndex))
+      .add(Item("module", proxy("Module Documentation")))
 
     Root()
       .add(gFile)
@@ -257,6 +260,37 @@ object FScape extends SwingApplicationImpl("FScape") {
       .add(gEdit)
       // XXX TODO: .add(gWindow)
       .add(gHelp)
+  }
+
+  def browseMarkdown(title0: String, source: String): Unit = {
+    val mdp   = new PegDownProcessor
+    val html  = mdp.markdownToHtml(source)
+
+    val p = new EditorPane("text/html", html) {
+      editable = false
+      border = Swing.EmptyBorder(8)
+    }
+    p.peer.setCaretPosition(0)
+
+    new WindowImpl {
+      def handler: WindowHandler = App.windowHandler
+      override def style = Window.Auxiliary
+
+      title           = title0
+      closeOperation  = Window.CloseDispose
+      contents        = new ScrollPane(p)
+      pack()
+      size = {
+        val ge    = GraphicsEnvironment.getLocalGraphicsEnvironment
+        val bs    = ge.getMaximumWindowBounds
+        val d     = size
+        d.width   = math.min(d.width , bs.width / 3)
+        d.height  = bs.height // math.min(d.height, bs.height)
+        d
+      }
+      GUI.placeWindow(this, 1f, 0.5f, 0)
+      front()
+    }
   }
 
   private class MainWindow extends WindowImpl {

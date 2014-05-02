@@ -16,4 +16,27 @@ object GUI {
     val y   = (vertical   * (bs.height - padding * 2 - b.height)).toInt + bs.y + padding
     w.location = (x, y)
   }
+
+
+  private def wordWrap(s: String, margin: Int = 80): String = {
+    if (s == null) return "" // fuck java
+    val sz = s.length
+    if (sz <= margin) return s
+    var i = 0
+    val sb = new StringBuilder
+    while (i < sz) {
+      val j = s.lastIndexOf(" ", i + margin)
+      val found = j > i
+      val k = if (found) j else i + margin
+      sb.append(s.substring(i, math.min(sz, k)))
+      i = if (found) k + 1 else k
+      if (i < sz) sb.append('\n')
+    }
+    sb.toString()
+  }
+
+  def formatException(e: Throwable): String = {
+    val stack = e.getStackTrace.take(10).map("   at " + _).mkString("\n")
+    s"${e.getClass} :\n${wordWrap(e.getMessage)}\n$stack"
+  }
 }

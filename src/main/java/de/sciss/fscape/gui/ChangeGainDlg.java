@@ -169,7 +169,7 @@ extends ModulePanel
 				switch( ID ) {
 				case GG_FINDPEAK:
 					threadJustFind	= true;
-					printMarkers	= (e.getModifiers() & ActionEvent.META_MASK) != 0;
+					printMarkers	= (e.getModifiers() & (ActionEvent.META_MASK | ActionEvent.ALT_MASK)) != 0;
 					clearInput();
 					start();
 				}

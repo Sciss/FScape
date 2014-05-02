@@ -13,6 +13,8 @@ import de.sciss.desktop.Window
 import de.sciss.desktop.Menu
 import Swing._
 import de.sciss.fscape.proc.{ProcessorEvent, ProcessorAdapter}
+import scala.io.Source
+import scala.util.control.NonFatal
 
 final class DocumentWindow(val module: ModulePanel) extends WindowImpl {
   window =>
@@ -34,7 +36,8 @@ final class DocumentWindow(val module: ModulePanel) extends WindowImpl {
   bindMenus(
     "file.save"     -> ActionSave,
     "file.save-as"  -> ActionSaveAs,
-    "file.close"    -> Action(null)(tryClose())
+    "file.close"    -> Action(null)(tryClose()),
+    "help.module"   -> Action(null)(moduleHelp())
   )
 
   private def gWindow: Option[Menu.Group] = App.menuRoot.get("window") match {
@@ -55,6 +58,34 @@ final class DocumentWindow(val module: ModulePanel) extends WindowImpl {
 
   reactions += {
     case Window.Closing(_) => tryClose()
+  }
+
+  private def moduleHelp(): Unit = {
+    val prefix0 = module.getClass.getName
+    val prefix  = prefix0.substring(prefix0.lastIndexOf('.') + 1, prefix0.length - 3)
+    val title   = "Module Help"
+    try {
+      // println(prefix)
+      val url = App.getClass.getResource(s"help/$prefix.md")
+      if (url == null) {
+        Dialog.showMessage(
+          message     = s"No module help file found for ${module.getModuleName}.",
+          title       = title,
+          messageType = Dialog.Message.Warning
+        )
+        return
+      }
+      val md = Source.fromFile(url.toURI, "UTF-8").mkString
+      App.browseMarkdown(title0 = title, source = md)
+
+    } catch {
+      case NonFatal(e) =>
+        Dialog.showMessage(
+          message     = s"Unable to create module help file for ${module.getModuleName}\n\n${GUI.formatException(e)}",
+          title       = title,
+          messageType = Dialog.Message.Error
+        )
+    }
   }
 
   override def dispose(): Unit = {
