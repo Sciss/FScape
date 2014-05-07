@@ -20,7 +20,7 @@ A binary version of FScape for Linux, OS X and Windows is provided through [Bint
 
 ## running
 
-In the binary distribution, you should just be able to double click the `FScape.jar` file, or `FScape.app` on OS X.
+In the binary distribution, you should just be able to double click the `FScape.jar` file, or `FScape.app` on OS X. An example `.desktop` file for Linux windows manager is included. Edit the installation path using a text editor and copy this file into `~/.local/share/applications` to become available in your system (GNOME, KDE, ...). From a terminal, FScape can be launched as `java -jar FScape.jar`.
 
 ## compiling
 
@@ -48,6 +48,6 @@ The [sbt build script](https://github.com/paulp/sbt-extras) by Paul Phillips is 
 
 ## documentation
 
-There's no real manual, but a basic online help hypertext starts from `help/index.html`. This help is also accessible from the help menu within the application.
+A basic quick start guide starts from `help/index.html`. This help is also accessible from the help menu within the application. For each of the processing modules, help is available via Help &gt; Module Documentation.
 
 A short screencast is available on [Vimeo](https://vimeo.com/26509124).

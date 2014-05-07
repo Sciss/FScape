@@ -2,7 +2,7 @@ import AssemblyKeys._ // put this at the top of the file
 
 name             := "FScape"
 
-version          := "1.1.0"
+version          := "1.1.1"
 
 organization     := "de.sciss"
 
@@ -10,7 +10,7 @@ description      := "A standalone audio rendering software for time domain and s
 
 homepage         := Some(url("https://github.com/Sciss/" + name.value))
 
-licenses         := Seq("GPL v2+" -> url("http://www.gnu.org/licenses/gpl-2.0.txt"))
+licenses         := Seq("GPL v3+" -> url("http://www.gnu.org/licenses/gpl-3.0.txt"))
 
 scalaVersion     := "2.11.0"
 
