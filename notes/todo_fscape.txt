@@ -1,0 +1,11 @@
+::: low :::
+OSC
+window menu
+play/open button
+
+::: very low :::
+presets
+env-icon
+
+::: future :::
+undo-redo, dirty
