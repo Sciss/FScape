@@ -100,8 +100,8 @@ public class LimiterDlg
             static_pr.paraName = prParaName;
             static_pr.para[PR_BOOST]    = new Param(  3.0, Param.DECIBEL_AMP);
             static_pr.para[PR_CEILING]  = new Param( -0.2, Param.DECIBEL_AMP);
-            static_pr.para[PR_ATTACK]   = new Param( 10.0, Param.ABS_MS     );
-            static_pr.para[PR_RELEASE]  = new Param(100.0, Param.ABS_MS     );
+            static_pr.para[PR_ATTACK]   = new Param( 20.0, Param.ABS_MS     );
+            static_pr.para[PR_RELEASE]  = new Param(200.0, Param.ABS_MS     );
 
             fillDefaultAudioDescr(static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES);
             static_presets = new Presets(getClass(), static_pr.toProperties(true));
@@ -148,7 +148,7 @@ public class LimiterDlg
         ggOutputFile.handleTypes(GenericFile.TYPES_SOUND);
         ggInputs        = new PathField[1];
         ggInputs[0]     = ggInputFile;
-        ggOutputFile.deriveFrom(ggInputs, "$D0$F0Gain$E");
+        ggOutputFile.deriveFrom(ggInputs, "$D0$F0Lim$E");
         con.gridwidth   = 1;
         con.weightx     = 0.1;
         gui.addLabel(new JLabel("File Name:", SwingConstants.RIGHT));
@@ -230,18 +230,17 @@ public class LimiterDlg
         AudioFile outF  = null;
 
         final AudioFileDescr inSpec, outSpec;
-        final int numChannels, bufSize;
+        final int numChannels;
         long numFrames;
 
         final PathField ggOutput;
 
         final int atkSize, rlsSize;    // sample frames re -150 dB
-        final int lapSize = 8192;
+        final int lapSize, inBufSize, grainBufSize, envSize;
         final float[][]  inBuf;
         final double[][] gainBuf;
         final double[] env;
         final boolean sync;
-        final int envSize;
 
         final Param ampRef;
         final double ceil, boost;
@@ -278,7 +277,7 @@ public class LimiterDlg
             atkSize     = (int) (atk60 * 2.5);
             rlsSize     = (int) (rls60 * 2.5);
 
-            envSize     = atkSize + rlsSize - 1;
+            envSize     = atkSize + rlsSize;
             env         = new double[envSize];
             env[atkSize] = 1.0;
             for (int i = 1; i < atkSize; i++) env[atkSize - i] = Math.pow(atkCoef, i);
@@ -288,22 +287,25 @@ public class LimiterDlg
             boost       = (Param.transform(pr.para[PR_BOOST  ], Param.ABS_AMP, ampRef, null)).val;
             ceil        = (Param.transform(pr.para[PR_CEILING], Param.ABS_AMP, ampRef, null)).val;
 
-            bufSize     = envSize + lapSize;
+            lapSize     = Math.max(atkSize, 8192);
+            grainBufSize = envSize + lapSize;
             sync        = pr.bool[PR_SYNC];
 
             gainChans   = sync ? 1 : numChannels;
-            gainBuf     = new double[gainChans][bufSize];
-            inBuf       = new float[numChannels][lapSize];
+            gainBuf     = new double[gainChans][grainBufSize];
+            inBufSize   = atkSize + lapSize;
+            inBuf       = new float[numChannels][inBufSize];
 
-            Util.fill(gainBuf, 0, bufSize, 1.0);
+            Util.fill(gainBuf, 0, grainBufSize, boost);
 
+            int outSkip = atkSize;
             for (long framesRead = 0L, framesWritten = 0L; (framesWritten < numFrames) && threadRunning; ) {
                 // ---- read input ----
                 final int readLen = (int) Math.min(lapSize, numFrames - framesRead);
-                inF.readFrames(inBuf, 0, readLen);
+                inF.readFrames(inBuf, atkSize, readLen);
 
                 // ---- adjust gain buffer ----
-                for (int i = 0, j = atkSize; i < readLen; i++, j++) {
+                for (int i = atkSize, ii = i + readLen; i < ii; i++) {
                     for (int ch = 0; ch < gainChans; ch++) {
                         float max = 0.0f;
                         if (sync) {
@@ -314,8 +316,8 @@ public class LimiterDlg
                             max = Math.abs(inBuf[ch][i]);
                         }
                         final double[] gainBufCh = gainBuf[ch];
-                        final double gain0  = gainBufCh[j];
-                        final double amp0   = max * boost * gain0;
+                        final double gain0  = gainBufCh[i];
+                        final double amp0   = max * gain0;
                         // if the cumulative amplitude exceeds the
                         // threshold by now, multiply the gain buffer
                         // with the attack/release envelope for that
@@ -331,25 +333,45 @@ public class LimiterDlg
                             // then ceil/amp0 = 0.7. At peak we'll multiply by -0.3 + 1.0 = 0.7
                             final double mul = ceil / amp0 - 1.0;
 
-                            for (int k = 0, m = j - atkSize; k < envSize; k++, m++) {
-                                gainBufCh[m] *= env[k] * mul + 1.0;
+                            for (int j = 0, k = i - atkSize; j < envSize; j++, k++) {
+                                gainBufCh[k] *= env[j] * mul + 1.0;
                             }
                         }
                     }
                 }
 
                 // ---- calculate output ----
-
+                final int writeLen  = (int) Math.min(lapSize, numFrames - framesWritten) - outSkip;
+                final int outStop   = outSkip + writeLen;
+                for (int ch = 0; ch < numChannels; ch++) {
+                    final double[] gainBufCh    = gainBuf[ch % gainChans];
+                    final float[]  inBufCh      = inBuf[ch];
+                    for (int i = outSkip; i < outStop; i++) {
+                        final float gain = (float) gainBufCh[i];
+                        if (gain != 1f) inBufCh[i] *= gain;
+                    }
+                }
 
                 // ---- write output ----
+                outF.writeFrames(inBuf, outSkip, writeLen);
 
                 // ---- buffer rotation ----
+                for (double[] gainBufCh : gainBuf) {
+                    System.arraycopy(gainBufCh, outStop, gainBufCh, 0, grainBufSize - outStop);
+                }
+                Util.fill(gainBuf, grainBufSize - outStop, outStop, boost);
 
+                for (float[] inBufCh : inBuf) {
+                    System.arraycopy(inBufCh, outStop, inBufCh, 0, inBufSize - outStop);
+                }
 
-                framesRead += readLen;
-                // progOff		+= len;
+                outSkip = 0;
+
+                framesRead    += readLen;
+                framesWritten += writeLen;
+
                 // .... progress ....
-                // setProgression( (float) progOff / (float) progLen );
+                setProgression((float) ((double) (framesRead + framesWritten) / (numFrames + numFrames)));
             }
             // .... check running ....
             if (!threadRunning) break topLevel;
