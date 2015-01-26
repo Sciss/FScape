@@ -240,8 +240,10 @@ object FScape extends SwingApplicationImpl("FScape") {
            |<font size=+1><b>About ${App.name}</b></font><p>
            |Version $version<p>
            |<p>
-           |Copyright (c) 2001&ndash;2014 Hanns Holger Rutz.<p>
+           |Copyright (c) 2001&ndash;2015 Hanns Holger Rutz.<p>
            |This software is published under the GNU General Public License v3+<p>
+           |<p>
+           |Winner of the 2014 LoMus award (ex aequo).
            |<p>
            |<a href="$url">$addr</a>
            |""".stripMargin
@@ -270,7 +272,7 @@ object FScape extends SwingApplicationImpl("FScape") {
       .add(gFile)
       .add(gNewModule)
       .add(gEdit)
-      // XXX TODO: .add(gWindow)
+      // .add(gWindow) XXX TODO - removal not working correctly
       .add(gHelp)
   }
 
