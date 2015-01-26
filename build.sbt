@@ -1,5 +1,3 @@
-import AssemblyKeys._ // put this at the top of the file
-
 name             := "FScape"
 
 version          := "1.2.0-SNAPSHOT"
@@ -12,9 +10,13 @@ homepage         := Some(url("https://github.com/Sciss/" + name.value))
 
 licenses         := Seq("GPL v3+" -> url("http://www.gnu.org/licenses/gpl-3.0.txt"))
 
-scalaVersion     := "2.11.4"
+scalaVersion     := "2.11.5"
 
-javacOptions    ++= Seq("-source", "1.6", "-target", "1.6")
+lazy val basicJavaOpts = Seq("-source", "1.6", "-target", "1.6")
+
+javacOptions    ++= basicJavaOpts ++ Seq("-encoding", "utf8")
+
+javaOptions in (Compile, doc) := basicJavaOpts  // doesn't eat `-encoding`
 
 mainClass in Compile := Some("de.sciss.fscape.FScape")
 
@@ -30,8 +32,6 @@ libraryDependencies ++= Seq(
 )
 
 // ---- bundling ----
-
-seq(assemblySettings: _*)
 
 test    in assembly    := ()
 

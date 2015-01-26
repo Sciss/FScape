@@ -2,7 +2,7 @@
  *  Util.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2014 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -153,6 +153,26 @@ public class Util
 	{
 		for( int i = 0; i < a.length; i++ ) {
 			a[ i ] = 0.0f;
+		}
+	}
+
+	/** Fills a two-dimensional array with a constant value. */
+	public static void fill(float[][] a, int off, int len, float value) {
+		final int stop = off + len;
+		for (float[] ch : a) {
+			for (int j = off; j < stop; j++) {
+				ch[j] = value;
+			}
+		}
+	}
+
+	/** Fills a two-dimensional array with a constant value. */
+	public static void fill(double[][] a, int off, int len, double value) {
+		final int stop = off + len;
+		for (double[] ch : a) {
+			for (int j = off; j < stop; j++) {
+				ch[j] = value;
+			}
 		}
 	}
 

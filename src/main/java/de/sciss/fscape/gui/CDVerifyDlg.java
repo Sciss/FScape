@@ -2,7 +2,7 @@
  *  CDVerifyDlg.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2014 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *

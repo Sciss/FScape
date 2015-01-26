@@ -2,7 +2,7 @@
  *  FScape.scala
  *  (FScape)
  *
- *  Copyright (c) 2001-2014 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -118,7 +118,8 @@ object FScape extends SwingApplicationImpl("FScape") {
       ("UnaryOp"    , "Unary Operator"        , Some(menu2 + Key.Key1)),
       ("BinaryOp"   , "Binary Operator"       , Some(menu2 + Key.Key2)),
       ("AmpShaper"  , "Amplitude Shaper"      , Some(menu2 + Key.A)),
-      ("Resample"   , "Resample"              , Some(menu2 + Key.P))
+      ("Resample"   , "Resample"              , Some(menu2 + Key.P)),
+      ("Limiter"    , "Limiter"               , None               )
     )),
     ("spectral", "Spectral Domain", Vector[ItemConfig](
       ("FIRDesigner",	"FIR Designer"          , Some(menu2 + Key.R)),
