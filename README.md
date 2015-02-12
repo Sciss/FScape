@@ -2,17 +2,21 @@
 
 # FScape
 
+[![Flattr this](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=sciss&url=https%3A%2F%2Fgithub.com%2FSciss%2FFScape&title=FScape%20Music%20Application&language=Scala&tags=github&category=software)
+
 ## statement
 
 FScape is a standalone, cross-platform audio rendering software.
 
-FScape is (C)opyright 2001&ndash;2014 by Hanns Holger Rutz. All rights reserved.
+FScape is (C)opyright 2001&ndash;2015 by Hanns Holger Rutz. All rights reserved.
 
 This program is free software; you can redistribute it and/or modify it under the terms of the [GNU General Public License](http://github.com/Sciss/FScape/blob/master/LICENSE) v3+.
 
 This program is distributed in the hope that it will be useful, but _without any warranty_ without even the implied warranty of _merchantability_ or _fitness for a particular purpose_. See the GNU General Public License for more details.
 
 To contact the author, send an email to `contact at sciss.de`. For project status, API and current version visit [github.com/Sciss/FScape](http://github.com/Sciss/FScape).
+
+FScape is winner of the 2014 [LoMus award](http://concours.afim-asso.org/) (ex-aequo) by the Association Française d’Informatique Musicale (AFIM).
 
 ## downloading
 
