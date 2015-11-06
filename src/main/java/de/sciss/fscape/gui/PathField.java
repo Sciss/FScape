@@ -32,7 +32,14 @@ import de.sciss.io.AudioFileDescr;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.InputEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -40,13 +47,10 @@ import java.io.IOException;
 import java.util.Vector;
 
 /**
- *	GUI component containg a path string,
+ *	GUI component containing a path string,
  *	a path selector icon (which is also a
  *	drag target for the Finder) and optional
  *	info fields and type selectors.
- *
- *  @author		Hanns Holger Rutz
- *  @version	0.71, 10-Sep-08
  */
 public class PathField
 extends JPanel
@@ -107,9 +111,7 @@ implements ActionListener, ComponentListener, ItemListener, PathListener,
 	private static final String[] movRateTxt= { "8 fps", "10 fps", "12 fps", "15 fps", "24 fps",
 												"25 fps", "29.97 fps", "30 fps" };
 
-	private GridBagLayout lay;
-	private GridBagConstraints	con;
-	private IOTextField			ggPath;
+    private IOTextField			ggPath;
 //	private PathIcon			ggChoose;
 	private SelectPathButton			ggChoose;
 	private ColouredTextField	ggFormat	= null;
@@ -125,7 +127,7 @@ implements ActionListener, ComponentListener, ItemListener, PathListener,
 //	private static final int MAXRATENUM	= 4;
 
 //	protected Vector collListeners  = new Vector();
-	protected Vector collChildren   = new Vector();
+	protected final Vector collChildren   = new Vector();
 
 	private int					type;
 	private int					handledTypes[]	= null;	// the ones that we can handle (auto setFormat)
@@ -138,7 +140,7 @@ implements ActionListener, ComponentListener, ItemListener, PathListener,
 	private boolean					init		= true;
 	private boolean					enabled		= true;
 
-	// constants for abbrevate
+	// constants for abbreviate
 	protected static final int ABBR_LENGTH = 12;
 	
 	private final EventManager elm = new EventManager( this );
@@ -151,13 +153,13 @@ implements ActionListener, ComponentListener, ItemListener, PathListener,
 		this.type		= type;
 //		this.dlgTxt		= dlgTxt;
 
-		lay				= new GridBagLayout();
-		con				= new GridBagConstraints();
+        GridBagLayout lay = new GridBagLayout();
+        GridBagConstraints con = new GridBagConstraints();
 		ggPath			= new IOTextField();
         ggChoose        = new SelectPathButton(type, dlgTxt);
         ggChoose.addPathListener( this );
 		
-		setLayout( lay );
+		setLayout(lay);
 		con.fill		= GridBagConstraints.HORIZONTAL;
 
 		con.anchor		= GridBagConstraints.WEST;
@@ -166,7 +168,7 @@ implements ActionListener, ComponentListener, ItemListener, PathListener,
 		con.gridy		= 1;
 		con.weightx		= 1.0;
 		con.weighty		= 0.0;
-		lay.setConstraints( ggPath, con );
+		lay.setConstraints(ggPath, con);
 		ggPath.addActionListener( this );		// High-Level Events: Return-Hit weiterleiten
 		add( ggPath );
 
@@ -180,26 +182,26 @@ implements ActionListener, ComponentListener, ItemListener, PathListener,
 				ggFormat.setBackground( null );
 //				ggFormat.setPaint( null );
 //				con.gridheight	= 1;
-				lay.setConstraints( ggFormat, con );
+				lay.setConstraints(ggFormat, con);
 				add( ggFormat );
 			} else {
 				ggType			= new VirtualChoice();
 				con.weightx		= 0.3;
-				lay.setConstraints( ggType, con );
+				lay.setConstraints(ggType, con);
 				add( ggType );
 //				ggType.addItemListener( this );
 				ggType.addSpecialItemListener( this );
 				if( (type & TYPE_RESFIELD) != 0 ) {
 					ggRes		= new VirtualChoice();
 					con.gridx++;
-					lay.setConstraints( ggRes, con );
+					lay.setConstraints(ggRes, con);
 					add( ggRes );
 //					ggRes.addItemListener( this );
 				}
 				if( (type & TYPE_RATEFIELD) != 0 ) {
 					ggRate		= new VirtualChoice();
 					con.gridx++;
-					lay.setConstraints( ggRate, con );
+					lay.setConstraints(ggRate, con);
 					add( ggRate );
 //					ggRate.addItemListener( this );
 				}
@@ -215,7 +217,7 @@ implements ActionListener, ComponentListener, ItemListener, PathListener,
 		con.gridy		= 0;
 		con.weightx		= 0.0;
 		con.weighty		= 1.0;
-		lay.setConstraints( ggChoose, con );
+		lay.setConstraints(ggChoose, con);
 		add( ggChoose );
 		
 		deriveFrom( new PathField[0], (ggType != null) ? "$E" : "" );
@@ -291,102 +293,96 @@ implements ActionListener, ComponentListener, ItemListener, PathListener,
 		elm.dispatchEvent( new PathEvent( this, PathEvent.CHANGED, System.currentTimeMillis(), path ));
 //		actionComponent.dispatchEvent( new ActionEvent( this, ActionEvent.ACTION_PERFORMED, "" ));
 	}
-	
-	public File getPath()
-	{
-		return( new File( ggPath.getText() ));
-	}
 
-	public void setFormat( String txt )
-	{
-		if( ggFormat != null ) {
-			ggFormat.setText( txt );
-		}
-	}
-	
-	public String getFormat()
-	{
-		if( ggFormat != null ) {
-			return ggFormat.getText();
-		} else {
-			return null;
-		}
-	}
+    public File getPath() {
+        return (new File(ggPath.getText()));
+    }
+
+    public void setFormat(String txt) {
+        if (ggFormat != null) {
+            ggFormat.setText(txt);
+        }
+    }
+
+    public String getFormat() {
+        if (ggFormat != null) {
+            return ggFormat.getText();
+        } else {
+            return null;
+        }
+    }
 
 	/**
 	 *	Fill AudioFileDescr or ImageStream with
 	 *	data corresponding to Resolution + Rate
 	 */
-	public void fillStream( AudioFileDescr afd )
-	{
-		int	idx;
-	
-		afd.file		= getPath();
-	
-		if( ggType != null ) {
-			afd.type	= GenericFile.getAudioFileType(getType());
-		}
-		if( ggRes != null ) {
-			idx = ggRes.getSelectedIndex();
-			switch( idx ) {
-			case SNDRES_16:
-				afd.bitsPerSample	= 16;
-				afd.sampleFormat	= AudioFileDescr.FORMAT_INT;
-				break;
-			case SNDRES_24:
-				afd.bitsPerSample	= 24;
-				afd.sampleFormat	= AudioFileDescr.FORMAT_INT;
-				break;
-			case SNDRES_32F:
-				afd.bitsPerSample	= 32;
-				afd.sampleFormat	= AudioFileDescr.FORMAT_FLOAT;
-				break;
-			case SNDRES_32:
-				afd.bitsPerSample	= 32;
-				afd.sampleFormat	= AudioFileDescr.FORMAT_INT;
-				break;
-			}
-		}
-		if( ggRate != null ) {
-			idx = ggRate.getSelectedIndex();
-			if( (idx >= 0) && (idx < sndRate.length) ) {
-				afd.rate = sndRate[ idx ];
-			}
-		}
-	}
+    public void fillStream(AudioFileDescr afd) {
+        int idx;
+
+        afd.file = getPath();
+
+        if (ggType != null) {
+            afd.type = GenericFile.getAudioFileType(getType());
+        }
+        if (ggRes != null) {
+            idx = ggRes.getSelectedIndex();
+            switch (idx) {
+                case SNDRES_16:
+                    afd.bitsPerSample   = 16;
+                    afd.sampleFormat    = AudioFileDescr.FORMAT_INT;
+                    break;
+                case SNDRES_24:
+                    afd.bitsPerSample   = 24;
+                    afd.sampleFormat    = AudioFileDescr.FORMAT_INT;
+                    break;
+                case SNDRES_32F:
+                    afd.bitsPerSample   = 32;
+                    afd.sampleFormat    = AudioFileDescr.FORMAT_FLOAT;
+                    break;
+                case SNDRES_32:
+                    afd.bitsPerSample   = 32;
+                    afd.sampleFormat    = AudioFileDescr.FORMAT_INT;
+                    break;
+            }
+        }
+        if (ggRate != null) {
+            idx = ggRate.getSelectedIndex();
+            if ((idx >= 0) && (idx < sndRate.length)) {
+                afd.rate = sndRate[idx];
+            }
+        }
+    }
 
 	/**
 	 *	Fill AudioFileDescr or ImageStream with
 	 *	data corresponding to Resolution + Rate
 	 */
-	public void fillStream( SpectStream stream )
-	{
-		int	ID;
-	
-		if( ggRate != null ) {
-			ID = ggRate.getSelectedIndex();
-			if( (ID >= 0) && (ID < spectRate.length) ) {
-				stream.smpRate = spectRate[ ID ];
-			}
-		}
-	}
+    public void fillStream(SpectStream stream) {
+        int ID;
 
-	public void fillStream( ImageStream stream )
-	{
-		int ID;
-		
-		if( ggRes != null ) {
-			ID = ggRes.getSelectedIndex();
-			switch( ID ) {
-			case IMGRES_8:
-				stream.bitsPerSmp	= 8;
-				break;
-			case IMGRES_16:
-				stream.bitsPerSmp	= 16;
-				break;
-			}
-		}
-	}
+        if (ggRate != null) {
+            ID = ggRate.getSelectedIndex();
+            if ((ID >= 0) && (ID < spectRate.length)) {
+                stream.smpRate = spectRate[ID];
+            }
+        }
+    }
+
+    public void fillStream(ImageStream stream) {
+        int ID;
+
+        if (ggRes != null) {
+            ID = ggRes.getSelectedIndex();
+            switch (ID) {
+                case IMGRES_8:
+                    stream.bitsPerSmp = 8;
+                    break;
+                case IMGRES_16:
+                    stream.bitsPerSmp = 16;
+                    break;
+            }
+        }
+    }
 
 // XXX QUICKTIME
 /*
@@ -405,17 +401,17 @@ implements ActionListener, ComponentListener, ItemListener, PathListener,
 		}
 	}
 */
-	public int getType()
-	{
-		if( ggType != null ) {
-			return GenericFile.getType( ggType.getSelectedItem().toString() );
-		} else {
-			return GenericFile.MODE_GENERIC;
-		}
-	}
+
+    public int getType() {
+        if (ggType != null) {
+            return GenericFile.getType(ggType.getSelectedItem().toString());
+        } else {
+            return GenericFile.MODE_GENERIC;
+        }
+    }
 
 	public JComboBox getTypeGadget()	{ return ggType; }
-	public JComboBox getResGadget()		{ return ggRes; }
+	public JComboBox getResGadget()		{ return ggRes ; }
 	public JComboBox getRateGadget()	{ return ggRate; }
 
 	/**
@@ -437,49 +433,45 @@ implements ActionListener, ComponentListener, ItemListener, PathListener,
 	 *  unless the user completely clears the PathField (i.e.
 	 *  restores full automation).
 	 *
-	 *  The user can abbrevate or extend filenames by pressing the appropriate
+	 *  The user can abbreviate or extend filenames by pressing the appropriate
 	 *  key; in this case the $F and $B tags are exchanged in the scheme.
 	 */
-	public void deriveFrom( PathField[] superPth, String schm )
-	{
-		superPaths 		= superPth;
-		scheme			= schm;
-		protoScheme		= schm;
+    public void deriveFrom(PathField[] superPth, String schm) {
+        superPaths  = superPth;
+        scheme      = schm;
+        protoScheme = schm;
 
-		for( int i = 0; i < superPth.length; i++ ) {
-			superPth[ i ].addChildPathField( this );
-		}
-	}
-	
-	protected void addChildPathField( PathField child )
-	{
-		synchronized( collChildren ) {
-			if( !collChildren.contains( child )) collChildren.add( child );
-		} // synchronized( collChildren )
-	}
-	
-	protected void motherSpeaks( File superPath )
-	{
-		setPathAndDispatchEvent( new File( evalScheme( scheme )));
+        for (int i = 0; i < superPth.length; i++) {
+            superPth[i].addChildPathField(this);
+        }
+    }
+
+    protected void addChildPathField(PathField child) {
+        synchronized (collChildren) {
+            if (!collChildren.contains(child)) collChildren.add(child);
+        } // synchronized( collChildren )
+    }
+
+	protected void motherSpeaks(File superPath) {
+		setPathAndDispatchEvent(new File(evalScheme(scheme)));
 	}
 
-	public void setEnabled( boolean state )
-	{
-		if( state == enabled ) return;
+	public void setEnabled(boolean state) {
+		if (state == enabled) return;
 		enabled = state;
-	
-		if( !state ) {
-			ggChoose.requestFocus();	// tricky ggPath.looseFocus() ;)
+
+		if (!state) {
+			ggChoose.requestFocus();    // tricky ggPath.looseFocus() ;)
 		}
-		ggPath.setEnabled( state );
-		ggChoose.setEnabled( state );
-		if( ggType != null )	ggType.setEnabled( state );
-		if( ggRes != null )		ggRes.setEnabled(  state );
-		if( ggRate != null )	ggRate.setEnabled( state );
+		ggPath  .setEnabled(state);
+		ggChoose.setEnabled(state);
+		if (ggType != null) ggType.setEnabled(state);
+		if (ggRes  != null) ggRes .setEnabled(state);
+		if (ggRate != null) ggRate.setEnabled(state);
 
 		feedback();
 
-		if( state ) {
+		if (state) {
 			ggPath.requestFocus();
 		}
 	}
@@ -510,154 +502,149 @@ implements ActionListener, ComponentListener, ItemListener, PathListener,
 		} // for( i = 0; i < elm.countListeners(); i++ )
 	}
 
-	public void handleTypes( int types[] )
-	{
-		handledTypes = types;
-		if( (type & TYPE_BASICMASK) == TYPE_OUTPUTFILE ) {
-			ggType.removeAllItems();
-			for( int i = 0; i < types.length; i++ ) {
-				ggType.addItem( GenericFile.getTypeDescr( types[ i ]));
-			}
-		}
-	}
+    public void handleTypes(int types[]) {
+        handledTypes = types;
+        if ((type & TYPE_BASICMASK) == TYPE_OUTPUTFILE) {
+            ggType.removeAllItems();
+            for (int i = 0; i < types.length; i++) {
+                ggType.addItem(GenericFile.getTypeDescr(types[i]));
+            }
+        }
+    }
 
 	/**
 	 *	For Convenience a two-dimensional version
 	 */
-	public void handleTypes( int types[][] )
-	{
-		int		i, j, num;
-		int[]	unitedTypes;
-		
-		for( i = 0, num = 0; i < types.length; i++ ) {
-			num += types[ i ].length;
-		}
-		unitedTypes = new int[ num ];
-		for( i = 0, j = 0; i < types.length; i++ ) {
-			for( num = 0; num < types[ i ].length; num++ ) {
-				unitedTypes[ j++ ] = types[ i ][ num ];
-			}
-		}
-		handleTypes( unitedTypes );
-	}
+    public void handleTypes(int types[][]) {
+        int i, j, num;
+        int[] unitedTypes;
+
+        for (i = 0, num = 0; i < types.length; i++) {
+            num += types[i].length;
+        }
+        unitedTypes = new int[num];
+        for (i = 0, j = 0; i < types.length; i++) {
+            for (num = 0; num < types[i].length; num++) {
+                unitedTypes[j++] = types[i][num];
+            }
+        }
+        handleTypes(unitedTypes);
+    }
 
 // -------- private Methoden --------
 
-	protected void calcFormat()
-	{
-		String		fPath	= getPath().getPath();
-		GenericFile	f;
-		int			typ;
-		String		typeStr	= null;
-		boolean		success	= false;
-		
-		if( (fPath != null) && (fPath.length() > 0) && enabled ) {
-			
-			try {
-				f		= new GenericFile( fPath, GenericFile.MODE_INPUT );
-				typ	= f.mode & GenericFile.MODE_TYPEMASK;
-				typeStr	= f.getTypeDescr();
-				for( int i = 0; i < handledTypes.length; i++ ) {
-					if( typ == handledTypes[ i ]) {
-//						setFormat( typeStr + "; " + f.getFormat() );
-						setFormat( f.getFormat() );
-						success = true;
-						break;
-					}
-				}
-				if( !success ) setFormat( "Wrong format - " + typeStr );
-				f.cleanUp();
-			}
-			catch( IOException e1 ) {
-				setFormat( ((typeStr == null) ? "" : (typeStr + "; ")) +
-						   "I/O Error: " + e1.getMessage() );
-			}
-		} else {
-			setFormat( "" );
-			success = true;
-		}
-		ggFormat.setPaint( success ? null : COLOR_ERR );
-	}
+    protected void calcFormat() {
+        String fPath = getPath().getPath();
+        GenericFile f;
+        int typ;
+        String typeStr = null;
+        boolean success = false;
 
-	protected void checkExist()
-	{
-		String		fPath	= getPath().getPath();
-		boolean		exists	= false;
-		Color		c;
-		
-		if( (fPath != null) && (fPath.length() > 0) ) {
+        if ((fPath.length() > 0) && enabled) {
+            try {
+                f = new GenericFile(fPath, GenericFile.MODE_INPUT);
+                typ = f.mode & GenericFile.MODE_TYPEMASK;
+                typeStr = f.getTypeDescr();
+                for (int i = 0; i < handledTypes.length; i++) {
+                    if (typ == handledTypes[i]) {
+//						setFormat( typeStr + "; " + f.getFormat() );
+                        setFormat(f.getFormat());
+                        success = true;
+                        break;
+                    }
+                }
+                if (!success) setFormat("Wrong format - " + typeStr);
+                f.cleanUp();
+            } catch (IOException e1) {
+                setFormat(((typeStr == null) ? "" : (typeStr + "; ")) +
+                        "I/O Error: " + e1.getMessage());
+            }
+        } else {
+            setFormat("");
+            success = true;
+        }
+        ggFormat.setPaint(success ? null : COLOR_ERR);
+    }
+
+	protected void checkExist() {
+		String fPath = getPath().getPath();
+		boolean exists = false;
+		Color c;
+
+		if (fPath.length() > 0) {
 			try {
-				exists = new File( fPath ).isFile();
-			} catch( SecurityException e ) {}
+				exists = new File(fPath).isFile();
+			} catch (SecurityException e) {
+				// ignore
+			}
 		}
 		c = exists && enabled ? COLOR_EXISTS : null;
-		if( c != ggPath.getPaint() ) {
-			ggPath.setPaint( c );
+		if (c != ggPath.getPaint()) {
+			ggPath.setPaint(c);
 		}
 	}
 
 	/*
 	 *	Tags: $Dx = Directory of superPath x; $Fx = Filename; $E = Extension; $Bx = Brief filename
 	 */
-	protected String evalScheme( String schm )
-	{
-		String	txt2;
-		int		i, j, k;
+    protected String evalScheme(String schm) {
+        String txt2;
+        int i, j, k;
 
-		for( i = schm.indexOf( "$D" ); (i >= 0) && (i < schm.length() - 2); i = schm.indexOf( "$D", i )) {
-			j		= schm.charAt( i + 2 ) - 48;
-			try {
-				txt2 = superPaths[ j ].getPath().getPath();
-			} catch( ArrayIndexOutOfBoundsException e1 ) {
-				txt2 = "";
-			}
-			// sucky java 1.1 stringbuffer is impotent
-			schm	= schm.substring( 0, i ) + txt2.substring( 0, txt2.lastIndexOf( File.separatorChar ) + 1 ) +
-					  schm.substring( i + 3 );
-		}
-		for( i = schm.indexOf( "$F" ); (i >= 0) && (i < schm.length() - 2); i = schm.indexOf( "$F", i )) {
-			j		= schm.charAt( i + 2 ) - 48;
-			try {
-				txt2 = superPaths[ j ].getPath().getPath();
-			} catch( ArrayIndexOutOfBoundsException e1 ) {
-				txt2 = "";
-			}
-			txt2	= txt2.substring( txt2.lastIndexOf( File.separatorChar ) + 1 );
-			k		= txt2.lastIndexOf( '.' );
-			schm	= schm.substring( 0, i ) + ((k > 0) ? txt2.substring( 0, k ) : txt2 ) +
-					  schm.substring( i + 3 );
-		}
-		for( i = schm.indexOf( "$X" ); (i >= 0) && (i < schm.length() - 2); i = schm.indexOf( "$X", i )) {
-			j		= schm.charAt( i + 2 ) - 48;
-			try {
-				txt2 = superPaths[ j ].getPath().getPath();
-			} catch( ArrayIndexOutOfBoundsException e1 ) {
-				txt2 = "";
-			}
-			txt2	= txt2.substring( txt2.lastIndexOf( File.separatorChar ) + 1 );
-			k		= txt2.lastIndexOf( '.' );
-			schm	= schm.substring( 0, i ) + ((k > 0) ? txt2.substring( k ) : "" ) +
-					  schm.substring( i + 3 );
-		}
-		for( i = schm.indexOf( "$B" ); (i >= 0) && (i < schm.length() - 2); i = schm.indexOf( "$B", i )) {
-			j		= schm.charAt( i + 2 ) - 48;
-			try {
-				txt2 = superPaths[ j ].getPath().getPath();
-			} catch( ArrayIndexOutOfBoundsException e1 ) {
-				txt2 = "";
-			}
-			txt2	= txt2.substring( txt2.lastIndexOf( File.separatorChar ) + 1 );
-			k		= txt2.lastIndexOf( '.' );
-			txt2	= abbrevate( (k > 0) ? txt2.substring( 0, k ) : txt2 );
-			schm 	= schm.substring( 0, i ) + txt2 + schm.substring( i + 3 );
-		}
-		for( i = schm.indexOf( "$E" ); i >= 0; i = schm.indexOf( "$E", i )) {
-			j		= getType();
-			schm	= schm.substring( 0, i ) + GenericFile.getExtStr( j ) + schm.substring( i + 2 );
-		}
+        for (i = schm.indexOf("$D"); (i >= 0) && (i < schm.length() - 2); i = schm.indexOf("$D", i)) {
+            j = schm.charAt(i + 2) - 48;
+            try {
+                txt2 = superPaths[j].getPath().getPath();
+            } catch (ArrayIndexOutOfBoundsException e1) {
+                txt2 = "";
+            }
+            // sucky java 1.1 stringbuffer is impotent
+            schm = schm.substring(0, i) + txt2.substring(0, txt2.lastIndexOf(File.separatorChar) + 1) +
+                    schm.substring(i + 3);
+        }
+        for (i = schm.indexOf("$F"); (i >= 0) && (i < schm.length() - 2); i = schm.indexOf("$F", i)) {
+            j = schm.charAt(i + 2) - 48;
+            try {
+                txt2 = superPaths[j].getPath().getPath();
+            } catch (ArrayIndexOutOfBoundsException e1) {
+                txt2 = "";
+            }
+            txt2 = txt2.substring(txt2.lastIndexOf(File.separatorChar) + 1);
+            k = txt2.lastIndexOf('.');
+            schm = schm.substring(0, i) + ((k > 0) ? txt2.substring(0, k) : txt2) +
+                    schm.substring(i + 3);
+        }
+        for (i = schm.indexOf("$X"); (i >= 0) && (i < schm.length() - 2); i = schm.indexOf("$X", i)) {
+            j = schm.charAt(i + 2) - 48;
+            try {
+                txt2 = superPaths[j].getPath().getPath();
+            } catch (ArrayIndexOutOfBoundsException e1) {
+                txt2 = "";
+            }
+            txt2 = txt2.substring(txt2.lastIndexOf(File.separatorChar) + 1);
+            k = txt2.lastIndexOf('.');
+            schm = schm.substring(0, i) + ((k > 0) ? txt2.substring(k) : "") +
+                    schm.substring(i + 3);
+        }
+        for (i = schm.indexOf("$B"); (i >= 0) && (i < schm.length() - 2); i = schm.indexOf("$B", i)) {
+            j = schm.charAt(i + 2) - 48;
+            try {
+                txt2 = superPaths[j].getPath().getPath();
+            } catch (ArrayIndexOutOfBoundsException e1) {
+                txt2 = "";
+            }
+            txt2 = txt2.substring(txt2.lastIndexOf(File.separatorChar) + 1);
+            k = txt2.lastIndexOf('.');
+            txt2 = abbreviate((k > 0) ? txt2.substring(0, k) : txt2);
+            schm = schm.substring(0, i) + txt2 + schm.substring(i + 3);
+        }
+        for (i = schm.indexOf("$E"); i >= 0; i = schm.indexOf("$E", i)) {
+            j = getType();
+            schm = schm.substring(0, i) + GenericFile.getExtStr(j) + schm.substring(i + 2);
+        }
 
-		return schm;
-	}
+        return schm;
+    }
 
 	/**
 	 *  A filename will be abbrevated. This is not so
@@ -668,337 +655,308 @@ implements ActionListener, ComponentListener, ItemListener, PathListener,
 	 *  crucial to keep the total filename length within
 	 *  the file system's allowed bounds.
 	 */
-	protected static String abbrevate( String longStr )
-	{
-		StringBuffer	shortStr;
-		int				i, j;
-		char			c;
-	
-		j = longStr.length();
-		if( j <= ABBR_LENGTH ) return longStr;
+    protected static String abbreviate(String longStr) {
+        StringBuffer shortStr;
+        int i, j;
+        char c;
 
-		shortStr = new StringBuffer( j );
-		for( i = 0; (i < j) && (shortStr.length() + j - i > ABBR_LENGTH); i++ ) {
-			c = longStr.charAt( i );
-			if( Character.isLetterOrDigit( c )) {
-				shortStr.append( c );
-			}
-		}
-		shortStr.append( longStr.substring( i ));
-		longStr	= shortStr.toString();
-		j		= longStr.length();
-		if( j <= ABBR_LENGTH ) return longStr;
-		
-		shortStr = new StringBuffer( j );
-		shortStr.append( longStr.charAt( 0 ));
-		for( i = 1; (i < j - 1) && (shortStr.length() + j - i > ABBR_LENGTH); i++ ) {
-			c = longStr.charAt( i );
-			if( "aeiouäöü".indexOf( c ) < 0 ) {
-				shortStr.append( c );
-			}
-		}
-		shortStr.append( longStr.substring( i ));
-		longStr	= shortStr.toString();
-		j		= longStr.length();
-		if( j <= ABBR_LENGTH ) return longStr;
-		
-		i = (ABBR_LENGTH >> 1) - 1;
-		
-		return( longStr.substring( 0, i ) + '\'' + longStr.substring( longStr.length() - i ));
-	}
+        j = longStr.length();
+        if (j <= ABBR_LENGTH) return longStr;
 
-	protected String createScheme( String applied )
-	{
-		String	txt2;
-		int		i = 0;
-		int		k = 0;
-		int		m;
-		int		checkedAbbrev;
-		boolean	checkedFull;
+        shortStr = new StringBuffer(j);
+        for (i = 0; (i < j) && (shortStr.length() + j - i > ABBR_LENGTH); i++) {
+            c = longStr.charAt(i);
+            if (Character.isLetterOrDigit(c)) {
+                shortStr.append(c);
+            }
+        }
+        shortStr.append(longStr.substring(i));
+        longStr = shortStr.toString();
+        j = longStr.length();
+        if (j <= ABBR_LENGTH) return longStr;
 
-		if( applied.length() == 0 ) return protoScheme; 
+        shortStr = new StringBuffer(j);
+        shortStr.append(longStr.charAt(0));
+        for (i = 1; (i < j - 1) && (shortStr.length() + j - i > ABBR_LENGTH); i++) {
+            c = longStr.charAt(i);
+            if ("aeiouäöü".indexOf(c) < 0) {
+                shortStr.append(c);
+            }
+        }
+        shortStr.append(longStr.substring(i));
+        longStr = shortStr.toString();
+        j = longStr.length();
+        if (j <= ABBR_LENGTH) return longStr;
 
-		for( i = 0; i < superPaths.length; i++ ) {
-			txt2 = superPaths[ i ].getPath().getPath();
-			txt2 = txt2.substring( 0, txt2.lastIndexOf( File.separatorChar ) + 1 );
-			if( applied.startsWith( txt2 )) {
-				applied	= "$D" + (char) (i + 48) + applied.substring( txt2.length() );
-				k		= 3;
-				break;
-			}
-		}
-		k = Math.max( k, applied.lastIndexOf( File.separatorChar ) + 1 );
-		for( i = 0, checkedAbbrev = -1; i < superPaths.length; i++ ) {
-			txt2	= superPaths[ i ].getPath().getPath();
-			txt2	= txt2.substring( txt2.lastIndexOf( File.separatorChar ) + 1 );
-			m		= txt2.lastIndexOf( '.' );
-			txt2	= (m > 0) ? txt2.substring( 0, m ) : txt2;
-			if( (protoScheme.indexOf( "$B" + (char) (i + 48) ) < 0) || (checkedAbbrev == i) ) {
-				m	= applied.indexOf( txt2, k );
-				if( m >= 0 ) {
-					applied = applied.substring( 0, m ) + "$F" + (char) (i + 48) + applied.substring( m + txt2.length() );
-					k		= m + 3;
-					continue;
-				}
-				checkedFull	= true;
-			} else {
-				checkedFull = false;
-			}
-			if( checkedAbbrev == i ) continue;
-			txt2 = abbrevate( txt2 );
-			m	 = applied.indexOf( txt2, k );
-			if( m >= 0 ) {
-				applied = applied.substring( 0, m ) + "$B" + (char) (i + 48) + applied.substring( m + txt2.length() );
-				k		= m + 3;
-			} else if( !checkedFull ) {
-				checkedAbbrev = i;
-				i--;				// retry non-abbrevated
-			}
-		}
-		txt2 = GenericFile.getExtStr( getType() );
-		if( applied.endsWith( txt2 )) {
-			applied = applied.substring( 0, applied.length() - txt2.length() ) + "$E";
-		}
+        i = (ABBR_LENGTH >> 1) - 1;
 
-		return applied;
-	}
+        return (longStr.substring(0, i) + '\'' + longStr.substring(longStr.length() - i));
+    }
 
-	protected String abbrScheme( String orig )
-	{
-		int i = orig.lastIndexOf( "$F" );
-		if( i >= 0 ) {
-			return( orig.substring( 0, i ) + "$B" + orig.substring( i + 2 ));
-		} else {
-			return orig;
-		}
-	}
+    protected String createScheme(String applied) {
+        String txt2;
+        int i;
+        int k = 0;
+        int m;
+        int checkedAbbrev;
+        boolean checkedFull;
 
-	protected String expandScheme( String orig )
-	{
-		int i = orig.indexOf( "$B" );
-		if( i >= 0 ) {
-			return( orig.substring( 0, i ) + "$F" + orig.substring( i + 2 ));
-		} else {
-			return orig;
-		}
-	}
+        if (applied.length() == 0) return protoScheme;
 
-	protected String udirScheme( String orig, String udirPr )
-	{
-		int		i;
-		String	udir = Application.userPrefs.get(udirPr, null);
-	
-		if( udir == null ) return orig;
-	
-		if( orig.startsWith( "$D" )) {
-			i = 3;
-		} else {
-			i = orig.lastIndexOf( File.separatorChar ) + 1;
-		}
+        for (i = 0; i < superPaths.length; i++) {
+            txt2 = superPaths[i].getPath().getPath();
+            txt2 = txt2.substring(0, txt2.lastIndexOf(File.separatorChar) + 1);
+            if (applied.startsWith(txt2)) {
+                applied = "$D" + (char) (i + 48) + applied.substring(txt2.length());
+                k = 3;
+                break;
+            }
+        }
+        k = Math.max(k, applied.lastIndexOf(File.separatorChar) + 1);
+        for (i = 0, checkedAbbrev = -1; i < superPaths.length; i++) {
+            txt2 = superPaths[i].getPath().getPath();
+            txt2 = txt2.substring(txt2.lastIndexOf(File.separatorChar) + 1);
+            m = txt2.lastIndexOf('.');
+            txt2 = (m > 0) ? txt2.substring(0, m) : txt2;
+            if ((!protoScheme.contains("$B" + (char) (i + 48))) || (checkedAbbrev == i)) {
+                m = applied.indexOf(txt2, k);
+                if (m >= 0) {
+                    applied = applied.substring(0, m) + "$F" + (char) (i + 48) + applied.substring(m + txt2.length());
+                    k = m + 3;
+                    continue;
+                }
+                checkedFull = true;
+            } else {
+                checkedFull = false;
+            }
+            if (checkedAbbrev == i) continue;
+            txt2 = abbreviate(txt2);
+            m = applied.indexOf(txt2, k);
+            if (m >= 0) {
+                applied = applied.substring(0, m) + "$B" + (char) (i + 48) + applied.substring(m + txt2.length());
+                k = m + 3;
+            } else if (!checkedFull) {
+                checkedAbbrev = i;
+                i--;                // retry non-abbrevated
+            }
+        }
+        txt2 = GenericFile.getExtStr(getType());
+        if (applied.endsWith(txt2)) {
+            applied = applied.substring(0, applied.length() - txt2.length()) + "$E";
+        }
 
-		return( new File( udir, orig.substring( i )).getPath() );
-	}
+        return applied;
+    }
 
-	protected void feedback()
-	{
-		if( (handledTypes != null) && ((type & TYPE_BASICMASK) == TYPE_INPUTFILE) ) {
-			calcFormat();
-		} else if( (type & TYPE_BASICMASK) == TYPE_OUTPUTFILE ) {
-			checkExist();
-		}
-	}
-	
+    protected String abbrScheme(String orig) {
+        int i = orig.lastIndexOf("$F");
+        if (i >= 0) {
+            return (orig.substring(0, i) + "$B" + orig.substring(i + 2));
+        } else {
+            return orig;
+        }
+    }
+
+    protected String expandScheme(String orig) {
+        int i = orig.indexOf("$B");
+        if (i >= 0) {
+            return (orig.substring(0, i) + "$F" + orig.substring(i + 2));
+        } else {
+            return orig;
+        }
+    }
+
+    protected String udirScheme(String orig, String udirPr) {
+        int i;
+        String udir = Application.userPrefs.get(udirPr, null);
+
+        if (udir == null) return orig;
+
+        if (orig.startsWith("$D")) {
+            i = 3;
+        } else {
+            i = orig.lastIndexOf(File.separatorChar) + 1;
+        }
+
+        return (new File(udir, orig.substring(i)).getPath());
+    }
+
+    protected void feedback() {
+        if ((handledTypes != null) && ((type & TYPE_BASICMASK) == TYPE_INPUTFILE)) {
+            calcFormat();
+        } else if ((type & TYPE_BASICMASK) == TYPE_OUTPUTFILE) {
+            checkExist();
+        }
+    }
+
 // -------- PathListener interface --------
 // we're listening to ggChoose
 
-	public void pathChanged( PathEvent e )
-	{
-		File path = e.getPath();
-		scheme = createScheme( path.getPath() );
-		setPathAndDispatchEvent( path );
-	}
+    public void pathChanged(PathEvent e) {
+        File path = e.getPath();
+        scheme = createScheme(path.getPath());
+        setPathAndDispatchEvent(path);
+    }
 
 // -------- Action Methoden (ggPath Return-Hit) --------
 // we're listening to ggPath
 
-	public void actionPerformed( ActionEvent e )
-	{
-		String str = ggPath.getText();
-		if( str.length() == 0 ) {				// automatic generation
-			scheme = protoScheme;
-			str = evalScheme( scheme );
-		} else {
-			scheme = createScheme( str );
-		}
-		setPathAndDispatchEvent( new File( str ));
-	}
+    public void actionPerformed(ActionEvent e) {
+        String str = ggPath.getText();
+        if (str.length() == 0) {                // automatic generation
+            scheme = protoScheme;
+            str = evalScheme(scheme);
+        } else {
+            scheme = createScheme(str);
+        }
+        setPathAndDispatchEvent(new File(str));
+    }
 
 // -------- Component Methoden (Panel) --------
 
-	public void componentResized( ComponentEvent e )
-	{
-		if( (ggType != null) && init ) {	// makes us update info on type, res, rate etc.
-			init = false;
-			itemStateChanged( new ItemEvent( ggType, ItemEvent.ITEM_STATE_CHANGED, ggType.getSelectedItem(), 1 ));
-		}
-	}
+    public void componentResized(ComponentEvent e) {
+        if ((ggType != null) && init) {    // makes us update info on type, res, rate etc.
+            init = false;
+            itemStateChanged(new ItemEvent(ggType, ItemEvent.ITEM_STATE_CHANGED, ggType.getSelectedItem(), ItemEvent.SELECTED));
+        }
+    }
 
-	public void componentShown( ComponentEvent e )	{}
-	public void componentHidden( ComponentEvent e )	{}
-	public void componentMoved( ComponentEvent e )	{}
+    public void componentShown (ComponentEvent e) {}
+    public void componentHidden(ComponentEvent e) {}
+    public void componentMoved (ComponentEvent e) {}
 
 // -------- Item Methoden (ggType) --------
 
-	public void itemStateChanged( ItemEvent e )
-	{
-		int mode, ID, i;
+    public void itemStateChanged(ItemEvent e) {
+        int mode, ID, i;
 
-		if( e.getSource() == ggType ) {		// -------------------- update Res/Rate fields ---------
-			if( (ggRes != null) || (ggRate != null) ) {
-				mode = getType();
-				if( ggRes != null ) {
-					ID = ggRes.getSelectedIndex();
-					ggRes.removeAllItems();
-					if( Util.isValueInArray( mode, GenericFile.TYPES_SOUND )) {			// --- sound ----
-						for( i = 0; i < sndResTxt.length; i++ ) {
-							ggRes.addItem( sndResTxt[ i ]);
-						}
-					} else if( Util.isValueInArray(mode, GenericFile.TYPES_IMAGE)) {	// --- image ----
-						for( i = 0; i < imgResTxt.length; i++ ) {
-							ggRes.addItem( imgResTxt[ i ]);
-						}
-// XXX QUICKTIME
-//					} else if( Util.isValueInArray( mode, GenericFile.TYPES_MOVIE )) {	// --- movie ----
-//						String[] codecNames = MovieStream.codecNames();
-//						for( i = 0; i < codecNames.length; i++ ) {
-//							ggRes.addItem( codecNames[ i ]);
-//						}
-					}
-					ggRes.setSelectedIndex( ID );
-				}
-	
-				if( ggRate != null ) {
-					ID = ggRate.getSelectedIndex();
-					ggRate.removeAllItems();
-					if( Util.isValueInArray( mode, GenericFile.TYPES_SOUND )) {			// --- sound ----
-						for( i = 0; i < sndRateTxt.length; i++ ) {
-							ggRate.addItem( sndRateTxt[ i ]);
-						}
-					} else if( Util.isValueInArray( mode, GenericFile.TYPES_SPECT )) {	// --- spect ----
-						for( i = 0; i < spectRateTxt.length; i++ ) {
-							ggRate.addItem( spectRateTxt[ i ]);
-						}
-					} else if( Util.isValueInArray( mode, GenericFile.TYPES_MOVIE )) {	// --- movie ----
-						for( i = 0; i < movRateTxt.length; i++ ) {
-							ggRate.addItem( movRateTxt[ i ]);
-						}
-					}
-					ggRate.setSelectedIndex( ID );
-				}
-			}
-			
-			setPathAndDispatchEvent( new File( evalScheme( scheme )));
-		}
-	}
+        if (e.getSource() == ggType) {        // -------------------- update Res/Rate fields ---------
+            if ((ggRes != null) || (ggRate != null)) {
+                mode = getType();
+                if (ggRes != null) {
+                    ID = ggRes.getSelectedIndex();
+                    ggRes.removeAllItems();
+                    if (Util.isValueInArray(mode, GenericFile.TYPES_SOUND)) {            // --- sound ----
+                        for (i = 0; i < sndResTxt.length; i++) {
+                            ggRes.addItem(sndResTxt[i]);
+                        }
+                    } else if (Util.isValueInArray(mode, GenericFile.TYPES_IMAGE)) {    // --- image ----
+                        for (i = 0; i < imgResTxt.length; i++) {
+                            ggRes.addItem(imgResTxt[i]);
+                        }
+                    }
+                    ggRes.setSelectedIndex(ID);
+                }
+
+                if (ggRate != null) {
+                    ID = ggRate.getSelectedIndex();
+                    ggRate.removeAllItems();
+                    if (Util.isValueInArray(mode, GenericFile.TYPES_SOUND)) {            // --- sound ----
+                        for (i = 0; i < sndRateTxt.length; i++) {
+                            ggRate.addItem(sndRateTxt[i]);
+                        }
+                    } else if (Util.isValueInArray(mode, GenericFile.TYPES_SPECT)) {    // --- spect ----
+                        for (i = 0; i < spectRateTxt.length; i++) {
+                            ggRate.addItem(spectRateTxt[i]);
+                        }
+                    } else if (Util.isValueInArray(mode, GenericFile.TYPES_MOVIE)) {    // --- movie ----
+                        for (i = 0; i < movRateTxt.length; i++) {
+                            ggRate.addItem(movRateTxt[i]);
+                        }
+                    }
+                    ggRate.setSelectedIndex(ID);
+                }
+            }
+
+            setPathAndDispatchEvent(new File(evalScheme(scheme)));
+        }
+    }
 
 // -------- interne IOTextfeld-Klasse --------
 
-	class IOTextField
-	extends ColouredTextField
-	{
-		public IOTextField()
-		{
-			super( 32 );
-			
-			InputMap	inputMap	= getInputMap();
+    class IOTextField extends ColouredTextField {
+
+        public IOTextField() {
+            super(32);
+
+            InputMap	inputMap	= getInputMap();
 			ActionMap	actionMap   = getActionMap();
 			int			i;
 			String		s;
-			
-			inputMap.put( KeyStroke.getKeyStroke( KeyEvent.VK_LEFT, InputEvent.META_MASK ), "abbr" );
-			actionMap.put( "abbr", new AbstractAction() {
-				public void actionPerformed( ActionEvent e )
-				{
-					scheme = abbrScheme( scheme );
-					setPathAndDispatchEvent( new File( evalScheme( scheme )));
-				}
-			});
-			inputMap.put( KeyStroke.getKeyStroke( KeyEvent.VK_RIGHT, InputEvent.META_MASK ), "expd" );
-			actionMap.put( "expd", new AbstractAction() {
-				public void actionPerformed( ActionEvent e )
-				{
-					scheme = expandScheme( scheme );
-					setPathAndDispatchEvent( new File( evalScheme( scheme )));
-				}
-			});
-			inputMap.put( KeyStroke.getKeyStroke( KeyEvent.VK_ESCAPE, InputEvent.META_MASK ), "auto" );
-			actionMap.put( "auto", new AbstractAction() {
-				public void actionPerformed( ActionEvent e )
-				{
-					scheme = protoScheme;
-					setPathAndDispatchEvent( new File( evalScheme( scheme )));
-				}
-			});
-			for( i = 1; i <= 9; i++ ) {
-				s = "sudir" + i;
-				inputMap.put( KeyStroke.getKeyStroke( KeyEvent.VK_NUMPAD0 + i, InputEvent.META_MASK + InputEvent.SHIFT_MASK ), s );
-				actionMap.put( s, new SetUserDirAction( i ));
-				s = "rudir" + i;
-				inputMap.put( KeyStroke.getKeyStroke( KeyEvent.VK_NUMPAD0 + i, InputEvent.META_MASK ), s );
-				actionMap.put( s, new RecallUserDirAction( i ));
-			}
-		}
 
-		class SetUserDirAction
-		extends AbstractAction
-		{
-			private int idx;
-			private javax.swing.Timer visualFeedback;
-			private Paint oldPaint = null;
-		
-			public SetUserDirAction( int idx )
-			{
-				this.idx		= idx;
-				visualFeedback  = new javax.swing.Timer( 250, this );
-				visualFeedback.setRepeats( false );
-			}
-			
-			public void actionPerformed( ActionEvent e )
-			{
-				if( e.getSource() == visualFeedback ) {
-					ggPath.setPaint( oldPaint );
-				} else {
-					String dir = getPath().getParent();
-					if( dir != null ) {
-						Application.userPrefs.put("UserDir" + idx, dir);
-						if( visualFeedback.isRunning() ) {
-							visualFeedback.restart();
-						} else {
-							oldPaint = ggPath.getPaint();
-							ggPath.setPaint( COLOR_PROPSET );
-							visualFeedback.start();
-						}
-					}
-				}
-			}
-		}
+            inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, InputEvent.META_MASK), "abbr");
+            actionMap.put("abbr", new AbstractAction() {
+                public void actionPerformed(ActionEvent e) {
+                    scheme = abbrScheme(scheme);
+                    setPathAndDispatchEvent(new File(evalScheme(scheme)));
+                }
+            });
+            inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, InputEvent.META_MASK), "expd");
+            actionMap.put("expd", new AbstractAction() {
+                public void actionPerformed(ActionEvent e) {
+                    scheme = expandScheme(scheme);
+                    setPathAndDispatchEvent(new File(evalScheme(scheme)));
+                }
+            });
+            inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, InputEvent.META_MASK), "auto");
+            actionMap.put("auto", new AbstractAction() {
+                public void actionPerformed(ActionEvent e) {
+                    scheme = protoScheme;
+                    setPathAndDispatchEvent(new File(evalScheme(scheme)));
+                }
+            });
+            for (i = 1; i <= 9; i++) {
+                s = "sudir" + i;
+                inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_NUMPAD0 + i, InputEvent.META_MASK + InputEvent.SHIFT_MASK), s);
+                actionMap.put(s, new SetUserDirAction(i));
+                s = "rudir" + i;
+                inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_NUMPAD0 + i, InputEvent.META_MASK), s);
+                actionMap.put(s, new RecallUserDirAction(i));
+            }
+        }
 
-		class RecallUserDirAction
-		extends AbstractAction
-		{
-			private int idx;
-		
-			public RecallUserDirAction( int idx )
-			{
-				this.idx = idx;
-			}
-			
-			public void actionPerformed( ActionEvent e )
-			{
-				scheme = udirScheme( scheme, "UserDir" + idx );
-				setPathAndDispatchEvent( new File( evalScheme( scheme )));
-			}
-		}
-	} // class IOTextField
+        class SetUserDirAction extends AbstractAction {
+            private int idx;
+            private javax.swing.Timer visualFeedback;
+            private Paint oldPaint = null;
+
+            public SetUserDirAction(int idx) {
+                this.idx = idx;
+                visualFeedback = new javax.swing.Timer(250, this);
+                visualFeedback.setRepeats(false);
+            }
+
+            public void actionPerformed(ActionEvent e) {
+                if (e.getSource() == visualFeedback) {
+                    ggPath.setPaint(oldPaint);
+                } else {
+                    String dir = getPath().getParent();
+                    if (dir != null) {
+                        Application.userPrefs.put("UserDir" + idx, dir);
+                        if (visualFeedback.isRunning()) {
+                            visualFeedback.restart();
+                        } else {
+                            oldPaint = ggPath.getPaint();
+                            ggPath.setPaint(COLOR_PROPSET);
+                            visualFeedback.start();
+                        }
+                    }
+                }
+            }
+        }
+
+        class RecallUserDirAction extends AbstractAction {
+            private int idx;
+
+            public RecallUserDirAction(int idx) {
+                this.idx = idx;
+            }
+
+            public void actionPerformed(ActionEvent e) {
+                scheme = udirScheme(scheme, "UserDir" + idx);
+                setPathAndDispatchEvent(new File(evalScheme(scheme)));
+            }
+        }
+    } // class IOTextField
 }
 // class PathField

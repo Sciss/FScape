@@ -13,27 +13,23 @@
 
 package de.sciss.fscape.gui;
 
+import de.sciss.app.BasicEvent;
+import de.sciss.app.EventManager;
+import de.sciss.gui.PathEvent;
+import de.sciss.gui.PathListener;
+
+import javax.swing.*;
+import javax.swing.event.MouseInputAdapter;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.MouseEvent;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.GeneralPath;
-import java.awt.geom.Path2D;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.*;
-import javax.swing.event.MouseInputAdapter;
-
-import de.sciss.app.BasicEvent;
-import de.sciss.app.EventManager;
-import de.sciss.gui.PathEvent;
-import de.sciss.gui.PathListener;
-import de.sciss.icons.raphael.Shapes;
 
 // import net.roydesign.ui.FolderDialog;
 
@@ -72,37 +68,37 @@ public class SelectPathButton
     }
 
     public SelectPathButton(int type) {
-        super(); // SHAPE_LIST);
+        super("…"); // SHAPE_LIST);
         this.type = type;
 
-        Path2D p = new GeneralPath();
-        Shapes.Search(p);
-        // Shapes.ListView(p);
-        // Shapes.Picker(p);
-        final Shape icnShp = p.createTransformedShape(AffineTransform.getScaleInstance(0.5, 0.5));
-
-        setIcon(new Icon() {
-            @Override
-            public void paintIcon(Component c, Graphics g, int x, int y) {
-                Graphics2D g2 = (Graphics2D) g;
-                g2.setColor(isEnabled() ? Color.black : Color.gray);
-                g2.translate(x, y);
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
-                g2.fill(icnShp);
-                g2.translate(-x, -y);
-            }
-
-            @Override
-            public int getIconWidth() {
-                return 16;
-            }
-
-            @Override
-            public int getIconHeight() {
-                return 16;
-            }
-        });
+//        Path2D p = new GeneralPath();
+//        Shapes.Search(p);
+//        // Shapes.ListView(p);
+//        // Shapes.Picker(p);
+//        final Shape icnShp = p.createTransformedShape(AffineTransform.getScaleInstance(0.5, 0.5));
+//
+//        setIcon(new Icon() {
+//            @Override
+//            public void paintIcon(Component c, Graphics g, int x, int y) {
+//                Graphics2D g2 = (Graphics2D) g;
+//                g2.setColor(isEnabled() ? Color.black : Color.gray);
+//                g2.translate(x, y);
+//                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+//                g2.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+//                g2.fill(icnShp);
+//                g2.translate(-x, -y);
+//            }
+//
+//            @Override
+//            public int getIconWidth() {
+//                return 16;
+//            }
+//
+//            @Override
+//            public int getIconHeight() {
+//                return 16;
+//            }
+//        });
 
         setToolTipText("Choose File...");
         setTransferHandler(new PathTransferHandler());

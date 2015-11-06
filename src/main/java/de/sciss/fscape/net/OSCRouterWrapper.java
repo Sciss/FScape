@@ -29,8 +29,8 @@ import java.util.Map;
  *  @version	0.70, 05-May-06
  */
 public class OSCRouterWrapper
-implements OSCRouter
-{
+		implements OSCRouter {
+
 	private final OSCRouter	r;
 	private final OSCRouter	superRouter;
 	private final Map		mapSubRouters	= new HashMap();
@@ -41,11 +41,10 @@ implements OSCRouter
 	/**
 	 *	@synchronization	call only in event thread
 	 */
-	public OSCRouterWrapper( OSCRouter superRouter, OSCRouter thisRouter )
-	{
+	public OSCRouterWrapper(OSCRouter superRouter, OSCRouter thisRouter) {
 		r = thisRouter;
-		this.superRouter	= superRouter;
-		if( superRouter != null ) superRouter.oscAddRouter( r );
+		this.superRouter = superRouter;
+		if (superRouter != null) superRouter.oscAddRouter(r);
 	}
 	
 	public void remove()

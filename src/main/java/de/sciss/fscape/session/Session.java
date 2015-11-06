@@ -21,19 +21,17 @@
 
 package de.sciss.fscape.session;
 
-import java.awt.EventQueue;
-import java.io.File;
-
 import de.sciss.common.ProcessingThread;
+import de.sciss.fscape.Application;
 import de.sciss.fscape.net.OSCRoot;
 import de.sciss.fscape.net.OSCRouter;
 import de.sciss.fscape.net.OSCRouterWrapper;
 import de.sciss.fscape.net.RoutedOSCMessage;
-import de.sciss.io.AudioFileDescr;
-import de.sciss.io.Span;
 import de.sciss.util.Flag;
 
 import javax.swing.undo.UndoManager;
+import java.awt.*;
+import java.io.File;
 
 /**
  *  @author		Hanns Holger Rutz
@@ -178,9 +176,8 @@ public class Session
 		return key;
 	}
 
-	public ProcessingThread closeDocument( boolean force, Flag wasClosed )
-	{
-		return frame.closeDocument( force, wasClosed );	// XXX should be in here not frame!!!
+	public ProcessingThread closeDocument(boolean force, Flag wasClosed) {
+		return frame.closeDocument(force, wasClosed);    // XXX should be in here not frame!!!
 	}
 	
 	// ------------- OSCRouter interface -------------
@@ -205,140 +202,140 @@ public class Session
 		if( osc != null ) osc.oscRemoveRouter( subRouter );
 	}
 
-	public void oscCmd_close( RoutedOSCMessage rom )
-	{
-		if( frame == null ) {
+	public void oscCmd_close(RoutedOSCMessage rom) {
+		if (frame == null) {
 			OSCRoot.failed(rom.msg, getResourceString("errWindowNotFound"));
 		}
-	
-		final ProcessingThread	pt;
-		final boolean			force;
+
+		final ProcessingThread pt;
+		final boolean force;
 
 		try {
-			if( rom.msg.getArgCount() > 1 ) {
-				force = ((Number) rom.msg.getArg( 1 )).intValue() != 0;
+			if (rom.msg.getArgCount() > 1) {
+				force = ((Number) rom.msg.getArg(1)).intValue() != 0;
 			} else {
 				force = false;
 			}
-			pt = closeDocument( force, new Flag( false ));
-			if( pt != null ) pt.start();
-		}
-		catch( IndexOutOfBoundsException e1 ) {
-			OSCRoot.failedArgCount( rom );
-			return;
-		}
-		catch( ClassCastException e1 ) {
-			OSCRoot.failedArgType( rom, 1 );
+			pt = closeDocument(force, new Flag(false));
+			if (pt != null) {
+				pt.start();
+//				pt.addListener(new ProcessingThread.Listener() {
+//					@Override
+//					public void processStarted(ProcessingThread.Event e) {
+//						System.out.println("PROC STARTED");
+//					}
+//
+//					@Override
+//					public void processStopped(ProcessingThread.Event e) {
+//						System.out.println("PROC STOPPED");
+//					}
+//				});
+			} else {
+//				System.out.println("WAS CLOSED");
+			}
+
+		} catch (IndexOutOfBoundsException e1) {
+			OSCRoot.failedArgCount(rom);
+		} catch (ClassCastException e1) {
+			OSCRoot.failedArgType(rom, 1);
 		}
 	}
 
-	public void oscCmd_start( RoutedOSCMessage rom )
-	{
-		if( frame == null ) {
-			OSCRoot.failed( rom.msg, getResourceString( "errWindowNotFound" ));
+	public void oscCmd_start(RoutedOSCMessage rom) {
+		if (frame == null) {
+			OSCRoot.failed(rom.msg, getResourceString("errWindowNotFound"));
 		}
-	
+
 		frame.start();
 	}
 
-	public void oscCmd_stop( RoutedOSCMessage rom )
-	{
-		if( frame == null ) {
-			OSCRoot.failed( rom.msg, getResourceString( "errWindowNotFound" ));
+	public void oscCmd_stop(RoutedOSCMessage rom) {
+		if (frame == null) {
+			OSCRoot.failed(rom.msg, getResourceString("errWindowNotFound"));
 		}
-	
+
 		frame.stop();
 	}
 
-	public void oscCmd_pause( RoutedOSCMessage rom )
-	{
-		if( frame == null ) {
-			OSCRoot.failed( rom.msg, getResourceString( "errWindowNotFound" ));
+	public void oscCmd_pause(RoutedOSCMessage rom) {
+		if (frame == null) {
+			OSCRoot.failed(rom.msg, getResourceString("errWindowNotFound"));
 		}
-	
+
 		frame.pause();
 	}
 
-	public void oscCmd_resume( RoutedOSCMessage rom )
-	{
-		if( frame == null ) {
-			OSCRoot.failed( rom.msg, getResourceString( "errWindowNotFound" ));
+	public void oscCmd_resume(RoutedOSCMessage rom) {
+		if (frame == null) {
+			OSCRoot.failed(rom.msg, getResourceString("errWindowNotFound"));
 		}
-	
+
 		frame.resume();
 	}
 
-	public void oscCmd_activate( RoutedOSCMessage rom )
-	{
-		if( frame == null ) {
-			OSCRoot.failed( rom.msg, getResourceString( "errWindowNotFound" ));
+	public void oscCmd_activate(RoutedOSCMessage rom) {
+		if (frame == null) {
+			OSCRoot.failed(rom.msg, getResourceString("errWindowNotFound"));
 		}
-	
-		frame.setVisible( true );
+
+		// frame.setVisible(true);
+		Application.documentHandler.setActive(this);
 		// frame.toFront();
 //		frame.requestFocus();
 	}
 
-	public Object oscQuery_id()
-	{
-		return new Integer( getNodeID() );
+	public Object oscQuery_id() {
+		return new Integer(getNodeID());
 	}
 
-	public Object oscQuery_process()
-	{
-		if( frame == null ) {
+	public Object oscQuery_process() {
+		if (frame == null) {
 			return null;
 		}
-		
-		final String	className	= frame.getClass().getName();
-		final int		i			= className.lastIndexOf( '.' );
-		final boolean	dlg			= className.endsWith( "Dlg" );
-		
-		return className.substring( i + 1, className.length() - (dlg ? 3 : 0) );
+
+		final String className 	= frame.getClass().getName();
+		final int i 			= className.lastIndexOf('.');
+		final boolean dlg 		= className.endsWith("Dlg");
+
+		return className.substring(i + 1, className.length() - (dlg ? 3 : 0));
 	}
 
-	public Object oscQuery_running()
-	{
-		if( frame == null ) {
+	public Object oscQuery_running() {
+		if (frame == null) {
 			return null;
 		}
-	
-		return new Integer( frame.isThreadRunning() ? 1 : 0 );
+
+		return new Integer(frame.isThreadRunning() ? 1 : 0);
 	}
 
-	public Object oscQuery_progression()
-	{
-		if( frame == null ) {
+	public Object oscQuery_progression() {
+		if (frame == null) {
 			return null;
 		}
-	
-		return new Float( frame.getProgression() );
+
+		return new Float(frame.getProgression());
 	}
 
-	public Object oscQuery_error()
-	{
-		if( frame == null ) {
+	public Object oscQuery_error() {
+		if (frame == null) {
 			return null;
 		}
-		
+
 		final Exception e = frame.getError();
-		
-		return( e == null ? "" : e.getClass().getName() + " : " + e.getLocalizedMessage() );
+
+		return (e == null ? "" : e.getClass().getName() + " : " + e.getLocalizedMessage());
 	}
 
-	public Object oscQuery_dirty()
-	{
-		return new Integer( isDirty() ? 1 : 0 );
+	public Object oscQuery_dirty() {
+		return new Integer(isDirty() ? 1 : 0);
 	}
 
-	public Object oscQuery_name()
-	{
+	public Object oscQuery_name() {
 		return getName(); // getDisplayDescr().file.getName();
 	}
 
-	public Object oscQuery_file()
-	{
-		return( file == null ? "" : file.getAbsolutePath() );
+	public Object oscQuery_file() {
+		return (file == null ? "" : file.getAbsolutePath());
 	}
 
 // ---------------- Document interface ----------------

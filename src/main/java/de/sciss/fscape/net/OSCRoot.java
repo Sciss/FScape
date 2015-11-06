@@ -18,7 +18,16 @@
 
 package de.sciss.fscape.net;
 
-import java.awt.EventQueue;
+import de.sciss.fscape.Application;
+import de.sciss.net.OSCChannel;
+import de.sciss.net.OSCListener;
+import de.sciss.net.OSCMessage;
+import de.sciss.net.OSCPacket;
+import de.sciss.net.OSCServer;
+import de.sciss.util.Param;
+import de.sciss.util.ParamSpace;
+
+import java.awt.*;
 import java.io.IOException;
 import java.net.SocketAddress;
 import java.util.ArrayList;
@@ -29,18 +38,8 @@ import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
 import java.util.regex.Pattern;
 
-import de.sciss.fscape.Application;
-import de.sciss.net.OSCChannel;
-import de.sciss.net.OSCListener;
-import de.sciss.net.OSCMessage;
-import de.sciss.net.OSCPacket;
-import de.sciss.net.OSCServer;
-import de.sciss.util.Param;
-import de.sciss.util.ParamSpace;
-
 /**
  *  @author		Hanns Holger Rutz
- *  @version	0.71, 14-Nov-07
  */
 public class OSCRoot
 implements OSCRouter, OSCListener, Runnable, PreferenceChangeListener
@@ -95,8 +94,8 @@ implements OSCRouter, OSCListener, Runnable, PreferenceChangeListener
 		instance		= this;
 	
 		this.prefs		= prefs;
-		
-		defaultPortParam = new Param( defaultPort, ParamSpace.NONE | ParamSpace.ABS );
+
+		defaultPortParam = new Param(defaultPort, ParamSpace.NONE | ParamSpace.ABS);
 		
 		if( prefs.get( KEY_PORT, null ) == null ) {	// create defaults
 			prefs.putBoolean( KEY_ACTIVE, false );
@@ -144,41 +143,37 @@ implements OSCRouter, OSCListener, Runnable, PreferenceChangeListener
 //			}
 //		});
 	}
-	
-	public static OSCRoot getInstance()
-	{
+
+	public static OSCRoot getInstance() {
 		return instance;
 	}
 
-	public void init()
-	{
-		if( prefs.getBoolean( KEY_ACTIVE, false )) {
+	public void init() {
+		if (prefs.getBoolean(KEY_ACTIVE, false)) {
 			boot();
 		}
-		prefs.addPreferenceChangeListener( this );
+		prefs.addPreferenceChangeListener(this);
 	}
 
 	public Preferences getPreferences()
 	{
 		return prefs;
 	}
-	
-	public void boot()
-	{
+
+	public void boot() {
 		try {
-			boot( prefs.get( KEY_PROTOCOL, OSCChannel.TCP ), (int) Param.fromPrefs( prefs, KEY_PORT, defaultPortParam ).val, true );
-		}
-		catch( IOException e1 ) {
-			System.err.println( e1.getClass().getName() + " : " + e1.getLocalizedMessage() );
+			boot(prefs.get(KEY_PROTOCOL, OSCChannel.TCP), (int) Param.fromPrefs(prefs, KEY_PORT, defaultPortParam).val, true);
+		} catch (IOException e1) {
+			System.err.println(e1.getClass().getName() + " : " + e1.getLocalizedMessage());
 		}
 	}
 
-	public void boot( String protocol, int port, boolean loopBack )
-	throws IOException
-	{
-		synchronized( this ) {
-			if( running ) {
-				throw new IllegalStateException( "Already booted" );
+	public void boot(String protocol, int port, boolean loopBack)
+			throws IOException {
+
+		synchronized (this) {
+			if (running) {
+				throw new IllegalStateException("Already booted");
 			}
 			
 // FFF
@@ -199,8 +194,8 @@ implements OSCRouter, OSCListener, Runnable, PreferenceChangeListener
 //				rcv.startListening();
 				serv.addOSCListener( this );
 				serv.start();
-				System.out.println( Application.name + " " +
-									getResourceString( "oscRcvAt" ) + " " + protocol.toUpperCase() + " " + getResourceString( "oscPort" ) + " " + port );
+				System.out.println(Application.name + " " +
+						getResourceString("oscRcvAt") + " " + protocol.toUpperCase() + " " + getResourceString("oscPort") + " " + port);
 			}
 			catch( IOException e1 ) {
 				if( serv != null ) {
@@ -497,23 +492,22 @@ implements OSCRouter, OSCListener, Runnable, PreferenceChangeListener
 	}
 	
 // ------- PreferenceChangeListener interface -------
-		
-	public void preferenceChange( PreferenceChangeEvent e )
-	{
-		final String	key = e.getKey();
 
-		if( key.equals( KEY_ACTIVE )) {
-			if( Boolean.valueOf( e.getNewValue() ).booleanValue() ) {
-				if( !isRunning() ) {
+	public void preferenceChange(PreferenceChangeEvent e) {
+		final String key = e.getKey();
+
+		if (key.equals(KEY_ACTIVE)) {
+			if (Boolean.valueOf(e.getNewValue()).booleanValue()) {
+				if (!isRunning()) {
 					boot();
 				}
 			} else {
-				if( isRunning() ) {
+				if (isRunning()) {
 					quit();
 				}
 			}
 		}
- 	}
+	}
 
 /*
 	private static void printError( String name, Throwable t )

@@ -21,11 +21,7 @@
 
 package de.sciss.fscape.session;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.FlowLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -477,9 +473,13 @@ implements Processor, EventManager.Processor, ProgressComponent
     }
 
     protected void documentClosed() {
-        disposed = true;    // important to avoid "too late window messages" to be processed; fucking swing doesn't kill them despite listener being removed
-        // this.removeListener( winListener );
-        // app.getDocumentHandler().removeDocument( this, doc );	// invokes doc.dispose() and hence this.dispose()
+        if (!disposed) {
+            disposed = true;    // important to avoid "too late window messages" to be processed; fucking swing doesn't kill them despite listener being removed
+            // this.removeListener( winListener );
+            // app.getDocumentHandler().removeDocument( this, doc );	// invokes doc.dispose() and hence this.dispose()
+            // dispose();
+            Application.documentHandler.close(getDocument());
+        }
     }
 
     public void dispose()
@@ -487,6 +487,8 @@ implements Processor, EventManager.Processor, ProgressComponent
         // app.getMenuFactory().removeFromWindowMenu( actionShowWindow );
 
         // super.dispose();
+//        final Window w = SwingUtilities.getWindowAncestor(this);
+//        if (w != null) w.dispose();
     }
 
     protected String getResourceString( String key )

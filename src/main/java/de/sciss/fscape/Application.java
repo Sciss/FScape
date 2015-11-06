@@ -16,6 +16,8 @@ public class Application {
 
     public static interface DocumentHandler {
         public Session[] getDocuments();
+        public void setActive(Session doc);
+        public void close(Session doc);
     }
 
     public static File installDir;

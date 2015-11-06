@@ -23,6 +23,7 @@ import de.sciss.desktop.{WindowHandler, OptionPane, Desktop, KeyStrokes, Escape,
 import de.sciss.desktop.impl.{LogWindowImpl, SwingApplicationImpl, WindowImpl}
 import de.sciss.file._
 import de.sciss.fscape.gui.PrefsPanel
+import de.sciss.fscape.impl.DocumentHandlerImpl
 import de.sciss.fscape.net.{OSCRoot, OSCRouter, OSCRouterWrapper, RoutedOSCMessage}
 import de.sciss.fscape.session.{ModulePanel, Session}
 import org.pegdown.PegDownProcessor
@@ -31,6 +32,7 @@ import scala.collection.breakOut
 import scala.swing.{EditorPane, Swing, ScrollPane, Action, BoxPanel, Orientation, Alignment, Label}
 import scala.swing.Swing._
 import scala.swing.event.{Key, MouseClicked}
+import scala.util.Try
 import scala.util.control.NonFatal
 
 object FScape extends SwingApplicationImpl("FScape") {
@@ -102,18 +104,17 @@ object FScape extends SwingApplicationImpl("FScape") {
     Application.name      = App.name
     Application.version   = App.version
     Application.clipboard = Toolkit.getDefaultToolkit.getSystemClipboard
-    Application.documentHandler = new Application.DocumentHandler {
-      def getDocuments: Array[Session] = documentHandler.documents.toArray
-    }
     Application.installDir  = FScape.installDir
 
     // --- osc ----
     // warning : sequence is crucial
     val oscServer = new OSCRoot(Escape.prefsPeer(userPrefs / OSCRoot.DEFAULT_NODE), 0x4653)
     osc           = new OSCRouterWrapper(oscServer, OSCRouterImpl)
+    Application.documentHandler = new DocumentHandlerImpl(oscServer)
 
     val f = new MainWindow
     f.front()
+    oscServer.init()
   }
 
   private type ItemConfig   = (String, String, Option[KeyStroke])
@@ -367,22 +368,23 @@ object FScape extends SwingApplicationImpl("FScape") {
 
   def closeAll(title: String = "Close All"): Boolean = documentViewHandler.windows.forall(_.tryClose(title))
 
-  def newDocument(key: String): Option[ModulePanel] = {
-    val text = moduleName(key)
-    try {
+  def newDocument(key: String, visible: Boolean): Try[ModulePanel] = {
+    // val text = moduleName(key)
+    Try {
       val clz       = Class.forName(s"de.sciss.fscape.gui.${key}Dlg")
       val modPanel	= clz.newInstance().asInstanceOf[ModulePanel]
       documentHandler.addDocument(modPanel.getDocument())
       val modWin    = new DocumentWindow(modPanel)
-      modWin.front()
-      Some(modPanel)
-    } catch {
-      case NonFatal(e) =>
-        val dlg = DialogSource.Exception(e -> s"New $text")
-        dlg.show(None)
-        None
-        // GUIUtil.displayError(null, e1, getResourceString("menuNew"));
+      if (visible) modWin.front()
+      modPanel
     }
+//    catch {
+//      case NonFatal(e) =>
+//        val dlg = DialogSource.Exception(e -> s"New $text")
+//        dlg.show(None)
+//        None
+//        // GUIUtil.displayError(null, e1, getResourceString("menuNew"));
+//    }
   }
 
   private var forcedQuit = false
@@ -397,7 +399,7 @@ object FScape extends SwingApplicationImpl("FScape") {
   private class ActionModule(key: String, text: String, stroke: Option[KeyStroke]) extends Action(text) {
     accelerator = stroke
 
-    def apply(): Unit = newDocument(key)
+    def apply(): Unit = newDocument(key, visible = true)
   }
 
   private object ActionHelpIndex extends Action("Index") {
