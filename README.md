@@ -21,11 +21,11 @@ FScape is winner of the 2014 [LoMus award](http://concours.afim-asso.org/) (ex-a
 
 ## downloading
 
-A binary version of FScape for Linux, OS X and Windows is provided through [Bintray](https://bintray.com/sciss/generic/FScape).
+A binary version of FScape for all platforms is provided through [GitHub Releases](https://github.com/Sciss/FScape/releases/latest).
 
 ## running
 
-In the binary distribution, you should just be able to double click the `FScape.jar` file, or `FScape.app` on OS X. An example `.desktop` file for Linux windows manager is included. Edit the installation path using a text editor and copy this file into `~/.local/share/applications` to become available in your system (GNOME, KDE, ...). From a terminal, FScape can be launched as `java -jar FScape.jar`.
+In the binary distribution, you should use the shell scripts `bin/fscape` (Linux, OS X) or `bin/fscape.bat` (Windows) to start the application. If you have installed the Debian package, `fscape` should be on your path and available as a desktop icon in your desktop environment.
 
 ## compiling
 
@@ -35,11 +35,12 @@ FScape now builds with [sbt](http://www.scala-sbt.org/) 0.13. You can use the pr
  - to package: `sbt package`
  - to run: `sbt run`
  - to make a standalone jar: `sbt assembly`
- - to make an OS X app bundle: `sbt appbundle`
+ 
+The release bundles are produced with tasks `universal:packageBin` and `debian:packageBin`.
 
 ## source code distribution
 
-FScape's GPL'ed source code is made available throught [github.com/Sciss/FScape](http://github.com/Sciss/FScape).
+FScape's GPL'ed source code is made available through [github.com/Sciss/FScape](http://github.com/Sciss/FScape).
 
 For OSC communication, FScape uses the NetUtil library, which is licensed under the GNU Lesser General Public License (LGPL). The source code is available from [github.com/Sciss/NetUtil](https://github.com/Sciss/NetUtil).
 
