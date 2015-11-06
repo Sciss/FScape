@@ -1,5 +1,15 @@
 # change history
 
+## v1.2.0 (nov 2015)
+
+ - added Limiter module
+
+## v1.1.1 (may 2014)
+
+ - started to transition some infrastructure to Scala
+ - bundles with Web Look-and-Feel
+ - add more docs, doc source is Markdown instead of HTML
+
 ## v1.0.0 (aug 2013)
 
  - Fixes: ResampleDlg (64 bit frame offsets make it work with long files)

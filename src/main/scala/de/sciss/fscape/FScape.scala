@@ -13,26 +13,25 @@
 
 package de.sciss.fscape
 
-import de.sciss.desktop.impl.{LogWindowImpl, WindowImpl, SwingApplicationImpl}
-import de.sciss.desktop._
-import scala.swing._
-import Swing._
-import scala.swing.event.{MouseClicked, Key}
-import de.sciss.fscape.session.{Session, ModulePanel}
-import scala.util.control.NonFatal
-import javax.swing.{ImageIcon, UIManager, KeyStroke}
 import java.awt.{Color, GraphicsEnvironment, Toolkit}
+import java.net.URL
+import javax.swing.{ImageIcon, KeyStroke, UIManager}
+
 import com.alee.laf.checkbox.WebCheckBoxStyle
 import com.alee.laf.progressbar.WebProgressBarStyle
-import de.sciss.fscape.gui.PrefsPanel
-import de.sciss.fscape.net.{RoutedOSCMessage, OSCRouter, OSCRouterWrapper, OSCRoot}
-import scala.collection.breakOut
-import de.sciss.desktop.Menu
-import de.sciss.desktop.Window
+import de.sciss.desktop.{WindowHandler, OptionPane, Desktop, KeyStrokes, Escape, DialogSource, Menu, Window}
+import de.sciss.desktop.impl.{LogWindowImpl, SwingApplicationImpl, WindowImpl}
 import de.sciss.file._
-import java.net.URL
+import de.sciss.fscape.gui.PrefsPanel
+import de.sciss.fscape.net.{OSCRoot, OSCRouter, OSCRouterWrapper, RoutedOSCMessage}
+import de.sciss.fscape.session.{ModulePanel, Session}
 import org.pegdown.PegDownProcessor
-import de.sciss.fscape.util.Param
+
+import scala.collection.breakOut
+import scala.swing.{EditorPane, Swing, ScrollPane, Action, BoxPanel, Orientation, Alignment, Label}
+import scala.swing.Swing._
+import scala.swing.event.{Key, MouseClicked}
+import scala.util.control.NonFatal
 
 object FScape extends SwingApplicationImpl("FScape") {
   App =>
@@ -42,6 +41,20 @@ object FScape extends SwingApplicationImpl("FScape") {
   private var osc = null: OSCRouterWrapper
 
   lazy val version: String = buildInfoString("version")
+
+  /** Base directory of FScape installation.
+    * I.e. parent directory of `help`, `sounds` etc.
+    */
+  lazy val installDir: File = {
+    val resOpt = for {
+      cp      <- sys.props.get("java.class.path")
+      entry   <- cp.split(":").find(_.contains("de.sciss.fscape"))
+      lib     <- file(entry).parentOption
+      base    <- lib.parentOption
+    } yield base
+
+    resOpt.getOrElse(file("").absolute)
+  }
 
   private def buildInfoString(key: String): String = try {
     val clazz = Class.forName("de.sciss.fscape.BuildInfo")
@@ -85,7 +98,6 @@ object FScape extends SwingApplicationImpl("FScape") {
     System.setErr(Console.err)  // por que?
 
     // ---- bridge to Java world ----
-    import de.sciss.fscape.Application
     Application.userPrefs = de.sciss.desktop.Escape.prefsPeer(userPrefs)
     Application.name      = App.name
     Application.version   = App.version
@@ -93,6 +105,7 @@ object FScape extends SwingApplicationImpl("FScape") {
     Application.documentHandler = new Application.DocumentHandler {
       def getDocuments: Array[Session] = documentHandler.documents.toArray
     }
+    Application.installDir  = FScape.installDir
 
     // --- osc ----
     // warning : sequence is crucial
@@ -229,12 +242,17 @@ object FScape extends SwingApplicationImpl("FScape") {
       .add(Item("redo", proxy("Redo" -> keyRedo)))
     if (itPrefs.visible /* && Desktop.isLinux */) gEdit.addLine().add(itPrefs)
 
-    val gWindow = Group("window", "Window")
+    // val gWindow = Group("window", "Window")
 
     val itAbout = Item.About(App) {
       val addr    = "www.sciss.de/fscape"
       val url     = s"http://$addr/"
       val version = Application.version
+      val jreInfo: String = {
+        val name    = sys.props.getOrElse("java.runtime.name"   , "?")
+        val version = sys.props.getOrElse("java.runtime.version", "?")
+        s"$name (build $version)"
+      }
       val html =
         s"""<html><center>
            |<font size=+1><b>About ${App.name}</b></font><p>
@@ -246,6 +264,8 @@ object FScape extends SwingApplicationImpl("FScape") {
            |Winner of the 2014 LoMus award (ex aequo).
            |<p>
            |<a href="$url">$addr</a>
+           |<p><br><hr>
+           |<i>$jreInfo<i>
            |""".stripMargin
       val lb = new Label(html) {
         // cf. http://stackoverflow.com/questions/527719/how-to-add-hyperlink-in-jlabel
@@ -308,6 +328,8 @@ object FScape extends SwingApplicationImpl("FScape") {
       GUI.placeWindow(this, 1f, 0.5f, 0)
       front()
     }
+
+    ()
   }
 
   private class MainWindow extends WindowImpl {
@@ -380,7 +402,7 @@ object FScape extends SwingApplicationImpl("FScape") {
 
   private object ActionHelpIndex extends Action("Index") {
     def apply(): Unit =
-      Desktop.browseURI((file("help") / "index.html").toURI)
+      Desktop.browseURI((FScape.installDir / "help" / "index.html").toURI)
   }
 
   private lazy val docViewH = new DocumentViewHandler

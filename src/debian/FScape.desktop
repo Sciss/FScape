@@ -1,11 +1,11 @@
 [Desktop Entry]
 Name=FScape
-Version=1.0
+Version=1.2.0-SNAPSHOT
 GenericName=FScape
 Comment=FScape Audio Rendering Application
-Exec=java -Xmx1024m -jar /home/hhrutz/Documents/devel/FScape/FScape.jar
+Exec=/usr/share/fscape/bin/fscape
 StartupWMClass=de-sciss-fscape-Main
-Icon=/home/hhrutz/Documents/devel/FScape/help/application.png
+Icon=/usr/share/fscape/FScape.png
 Categories=Audio;AudioVideo;
 Terminal=false
 Type=Application

@@ -19,6 +19,7 @@ import java.io.*;
 import java.util.*;
 import javax.swing.*;
 
+import de.sciss.fscape.Application;
 import de.sciss.fscape.io.*;
 import de.sciss.fscape.prop.*;
 import de.sciss.fscape.session.*;
@@ -81,7 +82,7 @@ extends ModulePanel
 	private static final String PRN_MARKERDETECT	= "MarkDetect";
 	private static final String PRN_MARKERREPAIR	= "MarkRepair";
 
-	private static final String	prText[]		= { "", "", "sounds" + File.separator + "declickIR.aif" };
+	private static final String	prText[]		= { "", "", null };
 	private static final String	prTextName[]	= { PRN_INPUTFILE, PRN_OUTPUTFILE, PRN_IMPULSEFILE };
 	private static final int		prIntg[]	= { 0, 0, CHECK_32, XFADE_1024, PROB_1PM };
 	private static final String	prIntgName[]	= { PRN_OUTPUTTYPE, PRN_OUTPUTRES, PRN_CHECKSIZE,
@@ -129,6 +130,7 @@ extends ModulePanel
 		if( static_pr == null ) {
 			static_pr			= new PropertyArray();
 			static_pr.text		= prText;
+			prText[PR_IMPULSEFILE] = new File(new File(Application.installDir, "sounds"), "declickIR.aif").getPath();
 			static_pr.textName	= prTextName;
 			static_pr.intg		= prIntg;
 			static_pr.intgName	= prIntgName;
