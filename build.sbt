@@ -103,12 +103,13 @@ lazy val pkgDebianSettings: Seq[sbt.Def.Setting[_]] = Seq(
   debianPackageDependencies in Debian += "java7-runtime",
   packageSummary in Debian := description.value,
   packageDescription in Debian :=
-    """SysSon is a platform for the development and application
-      | of sonification. It aims to be an integrative system that
-      | serves different types of users, from domain scientists to
-      | sonification researchers to composers and sound artists.
-      | It therefore has an open nature capable of addressing different
-      | usage scenarios.
+    """The audio rendering suite FScape consists of around fifty
+      | independent modules for rendering audio files. From simple
+      | utilities such as separating channels, normalising, cutting
+      | and splicing sounds, through various DSP and filtering algorithms
+      | to more complex algorithmic units which take a sound, analyse it,
+      | and rearrange it in new forms. Many of the processes and their ways
+      | of parametrisation are unique.
       |""".stripMargin,
   // include all files in src/debian in the installed base directory
   linuxPackageMappings in Debian ++= {
