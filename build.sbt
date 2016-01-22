@@ -10,7 +10,7 @@ lazy val basicJavaOpts = Seq("-source", "1.6", "-target", "1.6")
 
 lazy val commonSettings = Seq(
   name             := baseName,
-  version          := "1.2.0",
+  version          := "1.2.1-SNAPSHOT",
   organization     := "de.sciss",
   description      := "A standalone audio rendering software for time domain and spectral signal processing",
   homepage         := Some(url(s"https://github.com/Sciss/${name.value}")),
@@ -129,7 +129,7 @@ lazy val pkgDebianSettings: Seq[sbt.Def.Setting[_]] = Seq(
   }
 )
 
-lazy val root = Project(id = baseName, base = file("."))
+lazy val root = Project(id = baseNameL, base = file("."))
   .enablePlugins(BuildInfoPlugin)
   .enablePlugins(JavaAppPackaging, DebianPlugin)
   .settings(commonSettings)
@@ -139,5 +139,3 @@ lazy val root = Project(id = baseName, base = file("."))
   .settings(useNativeZip) // cf. https://github.com/sbt/sbt-native-packager/issues/334
   .settings(pkgDebianSettings)
   .settings(publishSettings)
-
-
