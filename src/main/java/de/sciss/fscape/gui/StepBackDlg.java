@@ -383,7 +383,7 @@ ggCorrFine.setEnabled( false ); // XXX
 		// Smp Init
 		int					inLength, inChanNum;
 		int					framesRead, numCuts, fadeLen, cutOffset;
-		int					lastCut, stopCut, minLoc, spacing, minSpacing, maxSpacing;	// [chunks � corrStep]
+		int					lastCut, stopCut, minLoc, spacing, minSpacing, maxSpacing;	// [chunks (?) corrStep]
 		int					minXFade, maxXFade, corrLength, corrStep;			// [smp]
 		float				minCorr, xcorr, minEnergy;
 		double				energy1, energy2, crossTerm;
@@ -686,7 +686,7 @@ findMinLp:					for( j = 0; j < xcorrs.length; j++ ) {
 					convBuf1	= fftBuf1;
 					fftBuf1		= fftBuf2;
 					fftBuf2		= convBuf1;
-// System.out.println( "cut "+lastCut+" � "+stopCut );
+// System.out.println( "cut "+lastCut+" stopCut "+stopCut );
 	
 				// ---------- xfade part ----------
 					if( i > 0 ) {

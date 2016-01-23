@@ -568,8 +568,8 @@ topLevel: try {
 				for( int i = 0; i < inLength; i += frameSize ) {	// calc. mImpReads
 					foo	= mImpMod.calc();						// index
 					d1	= foo.val;
-					if( (d1 % 1.0) < 0.0012 ) d1 = Math.floor( d1 );	// �berfl�ssiges 0.0000xyz% morphing
-					if( (d1 % 1.0) > 0.9988 ) d1 = Math.ceil( d1 );		// �berfl�ssiges 0.9999xyz% morphing
+					if( (d1 % 1.0) < 0.0012 ) d1 = Math.floor( d1 );	// ueberfluessiges 0.0000xyz% morphing
+					if( (d1 % 1.0) > 0.9988 ) d1 = Math.ceil( d1 );		// ueberfluessiges 0.9999xyz% morphing
 					foo.val = d1;
 
 					if( Math.abs( d1 - mImpIndex.val ) >= 0.0012 ) {	// (only if +- 0.01 dB to improve speed)
@@ -777,8 +777,8 @@ topLevel: try {
 						foo	= mImpMod.calc();
 						mStream.framesRead++;
 						d1	= Math.max( 0.0, Math.min( mImpDepth.val, foo.val ));
-						if( (d1 % 1.0) < 0.0012 ) d1 = Math.floor( d1 );	// �berfl�ssiges 0.0000xyz% morphing
-						if( (d1 % 1.0) > 0.9988 ) d1 = Math.ceil( d1 );		// �berfl�ssiges 0.9999xyz% morphing
+						if( (d1 % 1.0) < 0.0012 ) d1 = Math.floor( d1 );	// ueberfluessiges 0.0000xyz% morphing
+						if( (d1 % 1.0) > 0.9988 ) d1 = Math.ceil( d1 );		// ueberfluessiges 0.9999xyz% morphing
 						foo.val = d1;
 						if( Math.abs( d1 - mImpIndex.val ) >= 0.0012 ) {
 							mImpIndex	= foo;

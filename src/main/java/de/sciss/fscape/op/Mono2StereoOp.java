@@ -98,7 +98,7 @@ extends Operator
 			static_presets = new Presets( getClass(), static_pr.toProperties( true ));
 		}
 				
-		// superclass-Felder �bertragen		
+		// superclass-Felder uebertragen
 		opName		= "Mono2StereoOp";
 		prefs		= static_prefs;
 		presets		= static_presets;
@@ -130,7 +130,7 @@ extends Operator
 		// Berechnungs-Grundlagen
 		Param			ampRef			= new Param( 1.0, Param.ABS_AMP );	// transform-Referenz
 		double			gain;
-		int				ch2;						// Source-Kanal f�r rechten Zielkanal (0 oder 1)
+		int				ch2;						// Source-Kanal fuer rechten Zielkanal (0 oder 1)
 	
 		// Modulations-Variablen
 		boolean			recalc			= true;		// false, wenn sich die Werte nicht geaendert haben
@@ -154,10 +154,10 @@ topLevel:
 			// ------------------------------ Input-Slot ------------------------------
 			runInSlot = (SpectStreamSlot) slots.elementAt( SLOT_INPUT );
 			if( runInSlot.getLinked() == null ) {
-				runStop();	// threadDead = true -> folgendes for() wird �bersprungen
+				runStop();	// threadDead = true -> folgendes for() wird uebersprungen
 			}
-			// diese while Schleife ist n�tig, da beim initReader ein Pause eingelegt werden kann
-			// und die InterruptException ausgel�st wird; danach versuchen wir es erneut
+			// diese while Schleife ist noetig, da beim initReader ein Pause eingelegt werden kann
+			// und die InterruptException ausgeloest wird; danach versuchen wir es erneut
 			for( boolean initDone = false; !initDone && !threadDead; ) {
 				try {
 					runInStream	= runInSlot.getDescr();	// throws InterruptedException
@@ -168,12 +168,12 @@ topLevel:
 			}
 			if( threadDead ) break topLevel;
 
-			// band-abh�ngige Stereo-Breite
+			// band-abhaengige Stereo-Breite
 			depthFactor	= new float[ runInStream.bands ];
 			depth		= new float[ runInStream.bands ];
 			// frequency angle depending on bandwidth;
 			freqPhase	= new float[ runInStream.bands ];
-			// Source-Kanal f�r rechten Zielkanal
+			// Source-Kanal fuer rechten Zielkanal
 			ch2			= 1 % runInStream.chanNum;
 
 			// ------------------------------ Output-Slot ------------------------------

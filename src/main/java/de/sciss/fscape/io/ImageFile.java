@@ -496,8 +496,8 @@ IFD:		for( i = 0; i < entries; i++ ) {
 	/*
 	 *	TIFF-Entry einlesen; Typen-Konvertierung erfolgt automatisch
 	 *
-	 *	einzelne Bytes und Shorts werden rechtsb�ndig formattiert
-	 *	einzelne "Rational"-Typen werden in ein Float konvertiert (zur�ck �ber Float.intBitsToFloat())
+	 *	einzelne Bytes und Shorts werden rechtsbuendig formattiert
+	 *	einzelne "Rational"-Typen werden in ein Float konvertiert (zurueck ueber Float.intBitsToFloat())
 	 */
 	protected void readTIFFentry( TIFFentry entry )
 	throws IOException

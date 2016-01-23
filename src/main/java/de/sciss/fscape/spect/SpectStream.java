@@ -100,7 +100,7 @@ public class SpectStream
 	protected static final int	DEFAULT_BUF_SIZE	= 8;	// number of frames
 	
 	protected Vector	activeBuf;	// geschriebene Frames
-	protected Vector	deadBuf;	// nicht mehr ben�tigte Frames; darauf kann alloc() zur�ckgreifen!
+	protected Vector	deadBuf;	// nicht mehr benoetigte Frames; darauf kann alloc() zurueckgreifen!
 	protected int		bufSize;	// max. Frame-Zahl in activeBuf und deadBuf
 
 // -------- public Methoden --------

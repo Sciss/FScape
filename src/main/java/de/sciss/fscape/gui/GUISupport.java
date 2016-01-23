@@ -135,7 +135,7 @@ extends JPanel
 	}
 
 	/**
-	 *	Gadget-ID �ber gesendetes ComponentEvent
+	 *	Gadget-ID ueber gesendetes ComponentEvent
 	 *
 	 *	@param e	ComponentEvent, das durch Gadgetklick ausgeloest wurde
 	 *	@return	Gadget-ID, -1 bei Fehler
@@ -151,7 +151,7 @@ extends JPanel
 	}
 
 	/**
-	 *	Gadget-Object �ber ID-Parameter aus dem Hash ermitteln
+	 *	Gadget-Object ueber ID-Parameter aus dem Hash ermitteln
 	 *
 	 *	@param ID	Gadget-ID
 	 *	@return	Componente, null bei Fehler

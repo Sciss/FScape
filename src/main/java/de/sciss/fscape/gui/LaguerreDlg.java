@@ -398,7 +398,7 @@ topLevel: try {
 			while( ((float) transLen / (float) i) > j ) i++;
 			inputStep	= (int) (((float) transLen / (float) i) + 0.5f);	// DAFx2000 'L'
  			fltLen		= Math.max( winSize, transLen );
-// System.out.println( "inputStep "+inputStep+"; winSize "+winSize+"; transLen "+transLen+"; fltLen "+fltLen+"; warp "+warp+"; � "+f1 );
+// System.out.println( "inputStep "+inputStep+"; winSize "+winSize+"; transLen "+transLen+"; fltLen "+fltLen+"; warp "+warp+"; f1 "+f1 );
 			win			= Filter.createFullWindow( winSize, Filter.WIN_HANNING );		// DAFx2000 (27)
 			outputStep	= inputStep;
 

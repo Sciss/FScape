@@ -433,7 +433,7 @@ if( hdr[ hdr_chanNum ] == 2 ) {
 
 		if( (mode & MODE_FILEMASK) == MODE_OUTPUT ) {
 			try {
-				if( length() >= (hdr_sizeof << 2) ) {	// haben wir schon was geschrieben? (= g�ltiger hdr)
+				if( length() >= (hdr_sizeof << 2) ) {	// haben wir schon was geschrieben? (= gueltiger hdr)
 					seek( hdr_dataBsize << 2 );			// ...dann update file length
 					writeInt( (int) length() - hdr[ hdr_headBsize ]);
 				}

@@ -108,7 +108,7 @@ extends Operator
 			static_presets = new Presets( getClass(), static_pr.toProperties( true ));
 		}
 				
-		// superclass-Felder �bertragen		
+		// superclass-Felder uebertragen
 		opName		= "SmearOp";
 		prefs		= static_prefs;
 		presets		= static_presets;
@@ -157,10 +157,10 @@ topLevel:
 			// ------------------------------ Input-Slot ------------------------------
 			runInSlot = (SpectStreamSlot) slots.elementAt( SLOT_INPUT );
 			if( runInSlot.getLinked() == null ) {
-				runStop();	// threadDead = true -> folgendes for() wird �bersprungen
+				runStop();	// threadDead = true -> folgendes for() wird uebersprungen
 			}
-			// diese while Schleife ist n�tig, da beim initReader ein Pause eingelegt werden kann
-			// und die InterruptException ausgel�st wird; danach versuchen wir es erneut
+			// diese while Schleife ist noetig, da beim initReader ein Pause eingelegt werden kann
+			// und die InterruptException ausgeloest wird; danach versuchen wir es erneut
 			for( boolean initDone = false; !initDone && !threadDead; ) {
 				try {
 					runInStream	= runInSlot.getDescr();	// throws InterruptedException

@@ -82,7 +82,7 @@ extends Operator
 			static_presets = new Presets( getClass(), static_pr.toProperties( true ));
 		}
 				
-		// superclass-Felder �bertragen		
+		// superclass-Felder uebertragen
 		opName		= "EnvOp";
 		prefs		= static_prefs;
 		presets		= static_presets;
@@ -132,10 +132,10 @@ topLevel:
 			// ------------------------------ Input-Slot ------------------------------
 			runInSlot = (SpectStreamSlot) slots.elementAt( SLOT_INPUT );
 			if( runInSlot.getLinked() == null ) {
-				runStop();	// threadDead = true -> folgendes for() wird �bersprungen
+				runStop();	// threadDead = true -> folgendes for() wird uebersprungen
 			}
-			// diese while Schleife ist n�tig, da beim initReader ein Pause eingelegt werden kann
-			// und die InterruptException ausgel�st wird; danach versuchen wir es erneut
+			// diese while Schleife ist noetig, da beim initReader ein Pause eingelegt werden kann
+			// und die InterruptException ausgeloest wird; danach versuchen wir es erneut
 			for( boolean initDone = false; !initDone && !threadDead; ) {
 				try {
 					runInStream	= runInSlot.getDescr();	// throws InterruptedException
@@ -162,7 +162,7 @@ topLevel:
 			fltBox			= new FilterBox();
 			fltBox.filterType= FilterBox.FLT_LOWPASS;
 			fltBox.cutOff	= new Param( fltFreq, Param.ABS_HZ );
-			tmpStream		= new AudioFileDescr();	// schei�e unflexibel
+			tmpStream		= new AudioFileDescr();	// unflexibel
 			tmpStream.rate	= runInStream.smpRate;
 			fltLength		= fltBox.calcLength( tmpStream, FIRDesignerDlg.QUAL_VERYGOOD );
 			skip			= fltLength.x;								// support not written out
@@ -176,7 +176,7 @@ topLevel:
 			// we design a half-nyquist lp filter and shift it up by that freq. to have a real=>analytic filter
 			// see comp.dsp algorithms-faq Q2.10
 			fltBox.calcIR( tmpStream, FIRDesignerDlg.QUAL_VERYGOOD, Filter.WIN_BLACKMAN, fftBuf1, fltLength );
-			// ---- real=>complex + modulation with exp(ismpRate/4 � antialias) ----
+			// ---- real=>complex + modulation with exp(ismpRate/4 +/- (?) antialias) ----
 			for( i = fftLength - 1, j = fftBuf1.length - 1; i >= 0; i-- ) {
 				d1				= -fltShift * i;
 				fftBuf1[ j-- ]	= (float) (fftBuf1[ i ] * Math.sin( d1 ));		// img

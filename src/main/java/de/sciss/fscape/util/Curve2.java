@@ -29,8 +29,8 @@ public class Curve2
 	public static final int	TYPE_UNIPOLAR	= 0x010;
 
 	public	int			flags;
-	public	int			size;		// in x, y ; arrays d�rfen aber l�nger sein; mind. 2!
-	public	float[]		xs;			// nur im Bereich 0...1 ; Randpunkte nicht l�schen! Keine doppelten x
+	public	int			size;		// in x, y ; arrays duerfen aber laenger sein; mind. 2!
+	public	float[]		xs;			// nur im Bereich 0...1 ; Randpunkte nicht loeschen! Keine doppelten x
 	public	float[]		ys;
 	public	boolean		looped		= false;
 	public	float		loopStart	= 0.0f;
@@ -41,7 +41,7 @@ public class Curve2
 
 	private boolean		valid		= false;
 //	private int			clcLpStart, clcLpEnd;
-	private float[]		yDrv		= null;		// zweite Ableitung f�r Spline-Interpolation
+	private float[]		yDrv		= null;		// zweite Ableitung fuer Spline-Interpolation
 
 // -------- public Methoden --------
 

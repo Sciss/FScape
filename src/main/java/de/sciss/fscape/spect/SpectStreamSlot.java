@@ -42,7 +42,7 @@ public class SpectStreamSlot
 // -------- private Variablen --------
 
 	protected int					flags;		// SLOTS_...
-	protected String				name;		// wird zur�ckgegeben �ber toString()
+	protected String				name;		// wird zurueckgegeben ueber toString()
 	protected Operator				owner;
 	protected Thread				ownerThread	= null;
 
@@ -168,7 +168,7 @@ public class SpectStreamSlot
 	throws SlotAlreadyConnectedException
 	{
 		synchronized( this ) {
-			if( stream != null ) {			// nanu, schon ein Stream pr�sent?!
+			if( stream != null ) {			// nanu, schon ein Stream praesent?!
 				throw new SlotAlreadyConnectedException( ERR_STILLINUSE );
 			}
 			strm.initWriter();
@@ -258,10 +258,10 @@ public class SpectStreamSlot
 				while( fr == null ) {
 					try {
 //						System.out.println( "framesReadable : " + stream.framesReadable() );
-						if( stream.framesReadable() != 0 ) {	// auch -1, l�st ja EOFException aus
+						if( stream.framesReadable() != 0 ) {	// auch -1, loest ja EOFException aus
 							fr = stream.readFrame();
 							if( linked.state == STATE_WAITING ) {
-								// geschachtelte synchronized nur, wenn klar ist, da� der andere wartet!
+								// geschachtelte synchronized nur, wenn klar ist, dass der andere wartet!
 								synchronized( linked ) {
 									linked.notify();			// yo, du kannst wieder schreiben
 								}
@@ -308,14 +308,14 @@ public class SpectStreamSlot
 			try {
 				while( fr != null ) {
 					try {
-						if( stream.framesWriteable() != 0 ) {	// auch -1, l�st ja EOFException aus
+						if( stream.framesWriteable() != 0 ) {	// auch -1, loest ja EOFException aus
 							stream.writeFrame( fr );
 							if( spectro != null ) {
 								spectro.addFrame( fr );
 							}
 							fr = null;
 							if( linked.state == STATE_WAITING ) {
-								// geschachtelte synchronized nur, wenn klar ist, da� der andere wartet!
+								// geschachtelte synchronized nur, wenn klar ist, dass der andere wartet!
 								synchronized( linked ) {
 									linked.notify();			// yo, du kannst wieder lesen
 								}

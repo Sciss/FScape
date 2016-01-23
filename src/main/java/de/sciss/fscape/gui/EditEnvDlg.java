@@ -56,7 +56,7 @@ extends BasicDialog
 
 	protected GUISupport gui;		// Dialog-Oberflaeche
 
-	private boolean choice = false;			// keine Ver�nderung bei Cancel n�tig
+	private boolean choice = false;			// keine Veraenderung bei Cancel noetig
 
 	protected static PropertyArray	static_pr	= null;
 	protected static Presets		presets		= null;
@@ -143,7 +143,7 @@ extends BasicDialog
 		while( presetNames.hasNext() ) {
 			ggPresets.addItem( (String) presetNames.next() );
 		}
-		ggPresets.setSelectedItem( Presets.DEFAULT );						// default w�hlen und
+		ggPresets.setSelectedItem( Presets.DEFAULT );						// default waehlen und
 		ggDelPreset.setEnabled( false );							// DelPreset deaktivieren
 		gui.registerGadget( ggPresets, GG_PRESETS );
 		ggPresets.addItemListener( list );
@@ -265,7 +265,7 @@ timeSpace[ 2 ]			= new ParamSpace( timeSpace[ 2 ].inc, timeSpace[ 2 ].max, timeS
 		envelopeToGUI();
 		getContentPane().add( gui );
 
-		// Position und Gr��e aus dem Preferences ermitteln
+		// Position und Groesse aus dem Preferences ermitteln
 		setResizable( true );
 
 		addWindowListener( new WindowAdapter() {
@@ -435,7 +435,6 @@ timeSpace[ 2 ]			= new ParamSpace( timeSpace[ 2 ].inc, timeSpace[ 2 ].max, timeS
 
 		/**
 		 *	@param dlg	Edit-Dialog, der den Listener installiert
-		 *	@param gui	zu �berwachendes GUI
 		 */
 		public EditEnvDlgListener( EditEnvDlg dlg )
 		{
@@ -665,7 +664,7 @@ timeSpace[ 2 ]			= new ParamSpace( timeSpace[ 2 ].inc, timeSpace[ 2 ].max, timeS
 						if( exists ) {
 							i = JOptionPane.showConfirmDialog( enc_this,  "Overwrite existing preset\n\"" +
 													  name + "\"", "Confirm", JOptionPane.YES_NO_OPTION );
-							if( i != 0 ) break topLevel;	// nicht �berschreiben
+							if( i != 0 ) break topLevel;	// nicht ueberschreiben
 						}
 
 						dlg.GUIToEnvelope();

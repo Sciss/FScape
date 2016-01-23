@@ -126,7 +126,7 @@ implements Cloneable
 	
 //		try {
 			switch( flags ) {
-			case FLAGS_SUM:			// Vectoren addieren; zun�chst Polar ==> Rect
+			case FLAGS_SUM:			// Vectoren addieren; zunaechst Polar ==> Rect
 				for( int i = 0; i < src.data[ 0 ].length; i += 2 ) {
 					destImg  = 0.0;
 					destReal = 0.0;

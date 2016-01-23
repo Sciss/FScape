@@ -340,7 +340,7 @@ topLevel: try {
 			smpsPerHalfbit = (int) Math.ceil( outStream.rate / (frames * 160) );
 			calcRate	= frames * 160 * smpsPerHalfbit;
 //			System.out.println( "calculation sample rate is " + calcRate );
-			tau			= 25.0e-6 / Math.log( 9 );	// 25�s rise time --> time constant
+			tau			= 25.0e-6 / Math.log( 9 );	// 25 micro-s rise time --> time constant
 			alpha		= (float) (1.0 / (tau * calcRate + 1));
 			rf			= calcRate / outStream.rate; // reciprocal resampling factor
 			

@@ -138,7 +138,7 @@ extends JPanel
 				} else if( e.isAltDown() ) {
 					index = getComponentIndex( (Component) e.getSource() );
 					if( (curve.getPoint( index - 1 ) != null) &&
-						(curve.getPoint( index + 1 ) != null) ) {	// Endpunkte nicht l�schen
+						(curve.getPoint( index + 1 ) != null) ) {	// Endpunkte nicht loeschen
 						
 						removePoint( (CurvePoint) e.getSource() );
 					}
@@ -165,7 +165,7 @@ extends JPanel
 						actionComponent.dispatchEvent( parentE );
 					}
 
-					if( e.isControlDown() ) {	// PopUp-Men�
+					if( e.isControlDown() ) {	// PopUp-Menu
 						// XXX
 					}
 
@@ -177,7 +177,7 @@ extends JPanel
 					// neuen CurvePoint selektieren
 					currentCurvePoint.setSelected( CP_STATE_SELECTED );
 
-					if( e.isControlDown() ) {		// PopUp-Men�
+					if( e.isControlDown() ) {		// PopUp-Menu
 						// XXX
 
 					} else if( !e.isAltDown() ) {	// prepare Drag

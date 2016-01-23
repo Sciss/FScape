@@ -490,8 +490,8 @@ public class SpectPatch
 			}
 		}
 	//	thread.setPriority( Thread.NORM_PRIORITY );
-		win.stop();		// m�glicherweise wurde gar kein Thread gestartet, der win.stop()
-	}					// aufrufen w�rde
+		win.stop();		// moeglicherweise wurde gar kein Thread gestartet, der win.stop()
+	}					// aufrufen wuerde
 	
 	/**
 	 *	Operatoren pausieren / Pause beenden

@@ -126,7 +126,7 @@ extends Operator
 			static_presets = new Presets( getClass(), static_pr.toProperties( true ));
 		}
 
-		// superclass-Felder �bertragen
+		// superclass-Felder uebertragen
 		opName		= "SplitterOp";
 		prefs		= static_prefs;
 		presets		= static_presets;

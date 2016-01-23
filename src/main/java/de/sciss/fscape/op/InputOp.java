@@ -112,7 +112,7 @@ extends Operator
 			static_presets = new Presets( getClass(), static_pr.toProperties( true ));
 		}
 		
-		// superclass-Felder �bertragen		
+		// superclass-Felder uebertragen
 		opName		= "InputOp";
 		prefs		= static_prefs;
 		presets		= static_presets;
@@ -221,7 +221,7 @@ extends Operator
 			}
 			runInStream.setEstimatedLength( runFrames );
 
-			// ------------------------------ Kan�le ------------------------------
+			// ------------------------------ Kanaele ------------------------------
 			runOutStream = new SpectStream( runInStream );
 			if( pr.intg[ PR_CHANNELS ] != PR_CHANNELS_UNTOUCHED ) {
 				runOutStream.setChannels( 1 );

@@ -499,7 +499,7 @@ topLevel: try {
 // Debug.view( lowpass, "lowpass" );
 
 			// LP = +1.0 fc  -1.0 Zero
-			// HP = +1.0 �/2 -1.0 fc
+			// HP = +1.0 pi/2 -1.0 fc
 			// BP = +1.0 fc2 -1.0 fc1
 			
 		// ---- calculate impulse response of the bandpasses + init tracker ----

@@ -45,7 +45,7 @@ extends Component
 	/*		Konstruktor
 	 *
 	 *		arg:	fname = Dateiname des Bildes
-	 *				width, height = Breite und H�he der Icons in Pixels
+	 *				width, height = Breite und Hoehe der Icons in Pixels
 	 */
 	public IconBitmap( Image img, int width, int height )
 	{
@@ -67,7 +67,7 @@ extends Component
 		this( Toolkit.getDefaultToolkit().getImage( fname ), width, height );
 	}
 	
-	/*		Breite und H�he der Icons ermitteln
+	/*		Breite und Hoehe der Icons ermitteln
 	 *
 	 *		ret: Dimensionen eines Icons
 	 */
@@ -103,7 +103,7 @@ extends Component
 	/*		Position eines Icons in der Bitmap ermitteln
 	 *
 	 *		arg: ID = Icon-ID
-	 *		ret: linke obere Ecke bzw. null bei ung�ltiger ID
+	 *		ret: linke obere Ecke bzw. null bei ungueltiger ID
 	 */
 	private Point getOffset( int ID )
 	{

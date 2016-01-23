@@ -307,7 +307,7 @@ extends ModulePanel
 	}
 
 	/*
-	 *	Settings-GUI in Abh�ngigkeit von der jeweiligen Konvertierungs-Art
+	 *	Settings-GUI in Abhaengigkeit von der jeweiligen Konvertierungs-Art
 	 */
 	protected PropertyGUI createGUI( int type )
 	{
@@ -454,7 +454,7 @@ extends ModulePanel
 	}
 
 	/**
-	 *	automatischer Output Name bei ge�ndertem Input oder Output-Type
+	 *	automatischer Output Name bei geaendertem Input oder Output-Type
 	 *	veranlasst Aktivierung / Deaktivierung des Convert-JButtons
 	 *	und passt das Settings-Panel an die Einstellung an
 	 *	(inType muss korrekt sein dafuer!)
@@ -548,13 +548,13 @@ extends ModulePanel
 		int					smpPerPixel		= 1;	// will be filled with ImageStream-value!
 		
 		// FFT, DFT, FWT
-		double				freqScale		= 0f;	// DFT: Freq.factor von einem Band zum n�chsth�heren
+		double				freqScale		= 0f;	// DFT: Freq.factor von einem Band zum naechsthoeheren
 		float				img, real;
 		float[]				smpData			= null;
 		float[]				smpData2		= null;	// gewindowte Version
 		float[][]			cos				= null;	// 1. Dimension = Freq-Offset, 2. Dimension = Zeit-Offset
 		float[][]			sin				= null;
-		float[]				fCos, fSin;			// cos/sin mit aufgel�ster erster Dimension
+		float[]				fCos, fSin;			// cos/sin mit aufgeloester erster Dimension
 		float[]				win				= null;	// Window-Funktion
 		
 		float[][]			tempBuf			= null;
@@ -645,7 +645,7 @@ topLevel: try {
 					case PRS_TRANSFORM_DFT:						// .... discrete fourier w/ log scale ....
 						bands--;
 						// what we are doing here: Anhand der Bandbreite und Sampling-Rate die Frequenz
-						// des untersten Bandes errechnen und ggf. nach unten so anpassen, da� die
+						// des untersten Bandes errechnen und ggf. nach unten so anpassen, dass die
 						// Tuning Frequenz (masterTune=440 Hz) erreicht wird
 						freqScale	= freqScales[ pr.intg[ PRS_BANDWIDTH ]];
 						loFreq		= (float) (smpRate / (2 * Math.pow( freqScale, bands - 1 )));

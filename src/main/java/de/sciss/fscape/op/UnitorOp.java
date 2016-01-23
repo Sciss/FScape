@@ -120,7 +120,7 @@ extends Operator
 			static_presets = new Presets( getClass(), static_pr.toProperties( true ));
 		}
 		
-		// superclass-Felder �bertragen		
+		// superclass-Felder uebertragen
 		opName		= "UnitorOp";
 		prefs		= static_prefs;
 		presets		= static_presets;
@@ -711,7 +711,7 @@ mainLoop:	while( !threadDead ) {
 						}
 					}
 					
-		// ---------- letzter Schritt: ggf. Int nach Float zur�ckrechnen bzw. Rect => Polar
+		// ---------- letzter Schritt: ggf. Int nach Float zurueckrechnen bzw. Rect => Polar
 				
 					if( !wantsInt ) {
 						if( wantsRect ) {

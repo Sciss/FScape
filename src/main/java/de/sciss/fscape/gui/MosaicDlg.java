@@ -762,7 +762,7 @@ lpY:			for( int y = 0; threadRunning && (y < height); y++ ) {
 						hlbFFTBuf1[ i + 1 ]= (float) (2*d1*d2);
 					}
 					Fourier.realTransform( hlbFFTBuf1, hlbFFTLen, Fourier.INVERSE );
-					// ---- real=>complex + modulation with exp(ismpRate/4 � antialias) ----
+					// ---- real=>complex + modulation with exp(ismpRate/4 +/- (?) antialias) ----
 					// k is chosen so that the filter-centre is zero degrees, otherwise we introduce phase shift
 					for( int i = hlbFFTLen - 1, k = i - hlbFltLen.x, j = hlbFFTBuf1.length - 1; i >= 0; i--, k-- ) {
 						d1					= -hlbFltShift * k;
@@ -856,7 +856,7 @@ lpY:			for( int y = 0; threadRunning && (y < height); y++ ) {
 						
 					if( fltType != FILTER_NONE ) {
 						// LP = +1.0 fc  -1.0 Zero
-						// HP = +1.0 �/2 -1.0 fc
+						// HP = +1.0 pi/2 -1.0 fc
 						// BP = +1.0 fc2 -1.0 fc1
 						fltJitter = (rnd.nextDouble() * 2 - 1) * freqJitter;
 						if( fltType == FILTER_LOWPASS ) {

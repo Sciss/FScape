@@ -118,10 +118,10 @@ extends ModulePanel
 	private JTextField ggInfoField;
 
 	private final MessageFormat	msgInfoField		= new MessageFormat(
-		"{0,choice,-1#[�|0#}"+
+		"{0,choice,-1#[…|0#}"+
 		"{1,choice,0#No regions|1#One region|1<{1,number,integer} regions}"+
 		"{1,choice,0#|1# with total duration of {2}}"+
-		" to recycle{0,choice,-1#�]|0#}",
+		" to recycle{0,choice,-1#…]|0#}",
 		Locale.US );
 
 // -------- public Methoden --------

@@ -51,7 +51,7 @@ implements Runnable, Slots, Cloneable, Transferable
 	public static final String	PACKAGE		= "de.sciss.fscape.op";
 	public static DataFlavor	flavor		= null;				// DataFlavor representing this class
 
-	public static final	int		GUI_PREFS	= 0;				// f�r createGUI()
+	public static final	int		GUI_PREFS	= 0;				// fuer createGUI()
 	public static final String	PRN_SPECTRO	= "Spectrogram";	// Property-Keynames
 
 	public static final int FLAGS_ALIAS		= 0x01;				// Operator is an Alias-Object
@@ -527,7 +527,7 @@ System.out.println( icon.getName() + ": aborted because of: " +threadError );
 // -------- Slots Methoden --------
 
 	/**
-	 *	@param filter	Jedes gesetzte Flag im filter-Parameter mu� im Suchobject gesetzt sein!
+	 *	@param filter	Jedes gesetzte Flag im filter-Parameter muss im Suchobject gesetzt sein!
 	 */
 	public Vector getSlots( int filter )
 	{

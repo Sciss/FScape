@@ -58,8 +58,8 @@ implements AdjustmentListener, MouseListener, MouseMotionListener, WindowListene
 	private	int			width	= 192;
 	private	int			height	= 128;
 	private int			x		= 0;
-	private int[]		xTime;				// Zeitpunkt, den ein Pixel repr�sentiert
-	private int			zoom	= 0;		// 2^n vergr��ert
+	private int[]		xTime;				// Zeitpunkt, den ein Pixel repraesentiert
+	private int			zoom	= 0;		// 2^n vergroessert
 	private int			maxZoom	= 0;
 	private int			lines	= 0;
 	private int			bottomLine = 0;		// unterste angezeigte Zeile (bei Zoom)
@@ -150,7 +150,7 @@ implements AdjustmentListener, MouseListener, MouseMotionListener, WindowListene
 		synchronized( this ) {
 			stream	= strm;
 			for( maxZoom = 0; (strm.bands >> maxZoom) > height; maxZoom++ );
-			zoom		= Math.max( 0, maxZoom - 1 );		// i.d.R. 10000 Hz, vern�nftig
+			zoom		= Math.max( 0, maxZoom - 1 );		// i.d.R. 10000 Hz, vernuenftig
 			bottomLine	= 0;
 			freqSpacing	= (strm.hiFreq - strm.loFreq) / strm.bands;
 			updateZoomGG();
@@ -188,14 +188,14 @@ implements AdjustmentListener, MouseListener, MouseMotionListener, WindowListene
 		synchronized( this ) {
 			if( (stream == null) || pausing ) return;			// "died" / Pause
 		
-			if( lines < height ) {				// nicht benutzten Raum l�schen
+			if( lines < height ) {				// nicht benutzten Raum loeschen
 				imgG.setColor( Color.black );
 				imgG.drawLine( x, lines, x, height - 1 );
 			}
 
 			if( stream.chanNum == 1 ) {
 				for( i = bottomLine, y = lines - 1; i < (bottomLine + lines); i++, y-- ) {
-																	// 1.17 f�r ein wenig Overhead
+																	// 1.17 fuer ein wenig Overhead
 					rgb[ 0 ] = (float) Math.sqrt( fr.data[ 0 ][ i << (zoom + 1) + SpectFrame.AMP ]
 												  * 1.17f );
 					if( rgb[ 0 ] < 0.0f ) rgb[ 0 ] = 0.0f;

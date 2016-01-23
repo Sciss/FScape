@@ -451,7 +451,7 @@ topLevel: try {
 		}
 	}
 
-	// ---- predic routine from NR �13.6 ----
+	// ---- predic routine from NR paragraph 13.6 ----
 
 	/*
 	 *	Given data[dataOff - coeffNum...dataOff-1] (!!), and given the data's LP coefficients d[0...m-1] (!!), this routine applies
@@ -486,7 +486,7 @@ topLevel: try {
 		}
 	}
 
-	// ---- memcof routine from NR �13.6 ----
+	// ---- memcof routine from NR paragraph 13.6 ----
 
 	/*
 	 *	Given a real vector of data[dataOff...dataOff+dataLen-1] (!!), and given coeffNum, this routine returns coeffNum linear prediction
@@ -545,7 +545,7 @@ topLevel: try {
 		}	
 	}
 
-	// ---- fixrts routine from NR �13.6 ----
+	// ---- fixrts routine from NR paragraph 13.6 ----
 
 	/*
 	 *	Given the LP coefficients d[0...m-1] (!!), this routine finds all roots of the characteristic polynomial
@@ -608,12 +608,12 @@ topLevel: try {
 		}
 	}
 
-	// ---- zroots routine from NR �9.5 ----
+	// ---- zroots routine from NR paragraph 9.5 ----
 
 	protected static final float	EXPECTEDERROR2	= 4.0e-6f;
 
 	/*
-	 * Given the degree m and the m+1 complex coefficients a[0...m*2] of the polynomial �i=0...m(a[i]x^i),
+	 * Given the degree m and the m+1 complex coefficients a[0...m*2] of the polynomial (?) i=0...m(a[i]x^i),
 	 * this routine successively calls laguer and finds all m complex roots in roots[0...(m-1)*2] (!!). The
 	 * boolean variable polish should be input as true if polishing (also by Laguerre's method)
 	 * is desired, false if the roots will be subsequently polished by other means.
@@ -687,7 +687,7 @@ topLevel: try {
 //}
 	}
 
-	// ---- laguer routine from NR �9.5 ----
+	// ---- laguer routine from NR paragraph 9.5 ----
 
 	protected static final float	EXPECTEDERROR 	= 1.0e-7f;
 	protected static final int		MR 				= 8;
@@ -696,7 +696,7 @@ topLevel: try {
 	protected static final float[]	frac			= { 0.0f, 0.5f, 0.25f, 0.75f, 0.13f, 0.38f, 0.62f, 0.88f, 1.0f }; // Fractions used to break a limit cycle. [MR+1]
 
 	/*
-	 * Given the degree m and the m+1 complex coefficients a[0..m] of the polynomial �i=0...m(a[i]x^i),
+	 * Given the degree m and the m+1 complex coefficients a[0..m] of the polynomial (?) i=0...m(a[i]x^i),
 	 * and given a complex value x, this routine improves x by Laguerre's method until it converges,
 	 * within the achievable roundoff limit, to a root of the given polynomial. The number of iterations
 	 * taken is returned as its.

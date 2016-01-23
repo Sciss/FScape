@@ -80,7 +80,7 @@ extends Operator
 			static_presets = new Presets( getClass(), static_pr.toProperties( true ));
 		}
 				
-		// superclass-Felder �bertragen		
+		// superclass-Felder uebertragen
 		opName		= "ConvOp";
 		prefs		= static_prefs;
 		presets		= static_presets;
@@ -125,10 +125,10 @@ topLevel:
 			for( i = 0; i < 2; i++ ) {
 				runInSlot[i] = (SpectStreamSlot) slots.elementAt( SLOT_INPUT1 + i );
 				if( runInSlot[i].getLinked() == null ) {
-					runStop();	// threadDead = true -> folgendes for() wird �bersprungen
+					runStop();	// threadDead = true -> folgendes for() wird uebersprungen
 				}
-				// diese while Schleife ist n�tig, da beim initReader ein Pause eingelegt werden kann
-				// und die InterruptException ausgel�st wird; danach versuchen wir es erneut
+				// diese while Schleife ist noetig, da beim initReader ein Pause eingelegt werden kann
+				// und die InterruptException ausgeloest wird; danach versuchen wir es erneut
 				for( boolean initDone = false; !initDone && !threadDead; ) {
 					try {
 						runInStream[i]	= runInSlot[i].getDescr();	// throws InterruptedException

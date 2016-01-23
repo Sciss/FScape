@@ -39,7 +39,7 @@ extends IconicComponent
 	protected int state;	// Status wie normal, selektiert etc.
 	private int basicID;	// ohne Status Addition
 
-	protected boolean clicked = false;	// f�r den MouseEvent Listener
+	protected boolean clicked = false;	// fuer den MouseEvent Listener
 
 // -------- public Variablen --------
 
@@ -66,7 +66,7 @@ extends IconicComponent
 	private static final int STATE_FACTOR		= 3;	// private: multiply IDs above widdis one
 
 	protected static final int ibWidth			= 32;			// Breite der Icons
-	protected static final int ibHeight			= 32;			// H�he der Icons	
+	protected static final int ibHeight			= 32;			// Hoehe der Icons
 	protected static IconBitmap toolib;
 
 // -------- private Klassenvariablen und -konstruktor --------

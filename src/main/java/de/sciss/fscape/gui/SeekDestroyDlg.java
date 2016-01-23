@@ -374,7 +374,7 @@ topLevel: try {
 		// .... check running ....
 			if( !threadRunning ) break topLevel;
 
-//System.out.println( passes+" passes � "+shapeMem +" frames" );
+//System.out.println( passes+" passes shapeMem "+shapeMem +" frames" );
 
 			progOff				= 0;
 			progLen				= (long) trajLength * passes + shapeLength + (long) outLength * passes;

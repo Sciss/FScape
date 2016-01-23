@@ -40,7 +40,7 @@ implements ItemListener
 {
 // -------- public Variablen --------
 
-	// toplevel codes; separator ';' oder '\n' f�r neue Zeile
+	// toplevel codes; separator ';' oder '\n' fuer neue Zeile
 	public static final int	objGroupLabel	= 'g' << 8 + 'l';	// <Name>
 	public static final int	objLabel		= 'l' << 8 + 'b';	// <Name>
 	public static final int	objJCheckBox		= 'c' << 8 + 'b';	// <Name>
@@ -142,7 +142,7 @@ implements ItemListener
 		int				objID;			// fuer Hash; -1 wenn es nicht registriert werden muss
 		int				autoID;			// automatisch registrieren wenn Listener installiert wird
 		int				toLineEnd;
-		ParamSpace[]	spaces;			// f�r ParamField
+		ParamSpace[]	spaces;			// fuer ParamField
 
 		Component			cmp	= null;
 		PropertyComponent	prCmp;
@@ -250,7 +250,7 @@ implements ItemListener
 					return;
 				}
 				
-				// Attribute �bersetzen
+				// Attribute uebersetzen
 				while( attrTok.hasMoreTokens() ) {
 					token		= attrTok.nextToken();
 					attrCode	= token.charAt( 0 ) << 8 + token.charAt( 1 );
@@ -582,7 +582,7 @@ implements ItemListener
 						break;
 					}
 					
-					if( conditionFulfilled ) {		// Bedingung erf�llt, Cmd ausf�hren
+					if( conditionFulfilled ) {		// Bedingung erfuellt, Cmd ausfuehren
 					
 						cmdCode	= cmd.charAt( 0 ) << 8 + cmd.charAt( 1 );
 						// generic
@@ -606,7 +606,7 @@ implements ItemListener
 					}
 				}
 			} // alle Befehle zu einer Condition
-		} // n�chste Befehlskette
+		} // naechste Befehlskette
 	}
 
 // -------- Interne Klasse zur Verwaltung der Components --------

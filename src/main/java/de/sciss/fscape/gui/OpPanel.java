@@ -67,7 +67,7 @@ public class OpPanel
     protected	int	preferredWidth	= 250;
     protected	int	preferredHeight	= 150;
 
-    // Popup-Men�s, die �ber dem Panel bzw. einem Op aufspringen
+    // Popup-Menus, die ueber dem Panel bzw. einem Op aufspringen
     private PopupStrip popPanel;
     private PopupStrip popIcon;
     private PopupStrip popCon;
@@ -833,7 +833,7 @@ public class OpPanel
         } else {
             requestFocus();
 
-            if( e.isPopupTrigger() ) {	// PopUp-Men�
+            if( e.isPopupTrigger() ) {	// PopUp-Menu
                 panelContextMenu(e);
             }
         }
@@ -858,7 +858,7 @@ public class OpPanel
         if( (e.getClickCount() == 2) && !e.isAltDown() ) {
             slot = getLinkAround( e.getX(), e.getY(), true );
 
-            if( slot == null ) {		// kein Link; dann Popup-Men�
+            if( slot == null ) {		// kein Link; dann Popup-Menu
                 popSource	= this;
                 popX		= e.getX();
                 popY		= e.getY();
@@ -907,7 +907,7 @@ public class OpPanel
     }
 
     public void iconPressed(MouseEvent e) {
-        if( e.isPopupTrigger() ) {	// PopUp-Men�
+        if( e.isPopupTrigger() ) {	// PopUp-Menu
             iconContextMenu(e);
 
         } else if (e.isAltDown()) {

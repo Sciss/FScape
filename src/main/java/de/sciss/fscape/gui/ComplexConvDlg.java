@@ -571,7 +571,7 @@ topLevel: try {
 						if( imag ) {
 							if( pr.bool[ PR_CEPSTRAL1 + i ]) {			// take log pre-fft for cepstral filtering
 								if( pr.bool[ PR_HASIMINPUT + i ]) {
-									Fourier.rect2Polar( convBuf2, 0, convBuf2, 0, fullFFTsize );	// Im(ln z)=phi +k2�
+									Fourier.rect2Polar( convBuf2, 0, convBuf2, 0, fullFFTsize );	// Im(ln z)=phi +k2 pi
 									for( int j = 0; j < fullFFTsize; j+=2 ) {						// Re(ln z)=ln r
 										f1 = convBuf2[ j ];
 										if( f1 > 1.266416555e-14f ) {
@@ -582,7 +582,7 @@ topLevel: try {
 										//	fftBuf[ j++ ] /= 32;
 										}
 									}
-								} else {								// only real input, i.e. phi=0� or 180�
+								} else {								// only real input, i.e. phi=0 deg or 180 deg
 									for( int j = 0; j < fullFFTsize; ) {
 										f1 = convBuf2[ j ];
 										if( f1 > 1.266416555e-14f ) {

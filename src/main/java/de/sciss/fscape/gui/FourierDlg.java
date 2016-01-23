@@ -511,7 +511,7 @@ freqShift = (pr.intg[ PR_DIRECTION ] == DIR_FORWARD) ? 1 : -1;
 
 			// take 75% of free memory, divide by sizeof( float ), divide by 3 (storageFFT needs 3 buffers)
 //			i	= Math.min( dataLen, (int) (Runtime.getRuntime().freeMemory() >> 4) );
-i1 = (int) Math.min( 0x40000000, Math.min( dataLen, ((long) pr.para[ PR_MEMORY ].val << 20) / 12 ));	// � 3x float (=12 bytes)
+i1 = (int) Math.min( 0x40000000, Math.min( dataLen, ((long) pr.para[ PR_MEMORY ].val << 20) / 12 ));	// +/- (?) 3x float (=12 bytes)
 			// power of 2
 			for( memAmount = 4; memAmount <= i1; memAmount <<= 1 ) ;
 			memAmount >>= 1;
@@ -724,13 +724,13 @@ i1 = (int) Math.min( 0x40000000, Math.min( dataLen, ((long) pr.para[ PR_MEMORY ]
 										maxAmp = Math.abs( buf3[ k ]);
 									}
 									convBuf1[ j ] = gain * buf3[ k++ ];
-									convBuf2[ j ] = (float) (buf3[ k++ ] / Math.PI);	// -� <= Phi <= +� ===> map to -1...+1
+									convBuf2[ j ] = (float) (buf3[ k++ ] / Math.PI);	// -pi <= Phi <= +pi ===> map to -1...+1
 								}
 							// ---- gain already known ----
 							} else {
 								for( int j = 0, k = 0; j < chunkLen; j++ ) {
 									convBuf1[ j ] = gain * buf3[ k++ ];
-									convBuf2[ j ] = (float) (buf3[ k++ ] / Math.PI);	// -� <= Phi <= +� ===> map to -1...+1
+									convBuf2[ j ] = (float) (buf3[ k++ ] / Math.PI);	// -pi <= Phi <= +pi ===> map to -1...+1
 								}
 							}
 						// ---- only real ----

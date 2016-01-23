@@ -198,7 +198,7 @@ if( state != STATE_RUNNING ) setEnabled( true );
 //			ggProgress.reset();
 			pProgress.resetProgression();
 			procThread = new Thread( proc, proc.toString() );
-			procThread.start();			// ! wenn jemand getState() aufruft, k�nnte nach
+			procThread.start();			// ! wenn jemand getState() aufruft, koennte nach
 			state = STATE_WARMUP;		// ! Thread.start() ein STATE_STOPPED fatal sein!!
 		}
 	}

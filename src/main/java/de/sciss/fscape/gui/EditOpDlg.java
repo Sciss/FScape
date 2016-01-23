@@ -49,7 +49,7 @@ extends BasicDialog
 	private Operator	op;
 	private PropertyGUI	opGUI;
 	
-	private boolean choice = false;			// keine Ver�nderung bei Cancel n�tig
+	private boolean choice = false;			// keine Veraenderung bei Cancel noetig
 	
 	private final EditOpDlg enc_this = this;
 
@@ -108,7 +108,7 @@ extends BasicDialog
 		while( presetNames.hasNext() ) {
 			ggPresets.addItem( (String) presetNames.next() );
 		}
-		ggPresets.setSelectedItem( Presets.DEFAULT );						// default w�hlen und
+		ggPresets.setSelectedItem( Presets.DEFAULT );						// default waehlen und
 		ggDelPreset.setEnabled( false );							// DelPreset deaktivieren
 		gui.registerGadget( ggPresets, GG_PRESETS );
 		ggPresets.addItemListener( list );
@@ -170,7 +170,7 @@ extends BasicDialog
 	
 		getContentPane().add( gui );
 
-		// Position und Gr��e aus dem Preferences ermitteln
+		// Position und Groesse aus dem Preferences ermitteln
 		setResizable( true );
 
 		addWindowListener( new WindowAdapter() {
@@ -247,13 +247,13 @@ extends BasicDialog
 	// -------- private Variablen --------
 
 		private EditOpDlg dlg;		// Edit-Dialog, der den Listener installiert
-		private GUISupport gui;		// gui, dessen Objecte hier �berwacht werden
+		private GUISupport gui;		// gui, dessen Objecte hier ueberwacht werden
 
 	// -------- public Methoden --------
 
 		/**
 		 *	@param dlg	Edit-Dialog, der den Listener installiert
-		 *	@param gui	zu �berwachendes GUI
+		 *	@param gui	zu ueberwachendes GUI
 		 */
 		public EditOpDlgListener( EditOpDlg dlg, GUISupport gui )
 		{
@@ -373,7 +373,7 @@ extends BasicDialog
 						if( exists ) {
 							i = JOptionPane.showConfirmDialog( enc_this,  "Overwrite existing preset\n\"" +
 													  name + "\"", "Confirm", JOptionPane.YES_NO_OPTION );
-							if( i != 0 ) break topLevel;	// nicht �berschreiben
+							if( i != 0 ) break topLevel;	// nicht ueberschreiben
 						}
 
 						pa		= (PropertyArray) op.getPropertyArray().clone();

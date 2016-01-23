@@ -73,7 +73,7 @@ implements ComponentListener, MouseListener, MouseMotionListener
 	private DoublePoint	dragTopLeft;			// Space-Koordinaten
 	private DoublePoint dragBottomRight;
 
-	// folgende Werte ODER-verkn�pft
+	// folgende Werte ODER-verknuepft
 	private static final int DRAG_NONE	=	0x00;	// no drag
 	private	static final int DRAG_TOP	=	0x01;	// drag top margin
 	private	static final int DRAG_LEFT	=	0x02;	// drag left margin
@@ -592,7 +592,7 @@ implements ComponentListener, MouseListener, MouseMotionListener
 				notifyListener( ACTION_BOXDESELECTED, -1 );
 			}
 
-			if( e.isControlDown() ) {	// PopUp-Men�
+			if( e.isControlDown() ) {	// PopUp-Menu
 				// XXX
 			}
 
@@ -604,7 +604,7 @@ implements ComponentListener, MouseListener, MouseMotionListener
 			// neue SmpBox selektieren
 			currentSmpBox.setSelected( SB_STATE_SELECTED );
 
-			if( e.isControlDown() ) {		// PopUp-Men�
+			if( e.isControlDown() ) {		// PopUp-Menu
 				// XXX
 
 			} else if( !e.isAltDown() ) {	// prepare Drag
@@ -973,7 +973,7 @@ implements ComponentListener, MouseListener, MouseMotionListener
 	{
 		int			num, i, j;
 		SmpZone		smp;
-		double		velMid, freqMid;				// Space-Repr�sentation der Parameter x, y
+		double		velMid, freqMid;				// Space-Repraesentation der Parameter x, y
 		double		velLo, velHi, freqLo, freqHi;	// Space-Rechteck
 		boolean		iHoriz, iVert;					// possible intersections
 		double		velCutLo[], velCutHi[], freqCutLo[], freqCutHi[];	// Verkleinerungsalternativen

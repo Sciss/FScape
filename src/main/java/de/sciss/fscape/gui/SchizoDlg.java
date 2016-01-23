@@ -432,7 +432,7 @@ topLevel: try {
 				}
 			}
 
-			easyPhase		= outChanNum == 2;			// rotation by 180� can be calc'ed without trigonometrics
+			easyPhase		= outChanNum == 2;			// rotation by 180 deg can be calc'ed without trigonometrics
 			if( !easyPhase ) {
 				phase		= new double[ outChanNum ][ 2 ];
 				d1			= 0.0;
