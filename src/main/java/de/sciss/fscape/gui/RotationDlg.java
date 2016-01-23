@@ -276,7 +276,7 @@ extends ModulePanel
 		PathField			ggOutput;
 
 		boolean				rotate			= pr.intg[ PR_MODE ] == MODE_ROTATION;
-		boolean				subDry			= rotate ? pr.bool[ PR_SUBDRY ] : false;
+		boolean				subDry			= rotate && pr.bool[PR_SUBDRY];
 		int					numRepeats		= rotate ? 1 : (int) (pr.para[ PR_REPEATS ].val + 0.5);
 
 		float				gain			= 1.0f;								 		// gain abs amp

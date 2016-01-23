@@ -396,7 +396,7 @@ topLevel: try {
 //			y1 = 0; y2 = 0; y3 = 0;
 
 			while( threadRunning && (sampleOffsetR < outLength) ) {
-				chunkLen = (int) Math.min( framesPerBuf, numStopFrames - frameOffset );
+				chunkLen = Math.min( framesPerBuf, numStopFrames - frameOffset );
 				inBufOff = inBufPre;
 				for( int i = 0; i < chunkLen; i++ ) {
 					// if( drop ) ... XXX

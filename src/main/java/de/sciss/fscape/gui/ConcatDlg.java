@@ -680,7 +680,7 @@ System.out.println( "outLen   "+ outLength );
             convBuf1	= null;
             System.gc();
 
-            setError( new Exception( ERR_MEMORY ));;
+            setError( new Exception( ERR_MEMORY ));
         }
 
     // ---- cleanup (topLevel) ----
@@ -730,7 +730,7 @@ System.out.println( "outLen   "+ outLength );
             if( ggSlave != null ) {
                 ggSlave.setReference( ref );
             }
-        } catch( IOException e1 ) {}
+        } catch( IOException ignored) {}
     }
 
     /**

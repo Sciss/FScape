@@ -1226,7 +1226,7 @@ Debug.view( tmp, "Summed BPs FFT" );
 			chebys		= null;
 			System.gc();
 
-			setError( new Exception( ERR_MEMORY ));;
+			setError( new Exception( ERR_MEMORY ));
 		}
 
 	// ---- cleanup (topLevel) ----

@@ -590,8 +590,8 @@ System.out.println( icon.getName() + ": aborted because of: " +threadError );
 
 			return op;
 		}
-		catch( InstantiationException e1 ) {}
-		catch( IllegalAccessException e1 ) {}
+		catch( InstantiationException ignored) {}
+		catch( IllegalAccessException ignored) {}
 		catch( SyncFailedException e3 ) {
 			op.dispose();
 		}

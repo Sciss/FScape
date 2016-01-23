@@ -891,7 +891,7 @@ volumeLp:				for( j = 0, f1 = 1.122462f; j < 6; j++, f1 *= 1.122462f ) {
 			convBuf1	= null;
 			System.gc();
 
-			setError( new Exception( ERR_MEMORY ));;
+			setError( new Exception( ERR_MEMORY ));
 		}
 
 	// ---- cleanup (topLevel) ----

@@ -109,7 +109,7 @@ extends Operator
 		SpectStreamSlot	runInSlot;
 		SpectStreamSlot	runOutSlot;
 		SpectStream		runInStream		= null;
-		SpectStream		runOutStream	= null;
+		SpectStream		runOutStream;
 
 		SpectFrame		runInFr			= null;
 		SpectFrame		runOutFr		= null;
@@ -134,7 +134,7 @@ topLevel:
 					runInStream	= runInSlot.getDescr();	// throws InterruptedException
 					initDone = true;
 				}
-				catch( InterruptedException e ) {}
+				catch( InterruptedException ignored) {}
 				runCheckPause();
 			}
 			if( threadDead ) break topLevel;
@@ -183,13 +183,13 @@ topLevel:
 			runSlotsReady();
 mainLoop:	while( !threadDead ) {
 			// ---------- Frame einlesen ----------
-	 			for( boolean readDone = false; (readDone == false) && !threadDead; ) {
+	 			for( boolean readDone = false; (!readDone) && !threadDead; ) {
 					try {
 						runInFr		= runInSlot.readFrame();	// throws InterruptedException
 						readDone	= true;
 						runOutFr	= runOutStream.allocFrame();
 					}
-					catch( InterruptedException e ) {}
+					catch( InterruptedException ignored) {}
 					catch( EOFException e ) {
 						break mainLoop;
 					}
@@ -224,14 +224,14 @@ mainLoop:	while( !threadDead ) {
 
 				runInSlot.freeFrame( runInFr );
 
-				for( boolean writeDone = false; (writeDone == false) && !threadDead; ) {
+				for( boolean writeDone = false; (!writeDone) && !threadDead; ) {
 					try {	// Unterbrechung
 						runOutSlot.writeFrame( runOutFr );	// throws InterruptedException
 						writeDone = true;
 						runFrameDone( runOutSlot, runOutFr  );
 						runOutStream.freeFrame( runOutFr );
 					}
-					catch( InterruptedException e ) {}	// mainLoop wird eh gleich verlassen
+					catch( InterruptedException ignored) {}	// mainLoop wird eh gleich verlassen
 					runCheckPause();
 				}
 			} // Ende Hauptschleife

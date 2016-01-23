@@ -1064,7 +1064,7 @@ orLp:					for( i = 1; i < chunkLength-1; i++ ) {
 			convBuf2	= null;
 			System.gc();
 
-			setError( new Exception( ERR_MEMORY ));;
+			setError( new Exception( ERR_MEMORY ));
 		}
 
 	// ---- cleanup (topLevel) ----
@@ -1095,7 +1095,7 @@ orLp:					for( i = 1; i < chunkLength-1; i++ ) {
 			}
 		}
 		if( plotF != null ) {
-			try { plotF.close(); } catch( Exception e99 ) {}
+			try { plotF.close(); } catch( Exception ignored) {}
 		}
 		if( plotTempFile != null ) plotTempFile.delete();
 	} // process()

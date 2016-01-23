@@ -397,20 +397,20 @@ extends ModulePanel
 		AudioFile			outF			= null;
 		AudioFile			envInF			= null;
 		AudioFile			envOutF			= null;
-		AudioFileDescr			inStream		= null;
-		AudioFileDescr			outStream		= null;
-		AudioFileDescr			envInStream		= null;
-		AudioFileDescr			envOutStream	= null;
+		AudioFileDescr			inStream;
+		AudioFileDescr			outStream;
+		AudioFileDescr			envInStream;
+		AudioFileDescr			envOutStream;
 		FloatFile[]			outFloatF		= null;
 		FloatFile[]			envFloatF		= null;
 		File				outTempFile[]	= null;
 		File				envTempFile[]	= null;
 		int					inChanNum, outChanNum, envInChanNum, envOutChanNum, shapeChanNum;
 		
-		int[][]				shapeChan		= null;
-		int[][]				inChan			= null;
-		float[][]			shapeChanWeight	= null;
-		float[][]			inChanWeight	= null;
+		int[][]				shapeChan;
+		int[][]				inChan;
+		float[][]			shapeChanWeight;
+		float[][]			inChanWeight;
 
 		// buffers
 		float[][]			inBuf			= null;		// Sound-In
@@ -1025,7 +1025,7 @@ for( i = 0; i < 2; i++ ) {
 			convBuf2	= null;
 			System.gc();
 
-			setError( new Exception( ERR_MEMORY ));;
+			setError( new Exception( ERR_MEMORY ));
 		}
 
 	// ---- cleanup (topLevel) ----

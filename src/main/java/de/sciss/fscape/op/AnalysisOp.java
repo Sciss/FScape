@@ -603,7 +603,7 @@ k = 0;
 				} // for channels
 
 				// send output
-				for( boolean writeDone = false; (writeDone == false) && !threadDead; ) {
+				for( boolean writeDone = false; (!writeDone) && !threadDead; ) {
 					try {	// Unterbrechung
 						runOutSlot.writeFrame( runOutFr );	// throws InterruptedException
 						writeDone = true;

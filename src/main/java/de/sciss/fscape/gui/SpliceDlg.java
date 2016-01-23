@@ -476,7 +476,7 @@ topLevel: try {
 			inDescr		= null;
 			System.gc();
 
-			setError( new Exception( ERR_MEMORY ));;
+			setError( new Exception( ERR_MEMORY ));
 		}
 
 	// ---- cleanup (topLevel) ----
@@ -510,7 +510,7 @@ topLevel: try {
 			((ParamField) gui.getItemObj( GG_FINALSKIP )).setReference( ref );
 			((ParamField) gui.getItemObj( GG_SPLICELENGTH )).setReference( ref );
 			((ParamField) gui.getItemObj( GG_SKIPLENGTH )).setReference( ref );
-		} catch( IOException e1 ) {}
+		} catch( IOException ignored) {}
 	}
 
 //	/**

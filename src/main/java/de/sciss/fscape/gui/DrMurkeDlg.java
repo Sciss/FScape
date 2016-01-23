@@ -623,11 +623,11 @@ if( verbose ) System.out.println( "--> final write( " + framesWritten + ", " + m
 	}
 	
 	private interface CollapseFunc {
-		public float collapse( float[] chan );
+		float collapse(float[] chan);
 	}
 	
 	private interface ThreshFunc {
-		public boolean thresh( float[] chan );
+		boolean thresh(float[] chan);
 	}
 	
 	private static class MinFunc implements CollapseFunc {

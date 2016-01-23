@@ -113,7 +113,7 @@ extends Operator
 		SpectStreamSlot	runInSlot;
 		SpectStreamSlot	runOutSlot;
 		SpectStream		runInStream		= null;
-		SpectStream		runOutStream	= null;
+		SpectStream		runOutStream;
 
 		SpectFrame		runInFr			= null;
 		SpectFrame		runOutFr		= null;
@@ -145,7 +145,7 @@ topLevel:
 					runInStream	= runInSlot.getDescr();	// throws InterruptedException
 					initDone = true;
 				}
-				catch( InterruptedException e ) {}
+				catch( InterruptedException ignored) {}
 				runCheckPause();
 			}
 			if( threadDead ) break topLevel;
@@ -179,7 +179,7 @@ topLevel:
 			runSlotsReady();
 mainLoop:	while( !threadDead ) {
 			// ---------- Frame einlesen ----------
-	 			for( boolean readDone = false; (readDone == false) && !threadDead; ) {
+	 			for( boolean readDone = false; (!readDone) && !threadDead; ) {
 					try {
 						runInFr		= runInSlot.readFrame();	// throws InterruptedException
 						readDone	= true;
@@ -234,7 +234,7 @@ mainLoop:	while( !threadDead ) {
 
 				runInSlot.freeFrame( runInFr );
 
-				for( boolean writeDone = false; (writeDone == false) && !threadDead; ) {
+				for( boolean writeDone = false; (!writeDone) && !threadDead; ) {
 					try {	// Unterbrechung
 						runOutSlot.writeFrame( runOutFr );	// throws InterruptedException
 						writeDone = true;
@@ -477,7 +477,7 @@ mainLoop:	while( !threadDead ) {
 			// Start at zero to favor convergence to smallest remaining root, and find the root.
 			x[0]	= 0.0f;
 			x[1]	= 0.0f;
-			i		= laguerre( ad, j >> 1, x );
+			/* i = */ laguerre( ad, j >> 1, x );
 
 //			if( i == 0 ) {
 //System.out.println( "retrying complex" );

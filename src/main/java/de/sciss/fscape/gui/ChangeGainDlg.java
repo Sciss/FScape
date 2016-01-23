@@ -324,7 +324,7 @@ topLevel: try {
 			needsRead	= justFind || (!peakKnown && (pr.intg[ PR_GAINTYPE ] == GAIN_UNITY));
 			needsWrite	= !justFind;
 			
-			progLen		= (needsRead ? (long) inLength : 0) + (needsWrite ? (long) inLength*2 : 0);
+			progLen		= (needsRead ? inLength : 0L) + (needsWrite ? inLength*2 : 0L);
 			progOff		= 0L;
 			dispDelta	= 10000;	// first prelim. display after 10 sec.
 //dispDelta	= 1000;	// first prelim. display after 10 sec.
@@ -513,7 +513,7 @@ topLevel: try {
 			convBuf1	= null;
 			System.gc();
 
-			setError( new Exception( ERR_MEMORY ));;
+			setError( new Exception( ERR_MEMORY ));
 		}
 
 	// ---- cleanup (topLevel) ----

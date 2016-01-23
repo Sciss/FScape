@@ -867,7 +867,7 @@ d7 = 1.0;
 			convBuf2	= null;
 			System.gc();
 
-			setError( new Exception( ERR_MEMORY ));;
+			setError( new Exception( ERR_MEMORY ));
 		}
 
 	// ---- cleanup (topLevel) ----
@@ -915,7 +915,7 @@ d7 = 1.0;
 				ggSlave.setReference( ref );
 			}
 
-		} catch( IOException e1 ) {}
+		} catch( IOException ignored) {}
 	}
 }
 // class KriechstromDlg

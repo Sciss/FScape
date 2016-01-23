@@ -677,7 +677,7 @@ topLevel: try {
 			outBuf		= null;
 			System.gc();
 
-			setError( new Exception( ERR_MEMORY ));;
+			setError( new Exception( ERR_MEMORY ));
 		}
 
 	// ---- cleanup (topLevel) ----
@@ -793,7 +793,7 @@ topLevel: try {
 				ggSlave.setReference( ref );
 			}
 
-		} catch( IOException e1 ) {}
+		} catch( IOException ignored) {}
 	}
 }
 // class IchneumonDlg

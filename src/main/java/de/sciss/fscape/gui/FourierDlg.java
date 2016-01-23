@@ -481,15 +481,15 @@ freqShift = (pr.intg[ PR_DIRECTION ] == DIR_FORWARD) ? 1 : -1;
 
 			// ---- Progress Length ----
 			progOff		= 0;			// write floats, write output, transform, read input
-			progLen		= (long) dataLen * (3 + scaleNum * inChanNum) + (long) inLength;
+			progLen		= dataLen * (3 + scaleNum * inChanNum) + (long) inLength;
 			if( pr.bool[ PR_HASIMINPUT ]) {
-				progLen	 += (long) inLength;
+				progLen	 += inLength;
 			}
 			if( pr.bool[ PR_HASIMOUTPUT ]) {
-				progLen	 += (long) dataLen;
+				progLen	 += dataLen;
 			}
 			if( pr.intg[ PR_GAINTYPE ] == GAIN_UNITY ) {
-				progLen	 += (long) dataLen * inChanNum;
+				progLen	 += dataLen * inChanNum;
 			}
 			
 			// ---- create four temp files per channel ----
@@ -840,7 +840,7 @@ i1 = (int) Math.min( 0x40000000, Math.min( dataLen, ((long) pr.para[ PR_MEMORY ]
 			buf3	= null;
 			System.gc();
 
-			setError( new Exception( ERR_MEMORY ));;
+			setError( new Exception( ERR_MEMORY ));
 		}
 
 	// ---- cleanup (topLevel) ----

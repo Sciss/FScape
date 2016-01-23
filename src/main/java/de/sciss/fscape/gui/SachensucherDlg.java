@@ -438,14 +438,14 @@ topLevel: try {
 			outStream	= null;
 			System.gc();
 
-			setError( new Exception( ERR_MEMORY ));;
+			setError( new Exception( ERR_MEMORY ));
 		}
 
 	// ---- cleanup (topLevel) ----
 		if( inF != null ) {
 			try {
 				inF.close();
-			} catch( Exception e11 ) {}
+			} catch( Exception ignored) {}
 		}
 		if( outF != null ) {
 			outF.cleanUp();

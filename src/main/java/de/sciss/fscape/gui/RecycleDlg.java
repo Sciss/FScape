@@ -115,7 +115,6 @@ extends ModulePanel
 	private boolean regionsKnown					= false;		// true nach "Analyze"; false nach neuer Input-Wahl
 	private boolean threadJustAnalyze				= false;		// true = find peak; false = change gain
 	private final java.util.List regionList			= new ArrayList();
-	private JTextField ggInfoField;
 
 	private final MessageFormat	msgInfoField		= new MessageFormat(
 		"{0,choice,-1#[…|0#}"+
@@ -242,12 +241,12 @@ extends ModulePanel
 		gui.addButton( ggAnalyze, GG_ANALYZE, al );
 
 		con.fill		= GridBagConstraints.HORIZONTAL;
-		ggInfoField		= new JTextField();
+		JTextField ggInfoField = new JTextField();
 		ggInfoField.setEditable( false );
 		ggInfoField.setBackground( null );
 		con.gridwidth	= GridBagConstraints.REMAINDER;
 		con.weightx		= 0.9;
-		gui.addTextField( ggInfoField, GG_INFOFIELD, al );
+		gui.addTextField(ggInfoField, GG_INFOFIELD, al );
 
 	// -------- Settings-Gadgets --------
 		con.fill		= GridBagConstraints.BOTH;
@@ -747,7 +746,7 @@ followLp:				for( ch = 0; ch < chanNum; ch++ ) {
 			convBuf2	= null;
 			System.gc();
 
-			setError( new Exception( ERR_MEMORY ));;
+			setError( new Exception( ERR_MEMORY ));
 		}
 
 	// ---- cleanup (topLevel) ----

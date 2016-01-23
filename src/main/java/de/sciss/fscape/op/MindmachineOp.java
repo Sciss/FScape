@@ -108,10 +108,10 @@ extends Operator
 		SpectStreamSlot[]	runInSlot	= new SpectStreamSlot[ 2 ];
 		SpectStreamSlot	runOutSlot;
 		SpectStream[]	runInStream		= new SpectStream[ 2 ];
-		SpectStream		runOutStream	= null;
+		SpectStream		runOutStream;
 
 		SpectFrame[]	runInFr			= new SpectFrame[ 2 ];
-		SpectFrame		runOutFr		= null;
+		SpectFrame		runOutFr;
 	
 		// Ziel-Frame Berechnung
 		int[]			srcBands	= new int[ 2 ];
@@ -138,7 +138,7 @@ topLevel:
 						initDone		= true;
 						srcBands[i]		= runInStream[i].bands;
 					}
-					catch( InterruptedException e ) {}
+					catch( InterruptedException ignored) {}
 					runCheckPause();
 				}
 			}
@@ -194,7 +194,7 @@ mainLoop:	while( !threadDead ) {
 								readDone++;
 							}
 						}
-						catch( InterruptedException e ) {}
+						catch( InterruptedException ignored) {}
 						catch( EOFException e ) {
 							break mainLoop;
 						}
@@ -205,7 +205,7 @@ mainLoop:	while( !threadDead ) {
 						try {
 							 Thread.sleep( 500 );	// ...deshalb kurze Pause
 						}
-						catch( InterruptedException e ) {}	// mainLoop wird gleich automatisch verlassen
+						catch( InterruptedException ignored) {}	// mainLoop wird gleich automatisch verlassen
 						runCheckPause();
 					}
 				}
@@ -279,14 +279,14 @@ mainLoop:	while( !threadDead ) {
 				runInSlot[0].freeFrame( runInFr[0] );
 				runInSlot[1].freeFrame( runInFr[1] );
 
-				for( boolean writeDone = false; (writeDone == false) && !threadDead; ) {
+				for( boolean writeDone = false; (!writeDone) && !threadDead; ) {
 					try {	// Unterbrechung
 						runOutSlot.writeFrame( runOutFr );	// throws InterruptedException
 						writeDone = true;
 						runFrameDone( runOutSlot, runOutFr  );
 						runOutStream.freeFrame( runOutFr );
 					}
-					catch( InterruptedException e ) {}	// mainLoop wird eh gleich verlassen
+					catch( InterruptedException ignored) {}	// mainLoop wird eh gleich verlassen
 					runCheckPause();
 				}
 			} // Ende Hauptschleife

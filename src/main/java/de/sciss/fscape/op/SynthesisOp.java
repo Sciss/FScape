@@ -212,7 +212,7 @@ topLevel:
 					runInStream	= runInSlot.getDescr();	// throws InterruptedException
 					initDone = true;
 				}
-				catch( InterruptedException e ) {}
+				catch( InterruptedException ignored) {}
 				runCheckPause();
 			}
 			if( threadDead ) break topLevel;
@@ -271,12 +271,12 @@ topLevel:
 // System.out.println( "Sy: chunkLen "+winStep );
 
 mainLoop:	while( !threadDead ) {
-	 			for( boolean readDone = false; (readDone == false) && !threadDead; ) {
+	 			for( boolean readDone = false; (!readDone) && !threadDead; ) {
 					try {
 						runInFr		= runInSlot.readFrame();	// throws InterruptedException
 						readDone	= true;
 					}
-					catch( InterruptedException e ) {}
+					catch( InterruptedException ignored) {}
 					catch( EOFException e ) {
 						break mainLoop;
 					}

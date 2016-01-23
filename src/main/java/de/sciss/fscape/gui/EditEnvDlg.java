@@ -464,8 +464,8 @@ timeSpace[ 2 ]			= new ParamSpace( timeSpace[ 2 ].inc, timeSpace[ 2 ].max, timeS
 				if( (associate != null) && (associate2 != null) ) {
 		
 					// neue Werte laden, ggf. Space aendern, Gadget enablen
-					if( (cmd == CurvePanel.ACTION_POINTSELECTED) ||
-						(cmd == CurvePanel.ACTION_POINTCHANGED) ) {
+					if( (cmd.equals(CurvePanel.ACTION_POINTSELECTED)) ||
+						(cmd.equals(CurvePanel.ACTION_POINTCHANGED)) ) {
 						
 						pt = ((CurvePanel) e.getSource()).getPoint();
 						if( pt == null ) break;
@@ -488,12 +488,12 @@ timeSpace[ 2 ]			= new ParamSpace( timeSpace[ 2 ].inc, timeSpace[ 2 ].max, timeS
 						associate2.setEnabled( true );
 						((ParamField) associate2).setParam( yPara );
 				
-					} else if( cmd == CurvePanel.ACTION_POINTDESELECTED ) {
+					} else if(cmd.equals(CurvePanel.ACTION_POINTDESELECTED)) {
 
 						associate.setEnabled( false );
 						associate2.setEnabled( false );	
 
-					} else if( cmd == CurvePanel.ACTION_SPACECHANGED ) {
+					} else if(cmd.equals(CurvePanel.ACTION_SPACECHANGED)) {
 
 						xSpace		= ((CurvePanel) e.getSource()).getHSpace();
 						spaces		= new ParamSpace[ 1 ];

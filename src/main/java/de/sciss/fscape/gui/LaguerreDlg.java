@@ -493,7 +493,7 @@ topLevel: try {
 						b0			= -warp;
 						b1			= 1.0f;
 				
-						convBuf2[j] += (float) y1;
+						convBuf2[j] += y1;
 					}
 				// .... progress ....
 					progOff += chunkLength - skip;
@@ -598,7 +598,7 @@ topLevel: try {
 			convBuf2	= null;
 			System.gc();
 
-			setError( new Exception( ERR_MEMORY ));;
+			setError( new Exception( ERR_MEMORY ));
 		}
 
 	// ---- cleanup (topLevel) ----

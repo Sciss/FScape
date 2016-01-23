@@ -315,7 +315,7 @@ topLevel: try {
 			if( !threadRunning ) break topLevel;
 
 			bufSizeH		= 64;
-			bufSize			= bufSizeH << 1;;
+			bufSize			= bufSizeH << 1;
 			pow				= 1.0 / (bufSizeH - 1);
 			inBuf			= new float[ inChanNum ][ bufSize ];
 			outBuf			= new float[ inChanNum ][ bufSizeH ];
@@ -474,7 +474,7 @@ topLevel: try {
 			convBuf2	= null;
 			System.gc();
 
-			setError( new Exception( ERR_MEMORY ));;
+			setError( new Exception( ERR_MEMORY ));
 		}
 
 	// ---- cleanup (topLevel) ----

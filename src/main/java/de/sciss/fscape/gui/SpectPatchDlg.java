@@ -137,7 +137,7 @@ topLevel:	try {
 					synchronized( this ) {
 						wait( 3000 );
 					}
-				} catch( InterruptedException e3 ) {}
+				} catch( InterruptedException ignored) {}
 
 				prog = calcProg( doc.getOperators() );
 

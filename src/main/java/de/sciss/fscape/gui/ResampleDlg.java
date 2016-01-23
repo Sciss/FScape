@@ -501,7 +501,7 @@ topLevel: try {
 
 // Debug.view( flt, "filter" );
 			progOff				= 0;
-			progLen				= (long) inLength*2;
+			progLen				= inLength*2;
 
 			// output
 			ggOutput	= (PathField) gui.getItemObj( GG_OUTPUTFILE );
@@ -826,7 +826,7 @@ topLevel: try {
 			outBuf		= null;
 			System.gc();
 
-			setError( new Exception( ERR_MEMORY ));;
+			setError( new Exception( ERR_MEMORY ));
 		}
 
 	// ---- cleanup (topLevel) ----

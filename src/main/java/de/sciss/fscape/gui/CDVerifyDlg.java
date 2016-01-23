@@ -242,7 +242,7 @@ topLevel: try {
 			thresh			= pr.bool[ PR_BITTOGGLE ] ? 6.103517e-05f : 0.0f;
 			
 			progOff			= 0;
-			progLen			= (long) afdCopy.length;
+			progLen			= afdCopy.length;
 			
 			do {
 				origOff	   += len;

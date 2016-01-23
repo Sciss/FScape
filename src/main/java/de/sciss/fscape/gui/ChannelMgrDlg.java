@@ -117,7 +117,6 @@ extends ModulePanel
 
 	private static final String	ERR_OUTNUM			= "Please update # of output files";
 
-	private int			guiOutChanNum		= 0;
 	private String		outPath			= "";
 	private String		outFileName		= "";
 	private String		outFileExt		= "";
@@ -739,7 +738,7 @@ topLevel: try {
 			convBuf2	= null;
 			System.gc();
 
-			setError( new Exception( ERR_MEMORY ));;
+			setError( new Exception( ERR_MEMORY ));
 		}
 
 	// ---- cleanup (topLevel) ----
@@ -798,7 +797,7 @@ topLevel: try {
 //			guiToBatchEntry( be );
 //			recalcChannelSituation();
 
-		} catch( IOException e1 ) {}
+		} catch( IOException ignored) {}
 	}
 
 	protected String calcOutNameComponents( String fname )
@@ -906,28 +905,28 @@ topLevel: try {
 		if( pr.intg[ PR_CHANMODE ] == CHAN_MERGE ) {
 			ch = Math.min( 1, ch );
 		}
-		guiOutChanNum = ch;
+		int guiOutChanNum = ch;
 		
 		oldIdx = ggOutputList.getSelectedIndex();
 		if( oldIdx >= 0 ) {
 			ggOutputList.clearSelection(); // ( oldIdx );
 		}
 		if( guiOutChanNum < ggOutputListModel.size() ) {
-			for( i = ggOutputListModel.size() - 1; i >= guiOutChanNum; i-- ) {
+			for(i = ggOutputListModel.size() - 1; i >= guiOutChanNum; i-- ) {
 				ggOutputListModel.removeElementAt( i );
 			}
 		}
 		for( i = 0; i < ggOutputListModel.size(); i++ ) {
 			oe		= (OutputEntry) ggOutputListModel.elementAt( i );
 			if( oe.auto ) {
-				oe.name = createAutoExt( i, guiOutChanNum );
+				oe.name = createAutoExt( i, guiOutChanNum);
 				ggOutputListModel.setElementAt( oe, i );
 			}
 		}
 		while( guiOutChanNum > ggOutputListModel.size() ) {
 			oe		= new OutputEntry();
 			oe.auto = true;
-			oe.name	= createAutoExt( ggOutputListModel.size(), guiOutChanNum );
+			oe.name	= createAutoExt( ggOutputListModel.size(), guiOutChanNum);
 			ggOutputListModel.addElement( oe );
 		}
 		if( (oldIdx >= 0) && (oldIdx < guiOutChanNum) ) {
@@ -994,8 +993,8 @@ class InputEntry
 		try {
 			ie.chan			= Integer.parseInt( p.getProperty( PR_CHAN ));
 		}
-		catch( NumberFormatException e1 ) {}
-		catch( NullPointerException e2 ) {}
+		catch( NumberFormatException ignored) {}
+		catch( NullPointerException ignored) {}
 		
 		return ie;
 	}
@@ -1032,8 +1031,8 @@ class OutputEntry
 		try {
 			oe.auto			= Boolean.valueOf( p.getProperty( PR_AUTO )).booleanValue();
 		}
-		catch( NumberFormatException e1 ) {}
-		catch( NullPointerException e2 ) {}
+		catch( NumberFormatException ignored) {}
+		catch( NullPointerException ignored) {}
 		
 		return oe;
 	}

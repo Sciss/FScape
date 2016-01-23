@@ -132,7 +132,7 @@ extends Operator
 	
 		SpectStreamSlot	runInSlot;
 		SpectStream		runInStream		= null;
-		SpectStream		runOutStream	= null;
+		SpectStream		runOutStream;
 
 		SpectFrame		runInFr;
 		SpectFrame		runOutFr		= null;
@@ -182,7 +182,7 @@ topLevel:
 					runInStream	= runInSlot.getDescr();	// throws InterruptedException
 					initDone = true;
 				}
-				catch( InterruptedException e ) {}
+				catch( InterruptedException ignored) {}
 				runCheckPause();
 			}
 			if( threadDead ) break topLevel;
@@ -212,7 +212,7 @@ topLevel:
 			// ------------------------------ Hauptschleife ------------------------------
 			runSlotsReady();
 mainLoop:	while( !threadDead ) {
-	 			for( boolean readDone = false; (readDone == false) && !threadDead; ) {
+	 			for( boolean readDone = false; (!readDone) && !threadDead; ) {
 					try {
 						runInFr		= runInSlot.readFrame();	// throws InterruptedException
 						readDone	= true;
@@ -220,7 +220,7 @@ mainLoop:	while( !threadDead ) {
 						runFrameDone( runInSlot, runInFr );
 						runInSlot.freeFrame( runInFr );
 					}
-					catch( InterruptedException e ) {}
+					catch( InterruptedException ignored) {}
 					catch( EOFException e ) {
 						break mainLoop;
 					}

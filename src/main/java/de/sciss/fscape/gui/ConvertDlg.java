@@ -172,8 +172,6 @@ extends ModulePanel
 
 	/**
 	 *	!! setVisible() bleibt dem Aufrufer ueberlassen
-	 *
-	 *	@param parent	aufrufendes Fenster
 	 */
 	public ConvertDlg()
 	{
@@ -450,7 +448,7 @@ extends ModulePanel
 			}
 			f.close();
 		
-		} catch( IOException e1 ) {}		
+		} catch( IOException ignored) {}
 	}
 
 	/**
@@ -1149,7 +1147,7 @@ final int smpPerFrame = (bands - 1) >> overlap;
 			cos		= null;
 			System.gc();
 
-			setError( new Exception( ERR_MEMORY ));;
+			setError( new Exception( ERR_MEMORY ));
 		}
 
 	// ---- cleanup ----

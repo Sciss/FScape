@@ -798,7 +798,7 @@ declick:		if( (lastClk >= 0) && (chunkDone >= chunkMin) && (chunkDone <= chunkMa
 			win			= null;
 			System.gc();
 
-			setError( new Exception( ERR_MEMORY ));;
+			setError( new Exception( ERR_MEMORY ));
 		}
 
 	// ---- cleanup (topLevel) ----

@@ -891,7 +891,7 @@ topLevel: try {
 			inBuf	= null;
 			System.gc();
 
-			setError( new Exception( ERR_MEMORY ));;
+			setError( new Exception( ERR_MEMORY ));
 		}
 		finally {
 	// ---- cleanup (topLevel) ----

@@ -118,8 +118,6 @@ extends ModulePanel
 	private static	PropertyArray	static_pr		= null;
 	private static	Presets			static_presets	= null;
 
-	private boolean telepathy	= false;
-
 	private static final String ERR_DELETE	= "File was not deleted";
 
 	protected static final String[]	EXCLUDE_DLG	= { "MainFrame", "PrefsDlg", "ParamSettingsDlg", "FileInfoDlg" };
@@ -348,7 +346,6 @@ for( int m = 0; m < modules.length; m++ ) {
 										modules[ j ] = modules[ j + 1 ];
 									}
 									i--;
-									continue;
 								}
 							}
 							
@@ -619,8 +616,9 @@ tb.setFloatable( false );
 		StringBuffer	sb;
 		String			s;
 		DateFormat		df			= DateFormat.getDateTimeInstance( DateFormat.SHORT, DateFormat.MEDIUM );
-		
-topLevel: try {
+
+		boolean telepathy = false;
+		topLevel: try {
 batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 
 			// ============================== recalc progress weights ==============================
@@ -688,7 +686,7 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 									telepathy = false;
 								}
 
-							} while( threadRunning && telepathy );
+							} while( threadRunning && telepathy);
 
 							if( procWin.getError() != null ) throw procWin.getError();
 
