@@ -2,7 +2,7 @@
  *  MenuStrip.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -27,7 +27,7 @@ extends JMenu
 {
 // -------- private Variablen --------
 
-	protected Hashtable 		h;		// Objects = Menus/Items, Keys = ActionCommands (z.B. "&ZUndo")
+	protected Hashtable<String, JMenuItem> h;		// Objects = Menus/Items, Keys = ActionCommands (z.B. "&ZUndo")
 	protected String			label;
 	protected ActionListener	listener;
 
@@ -51,7 +51,7 @@ extends JMenu
 	
 		this.label		= label;
 		this.listener	= listener;
-		h				= new Hashtable();
+		h				= new Hashtable<String, JMenuItem>();
 		h.put( label, this );		// register myself
 
 		createStrip( this, h, menuItems, listener );
@@ -66,7 +66,7 @@ extends JMenu
 	 */
 	public boolean setItemEnabled( String menuItem, boolean enable )
 	{
-		JMenuItem mi = (JMenuItem) h.get( menuItem );
+		JMenuItem mi = h.get( menuItem );
 		if( mi != null ) {
 			mi.setEnabled( enable );
 		}
@@ -106,7 +106,7 @@ extends JMenu
 	 */
 	public boolean setItemJLabel( String menuItem, String label )
 	{
-		JMenuItem mi = (JMenuItem) h.get( menuItem );
+		JMenuItem mi = h.get( menuItem );
 		if( mi != null ) {
 			h.remove( menuItem );				// alter Key ungueltig
 			setItemLabelAndCut( mi, label );
@@ -146,7 +146,7 @@ extends JMenu
 	 */
 	public JMenuItem getItem( String menuItem )
 	{
-		return( (JMenuItem) h.get( menuItem ));
+		return h.get( menuItem );
 	}
 	
 	/**
@@ -183,7 +183,7 @@ extends JMenu
 	 *						( "&c"-Anfang fuer Shortcuts; "#"-Ende fuer JCheckBoxes )
 	 *	@param	listener	ActionListener, der die Menuwahlen verarbeiten soll
 	 */
-	public static void createStrip( JMenu m, Hashtable h, String[][] menuItems, ActionListener listener )
+	public static void createStrip( JMenu m, Hashtable<String, JMenuItem> h, String[][] menuItems, ActionListener listener )
 	{
 		JMenu		m2;
 		JMenuItem	mi;

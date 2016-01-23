@@ -2,7 +2,7 @@
  *  SeekEnjoyDlg.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -325,7 +325,7 @@ extends ModulePanel
 		float				topTol, botTol, ctrlRate, ctrl, ctrlBot, ctrlTop;
 		
 		Region				currentRegion, prevRegion, nextRegion;
-		Vector				regionList;
+		Vector<Region> regionList;
 		Param				chunkLenParam	= new Param( 0.0, Param.ABS_MS );
 
 		PathField			ggOutput;
@@ -495,7 +495,7 @@ topLevel: try {
 
 // System.out.println( "inLength "+inLength+"; ctrlLength "+ctrlLength+"; ctrlRate "+ctrlRate+"; minChunk "+minChunk+"; minCtrl "+minCtrl+"; fade "+crossFade );
 
-			regionList		= new Vector();		// Elemente = de.sciss.fscape.io.Region, chronologically added
+			regionList		= new Vector<Region>();		// Elemente = de.sciss.fscape.io.Region, chronologically added
 			inBuf			= new float[ inChanNum ][ 8192 ];
 			outBuf			= new float[ inChanNum ][ 8192 ];
 
@@ -550,7 +550,7 @@ regionLp:	while( true ) {
 
 			len = 0;
 			for( i = 1; i < regionList.size(); i++ ) {
-				currentRegion = (Region) regionList.elementAt( i );
+				currentRegion = regionList.elementAt( i );
 				len          += currentRegion.span.getLength();
 			}
 
@@ -561,7 +561,7 @@ regionLp:	while( true ) {
 		
 			regionList.addElement( new Region( new Span( inLength, inLength ), null ));
 			currentRegion		= new Region( new Span( 0, 0 ), null );
-			nextRegion			= (Region) regionList.elementAt( 0 );
+			nextRegion			= regionList.elementAt( 0 );
 			off					= 0;
 			fadeOut				= 0;
 
@@ -574,7 +574,7 @@ regionLp:	while( true ) {
 // System.out.println( i + " : "+fadeOut );
 				prevRegion		= currentRegion;
 				currentRegion	= nextRegion;
-				nextRegion		= (Region) regionList.elementAt( i );
+				nextRegion		= regionList.elementAt( i );
 				prevOff			= off;
 				off				= 0;
 				

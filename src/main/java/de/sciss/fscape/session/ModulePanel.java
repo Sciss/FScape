@@ -2,7 +2,7 @@
  *  ModulePanel.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -156,7 +156,7 @@ implements Processor, EventManager.Processor, ProgressComponent
 
     private final ModulePanel enc_this	= this;
 
-    private final List collTempFiles	= new ArrayList();	// Elements = AudioFile instances
+    private final List<AudioFile> collTempFiles	= new ArrayList<AudioFile>();	// Elements = AudioFile instances
 
     //	private final ActionClose			actionClose;
     //	private final ActionSave			actionSave;
@@ -1068,8 +1068,8 @@ implements Processor, EventManager.Processor, ProgressComponent
 //		ConfirmDlg		confirm;
         Double			ampCorrect	= new Double( 20 * Math.log( newAmp ) / Constants.ln10 );
         Object[]		msgArgs		= { ampCorrect };
-        String			msgPtrn		= new String( "The output {0,choice,-1#is clipped|0#volume is suboptimal}!"+
-                                                  "\nShall the gain be adjusted by {0,number,#,##0.0} dB?" );
+        String			msgPtrn		= "The output {0,choice,-1#is clipped|0#volume is suboptimal}!" +
+                "\nShall the gain be adjusted by {0,number,#,##0.0} dB?";
         MessageFormat	msgForm		= new MessageFormat( msgPtrn );
         int				i;
 
@@ -1429,7 +1429,7 @@ implements Processor, EventManager.Processor, ProgressComponent
                         System.currentTimeMillis(), this ));
                     this.wait();
                 }
-            } catch( InterruptedException e1 ) {}
+            } catch( InterruptedException ignored) {}
 
             elm.dispatchEvent( new ProcessorEvent( this, ProcessorEvent.RESUMED,
                 System.currentTimeMillis(), this ));

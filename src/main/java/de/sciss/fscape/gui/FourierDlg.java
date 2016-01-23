@@ -2,7 +2,7 @@
  *  FourierDlg.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -398,7 +398,7 @@ extends ModulePanel
 		int					scaleNum		= 0;
 		float				freqShift;
 		
-		List				markers;
+		List<Marker>		markers;
 
 topLevel: try {
 
@@ -449,8 +449,8 @@ n1 = -1;
 			halfLen = dataLen >> 1;
 			if( pr.intg[ PR_DIRECTION ] == DIR_FORWARD ) {
 				// will be carried forward to output files
-				markers = (List) reInStream.getProperty( AudioFileDescr.KEY_MARKERS );
-				if( markers == null ) markers = new ArrayList( 1 );
+				markers = (List<Marker>) reInStream.getProperty( AudioFileDescr.KEY_MARKERS );
+				if( markers == null ) markers = new ArrayList<Marker>( 1 );
 				markers.add( new Marker( halfLen, MARK_PIHALF ));
 				reInStream.setProperty( AudioFileDescr.KEY_MARKERS, markers );
 			}
@@ -481,7 +481,7 @@ freqShift = (pr.intg[ PR_DIRECTION ] == DIR_FORWARD) ? 1 : -1;
 
 			// ---- Progress Length ----
 			progOff		= 0;			// write floats, write output, transform, read input
-			progLen		= dataLen * (3 + scaleNum * inChanNum) + (long) inLength;
+			progLen		= dataLen * (3 + scaleNum * inChanNum) + inLength;
 			if( pr.bool[ PR_HASIMINPUT ]) {
 				progLen	 += inLength;
 			}

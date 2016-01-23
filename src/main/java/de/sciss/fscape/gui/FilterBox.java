@@ -2,7 +2,7 @@
  *  FilterBox.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -281,7 +281,7 @@ implements CircuitPanel.Box, javax.swing.Icon
 		double[]		sincFreqs;
 		double[]		cosineFreqs;
 		double[][]		result;
-		java.util.List	li;
+		java.util.List<Param>	li;
 		Param			p1, p2, p3, p4, p5;
 		double			d;
 		boolean			neg;
@@ -314,7 +314,7 @@ implements CircuitPanel.Box, javax.swing.Icon
 			p2			= new Param( -Math.abs( bandwidth.val / 2 ), bandwidth.unit );
 			p3			= new Param( +Math.abs( bandwidth.val / 2 ), bandwidth.unit );
 			d			= Param.transform( otLimit, Param.ABS_HZ, cutOff, null ).val;
-			li			= new ArrayList();
+			li			= new ArrayList<Param>();
 			neg			= otSpacing.val < 0;
 			ot			= overtones && (otSpacing.val != 0.0);
 			do {
@@ -332,7 +332,7 @@ implements CircuitPanel.Box, javax.swing.Icon
 			sincFreqs		= new double[ li.size() ];
 			cosineFreqs		= new double[ li.size() ];
 			for( int i = 0; i < sincFreqs.length; i++ ) {
-				sincFreqs[ i ] = ((Param) li.get( i )).val;
+				sincFreqs[ i ] = li.get( i ).val;
 				cosineFreqs[ i ] = 0.0;	// XXX
 			}
 			break;

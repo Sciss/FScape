@@ -2,7 +2,7 @@
  *  CircuitPanel.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -59,8 +59,8 @@ extends JPanel
 	protected CircuitPanel			ground;
 	protected final CircuitPanel.Box	protoType;
 
-	protected final java.util.List boxes	= new ArrayList();
-	protected final Map mapBoxToView;		// only for ground!
+	protected final java.util.List<Object> boxes = new ArrayList<Object>();
+	protected final Map<Object, JComponent> mapBoxToView;		// only for ground!
 	protected int				typ;
 
 	// dieser Button wird nicht angezeigt, sondern dient nur als
@@ -97,7 +97,7 @@ extends JPanel
 		ground				= this;
 		actionComponent		= new Button();
 		this.protoType		= protoType;
-		mapBoxToView		= new HashMap();
+		mapBoxToView		= new HashMap<Object, JComponent>();
 		
 		init();
 
@@ -120,7 +120,7 @@ extends JPanel
 	
 	public void repaintBox( CircuitPanel.Box box )
 	{
-		Component c = (Component) ground.mapBoxToView.get( box );
+		Component c = ground.mapBoxToView.get( box );
 		if( c != null ) c.repaint();
 	}
 	
@@ -169,7 +169,7 @@ extends JPanel
 			}
 			o2 = boxes.get( i );
 			if( o2 instanceof Box ) {
-				c = (Component) ground.mapBoxToView.get( o2 );
+				c = ground.mapBoxToView.get( o2 );
 			} else if( o2 instanceof CircuitPanel ) {
 				c = (CircuitPanel) o2;
 			} else {
@@ -195,7 +195,7 @@ extends JPanel
 		int numBoxes;
 
 		if( o instanceof CircuitPanel.Box ) {
-			c = (Component) ground.mapBoxToView.remove( o );
+			c = ground.mapBoxToView.remove( o );
 			if( c != null ) {
 				this.remove( c );
 			}
@@ -222,7 +222,7 @@ extends JPanel
 		for( int i = index; i < numBoxes; i++ ) {
 			o2 = boxes.get( i );
 			if( o2 instanceof Box ) {
-				c = (Component) ground.mapBoxToView.get( o2 );
+				c = ground.mapBoxToView.get( o2 );
 			} else if( o2 instanceof CircuitPanel ) {
 				c = (CircuitPanel) o2;
 			} else {
@@ -256,7 +256,7 @@ extends JPanel
 		while( !boxes.isEmpty() ) {
 			o = boxes.remove( 0 );
 			if( o instanceof CircuitPanel.Box ) {
-				c = (Component) ground.mapBoxToView.remove( o );
+				c = ground.mapBoxToView.remove( o );
 				if( c != null ) {
 					this.remove( c );
 				}
@@ -294,7 +294,7 @@ extends JPanel
 							case TYPE_GROUND:
 								o	= boxes.get( 0 );
 								if( o instanceof CircuitPanel.Box ) {
-									c = (Component) ground.mapBoxToView.get( o );
+									c = ground.mapBoxToView.get( o );
 								} else if( o instanceof CircuitPanel ) {
 									c = (CircuitPanel) o;
 								} else {
@@ -316,7 +316,7 @@ extends JPanel
 serialLp:							for( i = 0; i < numBoxes; i++ ) {
 									o	= boxes.get( i );
 									if( o instanceof CircuitPanel.Box ) {
-										c = (Component) ground.mapBoxToView.get( o );
+										c = ground.mapBoxToView.get( o );
 									} else if( o instanceof CircuitPanel ) {
 										c = (CircuitPanel) o;
 									} else {
@@ -349,7 +349,7 @@ serialLp:							for( i = 0; i < numBoxes; i++ ) {
 parallelLp:							for( i = 0; i < numBoxes; i++ ) {
 									o	= boxes.get( i );
 									if( o instanceof CircuitPanel.Box ) {
-										c = (Component) ground.mapBoxToView.get( o );
+										c = ground.mapBoxToView.get( o );
 									} else if( o instanceof CircuitPanel ) {
 										c = (CircuitPanel) o;
 									} else {

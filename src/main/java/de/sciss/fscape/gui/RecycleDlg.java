@@ -2,7 +2,7 @@
  *  RecycleDlg.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -114,7 +114,7 @@ extends ModulePanel
 
 	private boolean regionsKnown					= false;		// true nach "Analyze"; false nach neuer Input-Wahl
 	private boolean threadJustAnalyze				= false;		// true = find peak; false = change gain
-	private final java.util.List regionList			= new ArrayList();
+	private final java.util.List<Region> regionList = new ArrayList<Region>();
 
 	private final MessageFormat	msgInfoField		= new MessageFormat(
 		"{0,choice,-1#[…|0#}"+
@@ -356,7 +356,7 @@ extends ModulePanel
 		int					origBufLen, origBufOff, cmpBufLen, cmpBufOff, origBufPhys;
 		
 		Region				currentRegion;
-		java.util.List		markers;
+		java.util.List<Marker> markers;
 
 		PathField			ggOutput;
 		boolean				justAnalyse;
@@ -383,9 +383,9 @@ topLevel: try {
 			if( ggOutput == null ) throw new IOException( ERR_MISSINGPROP );
 			outStream		= new AudioFileDescr( origStream );
 			ggOutput.fillStream( outStream );
-			markers			= (java.util.List) outStream.getProperty( AudioFileDescr.KEY_MARKERS );
+			markers			= (java.util.List<Marker>) outStream.getProperty( AudioFileDescr.KEY_MARKERS );
 			if( markers == null && pr.bool[ PR_MARKERS ]) {
-				markers		= new ArrayList();
+				markers		= new ArrayList<Marker>();
 			}
 
 		// ---- open output ----
@@ -644,7 +644,7 @@ followLp:				for( ch = 0; ch < chanNum; ch++ ) {
 			// calc output length, ggf. marker erzeugen
 			// XXX eigentlich muessten die originalen marker noch entsprechend verschoben werden
 			for( i = 0, outLength = 0; i < regionList.size(); i++ ) {
-				currentRegion	= (Region) regionList.get( i );
+				currentRegion	= regionList.get( i );
 				j				= (int) currentRegion.span.getLength();
 				if( pr.bool[ PR_MARKERS ]) {
 					markers.add( new Marker( outLength, MARK_CUT ));
@@ -664,7 +664,7 @@ followLp:				for( ch = 0; ch < chanNum; ch++ ) {
 				fadeOutLength	= 0;
 				
 				for( i = 0; i < regionList.size(); i++ ) {
-					currentRegion	= (Region) regionList.get( i );
+					currentRegion	= regionList.get( i );
 					chunkLength		= (int) currentRegion.span.getLength();
 					
 					fadeInLength	= fadeOutLength;
@@ -693,7 +693,7 @@ followLp:				for( ch = 0; ch < chanNum; ch++ ) {
 
 					if( i + 1 < regionList.size() ) {
 						fadeOutLength	= (int) Math.min( fadeLength, Math.min( origLength - currentRegion.span.getStop(),
-														  ((Region) regionList.get( i + 1 )).span.getStart() ));
+														  regionList.get( i + 1 ).span.getStart() ));
 						chunkLength	   -= fadeOutLength;
 					} else {
 						fadeOutLength	= 0;
@@ -782,7 +782,7 @@ followLp:				for( ch = 0; ch < chanNum; ch++ ) {
 		
 		if( numRegions > 0 ) {
 			for( i = 0, duration = 0; i < regionList.size(); i++ ) {
-				duration += ((Region) regionList.get( i )).span.getLength();
+				duration += regionList.get( i ).span.getLength();
 			}
 			strTime	= new TimeFormat( 0, null, null, 3, Locale.US ).formatTime( new Double( duration / sampleRate ));
 		} else {

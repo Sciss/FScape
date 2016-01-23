@@ -2,7 +2,7 @@
  *  SpectStream.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -99,8 +99,8 @@ public class SpectStream
 
 	protected static final int	DEFAULT_BUF_SIZE	= 8;	// number of frames
 	
-	protected Vector	activeBuf;	// geschriebene Frames
-	protected Vector	deadBuf;	// nicht mehr benoetigte Frames; darauf kann alloc() zurueckgreifen!
+	protected Vector<SpectFrame> activeBuf;	// geschriebene Frames
+	protected Vector<SpectFrame> deadBuf;	// nicht mehr benoetigte Frames; darauf kann alloc() zurueckgreifen!
 	protected int		bufSize;	// max. Frame-Zahl in activeBuf und deadBuf
 
 // -------- public Methoden --------
@@ -158,8 +158,8 @@ public class SpectStream
 		}
 
 		this.bufSize	= bufSize;
-		activeBuf		= new Vector( bufSize );
-		deadBuf			= new Vector( bufSize );
+		activeBuf		= new Vector<SpectFrame> ( bufSize );
+		deadBuf			= new Vector<SpectFrame> ( bufSize );
 	}
 	
 	public SpectStream( SpectStream origin )
@@ -274,7 +274,7 @@ public class SpectStream
 	
 		synchronized( this ) {
 			if( !deadBuf.isEmpty() ) {
-				fr = (SpectFrame) deadBuf.firstElement();
+				fr = deadBuf.firstElement();
 				deadBuf.removeElement( fr );
 				fr.gainAccess();
 			} else {
@@ -393,7 +393,7 @@ public class SpectStream
 				frameNum++;
 			}
 		}
-		catch( IndexOutOfBoundsException e ) {}
+		catch( IndexOutOfBoundsException ignored) {}
 		catch( EOFException e ) {
 			return -1;
 		}
@@ -429,7 +429,7 @@ public class SpectStream
 			
 		default:
 			synchronized( this ) {
-				fr = (SpectFrame) activeBuf.firstElement();
+				fr = activeBuf.firstElement();
 				activeBuf.removeElement( fr );
 				framesRead++;
 			}
@@ -456,7 +456,7 @@ public class SpectStream
 				frameNum++;
 			}
 		}
-		catch( NoSuchElementException e ) {}
+		catch( NoSuchElementException ignored) {}
 		catch( EOFException e ) {
 			if( frameNum == 0 ) {
 				frameNum = -1;

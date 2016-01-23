@@ -2,7 +2,7 @@
  *  ConcatDlg.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -393,7 +393,7 @@ ggFadeShape.setEnabled( false );
 
         PathField			ggOutput;
 
-        Vector				activeChunks	= new Vector();
+        Vector<SoundChunk> activeChunks	= new Vector<SoundChunk>();
 
 topLevel: try {
         // ---- open input, output; init ----

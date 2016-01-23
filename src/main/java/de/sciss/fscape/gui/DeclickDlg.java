@@ -2,7 +2,7 @@
  *  DeclickDlg.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -367,7 +367,7 @@ extends ModulePanel
 		
 		int					markerID		= -1;
 		Marker				marker			= null;
-		java.util.List		markers, outMarkers;
+		java.util.List<Marker>		markers, outMarkers;
 		
 		Graphics			g				= null;	// we use a JLabel to draw to click-positions
 		Dimension			gDim;
@@ -443,11 +443,11 @@ topLevel: try {
 			// this helps to prevent errors from empty files!
 			if( (inLength*inChanNum) < 1 ) throw new EOFException( ERR_EMPTY );
 
-			markers		= (java.util.List) inStream.getProperty( AudioFileDescr.KEY_MARKERS );
+			markers		= (java.util.List<Marker>) inStream.getProperty( AudioFileDescr.KEY_MARKERS );
 			if( markers != null ) {
-				outMarkers	= new Vector( markers );
+				outMarkers	= new Vector<Marker>( markers );
 			} else {
-				outMarkers	= new Vector();
+				outMarkers	= new Vector<Marker>();
 			}
 
 			if( pr.bool[ PR_FSCAPEREPAIR ] || pr.bool[ PR_MARKERREPAIR ]) {
@@ -499,7 +499,7 @@ topLevel: try {
 //				markers		= Marker.sort( markers );
 				markerID	= Marker.find( markers, MARK_CLICK, 0 );
 				if( markerID >= 0 ) {
-					marker	= (Marker) markers.get( markerID );
+					marker	= markers.get( markerID );
 				}
 			}
 			
@@ -621,14 +621,14 @@ topLevel: try {
 							
 							markerID	= Marker.find( markers, MARK_CLICK, markerID + 1 );
 							if( markerID >= 0 ) {
-								marker	= (Marker) markers.get( markerID );
+								marker	= markers.get( markerID );
 							} else {
 								marker	= null;
 							}
 						} else if( marker.pos < i ) {		// "veraltet"
 							markerID	= Marker.find( markers, MARK_CLICK, markerID + 1 );
 							if( markerID >= 0 ) {
-								marker	= (Marker) markers.get( markerID );
+								marker	= markers.get( markerID );
 							} else {
 								marker	= null;
 							}

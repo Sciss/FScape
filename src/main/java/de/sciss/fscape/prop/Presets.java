@@ -2,7 +2,7 @@
  *  Presets.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -42,9 +42,9 @@ extends BasicProperties
 	 */
 	public static final String DEFAULT = "(default)";
 	
-	private static final Comparator caseInsensitiveComp = new Comparator() {
-		public int compare( Object a, Object b ) {
-			return a.toString().toUpperCase().compareTo( b.toString().toUpperCase() );
+	private static final Comparator<String> caseInsensitiveComp = new Comparator<String>() {
+		public int compare( String a, String b ) {
+			return a.toUpperCase().compareTo(b.toUpperCase() );
 		}
 	};
 
@@ -137,7 +137,7 @@ extends BasicProperties
 	public List presetNames()
 	{
 		synchronized( this ) {
-			final List li = new ArrayList( this.size() );
+			final List<String> li = new ArrayList<String>( this.size() );
 			final Enumeration e = propertyNames();
 			while( e.hasMoreElements() ) {
 				li.add( keyToString( (String) e.nextElement() ));
@@ -172,7 +172,7 @@ extends BasicProperties
 	 *	Schreibt die uebergebenen String in einen ByteStream und
 	 *	liefert diesen als Properties-Objekt zurueck
 	 *
-	 *	@param	null erlaubt, ergibt aber auch null als Ergebnis!
+	 *	@param	strVal	null erlaubt, ergibt aber auch null als Ergebnis!
 	 *	@return	null bei Fehler
 	 */
 	public static Properties valueToProperties( String strVal )
@@ -230,8 +230,8 @@ extends BasicProperties
 				key = key.substring( 0, i ) + c + key.substring( i + 6 );
 			}
 		}
-		catch( IndexOutOfBoundsException e1 ) {}		// nothing we can do unfortunately
-		catch( NumberFormatException e2 ) {}
+		catch( IndexOutOfBoundsException ignored) {}		// nothing we can do unfortunately
+		catch( NumberFormatException ignored) {}
 		
 		return key;
 	}

@@ -2,7 +2,7 @@
  *  FIRDesignerDlg.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -598,7 +598,7 @@ pageBox.add( box );
 		Param			ampRef			= new Param( 1.0, Param.ABS_AMP );			// transform-Referenz
 		float			gain; //		= 1.0f;								 		// gain abs amp
 		
-		java.util.List markers;
+		java.util.List<Marker> markers;
 		
 topLevel: try {
 		// ---- open files ----
@@ -736,7 +736,7 @@ topLevel: try {
 		// ---- write output ----
 
 			// add "support"
-			markers		= new ArrayList( 1 );
+			markers		= new ArrayList<Marker>( 1 );
 			markers.add( new Marker( support, MARK_SUPPORT ));
 			outStream.setProperty( AudioFileDescr.KEY_MARKERS, markers );
 			outF = AudioFile.openAsWrite( outStream );

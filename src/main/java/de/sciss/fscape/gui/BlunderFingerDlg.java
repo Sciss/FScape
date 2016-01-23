@@ -2,7 +2,7 @@
  *  BlunderFingerOpDlg.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -390,7 +390,7 @@ extends ModulePanel
 		final int 				chromoLenM1, multiChanType, numCrossPoints;
 		final float[][]			inFitBuf, inPopBuf;
 		double[]				fitness, newFitness, tempFit;
-		final List				crossings;
+		final List<Integer>		crossings;
 		final float[]			weights;
 		final int[]				crossPoints;
 		final boolean			elitism;
@@ -484,7 +484,7 @@ topLevel: try {
 //			assert( Math.abs( sum - 1.0 ) < 1.0e-6 ) : sum;
 			assert( Math.abs( weights[ population - 1 ] - 1.0 ) < 1.0e-6 ) : weights[ population - 1 ];
 			weights[ populationM1 ] = 1.0f;
-			crossings			= new ArrayList( chromoLen - 2 );
+			crossings			= new ArrayList<Integer>( chromoLen - 2 );
 			crossPoints			= new int[ numCrossPoints + 1 ];
 			crossPoints[ numCrossPoints ] = chromoLen;
 			
@@ -594,8 +594,8 @@ topLevel: try {
 							crossings.add( new Integer( i ));
 						}
 						for( int i = 0; i < numCrossPoints; i++ ) {
-							crossPoints[ i ] = ((Integer) crossings.remove(
-							    rnd.nextInt( crossings.size() ))).intValue();
+							crossPoints[ i ] = crossings.remove(
+							    rnd.nextInt( crossings.size() )).intValue();
 						}
 						Arrays.sort( crossPoints, 0, numCrossPoints );
 

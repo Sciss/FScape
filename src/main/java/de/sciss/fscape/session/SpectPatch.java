@@ -2,7 +2,7 @@
  *  SpectPatch.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -20,8 +20,6 @@ package de.sciss.fscape.session;
 import java.awt.*;
 import java.io.*;
 import java.util.*;
-
-import de.sciss.common.AppWindow;
 
 import de.sciss.fscape.gui.*;
 import de.sciss.fscape.op.*;
@@ -49,7 +47,7 @@ public class SpectPatch
 	public boolean				running		= false;
 	public boolean				pausing		= false;
 
-	private Vector				ops;					// Operatoren
+	private Vector<Operator> ops;					// Operatoren
 	private ThreadGroup			opThreadGroup = null;	// deren Thread-Gruppe
 
 	private static final String	FILE_OP		= "Op";		// Erkennungs-Strings
@@ -95,7 +93,7 @@ public class SpectPatch
 	 */
 	public SpectPatch( SpectPatchDlg win )
 	{
-		ops = new Vector();
+		ops = new Vector<Operator>();
 	
 		this.win = win;
 //		win.setVisible( true );
@@ -120,7 +118,7 @@ public class SpectPatch
 		PropertyArray	pa;
 		boolean			success = true;
 
-		Vector			tempOps	= new Vector();		// Index dort = ID aus dem file!
+		Vector<Operator> tempOps	= new Vector<Operator>();		// Index dort = ID aus dem file!
 		Enumeration		slots;
 		SpectStreamSlot	slot1, slot2;
 		String			slotName;
@@ -179,7 +177,7 @@ public class SpectPatch
 									k			= val.indexOf( ',' );
 									slotName	= val.substring( k + 1 );
 									op2ID		= Integer.parseInt( val.substring( 0, k ));
-									op2			= (Operator) tempOps.elementAt( op2ID );
+									op2			= tempOps.elementAt( op2ID );
 									slot2		= (SpectStreamSlot) op2.getSlot( slotName );
 									if( slot2 != null ) {
 										opPanel.linkOperators( slot1, slot2 );
@@ -227,7 +225,7 @@ public class SpectPatch
 							while( valTok.hasMoreTokens() ) {
 								try {
 									op2ID	= Integer.parseInt( valTok.nextToken() );
-									op2		= (Operator) tempOps.elementAt( op2ID );
+									op2		= tempOps.elementAt( op2ID );
 									op2.turnIntoAlias( op );
 								}
 								catch( SlotAlreadyConnectedException e ) {
@@ -252,7 +250,7 @@ public class SpectPatch
 						if( val != null ) {
 							try {
 								op2ID	= Integer.parseInt( val );
-								op2		= (Operator) tempOps.elementAt( op2ID );
+								op2		= tempOps.elementAt( op2ID );
 								op.turnIntoAlias( op2 );
 							}
 							catch( SlotAlreadyConnectedException e ) {
@@ -326,7 +324,7 @@ public class SpectPatch
 
 		synchronized( ops ) {
 			for( int i = 0; i < ops.size(); i++ ) {
-				op		= (Operator) ops.elementAt( i );
+				op		= ops.elementAt( i );
 				opIcon	= (OpIcon) op.getIcon();
 
 				head.clear();
@@ -433,7 +431,7 @@ public class SpectPatch
 				opThreadGroup = new ThreadGroup( "Operators" );
 
 				for( int i = 0; i < ops.size(); i++ ) {
-					op = (Operator) ops.elementAt( i );
+					op = ops.elementAt( i );
 					if( op.threadDead ) {
 						thread = new Thread( opThreadGroup, op, op.getIcon().getName() );
 						op.threadPaused	= false;
@@ -465,7 +463,7 @@ public class SpectPatch
 				pausing = false;
 
 				for( int i = 0; i < ops.size(); i++ ) {
-					op = (Operator) ops.elementAt( i );
+					op = ops.elementAt( i );
 					if( !op.threadDead ) {
 						op.runStop();
 						slots = op.getSlots( Slots.SLOTS_LINKED ).elements();
@@ -484,7 +482,7 @@ public class SpectPatch
 					try {
 						Thread.sleep( 500 );	// Operatoren schicken notify() beim Beenden!
 					}
-					catch( InterruptedException e ) {}
+					catch( InterruptedException ignored) {}
 				}
 				running = false;
 			}
@@ -511,7 +509,7 @@ public class SpectPatch
 			if( running && (state != pausing) ) {
 
 				for( int i = 0; i < ops.size(); i++ ) {
-					op = (Operator) ops.elementAt( i );
+					op = ops.elementAt( i );
 					if( !op.threadDead ) {
 						op.runPause( state );
 						slots = op.getSlots( Slots.SLOTS_LINKED ).elements();
@@ -531,10 +529,10 @@ public class SpectPatch
 						try {
 							Thread.sleep( 500 );
 						}
-						catch( InterruptedException e ) {}
+						catch( InterruptedException ignored) {}
 						allPausing = true;
 						for( int i = 0; i < ops.size(); i++ ) {
-							op = (Operator) ops.elementAt( i );
+							op = ops.elementAt( i );
 							if( !op.threadDead && !op.threadPausing ) {
 								allPausing = false;
 							}

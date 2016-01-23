@@ -2,7 +2,7 @@
  *  CurvePanel.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -397,7 +397,7 @@ extends JPanel
 		Curve		newCurve;
 		DoublePoint	pt ,pt2;
 		double		hScaling, vScaling;
-		Vector		revisit;
+		Vector<DoublePoint> revisit;
 
 		int			index;
 		double		dIndex;
@@ -414,7 +414,7 @@ extends JPanel
 
 			// Punkte skalieren
 			newCurve	= new Curve( hSpace, vSpace, curve.type );
-			revisit		= new Vector();
+			revisit		= new Vector<DoublePoint>();
 			
 			for( int i = curve.size() - 1; i >= 0; i-- ) {
 
@@ -431,7 +431,7 @@ extends JPanel
 
 			for( int i = revisit.size() - 1; i >= 0; i-- ) {
 
-				pt		= (DoublePoint) revisit.elementAt( i );
+				pt		= revisit.elementAt( i );
 				dIndex	= newCurve.indexOf( pt.x );
 				if( (dIndex >= 0.0) && (dIndex <= (double) (curve.size() - 1)) ) {
 				

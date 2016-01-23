@@ -2,7 +2,7 @@
  *  PopupStrip.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -30,7 +30,7 @@ extends JPopupMenu
 {
 // -------- private Variablen --------
 
-	protected Hashtable			h;		// Objects = Menus/Items, Keys = ActionCommands (z.B. "&ZUndo")
+	protected Hashtable<String, JMenuItem> h;		// Objects = Menus/Items, Keys = ActionCommands (z.B. "&ZUndo")
 	protected ActionListener	listener;
 
 // -------- public Methoden --------
@@ -42,7 +42,6 @@ extends JPopupMenu
 	//	public static JMenuItem getItem( MenuBar mb, String menuItem );
 
 	/**
-	 *	@param	label		Name fuer den Strip
 	 *	@param	menuItems	inneres Array: 1 String fuer normale Items, mehrere fuer SubMenus
 	 *						( "&c"-Anfang fuer Shortcuts; "#"-Ende fuer JCheckBoxes )
 	 *	@param	listener	ActionListener, der die Menuwahlen verarbeiten soll
@@ -51,7 +50,7 @@ extends JPopupMenu
 	{
 		super();
 
-		h				= new Hashtable();
+		h				= new Hashtable<String, JMenuItem>();
 		this.listener	= listener;
 		
 		PopupStrip.createStrip( this, h, menuItems, listener );
@@ -66,7 +65,7 @@ extends JPopupMenu
 	 */
 	public boolean setItemEnabled( String menuItem, boolean enable )
 	{
-		JMenuItem mi = (JMenuItem) h.get( menuItem );
+		JMenuItem mi = h.get( menuItem );
 		if( mi != null ) {
 			mi.setEnabled( enable );
 		}
@@ -147,7 +146,7 @@ extends JPopupMenu
 	 *						( "&c"-Anfang fuer Shortcuts; "#"-Ende fuer JCheckBoxes )
 	 *	@param	listener	ActionListener, der die Menuwahlen verarbeiten soll
 	 */
-	public static void createStrip( JPopupMenu m, Hashtable h, String[][] menuItems, ActionListener listener )
+	public static void createStrip( JPopupMenu m, Hashtable<String, JMenuItem> h, String[][] menuItems, ActionListener listener )
 	{
 		Object		m2;
 		JMenuItem	mi;

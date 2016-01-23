@@ -2,7 +2,7 @@
  *  GUISupport.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -39,8 +39,8 @@ extends JPanel
 {
 // -------- private Variablen --------
 
-	private final Hashtable hObj;			// keys = IDs, objects = Gadgets
-	private final Hashtable hID;			// keys = Gadgets, objects = IDs
+	private final Hashtable<Integer, Component> hObj;			// keys = IDs, objects = Gadgets
+	private final Hashtable<Object, Integer> hID;			// keys = Gadgets, objects = IDs
 	protected final GridBagLayout lay;
 	protected final GridBagConstraints con;
 
@@ -91,8 +91,8 @@ extends JPanel
 	 */
 	public GUISupport( int type )
 	{
-		hObj	= new Hashtable();
-		hID		= new Hashtable();
+		hObj	= new Hashtable<Integer, Component>();
+		hID		= new Hashtable<Object, Integer>();
 		lay		= new GridBagLayout();
 		con		= new GridBagConstraints();
 		setLayout( lay );

@@ -2,7 +2,7 @@
  *  PropertyGUI.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -41,29 +41,29 @@ implements ItemListener
 // -------- public Variablen --------
 
 	// toplevel codes; separator ';' oder '\n' fuer neue Zeile
-	public static final int	objGroupLabel	= 'g' << 8 + 'l';	// <Name>
-	public static final int	objLabel		= 'l' << 8 + 'b';	// <Name>
-	public static final int	objJCheckBox		= 'c' << 8 + 'b';	// <Name>
-	public static final int	objJComboBox		= 'c' << 8 + 'h';
-	public static final int	objParamField	= 'p' << 8 + 'f';	// [<spaceID>[|<spaceID>...]]
+	public static final int	objGroupLabel	= ('g' << 8) + 'l';	// <Name>
+	public static final int	objLabel		= ('l' << 8) + 'b';	// <Name>
+	public static final int	objJCheckBox	= ('c' << 8) + 'b';	// <Name>
+	public static final int	objJComboBox	= ('c' << 8) + 'h';
+	public static final int	objParamField	= ('p' << 8) + 'f';	// [<spaceID>[|<spaceID>...]]
 //	public static final int	objFontField	= (int) 'f' << 8 + (int) 'f';	// <Type>
-	public static final int	objPathField	= 'i' << 8 + 'o';	// <Type>|<Requester-Txt>
+	public static final int	objPathField	= ('i' << 8) + 'o';	// <Type>|<Requester-Txt>
 //	public static final int	objColorJComboBox	= (int) 'c' << 8 + (int) 'c';	// <Flags>[|<Image-Filename>]
-	public static final int	objEditEnv		= 'e' << 8 + 'n';
-	public static final int	objSkip			= 's' << 8 + 'k';	// Platzhalter
+	public static final int	objEditEnv		= ('e' << 8) + 'n';
+	public static final int	objSkip			= ('s' << 8) + 'k';	// Platzhalter
 
 	// generic; separator ','
-	public static final	int	attrCols		= 'w' << 8 + 'i';	// <Spaltenbreite>
-	public static final	int	attrID			= 'i' << 8 + 'd';	// <Array-Index>
-	public static final	int	attrPropName	= 'p' << 8 + 'r';	// <Properties-Key>
-	public static final	int	attrAction		= 'a' << 8 + 'c';	// <condition>|<target obj ID>|<Command>[|<target 2>|<cmd 2>...]
+	public static final	int	attrCols		= ('w' << 8) + 'i';	// <Spaltenbreite>
+	public static final	int	attrID			= ('i' << 8) + 'd';	// <Array-Index>
+	public static final	int	attrPropName	= ('p' << 8) + 'r';	// <Properties-Key>
+	public static final	int	attrAction		= ('a' << 8) + 'c';	// <condition>|<target obj ID>|<Command>[|<target 2>|<cmd 2>...]
 
 	/**
 	 * generic action commands
 	 *   mehrere Befehle einfach durch mehrere <ac> Befehle!
 	 */
-	public static final	int	actionEnable	= 'e' << 8 + 'n';
-	public static final	int	actionDisable	= 'd' << 8 + 'i';
+	public static final	int	actionEnable	= ('e' << 8) + 'n';
+	public static final	int	actionDisable	= ('d' << 8) + 'i';
 
 	/**
 	 * choice
@@ -72,27 +72,27 @@ implements ItemListener
 	 *		z.B. <ac1|5|en> ==> wenn Item#1 selektiert wurde,
 	 *							soll die Componente mit ID5 enabled werden
 	 */
-	public static final	int	chItem			= 'i' << 8 + 't';	// JComboBox-Item <Name>
-	public static final int chSelect		= 's' << 8 + 'e';	// <ItemID>
+	public static final	int	chItem			= ('i' << 8) + 't';	// JComboBox-Item <Name>
+	public static final int chSelect		= ('s' << 8) + 'e';	// <ItemID>
 
 	// paramfield
-	public static final	int	pfSpaces		= 's' << 8 + 'p';	// <ParamUnit>[|<ParamUnit>...]
-	public static final	int	pfReference		= 'r' << 8 + 'e';	// <val>|<unit> oder <obj ID>
+	public static final	int	pfSpaces		= ('s' << 8) + 'p';	// <ParamUnit>[|<ParamUnit>...]
+	public static final	int	pfReference		= ('r' << 8) + 'e';	// <val>|<unit> oder <obj ID>
 
 	// label
-	public static final int lbText			= 't' << 8 + 'x';	// <new name>
+	public static final int lbText			= ('t' << 8) + 'x';	// <new name>
 
 	// checkbox
-	public static final int cbState			= 's' << 8 + 't';	// <true> bzw. <false>
+	public static final int cbState			= ('s' << 8) + 't';	// <true> bzw. <false>
 
 	public static final int MAX_ID			= 0xFFFF;	// maximale User-Object-ID
 
 // -------- private Variablen --------
 
 	protected PropertyArray pr;
-	protected Hashtable hID;		// key = ID, value = PropertyComponent
-	protected Hashtable		hObj;		// key = Component
-	protected Hashtable		hPropName;	// key = Properties-Keyname
+	protected Hashtable<Integer, PropertyComponent> hID;		// key = ID, value = PropertyComponent
+	protected Hashtable<Object, PropertyComponent> hObj;		// key = Component
+	protected Hashtable<String, PropertyComponent> hPropName;	// key = Properties-Keyname
 
 // -------- public Methoden --------
 	// public void fillPropertyArray( PropertyArray pr );
@@ -121,9 +121,9 @@ implements ItemListener
 
 		final Component parent = SwingUtilities.windowForComponent(this);
 
-		hObj			= new Hashtable();
-		hID				= new Hashtable();
-		hPropName		= new Hashtable();
+		hObj			= new Hashtable<Object, PropertyComponent>();
+		hID				= new Hashtable<Integer, PropertyComponent>();
+		hPropName		= new Hashtable<String, PropertyComponent>();
 
 		StringTokenizer linTok;		// Zeilen
 		StringTokenizer objTok;		// Objekte ("Components")
@@ -297,7 +297,7 @@ implements ItemListener
 										attrName.substring( 0, i )).doubleValue(),
 										Integer.parseInt( attrName.substring( i + 1 ))));
 								} else {		// ParamField-Reference
-									PropertyComponent targetPrCmp = (PropertyComponent) hID.get(
+									PropertyComponent targetPrCmp = hID.get(
 										Integer.valueOf( attrName ));
 									if( targetPrCmp != null ) {
 										((ParamField) cmp).setReference( (ParamField) targetPrCmp.cmp );
@@ -415,7 +415,7 @@ implements ItemListener
 	{
 		PropertyComponent	prCmp;
 		
-		prCmp	= (PropertyComponent) hObj.get( e.getSource() );
+		prCmp	= hObj.get( e.getSource() );
 		if( prCmp != null ) {
 			processActionCommand( prCmp );
 		}
@@ -437,7 +437,7 @@ implements ItemListener
 		for( int i = 0; i < prNames.length; i++ ) {
 
 			if( prNames[ i ] != null ) {
-				prCmp = (PropertyComponent) hPropName.get( prNames[ i ]);
+				prCmp = hPropName.get( prNames[ i ]);
 
 				if( prCmp != null ) {
 					cmp = prCmp.cmp;
@@ -494,7 +494,7 @@ implements ItemListener
 		for( int i = 0; i < prNames.length; i++ ) {
 
 			if( prNames[ i ] != null ) {
-				prCmp = (PropertyComponent) hPropName.get( prNames[ i ]);
+				prCmp = hPropName.get( prNames[ i ]);
 
 				if( prCmp != null ) {
 					cmp = prCmp.cmp;
@@ -563,7 +563,7 @@ implements ItemListener
 			
 				target	= cmdTok.nextToken();
 				cmd		= cmdTok.nextToken();
-				targetPrCmp = (PropertyComponent) hID.get( Integer.valueOf( target ));
+				targetPrCmp = hID.get( Integer.valueOf( target ));
 				if( targetPrCmp != null ) {
 				
 					switch( srcPrCmp.type ) {

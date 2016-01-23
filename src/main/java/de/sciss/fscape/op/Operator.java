@@ -2,7 +2,7 @@
  *  Operator.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -92,14 +92,14 @@ implements Runnable, Slots, Cloneable, Transferable
 	 *	Subclassen sollten addElement()
 	 *	ausfuehren
 	 */
-	protected Vector slots;						// verwaltet die SpectStreamSlots (in + out)
+	protected Vector<SpectStreamSlot> slots;						// verwaltet die SpectStreamSlots (in + out)
 
-	protected Vector	aliases;				// alle Alia des Operators
+	protected Vector<Operator>	aliases;				// alle Alia des Operators
 	protected Operator	original = null;		// Original eines Aliases
 	protected static final String	ERR_ALIASSYNC	= "Original is of different type";
 	protected static final String	ERR_ALREADYALIAS= "Object is already an alias";
 
-	private	static TreeMap OPERATORS;			// values sind alle Op-Klassennamen, keys deren "echte" Namen (String)
+	private	static TreeMap<String, String> OPERATORS;			// values sind alle Op-Klassennamen, keys deren "echte" Namen (String)
 	private static DataFlavor flavors[] = null;	// alle erlaubten DataFlavors
 
 	protected 			   boolean	disposed		= false;
@@ -147,7 +147,7 @@ implements Runnable, Slots, Cloneable, Transferable
 // -------- Klassenkonstruktor --------
 
 	static {
-		OPERATORS	= new TreeMap();
+		OPERATORS	= new TreeMap<String, String>();
 	}
 
 // -------- public Methoden --------
@@ -179,8 +179,8 @@ implements Runnable, Slots, Cloneable, Transferable
 		}
 		
 //		icon		= new OpIcon( this );
-		slots		= new Vector();
-		aliases		= new Vector();
+		slots		= new Vector<SpectStreamSlot>();
+		aliases		= new Vector<Operator>();
 //		pr			= (PropertyArray) static_pr.clone();
 //		presets		= new Properties();
 
@@ -529,13 +529,13 @@ System.out.println( icon.getName() + ": aborted because of: " +threadError );
 	/**
 	 *	@param filter	Jedes gesetzte Flag im filter-Parameter muss im Suchobject gesetzt sein!
 	 */
-	public Vector getSlots( int filter )
+	public Vector<SpectStreamSlot> getSlots( int filter )
 	{
-		Vector fltSlots = new Vector();
+		Vector<SpectStreamSlot> fltSlots = new Vector<SpectStreamSlot>();
 		SpectStreamSlot slot;
 	
 		for( int i = 0; i < slots.size(); i++ ) {
-			slot = (SpectStreamSlot) slots.elementAt( i );
+			slot = slots.elementAt( i );
 			if(( slot.getFlags() & filter) == filter ) {
 				fltSlots.addElement( slot );
 			}
@@ -546,9 +546,9 @@ System.out.println( icon.getName() + ": aborted because of: " +threadError );
 	/**
 	 *	@return	null bei Fehler
 	 */
-	public Object getSlot( String name )
+	public SpectStreamSlot getSlot( String name )
 	{
-		Object slot;
+		SpectStreamSlot slot;
 		for( int i = 0; i < slots.size(); i++ ) {
 			slot = slots.elementAt( i );
 			if( slot.toString().equals( name )) return slot;
@@ -580,7 +580,7 @@ System.out.println( icon.getName() + ": aborted because of: " +threadError );
 		Operator	op	= null;
 
 		try {
-			op		= (Operator)		this.getClass().newInstance();
+			op		= this.getClass().newInstance();
 			op.pr	= (PropertyArray)	this.getPropertyArray().clone();
 			
 			if( getOriginal() != null ) {

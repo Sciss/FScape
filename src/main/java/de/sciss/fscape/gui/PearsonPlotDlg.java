@@ -2,7 +2,7 @@
  *  PearsonPlotDlg.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -449,7 +449,7 @@ extends ModulePanel
 		Graphics			g				= null;
 		Dimension			gDim;
 		
-		java.util.List		markers;
+		java.util.List<Marker> markers;
 
 topLevel: try {
 
@@ -500,9 +500,9 @@ topLevel: try {
 			outStream	= new AudioFileDescr( inStream );
 			ggOutput.fillStream( outStream );
 			outStream.channels = outChanNum;
-			markers		= (java.util.List) outStream.getProperty( AudioFileDescr.KEY_MARKERS );
+			markers		= (java.util.List<Marker>) outStream.getProperty( AudioFileDescr.KEY_MARKERS );
 			if( markers == null && pr.bool[ PR_WRITEMARK ]) {
-				markers	= new Vector();
+				markers	= new Vector<Marker>();
 				outStream.setProperty( AudioFileDescr.KEY_MARKERS, markers );
 			}
 		// .... check running ....

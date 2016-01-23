@@ -2,7 +2,7 @@
  *  SelectPathButton.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -415,7 +415,7 @@ public class SelectPathButton
         {
             if( f == null ) throw new IOException();
             if( flavor.equals( DataFlavor.javaFileListFlavor )) {
-                final List coll = new ArrayList( 1 );
+                final List<File> coll = new ArrayList<File>( 1 );
                 coll.add( f );
                 return coll;
             } else if( flavor.equals( DataFlavor.stringFlavor )) {

@@ -2,7 +2,7 @@
  *  SmpMapPanel.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -94,7 +94,7 @@ implements ComponentListener, MouseListener, MouseMotionListener
 	protected static final int SB_STATE_UNKNOWN		= -1;
 
 	protected SmpMap smpMap;
-	protected Vector smpBoxes;	// !selbe Indices wie smpMap
+	protected Vector<SmpBox> smpBoxes;	// !selbe Indices wie smpMap
 	protected Dimension	dim;		// Panel-Size; vom Component-Listener geupdated
 	protected double	vSpaceLog;	// ln( vSpace.max / vSpace.min) fuer logarithmische Skala wichtig
 
@@ -116,7 +116,7 @@ implements ComponentListener, MouseListener, MouseMotionListener
 		currentSmpBox		= dummyBox;
 		smpMap				= new SmpMap( Constants.spaces[ Constants.emptySpace ],
 										  Constants.spaces[ Constants.emptySpace ]);
-		smpBoxes			= new Vector();
+		smpBoxes			= new Vector<SmpBox>();
 		dragRubber			= new Rectangle();
 		
 		setLayout( null );
@@ -206,7 +206,7 @@ implements ComponentListener, MouseListener, MouseMotionListener
 	public void setSpaces( ParamSpace hSpace, ParamSpace vSpace )
 	{
 		SmpMap	newSmpMap;
-		Vector	newBoxes;
+		Vector<SmpBox>	newBoxes;
 		SmpZone	smp;
 		SmpBox	sb;
 		int		newIndex;
@@ -218,12 +218,12 @@ implements ComponentListener, MouseListener, MouseMotionListener
 
 			// Punkte skalieren
 			newSmpMap	= new SmpMap( hSpace, vSpace, smpMap.type );
-			newBoxes	= new Vector();
+			newBoxes	= new Vector<SmpBox>();
 			
 			for( int index = smpMap.size() - 1; index >= 0; index-- ) {
 
 				smp	= smpMap.getSample( index );
-				sb	= (SmpBox) smpBoxes.elementAt( index );
+				sb	= smpBoxes.elementAt( index );
 
 				if( Math.abs( smp.velLo.val - smpMap.hSpace.min ) < Constants.suckyDoubleError ) {		// expand
 					smp.velLo.val = hSpace.min;
@@ -373,7 +373,7 @@ implements ComponentListener, MouseListener, MouseMotionListener
                 }
 
 				sb.setSelected( SB_STATE_NORMAL );
-				sb = (SmpBox) smpBoxes.elementAt( index );
+				sb = smpBoxes.elementAt( index );
 				sb.setSelected( SB_STATE_SELECTED );
 				currentSmpBox = sb;
 			}
@@ -863,7 +863,7 @@ implements ComponentListener, MouseListener, MouseMotionListener
 	{
 		synchronized( smpMap ) {
 			for( int i = 0; i < smpBoxes.size(); i++ ) {
-				recalcScreenBox( (SmpBox) smpBoxes.elementAt( i ));
+				recalcScreenBox(smpBoxes.elementAt( i ));
 			}
 		}
 	}
@@ -901,7 +901,7 @@ implements ComponentListener, MouseListener, MouseMotionListener
 		synchronized( smpMap ) {
 			num = smpBoxes.size();
 			for( int i = 0; i < num; i++ ) {
-				sb = (SmpBox) smpBoxes.elementAt( i );
+				sb = smpBoxes.elementAt( i );
 				sb.setColor( (float) i / (float) num );
 			}
 		}
@@ -1088,9 +1088,8 @@ implements ComponentListener, MouseListener, MouseMotionListener
 
 		pt1	= paramSpaceToScreen( velLo, freqHi );
 		pt2	= paramSpaceToScreen( velHi, freqLo );
-		if( ((pt2.x - pt1.x) < 6) || ((pt2.y - pt1.y) < 6) ) return false;	// zu klein fuer Box
-		
-		return true;
+		return !(((pt2.x - pt1.x) < 6) || ((pt2.y - pt1.y) < 6));
+
 	}
 
 	/*

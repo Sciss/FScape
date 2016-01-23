@@ -9,7 +9,7 @@
 
 FScape is a standalone, cross-platform audio rendering software.
 
-FScape is (C)opyright 2001&ndash;2015 by Hanns Holger Rutz. All rights reserved.
+FScape is (C)opyright 2001&ndash;2016 by Hanns Holger Rutz. All rights reserved.
 
 This program is free software; you can redistribute it and/or modify it under the terms of the [GNU General Public License](http://github.com/Sciss/FScape/blob/master/LICENSE) v3+.
 

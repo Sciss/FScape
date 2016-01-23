@@ -2,7 +2,7 @@
  *  VectorDisplay.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -58,12 +58,6 @@ import javax.swing.JComponent;
  *  @author		Hanns Holger Rutz
  *  @version	0.65, 11-Aug-04
  *
- *  @see		de.sciss.meloncillo.math.VectorTransformer#createPopupMenu( VectorDisplay )
- *  @see		VectorDisplayListener
- *  @see		VectorDisplayEvent
- *  @see		de.sciss.meloncillo.receiver.SigmaReceiverEditor
- *  @see		de.sciss.meloncillo.transmitter.SimpleTransmitterEditor
- *
  *  @todo		a vertical (y) wrapping mode should be implemented
  *				similar to x-wrap, useful for circular value spaces like angles
  *  @todo		due to a bug in horizontal wrapping, the modified span
@@ -97,7 +91,7 @@ extends JComponent  // extends JPanel
 
 	// --- top painter ---
 
-	private final Vector collTopPainters = new Vector();
+	private final Vector<TopPainter> collTopPainters = new Vector<TopPainter>();
 	
 	/**
 	 *  Creates a new VectorDisplay with an empty vector.
@@ -264,7 +258,7 @@ extends JComponent  // extends JPanel
 //			g2.transform( trnsVirtualToScreen );
 			g2.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
 			for( i = 0; i < collTopPainters.size(); i++ ) {
-				((TopPainter) collTopPainters.get( i )).paintOnTop( g2 );
+				collTopPainters.get( i ).paintOnTop( g2 );
 			}
 //			g2.setTransform( trnsOrig );
 		}

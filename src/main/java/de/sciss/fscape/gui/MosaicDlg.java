@@ -2,7 +2,7 @@
  *  MosaicDlg.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -467,7 +467,7 @@ extends ModulePanel
 		final double			maxBoost	= (Param.transform( pr.para[ PR_MAXBOOST ], Param.ABS_AMP, ampRef, null )).val;
 		final double			noiseFloor	= (Param.transform( pr.para[ PR_NOISEFLOOR ], Param.ABS_AMP, ampRef, null )).val;
 		final double			nyquist;
-		final List				markers;
+		final List<Marker>		markers;
 		final int				largestNumSteps;
 		Param					pWinSize;
 		int						atkLen		= -1;
@@ -562,7 +562,7 @@ topLevel: try {
 			
 			if( readMarkers ) {
 				inMatF.readMarkers();
-				markers			= (List) inMatDescr.getProperty( AudioFileDescr.KEY_MARKERS );
+				markers			= (List<Marker>) inMatDescr.getProperty( AudioFileDescr.KEY_MARKERS );
 				if( markers == null || markers.isEmpty() ) throw new IOException( "Soundfile does not contain markers" );
 				Collections.sort( markers );
 				mark			= (Marker) markers.get( 0 );

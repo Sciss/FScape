@@ -2,7 +2,7 @@
  *  BasicProperties.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -13,15 +13,22 @@
 
 package de.sciss.fscape.prop;
 
-import java.awt.*;
-import java.io.*;
-import java.util.*;
-
 import de.sciss.fscape.Application;
-import de.sciss.fscape.util.*;
-
+import de.sciss.fscape.util.PrefsUtil;
 import de.sciss.io.AudioFile;
 import de.sciss.io.AudioFileDescr;
+
+import java.awt.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.RandomAccessFile;
+import java.util.NoSuchElementException;
+import java.util.Properties;
+import java.util.StringTokenizer;
 
 /**
  *	Abgeleitete Properties-Klasse zur Verwaltung von Presets
@@ -48,8 +55,8 @@ extends Properties
 	 *	Legt das Presets-Objekt an mit entsprechenden Default-Eintraegen
 	 *
 	 *	@param	owner		Inhaber der Preferences (daraus wird der Name abgeleitet)
-	 *	@param	defPreset	voreingestellter Preset
-	 *	@param	typename	such as "presets" or "prefs"
+	 *	@param	defProp	voreingestellter Preset
+	 *	@param	typeName	such as "presets" or "prefs"
 	 */
 	public BasicProperties( Class owner, Properties defProp, String typeName )
 	{
@@ -87,31 +94,31 @@ extends Properties
 		return modified;
 	}
 
-    /**
-     * Loads FScape document from disk
-     */
-    public void load()
-            throws IOException {
-        synchronized (this) {
-            final DataInputStream dis = new DataInputStream(new FileInputStream(f));
-            String line = "";
-            do {
-                line = dis.readLine();
-                if (!line.startsWith("#")) {
-                    final String message;
-                    if (AudioFile.retrieveType(f) == AudioFileDescr.TYPE_UNKNOWN) {
-                        message = "Unknown file format";
-                    } else {
-                        message = "This is an audio file.\nYou don't open audio files via the File menu!";
-                    }
-                    throw new IOException("This file is not an FScape document.\n" + message);
-                }
-            } while (!line.contains(header));
+	/**
+	 * Loads FScape document from disk
+	 */
+	public void load()
+			throws IOException {
+		synchronized (this) {
+			final BufferedReader dis = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
+			String line = "";
+			do {
+				line = dis.readLine();
+				if (!line.startsWith("#")) {
+					final String message;
+					if (AudioFile.retrieveType(f) == AudioFileDescr.TYPE_UNKNOWN) {
+						message = "Unknown file format";
+					} else {
+						message = "This is an audio file.\nYou don't open audio files via the File menu!";
+					}
+					throw new IOException("This file is not an FScape document.\n" + message);
+				}
+			} while (!line.contains(header));
 
-            load(dis);
-            modified = false;
-        }
-    }
+			load(dis);
+			modified = false;
+		}
+	}
 
 	/**
 	 *	Sichert die Presets auf der Festplatte

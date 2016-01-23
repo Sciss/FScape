@@ -2,7 +2,7 @@
  *  OSCRoot.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -68,7 +68,7 @@ implements OSCRouter, OSCListener, Runnable, PreferenceChangeListener
 	private final Pattern					oscPathPtrn		= Pattern.compile( "/" );
 	
 	// elements = RoutedOSCMessage instances
-	private final List						collMessages	= Collections.synchronizedList( new ArrayList() );
+	private final List<RoutedOSCMessage> collMessages	= Collections.synchronizedList( new ArrayList<RoutedOSCMessage>() );
 	private final OSCRouterWrapper			osc;
 
 	private static final String				OSC_DUMP		= "dumpOSC";

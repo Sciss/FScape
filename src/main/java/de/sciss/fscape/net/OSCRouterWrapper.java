@@ -2,7 +2,7 @@
  *  OSCRouterWrapper.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -33,7 +33,7 @@ public class OSCRouterWrapper
 
 	private final OSCRouter	r;
 	private final OSCRouter	superRouter;
-	private final Map		mapSubRouters	= new HashMap();
+	private final Map<String, OSCRouter> mapSubRouters	= new HashMap<String, OSCRouter>();
 	
 	private static final Class[] oscCmdMethodTypes		= { RoutedOSCMessage.class };
 	private static final Class[] oscGetMethodTypes		= { RoutedOSCMessage.class };

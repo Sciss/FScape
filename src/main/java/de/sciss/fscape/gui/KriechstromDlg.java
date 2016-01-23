@@ -2,7 +2,7 @@
  *  KriechstromDlg.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -414,7 +414,7 @@ extends ModulePanel
 		Param				pInLength, pOutLength, pPos, pChunkLen;
 		
 //		Region				currentRegion, prevRegion, nextRegion;
-		Vector				regionList;
+		Vector<KriechChunk> regionList;
 		KriechChunk			chunk;
 		
 		float				chunkNumHist, chunkNumMean;
@@ -578,7 +578,7 @@ d7 = 1.0;
 
 		// ---- misc inits ----
 
-			regionList		= new Vector();		// Elemente = de.sciss.fscape.io.Region, chronologically added
+			regionList		= new Vector<KriechChunk>();		// Elemente = de.sciss.fscape.io.Region, chronologically added
 			inBuf			= new float[ inChanNum ][ 8192 ];
 			outBuf			= new float[ inChanNum ][ 8192 ];
 			pChunkLen		= new Param( 0.0, Param.ABS_MS );

@@ -2,7 +2,7 @@
  *  PathField.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -127,7 +127,7 @@ implements ActionListener, ComponentListener, ItemListener, PathListener,
 //	private static final int MAXRATENUM	= 4;
 
 //	protected Vector collListeners  = new Vector();
-	protected final Vector collChildren   = new Vector();
+	protected final Vector<PathField> collChildren = new Vector<PathField>();
 
 	private int					type;
 	private int					handledTypes[]	= null;	// the ones that we can handle (auto setFormat)

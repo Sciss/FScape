@@ -2,7 +2,7 @@
  *  ConvolutionDlg.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -459,8 +459,8 @@ extends ModulePanel
 		PathField	ggOutput;
 		Marker		mark;
 		Region		region;
-		java.util.List	markers;
-		java.util.List	regions;
+		java.util.List<Marker>	markers;
+		java.util.List<Region>	regions;
 		int			support			= 0;
 		
 		boolean		minPhase		= pr.bool[ PR_MINPHASE ];
@@ -624,12 +624,12 @@ topLevel: try {
 
 			// adjust "support"
 			impF.readMarkers();
-			markers = (java.util.List) impStream.getProperty( AudioFileDescr.KEY_MARKERS );
-			regions = (java.util.List) impStream.getProperty( AudioFileDescr.KEY_REGIONS );
+			markers = (java.util.List<Marker>) impStream.getProperty( AudioFileDescr.KEY_MARKERS );
+			regions = (java.util.List<Region>) impStream.getProperty( AudioFileDescr.KEY_REGIONS );
 			if( markers != null ) {
 				markerIdx = Marker.find( markers, MARK_SUPPORT, 0 );
 				if( markerIdx >= 0 ) {	// impulse file contains "support" marker ==> adjust output markers
-					support	= (int) ((Marker) markers.get( markerIdx )).pos;
+					support	= (int) markers.get( markerIdx ).pos;
 					if( support > impLength ) {	// may be due to morphing
 						support = 0;
 					}
@@ -640,20 +640,20 @@ topLevel: try {
 				if( support > 0 ) {	// impulse file contains "support" marker ==> adjust output markers
 					if( markers != null ) {
 						for( int k = 0; k < markers.size(); k++ ) {
-							mark = (Marker) markers.get( k );
+							mark = markers.get( k );
 							markers.set( k, new Marker( mark.pos + support, mark.name ));
 						}
 						if( Marker.find( markers, MARK_SUPPORT, 0 ) < 0 ) {
 							Marker.add( markers, new Marker( support, MARK_SUPPORT ));
 						}
 					} else {
-						markers = new Vector();
+						markers = new Vector<Marker>();
 						Marker.add( markers, new Marker( support, MARK_SUPPORT ));
 						outStream.setProperty( AudioFileDescr.KEY_MARKERS, markers );
 					}
 					if( regions != null ) {
 						for( int k = 0; k < regions.size(); k++ ) {
-							region			= (Region) regions.get( k );
+							region			= regions.get( k );
 							regions.set( k, new Region( new Span( region.span.getStart() + support,
 																  region.span.getStop() + support ), region.name ));
 						}

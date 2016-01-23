@@ -2,7 +2,7 @@
  *  VirtualChoice.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -32,7 +32,7 @@ extends JComboBox
 // -------- private Variablen --------
 
 	protected int		virtualIndex;
-	protected Vector	listeners;
+	protected Vector<ItemListener>	listeners;
 
 // -------- public Methoden --------
 
@@ -40,7 +40,7 @@ extends JComboBox
 	{
 		super();
 		virtualIndex	= super.getSelectedIndex();
-		listeners		= new Vector();
+		listeners		= new Vector<ItemListener>();
 	}
 	
 // XXX
@@ -59,7 +59,7 @@ extends JComboBox
 		if( (getItemCount() - 1) == virtualIndex ) {
 			try {
 				super.setSelectedIndex( virtualIndex );
-			} catch( IllegalArgumentException e ) {}
+			} catch( IllegalArgumentException ignored) {}
 		}
 	}
 
@@ -102,7 +102,7 @@ extends JComboBox
 											 ((obj != null) && (obj.length > 0)) ? obj : null,
 											 ItemEvent.SELECTED );
 				for( int i = 0; i < size; i++ ) {
-					((ItemListener) listeners.elementAt( i )).itemStateChanged( e );
+					listeners.elementAt( i ).itemStateChanged( e );
 				}
 			}
 		}

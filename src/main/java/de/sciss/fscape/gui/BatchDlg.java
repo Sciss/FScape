@@ -2,7 +2,7 @@
  *  BatchDlg.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -128,7 +128,7 @@ extends ModulePanel
 	private   BatchCellRenderer		batchCR;
 	protected   JTable				batchTable;
     private   JTable				paramTable;
-	protected List					batchVector;
+	protected List<BatchObject>		batchVector;
 //	private   Vector				paramVector;
 	
 	private TableModelListener		tml;
@@ -172,7 +172,7 @@ extends ModulePanel
 
 	// -------- other init --------
 
-		batchVector		= new ArrayList();
+		batchVector		= new ArrayList<BatchObject>();
 //		paramVector		= new Vector();
 		new BatchObjectArray(); // need to initialize DataFlavor (getClass() doesn't work in static initializer ??)
 		
@@ -225,7 +225,7 @@ extends ModulePanel
 				switch( ID ) {
 				case GG_CMDOPEN:
 					if( batchTable.getSelectedRowCount() != 1 ) break;
-					bObj = (BatchObject) batchVector.get( batchTable.getSelectedRow() );
+					bObj = batchVector.get( batchTable.getSelectedRow() );
 					if( bObj.command != BatchObject.CMD_MODULE ) break;
 
 					ModulePanel procWin;
@@ -254,7 +254,7 @@ extends ModulePanel
 					if( rows.length > 0 ) {
 						dup = new BatchObject[ rows.length ];
 						for( i = 0; i < rows.length; i++ ) {
-							dup[i] = new BatchObject( (BatchObject) batchVector.get( rows[i] ));
+							dup[i] = new BatchObject(batchVector.get( rows[i] ));
 						}
 						Application.clipboard.setContents(
                                 new BatchObjectArray(dup), cbo);
@@ -317,7 +317,7 @@ extends ModulePanel
 					if( e.getType() == TableModelEvent.DELETE ) return;
 					k = e.getFirstRow();
 					if( k >= 0 && !batchVector.isEmpty() ) {
-						bObj = (BatchObject) batchVector.get( k );
+						bObj = batchVector.get( k );
 						if( (bObj.command == BatchObject.CMD_MODULE) && (bObj.modObj.modClass == null) ) {
 
 //							Iterator		winIter		= MainMenu.getWindows();
@@ -334,7 +334,7 @@ for( int m = 0; m < modules.length; m++ ) {
 							PropertyArray	pa;
 							String			str;
 							int				winNum		= modules.length;
-							List			v;
+							List<Integer>	v;
 							
 							for( i = 0; i < winNum; i++ ) {
 								str = modules[ i ].getClass().getName();
@@ -363,13 +363,13 @@ for( int m = 0; m < modules.length; m++ ) {
 							}
 							if( i < 0 ) return;		// cancel
 							bObj.modObj.name		= winNames[ i ];
-							((ModulePanel) modules[ i ]).fillPropertyArray();
-							pa						= ((ModulePanel) modules[ i ]).getPropertyArray();
+							modules[ i ].fillPropertyArray();
+							pa						= modules[ i ].getPropertyArray();
 							bObj.modObj.prParam		= pa.toProperties( true );
 							bObj.modObj.modClass	= modules[ i ].getClass().getName();
-							v = new ArrayList();
+							v = new ArrayList<Integer>();
 							for( int j = 0; j < pa.text.length; j++ ) {
-								if( pa.textName[ j ].indexOf( "File" ) >= 0 ) {
+								if(pa.textName[j].contains("File")) {
 									v.add( new Integer(j) );
 								}
 							}
@@ -514,7 +514,7 @@ tb.setFloatable( false );
 		super.fillPropertyArray( gui );
 		
 		for( int i = 0; i < num; i++ ) {
-			p.put( String.valueOf( i ), ((BatchObject) batchVector.get( i )).toString() );
+			p.put( String.valueOf( i ), batchVector.get( i ).toString() );
 		}
 		getPropertyArray().text[ PR_BATCH ] = Presets.propertiesToValue( p );
 	}
@@ -605,7 +605,7 @@ tb.setFloatable( false );
 		int				progGoal;
 //		float			modProg;
 		
-		List			loops		= new ArrayList();
+		List<BatchObject> loops		= new ArrayList<BatchObject>();
 		int				line;
 		int				lines		= batchVector.size();
 		BatchObject		bObj, bObj2;
@@ -624,7 +624,7 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 			// ============================== recalc progress weights ==============================
 			// ============================== execute command ==============================
 
-				bObj		= (BatchObject) batchVector.get( line );
+				bObj		= batchVector.get( line );
 				batchTable.clearSelection();
 				batchTable.setRowSelectionInterval( line, line );
 				batchTable.scrollRectToVisible( batchTable.getCellRect( line, 0, true ));
@@ -725,7 +725,7 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 
 				case  BatchObject.CMD_ENDLOOP:							// -------------------- loop end --------------------
 					for( i = loops.size() - 1; i >= 0; i-- ) {
-						bObj2 = (BatchObject) loops.get( i );
+						bObj2 = loops.get( i );
 						if( bObj.loopObj.variable == bObj2.loopObj.variable ) {
 							if( ++bObj2.loopObj.processIdx <= bObj2.loopObj.stopIdx ) {
 								line = batchVector.indexOf( bObj2 );
@@ -823,7 +823,7 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 		int i;
 	
 		for( i = 0; i < batchVector.size(); i++ ) {
-			bObj = (BatchObject) batchVector.get( i );
+			bObj = batchVector.get( i );
 			if( (bObj.command == BatchObject.CMD_LABEL) && (bObj.labelObj.equals( label ))) break;
 		}
 		return i;
@@ -840,7 +840,7 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 		BatchObject bObj;
 		
 		if( batchTable.getSelectedRowCount() == 1 ) {
-			bObj = (BatchObject) batchVector.get( batchTable.getSelectedRow() );
+			bObj = batchVector.get( batchTable.getSelectedRow() );
 			if( bObj.command == BatchObject.CMD_MODULE ) {
 				modParam = bObj.modObj.modParam;
 			}
@@ -871,7 +871,7 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 	
 	private String replaceLoopVars( String pattern, List loops )
 	{
-		if( (loops == null) || (loops.isEmpty()) || (pattern.indexOf( "$" ) == -1) ) return pattern;
+		if( (loops == null) || (loops.isEmpty()) || (!pattern.contains("$")) ) return pattern;
 		
 		return replaceLoopVars( pattern, loops, loops.size() - 1, new Flag( false ));
 	}
@@ -915,11 +915,11 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 	{
 		private static final String[] columnNames = { "Line", "Command", "Object", "On Error", "Error Label" };
 		
-		private List		   batchVector;
+		private List<BatchObject> batchVector;
 		private static Class   integerClass		= Integer.class;
 		private static Class   batchObjectClass    = BatchObject.class;
 		
-		protected BatchTableModel( List batchVector )
+		protected BatchTableModel( List<BatchObject> batchVector )
 		{
 			this.batchVector = batchVector;
 		}
@@ -973,21 +973,21 @@ batchLoop:	for( line = 0; threadRunning && (line < lines); ) {
 				if( !(value instanceof String) ) break;
 				for( i = 0; i < BatchCellRenderer.CMD_NAMES.length; i++ ) {
 					if( value.equals( BatchCellRenderer.CMD_NAMES[i] )) {
-						((BatchObject) batchVector.get( row )).command = i;
+						batchVector.get( row ).command = i;
 						break;
 					}
 				}
 				break;
 				
 			case 2:
-				batchVector.set( row, value );
+				batchVector.set( row, (BatchObject) value );
 				break;
 				
 			case 3:
 				if( !(value instanceof String) ) break;
 				for( i = 0; i < BatchCellRenderer.ERR_NAMES.length; i++ ) {
 					if( value.equals( BatchCellRenderer.ERR_NAMES[i] )) {
-						((BatchObject) batchVector.get( row )).errorCmd = i;
+						batchVector.get( row ).errorCmd = i;
 						break;
 					}
 				}

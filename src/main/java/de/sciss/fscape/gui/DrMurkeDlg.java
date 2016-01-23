@@ -2,7 +2,7 @@
  *  DrMurkeDlg.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -459,7 +459,7 @@ topLevel: try {
 			dnTrack.other	= upTrack;
 			Track current 	= dnTrack.write ? upTrack : dnTrack;
 if( verbose ) System.out.println( "--> initial = " + current.name );
-			final List fades = new ArrayList();
+			final List<Fade> fades = new ArrayList<Fade>();
 			
 //			long framesRead 	= 0L;
 			long ctrlRead		= 0L;
