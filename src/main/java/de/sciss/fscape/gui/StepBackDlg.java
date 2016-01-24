@@ -127,18 +127,12 @@ public class StepBackDlg
 
 // -------- public methods --------
 
-    /**
-     *	!! setVisible() bleibt dem Aufrufer ueberlassen
-     */
-    public StepBackDlg()
-    {
-        super( "Step Back" );
+    public StepBackDlg() {
+        super("Step Back");
         init2();
     }
 
-    protected void buildGUI()
-    {
-        // einmalig PropertyArray initialisieren
+    protected void buildGUI() {
         if( static_pr == null ) {
             static_pr			= new PropertyArray();
             static_pr.text		= prText;
@@ -347,47 +341,40 @@ ggCorrFine.setEnabled( false ); // XXX
         initGUI( this, FLAGS_PRESETS | FLAGS_PROGBAR, gui );
     }
 
-    /**
-     *	Transfer values from prop-array to GUI
-     */
-    public void fillGUI()
-    {
+    public void fillGUI() {
         super.fillGUI();
-        super.fillGUI( gui );
+        super.fillGUI(gui);
     }
 
-    /**
-     *	Transfer values from GUI to prop-array
-     */
-    public void fillPropertyArray()
-    {
+    public void fillPropertyArray() {
         super.fillPropertyArray();
-        super.fillPropertyArray( gui );
+        super.fillPropertyArray(gui);
     }
 
 // -------- Processor Interface --------
 
-    protected void process()
-    {
-        int					i, j, k, ch, len, off, chunkLength;
+    protected void process() {
+        int					i, j, k, ch, len, off;
         long				progOff, progLen;
         double				d1, d2;
         float				f1, f2;
+        long                n, chunkLength;
 
         // io
         AudioFile			inF				= null;
         AudioFile			outF			= null;
-        AudioFileDescr			inStream		= null;
-        AudioFileDescr			outStream		= null;
+        AudioFileDescr		inStream		= null;
+        AudioFileDescr		outStream		= null;
         float[][]			inBuf			= null;
         float[][]			xfadeBuf;
         float[]				fftBuf1, fftBuf2, fftBuf3, timeBuf, win, convBuf1;
         float[]				xcorrs, energies;
 
         // Smp Init
-        int					inLength, inChanNum;
-        int					framesRead, numCuts, fadeLen, cutOffset;
-        int					lastCut, stopCut, minLoc, spacing, minSpacing, maxSpacing;	// [chunks (?) corrStep]
+        long                inLength, stopCut, lastCut, framesRead;
+        int					inChanNum;
+        int					numCuts, fadeLen, cutOffset;
+        int					minLoc, spacing, minSpacing, maxSpacing;	// [chunks (?) corrStep]
         int					minXFade, maxXFade, corrLength, corrStep;			// [smp]
         float				minCorr, xcorr, minEnergy;
         double				energy1, energy2, crossTerm;
@@ -396,78 +383,77 @@ ggCorrFine.setEnabled( false ); // XXX
         float				spectWeight, rmsWeight;	// , totMinCorr, totMaxCorr;
 
         PathField			ggOutput;
-        Vector				rndMarkers		= new Vector();
-        Random				rnd				= new Random( System.currentTimeMillis() );
-        java.util.List		markers;
+        Vector<Marker>      rndMarkers  = new Vector<Marker>();
+        Random              rnd         = new Random(System.currentTimeMillis());
+        java.util.List<Marker> markers;
 
-topLevel: try {
+    topLevel:
+        try {
 
         // ---- open input, output; init ----
 
             // input
-            inF				= AudioFile.openAsRead( new File( pr.text[ PR_INPUTFILE ]));
+            inF				= AudioFile.openAsRead(new File(pr.text[PR_INPUTFILE]));
             inStream		= inF.getDescr();
             inChanNum		= inStream.channels;
-            inLength		= (int) inStream.length;
+            inLength		= inStream.length;
             // this helps to prevent errors from empty files!
-            if( (inLength * inChanNum) < 1 ) throw new EOFException( ERR_EMPTY );
-        // .... check running ....
-            if( !threadRunning ) break topLevel;
+            if ((inLength * inChanNum) < 1) throw new EOFException(ERR_EMPTY);
+            // .... check running ....
+            if (!threadRunning) break topLevel;
 
             // output
-            ggOutput	= (PathField) gui.getItemObj( GG_OUTPUTFILE );
-            if( ggOutput == null ) throw new IOException( ERR_MISSINGPROP );
-            outStream	= new AudioFileDescr( inStream );
-            ggOutput.fillStream( outStream );
-            if( !pr.bool[ PR_MARKERS ]) {	// otherwise wait...
-                outF	= AudioFile.openAsWrite( outStream );
+            ggOutput = (PathField) gui.getItemObj(GG_OUTPUTFILE);
+            if (ggOutput == null) throw new IOException(ERR_MISSINGPROP);
+            outStream = new AudioFileDescr(inStream);
+            ggOutput.fillStream(outStream);
+            if (!pr.bool[PR_MARKERS]) {    // otherwise wait...
+                outF = AudioFile.openAsWrite(outStream);
             } else {
-                IOUtil.createEmptyFile( new File( pr.text[ PR_OUTPUTFILE ]));
+                IOUtil.createEmptyFile(new File(pr.text[PR_OUTPUTFILE]));
             }
-        // .... check running ....
-            if( !threadRunning ) break topLevel;
+            // .... check running ....
+            if (!threadRunning) break topLevel;
 
-            markers			= (java.util.List) outStream.getProperty( AudioFileDescr.KEY_MARKERS );
-            if( markers == null ) {
-                markers		= new Vector();
-                outStream.setProperty( AudioFileDescr.KEY_MARKERS, markers );
+            markers = (java.util.List<Marker>) outStream.getProperty(AudioFileDescr.KEY_MARKERS);
+            if (markers == null) {
+                markers = new Vector<Marker>();
+                outStream.setProperty(AudioFileDescr.KEY_MARKERS, markers);
             }
 
             // initialize various stuff
-            corrLength		= 131072 >> pr.intg[ PR_CORRLENGTH ];
-            corrStep		= Math.min( corrLength, 131072 >> pr.intg[ PR_CORRSTEP ]);
-//			corrFine		= Math.min( corrStep,   131072 >> pr.intg[ PR_CORRFINE ]);
+            corrLength		= 131072 >> pr.intg[PR_CORRLENGTH];
+            corrStep		= Math.min(corrLength, 131072 >> pr.intg[PR_CORRSTEP]);
             overlaps		= corrLength / corrStep;
             stopCut			= (inLength + corrStep-1) / corrStep;
-// System.out.println( "minSpc "+minSpacing+"; maxSpc "+maxSpacing+"; inLength "+inLength );
 
-            minSpacing		= ((int) (AudioFileDescr.millisToSamples( inStream, Param.transform( pr.para[ PR_MINSPACING ],
-                                      Param.ABS_MS, null, null ).value) + 0.5) + corrStep-1) / corrStep;
-            maxSpacing		= ((int) (AudioFileDescr.millisToSamples( inStream, Param.transform( pr.para[ PR_MAXSPACING ],
-                                      Param.ABS_MS, null, null ).value) + 0.5) + corrStep-1) / corrStep;
-            minXFade		= (int) (AudioFileDescr.millisToSamples( inStream, Param.transform( pr.para[ PR_MINXFADE ],
-                                                                  Param.ABS_MS, null, null ).value) + 0.5);
-            maxXFade		= (int) (AudioFileDescr.millisToSamples( inStream, Param.transform( pr.para[ PR_MAXXFADE ],
-                                                                  Param.ABS_MS, null, null ).value) + 0.5);
-            cutOffset		= (int) (AudioFileDescr.millisToSamples( inStream, Param.transform( pr.para[ PR_OFFSET ],
-                                                                  Param.ABS_MS, new Param( 0.0, Param.ABS_MS ), null ).value) + 0.5);
+            minSpacing = ((int) (AudioFileDescr.millisToSamples(inStream, Param.transform(pr.para[PR_MINSPACING],
+                    Param.ABS_MS, null, null).value) + 0.5) + corrStep - 1) / corrStep;
+            maxSpacing = ((int) (AudioFileDescr.millisToSamples(inStream, Param.transform(pr.para[PR_MAXSPACING],
+                    Param.ABS_MS, null, null).value) + 0.5) + corrStep - 1) / corrStep;
+            minXFade = (int) (AudioFileDescr.millisToSamples(inStream, Param.transform(pr.para[PR_MINXFADE],
+                    Param.ABS_MS, null, null).value) + 0.5);
+            maxXFade = (int) (AudioFileDescr.millisToSamples(inStream, Param.transform(pr.para[PR_MAXXFADE],
+                    Param.ABS_MS, null, null).value) + 0.5);
+            cutOffset = (int) (AudioFileDescr.millisToSamples(inStream, Param.transform(pr.para[PR_OFFSET],
+                    Param.ABS_MS, new Param(0.0, Param.ABS_MS), null).value) + 0.5);
 
-            if( minSpacing > maxSpacing ) {
-                i			= minSpacing;
-                minSpacing	= maxSpacing;
-                maxSpacing	= i;
+            if (minSpacing > maxSpacing) {
+                i           = minSpacing;
+                minSpacing  = maxSpacing;
+                maxSpacing  = i;
             }
-            if( minXFade > maxXFade ) {
-                i			= minXFade;
-                minXFade	= maxXFade;
-                maxXFade	= i;
+            if (minXFade > maxXFade) {
+                i           = minXFade;
+                minXFade    = maxXFade;
+                maxXFade    = i;
             }
 
-            xcorrs			= new float[ maxSpacing - minSpacing + 1 ];
-            energies		= new float[ xcorrs.length ];
+            xcorrs          = new float[maxSpacing - minSpacing + 1];
+            energies        = new float[xcorrs.length];
 
-            spectWeight		= Math.min( 1.0f, 2.0f - (float) (pr.para[ PR_WEIGHT ].value / 50) );
-            rmsWeight		= Math.min( 1.0f, (float) (pr.para[ PR_WEIGHT ].value / 50) );
+            spectWeight     = Math.min(1.0f, 2.0f - (float) (pr.para[PR_WEIGHT].value / 50));
+            rmsWeight       = Math.min(1.0f       , (float) (pr.para[PR_WEIGHT].value / 50));
             f1				= spectWeight + rmsWeight;
             spectWeight	   /= f1;
             rmsWeight	   /= f1;
@@ -476,104 +462,102 @@ topLevel: try {
 //			totMaxCorr		= 0.0f;
 
             // buffers
-            inBuf			= new float[ inChanNum ][ 8192 ];
-            fftBuf1			= new float[ corrLength + 2 ];
-            fftBuf2			= new float[ corrLength + 2 ];
-            if( pr.intg[ PR_MODE ] == MODE_RVSRECON ) {
-                fftBuf3		= new float[ corrLength + 2 ];
+            inBuf           = new float[inChanNum][8192];
+            fftBuf1         = new float[corrLength + 2];
+            fftBuf2         = new float[corrLength + 2];
+            if (pr.intg[PR_MODE] == MODE_RVSRECON) {
+                fftBuf3     = new float[corrLength + 2];
             } else {
-                fftBuf3		= null;
+                fftBuf3     = null;
             }
-            bufLength		= corrLength * 3 - corrStep;
-            bufOffset		= bufLength - corrLength;		// for successive reads
-            timeBuf			= new float[ bufLength ];
-            Util.clear( timeBuf );
-            win				= Filter.createFullWindow( corrLength, Filter.WIN_BLACKMAN );
+            bufLength       = corrLength * 3 - corrStep;
+            bufOffset       = bufLength - corrLength;        // for successive reads
+            timeBuf         = new float[bufLength];
+            win             = Filter.createFullWindow(corrLength, Filter.WIN_BLACKMAN);
 
             progOff			= 0;
-            progLen			= (long) inLength*3;
+            progLen			= inLength*3;
 
         // ----==================== step one: segmentation ====================----
 
             numCuts			= 0;
-            lastCut			= 0;	// XXX +offset
-            framesRead		= 0;
+            lastCut			= 0L;	// XXX +offset
+            framesRead		= 0L;
             spacing			= -(overlaps-1);
             minCorr			= -1.0f;
             minLoc			= 0;
 
             do {
-                chunkLength	= Math.min( inLength - framesRead, corrLength );
-// System.out.println( "Chunk length "+chunkLength );
-                System.arraycopy( timeBuf, corrLength, timeBuf, 0, bufLength - corrLength );
+                chunkLength = Math.min(inLength - framesRead, corrLength);
+                System.arraycopy(timeBuf, corrLength, timeBuf, 0, bufLength - corrLength);
 
-                for( off = 0; threadRunning && (off < chunkLength); ) {
-                    len	= Math.min( 8192, chunkLength - off );
-                    inF.readFrames( inBuf, 0, len );
-                    System.arraycopy( inBuf[ 0 ], 0, timeBuf, bufOffset + off, len );
-                    for( ch = 1; ch < inChanNum; ch++ ) {	// sum channels, not really true-rms-summing...
-                        Util.add( inBuf[ ch ], 0, timeBuf, bufOffset + off, len );
+                for (off = 0; threadRunning && (off < chunkLength); ) {
+                    len = (int) Math.min(8192, chunkLength - off);
+                    inF.readFrames(inBuf, 0, len);
+                    System.arraycopy(inBuf[0], 0, timeBuf, bufOffset + off, len);
+                    for (ch = 1; ch < inChanNum; ch++) {    // sum channels, not really true-rms-summing...
+                        Util.add(inBuf[ch], 0, timeBuf, bufOffset + off, len);
                     }
-                    off			+= len;
-                    progOff		+= len;
-                    framesRead	+= len;
-                // .... progress ....
-                    setProgression( (float) progOff / (float) progLen );
+                    off        += len;
+                    progOff    += len;
+                    framesRead += len;
+                    // .... progress ....
+                    setProgression((float) progOff / (float) progLen);
                 }
-            // .... check running ....
-                if( !threadRunning ) break topLevel;
+                // .... check running ....
+                if (!threadRunning) break topLevel;
 
                 // post zero padding
-                if( chunkLength < corrLength ) {
-                    for( i = bufOffset + chunkLength; i < bufLength; ) {
-                        timeBuf[ i++ ] = 0.0f;
+                if (chunkLength < corrLength) {
+                    for (i = bufOffset + (int) chunkLength; i < bufLength; ) {
+                        timeBuf[i++] = 0.0f;
                     }
                 }
 
-                for( i = 0; threadRunning && (i < overlaps); i++ ) {
+                for (i = 0; threadRunning && (i < overlaps); i++) {
                     // track corr.
-                    if( spacing >= minSpacing ) {
-                        if( pr.intg[ PR_MODE ] != MODE_RVSRECON ) {
-                            System.arraycopy( timeBuf, i * corrStep, fftBuf1, 0, corrLength );
-                            Util.mult( win, 0, fftBuf1, 0, corrLength );
-                            Fourier.realTransform( fftBuf1, corrLength, Fourier.FORWARD );
+                    if (spacing >= minSpacing) {
+                        if (pr.intg[PR_MODE] != MODE_RVSRECON) {
+                            System.arraycopy(timeBuf, i * corrStep, fftBuf1, 0, corrLength);
+                            Util.mult(win, 0, fftBuf1, 0, corrLength);
+                            Fourier.realTransform(fftBuf1, corrLength, Fourier.FORWARD);
                         }
-                        System.arraycopy( timeBuf, i * corrStep + corrLength, fftBuf2, 0, corrLength );
-                        Util.mult( win, 0, fftBuf2, 0, corrLength );
-                        Fourier.realTransform( fftBuf2, corrLength, Fourier.FORWARD );
+                        System.arraycopy(timeBuf, i * corrStep + corrLength, fftBuf2, 0, corrLength);
+                        Util.mult(win, 0, fftBuf2, 0, corrLength);
+                        Fourier.realTransform(fftBuf2, corrLength, Fourier.FORWARD);
 
-                        energy1		= 0.0;
-                        energy2		= 0.0;
-                        crossTerm	= 0.0;
-                        for( j = 0; j <= corrLength; j += 2 ) {
-                            k			 = j + 1;
-                            d1			 = fftBuf1[ j ]*fftBuf1[ j ] + fftBuf1[ k ]*fftBuf1[ k ];
-                            d2			 = fftBuf2[ j ]*fftBuf2[ j ] + fftBuf2[ k ]*fftBuf2[ k ];
-                            energy1		+= d1;
-                            energy2		+= d2;
-                            crossTerm	+= Math.sqrt( d1 ) * Math.sqrt( d2 );
+                        energy1     = 0.0;
+                        energy2     = 0.0;
+                        crossTerm   = 0.0;
+                        for (j = 0; j <= corrLength; j += 2) {
+                            k = j + 1;
+                            d1 = fftBuf1[j] * fftBuf1[j] + fftBuf1[k] * fftBuf1[k];
+                            d2 = fftBuf2[j] * fftBuf2[j] + fftBuf2[k] * fftBuf2[k];
+                            energy1 += d1;
+                            energy2 += d2;
+                            crossTerm += Math.sqrt(d1) * Math.sqrt(d2);
                         }
-                        energy1 = Math.sqrt( energy1 );
-                        energy2 = Math.sqrt( energy2 );
-                        if( (energy1 > noiseFloor) && (energy2 > noiseFloor) ) {
-                            if( energy1 > energy2 ) {
+                        energy1 = Math.sqrt(energy1);
+                        energy2 = Math.sqrt(energy2);
+                        if ((energy1 > noiseFloor) && (energy2 > noiseFloor)) {
+                            if (energy1 > energy2) {
                                 d1 = energy2 / energy1;
                             } else {
                                 d1 = energy1 / energy2;
                             }
                             xcorr = (float) (crossTerm / (energy1 * energy2) * spectWeight + d1 * rmsWeight);
                         } else {
-                            xcorr	= 0.0f;
+                            xcorr = 0.0f;
                         }
 
-                        xcorrs[ spacing - minSpacing ]		= xcorr;
-                        energies[ spacing - minSpacing ]	= (float) (energy1 + energy2);
+                        xcorrs  [spacing - minSpacing] = xcorr;
+                        energies[spacing - minSpacing] = (float) (energy1 + energy2);
 
-                        if( pr.intg[ PR_MODE ] == MODE_RVSRECON ) {
-                            if( xcorr > minCorr ) {
+                        if (pr.intg[PR_MODE] == MODE_RVSRECON) {
+                            if (xcorr > minCorr) {
                                 minCorr = xcorr;
-                                minLoc	= spacing - minSpacing;
-                                System.arraycopy( fftBuf2, 0, fftBuf3, 0, corrLength );
+                                minLoc = spacing - minSpacing;
+                                System.arraycopy(fftBuf2, 0, fftBuf3, 0, corrLength);
                             }
                         }
                     }
@@ -584,75 +568,72 @@ topLevel: try {
 
                     spacing++;
                     // find cut, reset buffers
-                    if( spacing > maxSpacing ) {
-                        if( pr.intg[ PR_MODE ] != MODE_RVSRECON ) {
-                            minCorr		= 2.0f;
-                            minLoc		= 0;
-                            minEnergy	= 0.0f;
-findMinLp:					for( j = 0; j < xcorrs.length; j++ ) {
-                                xcorr	= xcorrs[ j ];
-                                f1		= xcorr/minCorr;
-                                if( (f1 < 0.9f) || ((f1 < 1.0f) && (energies[ j ]/minEnergy < 1.1)) ) {
-                                    minCorr		= xcorr;
-                                    minEnergy	= energies[ j ];
-                                    minLoc		= j;
-                                    if( minCorr == 0.0f ) break findMinLp;
+                    if (spacing > maxSpacing) {
+                        if (pr.intg[PR_MODE] != MODE_RVSRECON) {
+                            minCorr     = 2.0f;
+                            minLoc      = 0;
+                            minEnergy   = 0.0f;
+                        findMinLp:
+                            for (j = 0; j < xcorrs.length; j++) {
+                                xcorr = xcorrs[j];
+                                f1 = xcorr / minCorr;
+                                if ((f1 < 0.9f) || ((f1 < 1.0f) && (energies[j] / minEnergy < 1.1))) {
+                                    minCorr     = xcorr;
+                                    minEnergy   = energies[j];
+                                    minLoc      = j;
+                                    if (minCorr == 0.0f) break findMinLp;
 
-                                } else if( (f1 < 1.1f) && (energies[ j ]/minEnergy < 0.9) ) {
+                                } else if ((f1 < 1.1f) && (energies[j] / minEnergy < 0.9)) {
 
-                                    minCorr		= Math.min( minCorr, xcorr );
-                                    minEnergy	= energies[ j ];
-                                    minLoc		= j;
+                                    minCorr     = Math.min(minCorr, xcorr);
+                                    minEnergy   = energies[j];
+                                    minLoc      = j;
                                 }
                             }
                         } else {
-                            minCorr		= -1.0f;
-                            minLoc		= 0;
-                            System.arraycopy( fftBuf3, 0, fftBuf1, 0, corrLength );
+                            minCorr = -1.0f;
+                            minLoc  = 0;
+                            System.arraycopy(fftBuf3, 0, fftBuf1, 0, corrLength);
                         }
 
-//						totMinCorr	 = Math.min( totMinCorr, minCorr );
-//						totMaxCorr	 = Math.max( totMaxCorr, minCorr );
-                        if( pr.intg[ PR_MODE ] == MODE_FWD ) {
-                            j		 = Math.min( inLength, Math.max( 0, lastCut * corrStep + cutOffset ));	// sample position
+                        if (pr.intg[PR_MODE] == MODE_FWD) {
+                            n = Math.min(inLength, Math.max(0, lastCut * corrStep + cutOffset));    // sample position
                         } else {
-                            j		 = Math.min( inLength, Math.max( 0, inLength - lastCut * corrStep - cutOffset ));	// sample position
+                            n = Math.min(inLength, Math.max(0, inLength - lastCut * corrStep - cutOffset));    // sample position
                         }
-//						lastCut		+= minSpacing + minLoc;
-                        lastCut		+= minSpacing + minLoc + 1; // XXX why + 1?
-                        if( pr.intg[ PR_MODE ] == MODE_RNDDECON ) {
-                            k		 = (int) (rnd.nextFloat() * numCuts + 0.5f);
-                            markers.add( k, new Marker( j, MARK_CUT ));
-                            j		 = Math.min( inLength, Math.max( 0, lastCut * corrStep + cutOffset ));
-                            rndMarkers.insertElementAt( new Marker( j, MARK_CUT ), k );
+                        lastCut += minSpacing + minLoc + 1; // XXX why + 1?
+                        if (pr.intg[PR_MODE] == MODE_RNDDECON) {
+                            k = (int) (rnd.nextFloat() * numCuts + 0.5f);
+                            markers.add(k, new Marker(n, MARK_CUT));
+                            n = Math.min(inLength, Math.max(0, lastCut * corrStep + cutOffset));
+                            rndMarkers.insertElementAt(new Marker(n, MARK_CUT), k);
                         } else {
-                            markers.add( 0, new Marker( j, MARK_CUT ));
+                            markers.add(0, new Marker(n, MARK_CUT));
                         }
                         numCuts++;
-// System.out.println( "@ "+((float) (lastCut * corrStep) / inStream.smpRate)+" secs." );
                         minLoc++;
                         j			 = minLoc + minSpacing;
-                        if( j < xcorrs.length ) {	// reuse (shifted) data
-                            System.arraycopy( xcorrs,   j, xcorrs,   0, xcorrs.length - j );
-                            System.arraycopy( energies, j, energies, 0, xcorrs.length - j );
+                        if (j < xcorrs.length) {    // reuse (shifted) data
+                            System.arraycopy(xcorrs  , j, xcorrs  , 0, xcorrs.length - j);
+                            System.arraycopy(energies, j, energies, 0, xcorrs.length - j);
                         }
                         spacing	= xcorrs.length - minLoc;
                     }
                 } // for i = 0 to overlaps-1
-                setProgression( (float) progOff / (float) progLen );
+                setProgression((float) progOff / (float) progLen);
 
-            } while( threadRunning && (lastCut < stopCut) );
+            } while (threadRunning && (lastCut < stopCut));
         // .... check running ....
-            if( !threadRunning ) break topLevel;
+            if (!threadRunning) break topLevel;
 
-            gui.stringToJTextField( numCuts + " detected.", GG_CUTINFO );
+            gui.stringToJTextField(numCuts + " detected.", GG_CUTINFO);
 
         // ----==================== step two: write output ====================----
 
             xcorrs		= null;
             energies	= null;
             timeBuf		= null;
-            xfadeBuf	= new float[ inChanNum ][ maxXFade ];
+            xfadeBuf    = new float[inChanNum][maxXFade];
 
             if( pr.bool[ PR_MARKERS ]) {	// now got it
                 outF	= AudioFile.openAsWrite( outStream );
@@ -666,70 +647,69 @@ findMinLp:					for( j = 0; j < xcorrs.length; j++ ) {
 
                 // simply copy input to output
                 framesRead = 0;
-                inF.seekFrame( 0 );
-                while( threadRunning && (framesRead < inLength) ) {
-                    len				= Math.min( 8192, inLength - framesRead );
-                    inF.readFrames( inBuf, 0, len );
-                    outF.writeFrames( inBuf, 0, len );
-                    progOff		   += len;
-                    framesRead	   += len;
-                // .... progress ....
-                    setProgression( (float) progOff / (float) progLen );
+                inF.seekFrame(0);
+                while (threadRunning && (framesRead < inLength)) {
+                    len = (int) Math.min(8192, inLength - framesRead);
+                    inF .readFrames (inBuf, 0, len);
+                    outF.writeFrames(inBuf, 0, len);
+                    progOff    += len;
+                    framesRead += len;
+                    // .... progress ....
+                    setProgression((float) progOff / (float) progLen);
                 }
 
             } else {
 
-                for( i = 0; threadRunning && (i < numCuts); i++ ) {
+                for (i = 0; threadRunning && (i < numCuts); i++) {
 
-                    if( pr.intg[ PR_MODE ] == MODE_RNDDECON ) {
-                        stopCut	= (int) ((Marker) rndMarkers.elementAt( i )).pos;
+                    if (pr.intg[PR_MODE] == MODE_RNDDECON) {
+                        stopCut = rndMarkers.elementAt(i).pos;
                     } else {
-                        stopCut	= lastCut;
+                        stopCut = lastCut;
                     }
-                    lastCut		= inLength - (int) ((Marker) markers.get( i )).pos;
-                    convBuf1	= fftBuf1;
-                    fftBuf1		= fftBuf2;
-                    fftBuf2		= convBuf1;
-// System.out.println( "cut "+lastCut+" stopCut "+stopCut );
+                    lastCut     = inLength - markers.get(i).pos;
+                    convBuf1    = fftBuf1;
+                    fftBuf1     = fftBuf2;
+                    fftBuf2     = convBuf1;
 
                 // ---------- xfade part ----------
-                    if( i > 0 ) {
-                        j	= lastCut - corrLength;
+                    if (i > 0) {
+                        n	= lastCut - corrLength;
                         off	= 0;
-                        if( j < 0 ) {
-                            j = -j;
-                            while( off < j ) {
-                                fftBuf1[ off++ ] = 0.0f;
+                        if (n < 0) {
+                            n = -n;
+                            while (off < n) {
+                                fftBuf1[off++] = 0.0f;
                             }
                         }
-                        inF.seekFrame( j - off );
-                        while( off < corrLength ) {
-                            len = Math.min( 8192, corrLength - off );
-                            inF.readFrames( inBuf, 0, len );
-                            System.arraycopy( inBuf[ 0 ], 0, fftBuf1, off, len );
-                            for( ch = 1; ch < inChanNum; ch++ ) {	// sum channels, not really true-rms-summing...
-                                Util.add( inBuf[ ch ], 0, fftBuf1, off, len );
+                        inF.seekFrame(n - off);
+                        while (off < corrLength) {
+                            len = Math.min(8192, corrLength - off);
+                            inF.readFrames(inBuf, 0, len);
+                            System.arraycopy(inBuf[0], 0, fftBuf1, off, len);
+                            for (ch = 1; ch < inChanNum; ch++) {    // sum channels, not really true-rms-summing...
+                                Util.add(inBuf[ch], 0, fftBuf1, off, len);
                             }
                             off += len;
                         }
-                        Util.mult( win, 0, fftBuf1, 0, corrLength );
-                        Fourier.realTransform( fftBuf1, corrLength, Fourier.FORWARD );
+                        Util.mult(win, 0, fftBuf1, 0, corrLength);
+                        Fourier.realTransform(fftBuf1, corrLength, Fourier.FORWARD);
 
                         energy1		= 0.0;
                         energy2		= 0.0;
                         crossTerm	= 0.0;
-                        for( j = 0; j <= corrLength; j += 2 ) {
+                        for (j = 0; j <= corrLength; j += 2) {
                             k			 = j + 1;
-                            d1			 = fftBuf1[ j ]*fftBuf1[ j ] + fftBuf1[ k ]*fftBuf1[ k ];
-                            d2			 = fftBuf2[ j ]*fftBuf2[ j ] + fftBuf2[ k ]*fftBuf2[ k ];
+                            d1			 = fftBuf1[j] * fftBuf1[j] + fftBuf1[k] * fftBuf1[k];
+                            d2			 = fftBuf2[j] * fftBuf2[j] + fftBuf2[k] * fftBuf2[k];
                             energy1		+= d1;
                             energy2		+= d2;
-                            crossTerm	+= Math.sqrt( d1 ) * Math.sqrt( d2 );
+                            crossTerm	+= Math.sqrt(d1) * Math.sqrt(d2);
                         }
-                        energy1 = Math.sqrt( energy1 );
-                        energy2 = Math.sqrt( energy2 );
-                        if( (energy1 > noiseFloor) && (energy2 > noiseFloor) ) {
-                            if( energy1 > energy2 ) {
+                        energy1 = Math.sqrt(energy1);
+                        energy2 = Math.sqrt(energy2);
+                        if ((energy1 > noiseFloor) && (energy2 > noiseFloor)) {
+                            if (energy1 > energy2) {
                                 d1 = energy2 / energy1;
                             } else {
                                 d1 = energy1 / energy2;
@@ -738,135 +718,124 @@ findMinLp:					for( j = 0; j < xcorrs.length; j++ ) {
                         } else {
                             xcorr	= 0.0f;
                         }
-//						if( totMaxCorr != totMinCorr ) {
-//							xcorr  = (xcorr - totMinCorr) / (totMaxCorr - totMinCorr);	// normalize
-//							xcorr *= xcorr;
-//						} else {
-                        xcorr	= (float) Math.log( xcorr * 1.718281828f + 1.0f );
-                        fadeLen = (int) (maxXFade * xcorr + minXFade * (1.0f - xcorr)) >> 1;
-                        fadeLen	= Math.min( lastCut, Math.min( bufLength, Math.max( minXFade, fadeLen )));
-// System.out.println( i+": creating xfade. bufLength "+bufLength+"; fadeLen "+fadeLen );
+                        xcorr   = (float) Math.log(xcorr * 1.718281828f + 1.0f);
+                        n       = (long) (maxXFade * xcorr + minXFade * (1.0f - xcorr)) >> 1;
+                        fadeLen = (int) Math.min(lastCut, Math.min(bufLength, Math.max(minXFade, n)));
 
-// Debug.view( xfadeBuf[0], i+" - untouched" );
-
-                        // fadeout
+                        // fade-out
                         energy1 = 0.0;
-                        for( ch = 0; ch < inChanNum; ch++ ) {
-                            convBuf1 = xfadeBuf[ ch ];
-                            for( off = bufLength - fadeLen; off < bufLength; off++ ) {
-                                energy1			+= convBuf1[ off ]*convBuf1[ off ];
-                                f1				 = (float) (bufLength - off) / (float) fadeLen;
-                                convBuf1[ off ] *= f1;
+                        for (ch = 0; ch < inChanNum; ch++) {
+                            convBuf1 = xfadeBuf[ch];
+                            for (off = bufLength - fadeLen; off < bufLength; off++) {
+                                energy1 += convBuf1[off] * convBuf1[off];
+                                f1 = (float) (bufLength - off) / (float) fadeLen;
+                                convBuf1[off] *= f1;
                             }
                         }
-                        energy1 = Math.sqrt( energy1 );
-// System.out.println( "fading in" );
-// Debug.view( xfadeBuf[0], i+" - faded out" );
+                        energy1 = Math.sqrt(energy1);
 
-                        // fadein
-                        j		= lastCut - fadeLen;
-                        inF.seekFrame( j );
-                        energy2	= 0.0;
-                        for( off = bufLength - fadeLen; off < bufLength; ) {
-                            len = Math.min( 8192, bufLength - off );
-                            inF.readFrames( inBuf, 0, len );
-                            for( ch = 0; ch < inChanNum; ch++ ) {	// sum channels, not really true-rms-summing...
-                                convBuf1 = xfadeBuf[ ch ];
-                                for( j = 0, k = off; j < len; ) {
-                                    energy2			  += inBuf[ ch ][ j ]*inBuf[ ch ][ j ];
-                                    f1				   = 1.0f - (float) (bufLength - k) / (float) fadeLen;
-                                    convBuf1[ k++ ] += inBuf[ ch ][ j++ ] * f1;
+                        // fade-in
+                        n = lastCut - fadeLen;
+                        inF.seekFrame(n);
+                        energy2 = 0.0;
+                        for (off = bufLength - fadeLen; off < bufLength; ) {
+                            len = Math.min(8192, bufLength - off);
+                            inF.readFrames(inBuf, 0, len);
+                            for (ch = 0; ch < inChanNum; ch++) {    // sum channels, not really true-rms-summing...
+                                convBuf1 = xfadeBuf[ch];
+                                for (j = 0, k = off; j < len; ) {
+                                    energy2        += inBuf[ch][j] * inBuf[ch][j];
+                                    f1              = 1.0f - (float) (bufLength - k) / (float) fadeLen;
+                                    convBuf1[k++]  += inBuf[ch][j++] * f1;
                                 }
                             }
                             off += len;
                         }
-                        energy1 = (energy1 + Math.sqrt( energy2 )) / 2;
-// Debug.view( xfadeBuf[0], i+" - plus fadein" );
+                        energy1 = (energy1 + Math.sqrt(energy2)) / 2;
 
                         // adjusting volume in 1 dB Schritten
                         k = bufLength - fadeLen/2;
-volumeLp:				for( j = 0, f1 = 1.122462f; j < 6; j++, f1 *= 1.122462f ) {
+                    volumeLp:
+                        for (j = 0, f1 = 1.122462f; j < 6; j++, f1 *= 1.122462f) {
                             energy2 = 0.0;
-                            for( ch = 0; ch < inChanNum; ch++ ) {	// sum channels, not really true-rms-summing...
-                                convBuf1 = xfadeBuf[ ch ];
-                                for( off = bufLength - fadeLen; off < bufLength; off++ ) {
-                                    // parabel
-                                    f2	= 2 * (off - k) / (float) fadeLen;
-                                    f2	= (f1 - 1.0f) * (1.0f - f2*f2) + 1.0f;
-                                    d1  = convBuf1[ off ]*f2;
+                            for (ch = 0; ch < inChanNum; ch++) {    // sum channels, not really true-rms-summing...
+                                convBuf1 = xfadeBuf[ch];
+                                for (off = bufLength - fadeLen; off < bufLength; off++) {
+                                    // parabola
+                                    f2 = 2 * (off - k) / (float) fadeLen;
+                                    f2 = (f1 - 1.0f) * (1.0f - f2 * f2) + 1.0f;
+                                    d1 = convBuf1[off] * f2;
                                     d1 *= d1;
-                                    if( d1 > 1.0 ) break volumeLp;
+                                    if (d1 > 1.0) break volumeLp;
                                     energy2 += d1;
                                 }
                             }
-                            if( energy2 > energy1 ) break volumeLp;
+                            if (energy2 > energy1) break volumeLp;
                         }
-// System.out.println( "vol: "+j+"; "+f1+"; energy1 "+energy1+"; 2= "+energy2 );
                         energy1 = 0;
-                        if( j > 0 ) {
+                        if (j > 0) {
                             f1 /= 1.122462f;
-                            for( ch = 0; ch < inChanNum; ch++ ) {	// sum channels, not really true-rms-summing...
-                                convBuf1 = xfadeBuf[ ch ];
-                                for( off = bufLength - fadeLen; off < bufLength; off++ ) {
-                                    f2				 = 2 * (off - k) / (float) fadeLen;
-                                    f2				 = (f1 - 1.0f) * (1.0f - f2*f2) + 1.0f;
-                                    convBuf1[ off ] *= f2;
+                            for (ch = 0; ch < inChanNum; ch++) {    // sum channels, not really true-rms-summing...
+                                convBuf1 = xfadeBuf[ch];
+                                for (off = bufLength - fadeLen; off < bufLength; off++) {
+                                    f2 = 2 * (off - k) / (float) fadeLen;
+                                    f2 = (f1 - 1.0f) * (1.0f - f2 * f2) + 1.0f;
+                                    convBuf1[off] *= f2;
                                 }
                             }
                         }
-// Debug.view( xfadeBuf[0], i+" - plus volume" );
 
-                        // write xfade
-                        for( off = 0; off < bufLength; ) {
-                            len		 = Math.min( 8192, bufLength - off );
-                            outF.writeFrames( xfadeBuf, off, len );
-                            off		+= len;
-                            progOff	+= len;
-                        // .... progress ....
-                            setProgression( (float) progOff / (float) progLen );
+                        // write x-fade
+                        for (off = 0; off < bufLength; ) {
+                            len = Math.min(8192, bufLength - off);
+                            outF.writeFrames(xfadeBuf, off, len);
+                            off     += len;
+                            progOff += len;
+                            // .... progress ....
+                            setProgression((float) progOff / (float) progLen);
                         }
-                    // .... progress ....
-                        setProgression( (float) progOff / (float) progLen );
+                        // .... progress ....
+                        setProgression((float) progOff / (float) progLen);
 
-                // ---------- xfade ende ----------
+                // ---------- x-fade end ----------
                     } else {
-                        inF.seekFrame( lastCut );
+                        inF.seekFrame(lastCut);
                     }
 
-                    chunkLength 	= stopCut - lastCut;
-                    if( i+1 != numCuts ) {
-                        bufLength	= Math.min( chunkLength, maxXFade );
+                    chunkLength = stopCut - lastCut;
+                    if (i + 1 != numCuts) {
+                        bufLength = (int) Math.min(chunkLength, maxXFade);
                     } else {
-                        bufLength	= 0;	// no xfade after the last cut
+                        bufLength = 0;    // no xfade after the last cut
                     }
-                    off				= chunkLength - bufLength;
-                    framesRead		= 0;
-// System.out.println( "writing output; reserved for xfade: " + bufLength );
+                    n = chunkLength - bufLength;
+                    framesRead  = 0;
+
                     // write to output
-                    while( threadRunning && (framesRead < off) ) {
-                        len				= Math.min( 8192, off - framesRead );
-                        inF.readFrames( inBuf, 0, len );
-                        outF.writeFrames( inBuf, 0, len );
-                        progOff		   += len;
-                        framesRead	   += len;
-                    // .... progress ....
-                        setProgression( (float) progOff / (float) progLen );
+                    while (threadRunning && (framesRead < n)) {
+                        len = (int) Math.min(8192, n - framesRead);
+                        inF .readFrames (inBuf, 0, len);
+                        outF.writeFrames(inBuf, 0, len);
+                        progOff    += len;
+                        framesRead += len;
+                        // .... progress ....
+                        setProgression((float) progOff / (float) progLen);
                     }
-                    // read to xfade buf
-                    while( threadRunning && (framesRead < chunkLength) ) {
-                        len				= Math.min( 8192, chunkLength - framesRead );
-                        inF.readFrames( xfadeBuf, framesRead - off, len );
-                        framesRead	   += len;
+                    // read to x-fade buf
+                    while (threadRunning && (framesRead < chunkLength)) {
+                        len = (int) Math.min(8192, chunkLength - framesRead);
+                        inF.readFrames(xfadeBuf, (int) (framesRead - n), len);
+                        framesRead += len;
                     }
 
                 } // for i = 0 to numCuts-1
             } // if not MODE_FWD
         // .... check running ....
-            if( !threadRunning ) break topLevel;
+            if (!threadRunning) break topLevel;
 
         // ---- clean up ----
 
-            setProgression( 1.0f );
+            setProgression(1.0f);
 
             inF.close();
             inF			= null;
@@ -877,11 +846,9 @@ volumeLp:				for( j = 0, f1 = 1.122462f; j < 6; j++, f1 *= 1.122462f ) {
 
         // ---- Finish ----
 
-        }
-        catch( IOException e1 ) {
-            setError( e1 );
-        }
-        catch( OutOfMemoryError e2 ) {
+        } catch (IOException e1) {
+            setError(e1);
+        } catch (OutOfMemoryError e2) {
             inStream	= null;
             outStream	= null;
             inBuf		= null;
@@ -895,14 +862,14 @@ volumeLp:				for( j = 0, f1 = 1.122462f; j < 6; j++, f1 *= 1.122462f ) {
             convBuf1	= null;
             System.gc();
 
-            setError( new Exception( ERR_MEMORY ));
+            setError(new Exception(ERR_MEMORY));
         }
 
     // ---- cleanup (topLevel) ----
-        if( inF != null ) {
+        if (inF != null) {
             inF.cleanUp();
         }
-        if( outF != null ) {
+        if (outF != null) {
             outF.cleanUp();
         }
     } // process()
@@ -912,44 +879,42 @@ volumeLp:				for( j = 0, f1 = 1.122462f; j < 6; j++, f1 *= 1.122462f ) {
     /**
      *	Set new input file
      */
-    protected void setInput( String fname )
-    {
+    protected void setInput(String fname) {
         AudioFile		f		= null;
-        AudioFileDescr		stream	= null;
+        AudioFileDescr	stream	= null;
 
-    // ---- Header lesen ----
+    // ---- read header ----
         try {
-            f		= AudioFile.openAsRead( new File( fname ));
-            stream	= f.getDescr();
+            f = AudioFile.openAsRead(new File(fname));
+            stream = f.getDescr();
             f.close();
 
-            inLengthMillis = AudioFileDescr.samplesToMillis( stream, stream.length );
+            inLengthMillis = AudioFileDescr.samplesToMillis(stream, stream.length);
             recalcApprox();
 
-        } catch( IOException e1 ) {
+        } catch (IOException e1) {
             inLengthMillis = -1.0;
         }
     }
 
     // calc approximate # of tiles according to input length, min+max spacing
-    protected void recalcApprox()
-    {
+    protected void recalcApprox() {
         int			minNum, maxNum, meanNum;
         double		d1, d2;
 
-        if( inLengthMillis >= 0 ) {
+        if (inLengthMillis >= 0) {
 
-            d1			= Param.transform( pr.para[ PR_MAXSPACING ], Param.ABS_MS, null, null ).value;
-            d2			= Param.transform( pr.para[ PR_MINSPACING ], Param.ABS_MS, null, null ).value;
-            minNum		= (int) Math.ceil( inLengthMillis / d1 );
-            maxNum		= (int) Math.ceil( inLengthMillis / d2 );
-            meanNum		= (int) Math.ceil( inLengthMillis / ((d1+d2)/2) );
+            d1      = Param.transform(pr.para[PR_MAXSPACING], Param.ABS_MS, null, null).value;
+            d2      = Param.transform(pr.para[PR_MINSPACING], Param.ABS_MS, null, null).value;
+            minNum  = (int) Math.ceil(inLengthMillis / d1);
+            maxNum  = (int) Math.ceil(inLengthMillis / d2);
+            meanNum = (int) Math.ceil(inLengthMillis / ((d1 + d2) / 2));
 
-            gui.stringToJTextField( "\u2300" + meanNum + " (" +minNum + "\u2013" + maxNum + ")", GG_CUTINFO );
+            gui.stringToJTextField("\u2300" + meanNum + " (" + minNum + "\u2013" + maxNum + ")", GG_CUTINFO);
 
         } else {
 
-            gui.stringToJTextField( "", GG_CUTINFO );
+            gui.stringToJTextField("", GG_CUTINFO);
 
         }
     }
