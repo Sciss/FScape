@@ -21,7 +21,7 @@ import java.util.*;
 public class SmpMap
 implements Cloneable
 {
-// -------- public Variablen --------
+// -------- public variables --------
 
 	/**
 	 *	READ-ONLY!
@@ -30,11 +30,11 @@ implements Cloneable
 	public	ParamSpace	vSpace;
 	public	int			type;
 
-// -------- private Variablen --------
+// -------- private variables --------
 
 	protected Vector	smps;		// Element = SmpZones
 
-// -------- public Methoden --------
+// -------- public methods --------
 
 	public SmpMap( ParamSpace hSpace, ParamSpace vSpace, int type )
 	{
@@ -86,24 +86,24 @@ implements Cloneable
 		velHi	= Param.transform( smp.velHi,  hSpace.unit, null, null );
 		velLo	= Param.transform( smp.velLo,  hSpace.unit, null, null );
 
-		if( (freqHi != null) && vSpace.contains( freqHi.val ) &&
-			(freqLo != null) && vSpace.contains( freqLo.val ) &&
-			(velHi  != null) && hSpace.contains( velHi.val )  &&
-			(velLo  != null) && hSpace.contains( velLo.val )) {
+		if( (freqHi != null) && vSpace.contains( freqHi.value) &&
+			(freqLo != null) && vSpace.contains( freqLo.value) &&
+			(velHi  != null) && hSpace.contains( velHi.value)  &&
+			(velLo  != null) && hSpace.contains( velLo.value)) {
 
-			d 		= (freqHi.val - vSpace.min) / (vSpace.max - vSpace.min);
+			d 		= (freqHi.value - vSpace.min) / (vSpace.max - vSpace.min);
 			dist	= d*d;
-			d		= (velHi.val  - hSpace.min) / (hSpace.max - hSpace.min);
+			d		= (velHi.value - hSpace.min) / (hSpace.max - hSpace.min);
 			dist   += d*d;
 
 			index	= this.smps.size();
 			for( int i = 0; i < this.smps.size(); i++ ) {
 			
 				neighbour	= (SmpZone) this.smps.elementAt( i );
-				nFreqHi		= Param.transform( neighbour.freqHi, vSpace.unit, null, null ).val;
-				nFreqLo		= Param.transform( neighbour.freqLo, vSpace.unit, null, null ).val;
-				nVelHi		= Param.transform( neighbour.velHi,  hSpace.unit, null, null ).val;
-				nVelLo		= Param.transform( neighbour.velLo,  hSpace.unit, null, null ).val;
+				nFreqHi		= Param.transform( neighbour.freqHi, vSpace.unit, null, null ).value;
+				nFreqLo		= Param.transform( neighbour.freqLo, vSpace.unit, null, null ).value;
+				nVelHi		= Param.transform( neighbour.velHi,  hSpace.unit, null, null ).value;
+				nVelLo		= Param.transform( neighbour.velLo,  hSpace.unit, null, null ).value;
 
 				if( index > i ) {
 
@@ -117,10 +117,10 @@ implements Cloneable
 					}
 				}
 
-				if( (nVelLo < (velHi.val - Constants.suckyDoubleError) ) &&
-					(nVelHi > (velLo.val + Constants.suckyDoubleError) ) &&
-					(nFreqLo < (freqHi.val - Constants.suckyDoubleError) ) &&
-					(nFreqHi > (freqLo.val + Constants.suckyDoubleError) )) {
+				if( (nVelLo < (velHi.value - Constants.suckyDoubleError) ) &&
+					(nVelHi > (velLo.value + Constants.suckyDoubleError) ) &&
+					(nFreqLo < (freqHi.value - Constants.suckyDoubleError) ) &&
+					(nFreqHi > (freqLo.value + Constants.suckyDoubleError) )) {
 
 					return -1;	// schneidet andere Zone
 				}
@@ -263,14 +263,14 @@ implements Cloneable
 									   vRef, stream );
 
 			if( (newX != null) && (newY != null) ) {
-				dest.addPoint( newX.val, newY.val );
+				dest.addPoint( newX.value, newY.value );
 			}
 		}
 		
 		return dest;
 	}
 */	
-// -------- StringComm Methoden --------
+// -------- StringComm methods --------
 
 	public String toString()
 	{

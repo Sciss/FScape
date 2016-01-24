@@ -32,66 +32,63 @@ import java.io.*;
  *	data it wishes to receive (pull)
  *	but is provided with a preconfigured
  *	source object and requests (push).
- *
- *  @author		Hanns Holger Rutz
- *  @version	0.56, 15-Sep-05
  */
 public interface RenderConsumer
 {
-	/**
-	 *	Initiates the consumation.
-	 *	The consumer should check the source's
-	 *	request fields to find out which
-	 *	data is to be written out.
-	 *
-	 *	@param	context	render context
-	 *	@param	source	render source featuring
-	 *					the target requests
-	 *	@return	<code>false</code> if an error occurs
-	 *			and consumation should be aborted
-	 *
-	 *	@throws	IOException	if a read/write error occurs
-	 */
-	public boolean consumerBegin( RenderContext context, RenderSource source )
-	throws IOException;
+    /**
+     *	Initiates the consumation.
+     *	The consumer should check the source's
+     *	request fields to find out which
+     *	data is to be written out.
+     *
+     *	@param	context	render context
+     *	@param	source	render source featuring
+     *					the target requests
+     *	@return	<code>false</code> if an error occurs
+     *			and consumation should be aborted
+     *
+     *	@throws	IOException	if a read/write error occurs
+     */
+    public boolean consumerBegin( RenderContext context, RenderSource source )
+    throws IOException;
 
-	/**
-	 *	Requests the consumer to consume a block of rendered data.
-	 *
-	 *	@param	context	render context
-	 *	@param	source	render source featuring
-	 *					the target requests and the rendered data block.
-	 *	@return	<code>false</code> if an error occurs
-	 *			and consumation should be aborted
-	 *
-	 *	@throws	IOException	if a read/write error occurs
-	 */
-	public boolean consumerRender( RenderContext context, RenderSource source )
-	throws IOException;
+    /**
+     *	Requests the consumer to consume a block of rendered data.
+     *
+     *	@param	context	render context
+     *	@param	source	render source featuring
+     *					the target requests and the rendered data block.
+     *	@return	<code>false</code> if an error occurs
+     *			and consumation should be aborted
+     *
+     *	@throws	IOException	if a read/write error occurs
+     */
+    public boolean consumerRender( RenderContext context, RenderSource source )
+    throws IOException;
 
-	/**
-	 *	Tells the consumer to finish consumption.
-	 *	i.e. close files, end compound edits etc.
-	 *
-	 *	@param	context	render context
-	 *	@param	source	render source
-	 *	@return	<code>false</code> if an error occurs
-	 *			and consumation should be aborted
-	 *
-	 *	@throws	IOException	if a read/write error occurs
-	 */
-	public boolean consumerFinish( RenderContext context, RenderSource source )
-	throws IOException;
+    /**
+     *	Tells the consumer to finish consumption.
+     *	i.e. close files, end compound edits etc.
+     *
+     *	@param	context	render context
+     *	@param	source	render source
+     *	@return	<code>false</code> if an error occurs
+     *			and consumation should be aborted
+     *
+     *	@throws	IOException	if a read/write error occurs
+     */
+    public boolean consumerFinish( RenderContext context, RenderSource source )
+    throws IOException;
 
-	/**
-	 *	Tells the consumer that the rendering was
-	 *	aborted and it should cancel any unfinished edits.
-	 *
-	 *	@param	context	render context
-	 *	@param	source	render source
-	 *
-	 *	@throws	IOException	if a read/write error occurs
-	 */
-	public void consumerCancel( RenderContext context, RenderSource source )
-	throws IOException;
+    /**
+     *	Tells the consumer that the rendering was
+     *	aborted and it should cancel any unfinished edits.
+     *
+     *	@param	context	render context
+     *	@param	source	render source
+     *
+     *	@throws	IOException	if a read/write error occurs
+     */
+    public void consumerCancel( RenderContext context, RenderSource source )
+    throws IOException;
 }

@@ -26,7 +26,7 @@ import java.util.*;
 public class Envelope
 implements Cloneable
 {
-// -------- public Variablen --------
+// -------- public variables --------
 
 	/**
 	 *	Fuer getBasicEnvelope
@@ -48,9 +48,9 @@ implements Cloneable
 	public	Curve		susCurve;
 	public	Curve		rlsCurve;
 
-// -------- private Variablen --------
+// -------- private variables --------
 
-// -------- public Methoden --------
+// -------- public methods --------
 
 	/**
 	 *	Alle drei Kurventeile sind defaultmaessig aktiv
@@ -147,7 +147,7 @@ implements Cloneable
 		return basic;
 	}
 
-// -------- StringComm Methoden --------
+// -------- StringComm methods --------
 
 	public String toString()
 	{

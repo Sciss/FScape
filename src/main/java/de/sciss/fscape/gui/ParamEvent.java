@@ -17,52 +17,37 @@
 
 package de.sciss.fscape.gui;
 
+import de.sciss.app.BasicEvent;
 import de.sciss.fscape.util.Param;
 import de.sciss.fscape.util.ParamSpace;
 
-import de.sciss.app.BasicEvent;
-
-/**
- *  @author		Hanns Holger Rutz
- *  @version	0.68, 21-May-05
- */
 public class ParamEvent
-extends BasicEvent
-{
-// --- ID values ---
-	public static final int CHANGED		= 0;
+        extends BasicEvent {
 
-	private final Param			param;
-	private final ParamSpace	space;
+    // --- ID values ---
+    public static final int CHANGED		= 0;
 
-	/**
-	 */
-	public ParamEvent( Object source, int ID, long when, Param param, ParamSpace space )
-	{
-		super( source, ID, when );
-	
-		this.param	= param;
-		this.space	= space;
-	}
-	
-	public Param getParam()
-	{
-		return param;
-	}
+    private final Param			param;
+    private final ParamSpace	space;
 
-	public ParamSpace getSpace()
-	{
-		return space;
-	}
+    public ParamEvent(Object source, int ID, long when, Param param, ParamSpace space) {
+        super(source, ID, when);
 
-	public boolean incorporate( BasicEvent oldEvent )
-	{
-		if( oldEvent instanceof ParamEvent &&
-			this.getSource() == oldEvent.getSource() &&
-			this.getID() == oldEvent.getID() ) {
-			
-			return true;
+        this.param = param;
+        this.space = space;
+    }
 
-		} else return false;
-	}
+    public Param getParam() {
+        return param;
+    }
+
+    public ParamSpace getSpace() {
+        return space;
+    }
+
+    public boolean incorporate(BasicEvent oldEvent) {
+        return oldEvent instanceof ParamEvent &&
+                this.getSource() == oldEvent.getSource() &&
+                this.getID() == oldEvent.getID();
+    }
 }

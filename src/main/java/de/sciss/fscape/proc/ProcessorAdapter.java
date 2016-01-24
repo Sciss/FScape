@@ -17,16 +17,11 @@
 
 package de.sciss.fscape.proc;
 
-/**
- *  @author		Hanns Holger Rutz
- *  @version	0.10, 21-May-05
- */
 public class ProcessorAdapter
-implements ProcessorListener
-{
-	public void processorStarted( ProcessorEvent e ) {}
-	public void processorStopped( ProcessorEvent e ) {}
-	public void processorPaused( ProcessorEvent e ) {}
-	public void processorResumed( ProcessorEvent e ) {}
-	public void processorProgress( ProcessorEvent e ) {}
+		implements ProcessorListener {
+	public void processorStarted (ProcessorEvent e) {}
+    public void processorStopped (ProcessorEvent e) {}
+    public void processorPaused  (ProcessorEvent e) {}
+    public void processorResumed (ProcessorEvent e) {}
+    public void processorProgress(ProcessorEvent e) {}
 }

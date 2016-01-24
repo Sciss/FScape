@@ -164,7 +164,7 @@ final class DocumentWindow(val module: ModulePanel) extends WindowImpl {
       }
 
       module.addProcessorListener(li)
-      /* val res = */ opt.show(Some(this))
+      /* value res = */ opt.show(Some(this))
       module.removeProcessorListener(li)
       // println(s"Result: $res")
     }

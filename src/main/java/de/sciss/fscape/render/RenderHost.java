@@ -25,49 +25,46 @@ package de.sciss.fscape.render;
  *	interface which adds support
  *	for progress bar and exception
  *	display.
- *
- *  @author		Hanns Holger Rutz
- *  @version	0.56, 15-Sep-05
  */
 public interface RenderHost
 {
-	/**
-	 *	Called by the plug-in to
-	 *	request a message display
-	 *
-	 *	@param	type	type of message as given by
-	 *					the JOptionPane
-	 *	@param	text	the text to display
-	 *
-	 *	@see	javax.swing.JOptionPane#WARNING_MESSAGE 
-	 *	@see	javax.swing.JOptionPane#ERROR_MESSAGE 
-	 *	@see	javax.swing.JOptionPane#INFORMATION_MESSAGE 
-	 */
-	public void	showMessage( int type, String text );
-	
-	/**
-	 *	Determines if the host is active
-	 *	that is processing or realtime enabled
-	 *
-	 *	@return	true if the host and thus the plug-in is actively processing
-	 */
-	public boolean isRunning();
+    /**
+     *	Called by the plug-in to
+     *	request a message display
+     *
+     *	@param	type	type of message as given by
+     *					the JOptionPane
+     *	@param	text	the text to display
+     *
+     *	@see	javax.swing.JOptionPane#WARNING_MESSAGE
+     *	@see	javax.swing.JOptionPane#ERROR_MESSAGE
+     *	@see	javax.swing.JOptionPane#INFORMATION_MESSAGE
+     */
+    public void	showMessage( int type, String text );
 
-	/**
-	 *	Tells the host to update the progression bar.
-	 *
-	 *	@param	p	the new progression normalized
-	 *				to 0.0 ... 1.0 . use -1 for
-	 *				indeterminate mode
-	 */
-	public void setProgression( float p );
-	
-	/**
-	 *	Saves the last internally caught exception.
-	 *	This will be displayed when rendering aborts
-	 *	with a failure.
-	 *
-	 *	@param	e	the recently caught exception
-	 */
-	public void setException( Exception e );
+    /**
+     *	Determines if the host is active
+     *	that is processing or realtime enabled
+     *
+     *	@return	true if the host and thus the plug-in is actively processing
+     */
+    public boolean isRunning();
+
+    /**
+     *	Tells the host to update the progression bar.
+     *
+     *	@param	p	the new progression normalized
+     *				to 0.0 ... 1.0 . use -1 for
+     *				indeterminate mode
+     */
+    public void setProgression( float p );
+
+    /**
+     *	Saves the last internally caught exception.
+     *	This will be displayed when rendering aborts
+     *	with a failure.
+     *
+     *	@param	e	the recently caught exception
+     */
+    public void setException( Exception e );
 }

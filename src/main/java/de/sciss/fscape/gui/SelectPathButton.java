@@ -43,9 +43,6 @@ import java.util.List;
  *  the button's icon to set the button's
  *  path.
  *
- *  @author		Hanns Holger Rutz
- *  @version	0.18, 07-Feb-10
- *
  *  @see		java.awt.FileDialog
  */
 public class SelectPathButton

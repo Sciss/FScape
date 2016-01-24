@@ -17,21 +17,20 @@
 
 package de.sciss.fscape.proc;
 
-/**
- *  @author		Hanns Holger Rutz
- *  @version	0.10, 21-May-05
- */
 public interface Processor
-extends Runnable
-{
-	public void start();
-	public void pause();
-	public void resume();
-	public void stop();
-	public void addProcessorListener( ProcessorListener li );
-	public void removeProcessorListener( ProcessorListener li );
-	public float getProgression();
-	public Exception getError();
-	public void setError( Exception e );
+        extends Runnable {
+
+    public void start();
+    public void pause();
+    public void resume();
+    public void stop();
+
+    public void addProcessorListener   (ProcessorListener li);
+    public void removeProcessorListener(ProcessorListener li);
+
+    public float getProgression();
+
+    public Exception getError();
+
+    public void setError(Exception e);
 }
-// interface Processor

@@ -21,20 +21,6 @@
 
 package de.sciss.fscape.session;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Properties;
-import java.util.prefs.Preferences;
-
-import javax.swing.*;
-
 import de.sciss.app.BasicEvent;
 import de.sciss.app.EventManager;
 import de.sciss.common.ProcessingThread;
@@ -66,24 +52,33 @@ import de.sciss.io.AudioFileDescr;
 import de.sciss.io.IOUtil;
 import de.sciss.util.Flag;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Properties;
+import java.util.prefs.Preferences;
+
 /**
  *	Superclass of all processing windows. This handles thread and progress bar
  *	management and has some utility methods such as sound file normalization.
- *
- *  @author		Hanns Holger Rutz
- *  @version	0.73, 09-Aug-09
  */
 public abstract class ModulePanel
-    extends JPanel
-// extends AppWindow
-implements Processor, EventManager.Processor, ProgressComponent
-{
-// -------- public Variablen --------
+        extends JPanel
+        implements Processor, EventManager.Processor, ProgressComponent {
+
+// -------- public variables --------
 
     public static final String	PACKAGE			= "de.sciss.fscape.gui";
     public static final String	PROP_CLASS		= "Class";
 
-// -------- private Variablen --------
+// -------- private variables --------
 
     protected static final int FLAGS_TOOLBAR		= 0x01;
     protected static final int FLAGS_PRESETS		= 0x02; // 0x03;		// (0x02 + FLAGS_TOOLBAR)
@@ -392,7 +387,7 @@ implements Processor, EventManager.Processor, ProgressComponent
     }
 
     /**
-     *	GUI bauen
+     *	build GUI
      *	- call once before setVisible() !
      *	- invokes loading of default preset !
      *
@@ -835,7 +830,7 @@ implements Processor, EventManager.Processor, ProgressComponent
     }
 
     /**
-     *	Werte aus Prop-Array in GUI uebertragen
+     *	Transfer values from prop-array to GUI
      *	subclasses must override and invoke super.fillGUI() !
      */
     public void fillGUI()
@@ -879,7 +874,7 @@ implements Processor, EventManager.Processor, ProgressComponent
     }
 
     /**
-     *	Werte aus Prop-Array in GUI uebertragen
+     *	Transfer values from prop-array to GUI
      *	subclasses can use this to make things easy
      *	VORAUSSETZUNG:	Gadget-IDs in GUI stimmen mit denen in PropertyArray plus GG_OFF_...
      *					ueberein
@@ -935,7 +930,7 @@ implements Processor, EventManager.Processor, ProgressComponent
     }
 
     /**
-     *	Werte aus GUI in Prop-Array uebertragen
+     *	Transfer values from GUI to prop-array
      *	subclasses must override and invoke super.fillPropertyArray() !
      */
 //	protected void fillPropertyArray()
@@ -945,7 +940,7 @@ implements Processor, EventManager.Processor, ProgressComponent
     }
 
     /**
-     *	Werte aus Prop-Array in GUI uebertragen
+     *	Transfer values from prop-array to GUI
      *	subclasses can use this to make things easy
      *	VORAUSSETZUNG:	Gadget-IDs in GUI stimmen mit denen in PropertyArray plus GG_OFF_...
      *					ueberein
@@ -1082,7 +1077,7 @@ implements Processor, EventManager.Processor, ProgressComponent
                 p	= ggGain.getParam();
                 ref	= new Param( 1.0, Param.ABS_AMP );
                 pa	= Param.transform( p, Param.ABS_AMP, ref, null );
-                p	= Param.transform( new Param( pa.val * newAmp, pa.unit ), p.unit, ref, null );
+                p	= Param.transform( new Param( pa.value * newAmp, pa.unit ), p.unit, ref, null );
                 ggGain.setParam( p );
             }
 

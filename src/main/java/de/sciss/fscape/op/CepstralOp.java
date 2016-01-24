@@ -29,9 +29,9 @@ import de.sciss.io.AudioFileDescr;
 public class CepstralOp
 extends Operator
 {
-// -------- public Variablen --------
+// -------- public variables --------
 
-// -------- private Variablen --------
+// -------- private variables --------
 
 	protected static final String defaultName = "Cepstral";
 
@@ -59,7 +59,7 @@ extends Operator
 
 	protected static final String ERR_BANDS			= "Band# not power of 2";
 
-// -------- public Methoden --------
+// -------- public methods --------
 	// public Container createGUI( int type );
 
 	public CepstralOp()
@@ -103,7 +103,7 @@ extends Operator
 		icon = new OpIcon( this, OpIcon.ID_FLIPFREQ, defaultName );
 	}
 
-// -------- Runnable Methoden --------
+// -------- Runnable methods --------
 
 	public void run()
 	{
@@ -130,10 +130,10 @@ extends Operator
 		FilterBox		fltBox;
 		Point			fltLength;
 
-topLevel:
+	topLevel:
 		try {
 			// ------------------------------ Input-Slot ------------------------------
-			runInSlot = (SpectStreamSlot) slots.elementAt( SLOT_INPUT );
+			runInSlot = slots.elementAt( SLOT_INPUT );
 			if( runInSlot.getLinked() == null ) {
 				runStop();	// threadDead = true -> folgendes for() wird uebersprungen
 			}
@@ -150,7 +150,7 @@ topLevel:
 			if( threadDead ) break topLevel;
 
 			// ------------------------------ Output-Slot ------------------------------
-			runOutSlot					= (SpectStreamSlot) slots.elementAt( SLOT_OUTPUT );
+			runOutSlot					= slots.elementAt( SLOT_OUTPUT );
 			runOutStream				= new SpectStream( runInStream );
 			runOutSlot.initWriter( runOutStream );
 
@@ -159,8 +159,8 @@ topLevel:
 //			freqSpacing	= (runInStream.hiFreq - runInStream.loFreq) / runInStream.bands;
 			srcBands	= runInStream.bands;
 			srcSize		= srcBands << 1;
-			loFreq		= Math.min( runInStream.smpRate / 2, (float) pr.para[ PR_LOFREQ ].val );
-			hiFreq		= Math.max( 0.5f, Math.min( runInStream.smpRate / 2, (float) pr.para[ PR_HIFREQ ].val ));
+			loFreq		= Math.min( runInStream.smpRate / 2, (float) pr.para[ PR_LOFREQ ].value);
+			hiFreq		= Math.max( 0.5f, Math.min( runInStream.smpRate / 2, (float) pr.para[ PR_HIFREQ ].value));
 			if( loFreq > hiFreq ) {
 				f1		= loFreq;
 				loFreq	= hiFreq;
@@ -293,7 +293,7 @@ mainLoop:	while( !threadDead ) {
 // 	Debug.view( fftBuf, "post" );
 // }
 				}
-				// Berechnung fertich
+				// calculation done
 
 				runInSlot.freeFrame( runInFr );
 
@@ -307,7 +307,7 @@ mainLoop:	while( !threadDead ) {
 					catch( InterruptedException ignored) {}	// mainLoop wird eh gleich verlassen
 					runCheckPause();
 				}
-			} // Ende Hauptschleife
+			} // end of main loop
 
 			runInStream.closeReader();
 			runOutStream.closeWriter();
@@ -330,7 +330,7 @@ mainLoop:	while( !threadDead ) {
 		runQuit( null );
 	}
 
-// -------- GUI Methoden --------
+// -------- GUI methods --------
 
 	public PropertyGUI createGUI( int type )
 	{

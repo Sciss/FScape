@@ -17,14 +17,9 @@
 
 package de.sciss.fscape.gui;
 
-import java.util.*;
+import java.util.EventListener;
 
-/**
- *  @author		Hanns Holger Rutz
- *  @version	0.68, 21-May-05
- */
 public interface ParamListener
-extends EventListener
-{
-	public void paramChanged( ParamEvent e );
+        extends EventListener {
+    public void paramChanged(ParamEvent e);
 }

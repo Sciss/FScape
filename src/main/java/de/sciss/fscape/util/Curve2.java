@@ -18,7 +18,7 @@ package de.sciss.fscape.util;
  */
 public class Curve2
 {
-// -------- public Variablen --------
+// -------- public variables --------
 
 	public static final int	INT_LINEAR		= 0x000;
 	public static final int	INT_SPLINE		= 0x001;
@@ -37,13 +37,13 @@ public class Curve2
 	public	float		loopEnd		= 1.0f;
 	public	int			loopCount	= 1;
 
-// -------- private Variablen --------
+// -------- private variables --------
 
 	private boolean		valid		= false;
 //	private int			clcLpStart, clcLpEnd;
 	private float[]		yDrv		= null;		// zweite Ableitung fuer Spline-Interpolation
 
-// -------- public Methoden --------
+// -------- public methods --------
 
 	public Curve2( int flags )
 	{
@@ -209,7 +209,7 @@ public class Curve2
 		a[ off+len ]	= calc( stopX, idx );		// last value outside loop
 	}
 
-// -------- private Methoden --------
+// -------- private methods --------
 
 	private void validate()
 	{
@@ -295,7 +295,7 @@ public class Curve2
 				((a*a*a - a) * yDrv[ idxLo ] + (b*b*b - b) * yDrv[ idxHi ]) * (h*h) / 6.0f );
 	}
 
-// -------- StringComm Methoden --------
+// -------- StringComm methods --------
 /*
 	public String toString()
 	{

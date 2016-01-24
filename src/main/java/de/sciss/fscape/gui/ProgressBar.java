@@ -21,15 +21,10 @@ package de.sciss.fscape.gui;
 
 import de.sciss.gui.ProgressComponent;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Paint;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import javax.swing.JProgressBar;
-import javax.swing.SwingConstants;
 
 /**
  *  A bit more sophisticated progression bar
@@ -39,14 +34,11 @@ import javax.swing.SwingConstants;
  *  the bar's colour and text. If no text is
  *  set, the bar will try to estimate the
  *  remaining progression time.
- *
- *  @author		Hanns Holger Rutz
- *  @version	0.17, 12-Oct-06
  */
 public class ProgressBar
-        extends JProgressBar
-{
-// -------- private Variablen --------
+        extends JProgressBar {
+
+// -------- private variables --------
 
     protected float		p			= 0.0f;
 //	private Color		progColor;

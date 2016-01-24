@@ -13,100 +13,98 @@
 
 package de.sciss.fscape.gui;
 
-import java.awt.event.*;
-import java.util.*;
 import javax.swing.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.Vector;
 
 /**
  *  JComboBox subclass that remembers "impossible"
  *	selection, i.e. those with item indices
  *	beyond the current item list which may become
  *	available in the future.
- *
- *  @author		Hanns Holger Rutz
- *  @version	0.64, 06-Dec-04
  */
 public class VirtualChoice
-extends JComboBox
-{
-// -------- private Variablen --------
+        extends JComboBox {
 
-	protected int		virtualIndex;
-	protected Vector<ItemListener>	listeners;
+// -------- private variables --------
 
-// -------- public Methoden --------
+    protected int		virtualIndex;
+    protected Vector<ItemListener>	listeners;
 
-	public VirtualChoice()
-	{
-		super();
-		virtualIndex	= super.getSelectedIndex();
-		listeners		= new Vector<ItemListener>();
-	}
-	
+// -------- public methods --------
+
+    public VirtualChoice()
+    {
+        super();
+        virtualIndex	= super.getSelectedIndex();
+        listeners		= new Vector<ItemListener>();
+    }
+
 // XXX
 //	public void addItem( String item )
 //	{
 //		addItem( item );
 //	}
 
-	/**
-	 *	Wenn der virtuelle Index nach dem Add-Vorgang
-	 *	real als Item existiert, so wird dieses angewaehlt
-	 */
-	public void addItem( String item )
-	{
-		super.addItem( item );
-		if( (getItemCount() - 1) == virtualIndex ) {
-			try {
-				super.setSelectedIndex( virtualIndex );
-			} catch( IllegalArgumentException ignored) {}
-		}
-	}
+    /**
+     *	Wenn der virtuelle Index nach dem Add-Vorgang
+     *	real als Item existiert, so wird dieses angewaehlt
+     */
+    public void addItem( String item )
+    {
+        super.addItem( item );
+        if( (getItemCount() - 1) == virtualIndex ) {
+            try {
+                super.setSelectedIndex( virtualIndex );
+            } catch( IllegalArgumentException ignored) {}
+        }
+    }
 
-	public void insertItemAt( String item, int index )
-	throws IllegalArgumentException
-	{
-		super.insertItemAt( item, index );
-		if( (getItemCount() - 1) == virtualIndex ) {
-			super.setSelectedIndex( virtualIndex );
-		}
-	}             
+    public void insertItemAt( String item, int index )
+    throws IllegalArgumentException
+    {
+        super.insertItemAt( item, index );
+        if( (getItemCount() - 1) == virtualIndex ) {
+            super.setSelectedIndex( virtualIndex );
+        }
+    }
 
-	public int getSelectedIndex()
-	{
-		return virtualIndex;
-	}
+    public int getSelectedIndex()
+    {
+        return virtualIndex;
+    }
 
-	/**
-	 *	defacto wird keine Exception ausgeloest;
-	 *	falls der Index groesser als die Zahl der Items
-	 *	ist, wird er intern gespeichert
-	 *
-	 *	Eingetragene spezielle ItemListener werden benachrichtigt
-	 */
-	public void setSelectedIndex( int pos )
-	throws IllegalArgumentException
-	{
-		if( pos >= 0 ) {
-			virtualIndex = pos;
+    /**
+     *	defacto wird keine Exception ausgeloest;
+     *	falls der Index groesser als die Zahl der Items
+     *	ist, wird er intern gespeichert
+     *
+     *	Eingetragene spezielle ItemListener werden benachrichtigt
+     */
+    public void setSelectedIndex( int pos )
+    throws IllegalArgumentException
+    {
+        if( pos >= 0 ) {
+            virtualIndex = pos;
 // System.out.println( "select "+virtualIndex );
-			if( getItemCount() > virtualIndex ) {
-				super.setSelectedIndex( pos );
-			}
-		}
-		synchronized( listeners ) {
-			int size = listeners.size();
-			if( size > 0 ) {
-				Object[] obj= getSelectedObjects();
-				ItemEvent e = new ItemEvent( this, ItemEvent.ITEM_STATE_CHANGED,
-											 ((obj != null) && (obj.length > 0)) ? obj : null,
-											 ItemEvent.SELECTED );
-				for( int i = 0; i < size; i++ ) {
-					listeners.elementAt( i ).itemStateChanged( e );
-				}
-			}
-		}
-	}
+            if( getItemCount() > virtualIndex ) {
+                super.setSelectedIndex( pos );
+            }
+        }
+        synchronized( listeners ) {
+            int size = listeners.size();
+            if( size > 0 ) {
+                Object[] obj= getSelectedObjects();
+                ItemEvent e = new ItemEvent( this, ItemEvent.ITEM_STATE_CHANGED,
+                                             ((obj != null) && (obj.length > 0)) ? obj : null,
+                                             ItemEvent.SELECTED );
+                for( int i = 0; i < size; i++ ) {
+                    listeners.elementAt( i ).itemStateChanged( e );
+                }
+            }
+        }
+    }
 
 //	public void removeAll()
 //	{
@@ -124,18 +122,17 @@ extends JComboBox
 //System.out.println( "removed; "+virtualIndex );
 //	}
 
-	public void addSpecialItemListener( ItemListener l )
-	{
-		synchronized( listeners ) {
-			listeners.addElement( l );
-		}
-	}
+    public void addSpecialItemListener( ItemListener l )
+    {
+        synchronized( listeners ) {
+            listeners.addElement( l );
+        }
+    }
 
-	public void removeSpecialItemListener( ItemListener l )
-	{
-		synchronized( listeners ) {
-			listeners.removeElement( l );
-		}
-	}
+    public void removeSpecialItemListener( ItemListener l )
+    {
+        synchronized( listeners ) {
+            listeners.removeElement( l );
+        }
+    }
 }
-// class VirtualChoice

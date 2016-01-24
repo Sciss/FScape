@@ -23,7 +23,7 @@ import java.util.*;
 public class Curve
 implements Cloneable
 {
-// -------- public Variablen --------
+// -------- public variables --------
 
 	public static final int	TYPE_DIA		= 0;
 	public static final int	TYPE_ORTHO		= 1;
@@ -35,11 +35,11 @@ implements Cloneable
 	public	ParamSpace	vSpace;
 	public	int			type;
 
-// -------- private Variablen --------
+// -------- private variables --------
 
 	protected Vector<DoublePoint>	points;		// Element = DoublePoints
 
-// -------- public Methoden --------
+// -------- public methods --------
 
 	public Curve( ParamSpace hSpace, ParamSpace vSpace, int type )
 	{
@@ -253,7 +253,7 @@ implements Cloneable
 									   vRef, stream );
 
 			if( (newX != null) && (newY != null) ) {
-				dest.addPoint( newX.val, newY.val );
+				dest.addPoint( newX.value, newY.value);
 			}
 		}
 		
@@ -331,7 +331,7 @@ implements Cloneable
 		}
 	}
 	
-// -------- StringComm Methoden --------
+// -------- StringComm methods --------
 
 	public String toString()
 	{

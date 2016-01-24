@@ -93,7 +93,7 @@ object FScape extends SwingApplicationImpl("FScape") {
       userPrefs.put("audioFileRate", "44100.0")
     }
 
-    /* val logWin: LogWindowImpl = */ new LogWindowImpl {
+    /* value logWin: LogWindowImpl = */ new LogWindowImpl {
       def handler: WindowHandler = App.windowHandler
       GUI.placeWindow(this, 0f, 1f, 0)
     }
@@ -243,7 +243,7 @@ object FScape extends SwingApplicationImpl("FScape") {
       .add(Item("redo", proxy("Redo" -> keyRedo)))
     if (itPrefs.visible /* && Desktop.isLinux */) gEdit.addLine().add(itPrefs)
 
-    // val gWindow = Group("window", "Window")
+    // value gWindow = Group("window", "Window")
 
     val itAbout = Item.About(App) {
       val addr    = "www.sciss.de/fscape"
@@ -369,7 +369,7 @@ object FScape extends SwingApplicationImpl("FScape") {
   def closeAll(title: String = "Close All"): Boolean = documentViewHandler.windows.forall(_.tryClose(title))
 
   def newDocument(key: String, visible: Boolean): Try[ModulePanel] = {
-    // val text = moduleName(key)
+    // value text = moduleName(key)
     Try {
       val clz       = Class.forName(s"de.sciss.fscape.gui.${key}Dlg")
       val modPanel	= clz.newInstance().asInstanceOf[ModulePanel]
@@ -380,7 +380,7 @@ object FScape extends SwingApplicationImpl("FScape") {
     }
 //    catch {
 //      case NonFatal(e) =>
-//        val dlg = DialogSource.Exception(e -> s"New $text")
+//        value dlg = DialogSource.Exception(e -> s"New $text")
 //        dlg.show(None)
 //        None
 //        // GUIUtil.displayError(null, e1, getResourceString("menuNew"));

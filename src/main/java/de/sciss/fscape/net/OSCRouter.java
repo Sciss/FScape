@@ -18,14 +18,12 @@
 
 package de.sciss.fscape.net;
 
-/**
- *  @author		Hanns Holger Rutz
- *  @version	0.70, 10-Sep-06
- */
-public interface OSCRouter
-{
-	public String oscGetPathComponent();
-	public void oscRoute( RoutedOSCMessage rom );
-	public void oscAddRouter( OSCRouter subRouter );
-	public void oscRemoveRouter( OSCRouter subRouter );
+public interface OSCRouter {
+    public String oscGetPathComponent();
+
+    public void oscRoute(RoutedOSCMessage rom);
+
+    public void oscAddRouter(OSCRouter subRouter);
+
+    public void oscRemoveRouter(OSCRouter subRouter);
 }

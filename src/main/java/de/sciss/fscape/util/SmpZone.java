@@ -21,7 +21,7 @@ import java.util.*;
 public class SmpZone
 implements Cloneable
 {
-// -------- public Variablen --------
+// -------- public variables --------
 
 	public	Param	freqHi, freqLo;		// Frequenz-Bereich
 	public	Param	velHi, velLo;		// Velocity-Bereich
@@ -42,9 +42,9 @@ implements Cloneable
 	public static final int	PHASEMASK		=	0x0F;
 	public static final int	LOOP			=	0x10;
 	
-// -------- private Variablen --------
+// -------- private variables --------
 
-// -------- public Methoden --------
+// -------- public methods --------
 
 	public SmpZone( Param freqHi, Param freqLo, Param velHi, Param velLo )
 	{
@@ -86,7 +86,7 @@ implements Cloneable
 		return new SmpZone( this );
 	}
 
-// -------- StringComm Methoden --------
+// -------- StringComm methods --------
 
 	public String toString()
 	{

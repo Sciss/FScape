@@ -19,25 +19,21 @@
 
 package de.sciss.fscape.gui;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.GeneralPath;
-import java.awt.geom.Path2D;
-import javax.swing.*;
-
 import de.sciss.gui.GUIUtil;
 import de.sciss.gui.ProgressComponent;
 import de.sciss.icons.raphael.Shapes;
 
-/**
- *  @author		Hanns Holger Rutz
- *  @version	0.71, 30-Dec-06
- */
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.Path2D;
+
 public class ProgressPanel
-extends JPanel
-implements ProgressComponent
-{
+        extends JPanel
+        implements ProgressComponent {
+
     private final ProgressBar	pb;
     private final JLabel		lb;
     private final JButton	    ggCancel;

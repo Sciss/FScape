@@ -31,73 +31,70 @@ import de.sciss.io.*;
  *  (a receiver's sensibility at a point
  *  described by a transmitter trajectory)
  *  and trajectory data of a transmitter.
- *
- *  @author		Hanns Holger Rutz
- *  @version	0.56, 15-Sep-05
  */
 public class RenderSource
 {
-	public final int		numChannels;
-	
-	/**
-	 *  The blockSpan describes the
-	 *  current time span of the provided data
-	 *  in the source rate sense.
-	 *  Thus, blockSpan.getLength() equals
-	 *  blockBufLen
-	 *
-	 *	@todo	check what happens when resampling is active
-	 */
-	public Span				blockSpan;
-	/**
-	 */
-	public float[][]		blockBuf;
-	/**
-	 *  Offset to use when reading data
-	 *  from blockBuf
-	 */
-	public int				blockBufOff;
-	/**
-	 *  Length to use when reading data
-	 *  from blockBuf
-	 */
-	public int				blockBufLen;
-	
-	public float[][]		clipboardBuf;	// offset + len identical to blockBufOff/Len !
-	
-	/**
-	 *  Constructs a new RenderSource, where
-	 *  the arrays are preallocated for the
-	 *  given number of transmitters and receivers.
-	 *  Note that the final vectors are not
-	 *  initialized, i.e. senseBlockBuf will
-	 *  become new float[numTrns][numRcv][] etc.
-	 *  All request fields are set to false by default.
-	 *
-	 *	@param	numTrns	number of transmitters used for rendering
-	 *	@param	numRcv	number of receivers used for rendering
-	 */
-	public RenderSource( int numChannels )
-	{
-		this.numChannels	= numChannels;
-		blockBuf			= new float[ numChannels ][];
-	}
-	
-	/**
-	 *  Constructs a new RenderSource by
-	 *  copying a template. Note that the
-	 *  vectors themselves are not allocated
-	 *  just like in the RenderSource( int numTrns, int numRcv )
-	 *  constructor! However, the requests
-	 *  are copied 1:1 to the new RenderSource.
-	 *
-	 *	@param	template	a template request whose dimensions
-	 *						and requests are copied to the newly
-	 *						created render source
-	 */
-	public RenderSource( RenderSource template )
-	{
-		this.numChannels	= template.numChannels;
-		blockBuf			= new float[ numChannels ][];
-	}
+    public final int		numChannels;
+
+    /**
+     *  The blockSpan describes the
+     *  current time span of the provided data
+     *  in the source rate sense.
+     *  Thus, blockSpan.getLength() equals
+     *  blockBufLen
+     *
+     *	@todo	check what happens when resampling is active
+     */
+    public Span				blockSpan;
+    /**
+     */
+    public float[][]		blockBuf;
+    /**
+     *  Offset to use when reading data
+     *  from blockBuf
+     */
+    public int				blockBufOff;
+    /**
+     *  Length to use when reading data
+     *  from blockBuf
+     */
+    public int				blockBufLen;
+
+    public float[][]		clipboardBuf;	// offset + len identical to blockBufOff/Len !
+
+    /**
+     *  Constructs a new RenderSource, where
+     *  the arrays are preallocated for the
+     *  given number of transmitters and receivers.
+     *  Note that the final vectors are not
+     *  initialized, i.e. senseBlockBuf will
+     *  become new float[numTrns][numRcv][] etc.
+     *  All request fields are set to false by default.
+     *
+     *	@param	numTrns	number of transmitters used for rendering
+     *	@param	numRcv	number of receivers used for rendering
+     */
+    public RenderSource( int numChannels )
+    {
+        this.numChannels	= numChannels;
+        blockBuf			= new float[ numChannels ][];
+    }
+
+    /**
+     *  Constructs a new RenderSource by
+     *  copying a template. Note that the
+     *  vectors themselves are not allocated
+     *  just like in the RenderSource( int numTrns, int numRcv )
+     *  constructor! However, the requests
+     *  are copied 1:1 to the new RenderSource.
+     *
+     *	@param	template	a template request whose dimensions
+     *						and requests are copied to the newly
+     *						created render source
+     */
+    public RenderSource( RenderSource template )
+    {
+        this.numChannels	= template.numChannels;
+        blockBuf			= new float[ numChannels ][];
+    }
 }

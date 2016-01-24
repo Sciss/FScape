@@ -92,11 +92,11 @@ public class Constants
 		spaces[ lfoHzSpace ]		= new ParamSpace(	      0.0,     1000.0, 0.01,   Param.ABS_HZ );
 	}
 
-// -------- private Variablen --------
+// -------- private variables --------
 
 	private static int uniqueID	= 0;
 
-// -------- public Methoden --------
+// -------- public methods --------
 
 
 	/**

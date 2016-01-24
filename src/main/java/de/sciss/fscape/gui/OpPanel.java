@@ -46,13 +46,11 @@ import de.sciss.gui.GUIUtil;
  *  GUI panel hosting the spectral
  *	operators and allowing the user
  *	to drag them around and wire them together.
- *
- *  @author		Hanns Holger Rutz
- *  @version	0.72, 04-Jan-09
  */
 public class OpPanel
         extends JPanel
         implements ClipboardOwner, ActionListener, MouseListener, MouseMotionListener {
+
 // -------- public --------
 
     public static final String OBJ_NAME = "OpPanel";
@@ -504,7 +502,7 @@ public class OpPanel
         return new Dimension( preferredWidth, preferredHeight );
     }
 
-// -------- ClipboardOwner Methoden --------
+// -------- ClipboardOwner methods --------
 
     public void lostOwnership( Clipboard clipBoard, Transferable contents )
     {
@@ -519,7 +517,7 @@ public class OpPanel
         }
     }
                           
-// -------- Action Listener Methoden (only Popup-Menus!) --------
+// -------- Action Listener methods (only Popup-Menus!) --------
 
     public void actionPerformed( ActionEvent e )
     {
@@ -738,7 +736,7 @@ public class OpPanel
         }
     }
 
-// -------- Mouse Listener Methoden --------
+// -------- Mouse Listener methods --------
 
     public void mouseClicked(MouseEvent e) {
         if (!isEnabled() || !e.isPopupTrigger()) return;
@@ -796,7 +794,7 @@ public class OpPanel
     public void mouseEntered( MouseEvent e ) {}
     public void mouseExited( MouseEvent e ) {}
 
-// -------- MouseMotion Listener Methoden --------
+// -------- MouseMotion Listener methods --------
 
     public void mouseDragged( MouseEvent e )
     {
@@ -1130,7 +1128,7 @@ public class OpPanel
         }
     }
 
-// -------- private Methoden --------
+// -------- private methods --------
 
     /*
      *	Vergroessert die Panelflaeche, wenn eine Componente

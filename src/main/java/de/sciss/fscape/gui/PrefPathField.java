@@ -13,11 +13,6 @@
 
 package de.sciss.fscape.gui;
 
-import java.io.File;
-import java.util.prefs.PreferenceChangeEvent;
-import java.util.prefs.PreferenceChangeListener;
-import java.util.prefs.Preferences;
-
 import de.sciss.app.DynamicAncestorAdapter;
 import de.sciss.app.DynamicListening;
 import de.sciss.app.LaterInvocationManager;
@@ -25,19 +20,21 @@ import de.sciss.app.PreferenceEntrySync;
 import de.sciss.gui.PathEvent;
 import de.sciss.gui.PathListener;
 
+import java.io.File;
+import java.util.prefs.PreferenceChangeEvent;
+import java.util.prefs.PreferenceChangeListener;
+import java.util.prefs.Preferences;
+
 /**
  *  Subclass of PathField
  *  that enables automatic
  *  Preferences association
- *
- *  @author		Hanns Holger Rutz
- *  @version	0.28, 17-Apr-07
  */
 public class PrefPathField
         extends PathField
-        implements  DynamicListening, PreferenceChangeListener,
-        LaterInvocationManager.Listener, PreferenceEntrySync
-{
+        implements DynamicListening, PreferenceChangeListener,
+        LaterInvocationManager.Listener, PreferenceEntrySync {
+
     private boolean							listening		= false;
     private Preferences						prefs			= null;
     private String							key				= null;

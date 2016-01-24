@@ -53,246 +53,246 @@ import java.util.Vector;
  *	info fields and type selectors.
  */
 public class PathField
-extends JPanel
-implements ActionListener, ComponentListener, ItemListener, PathListener,
-			EventManager.Processor
-{
-// -------- public Variablen --------
+		extends JPanel
+		implements ActionListener, ComponentListener, ItemListener, PathListener,
+		EventManager.Processor {
 
-	public static final int TYPE_BASICMASK	= 0x0F;
-	/**
-	 *	Datei zum Einlesen
-	 */
-	public static final int TYPE_INPUTFILE	= 0;
-	/**
-	 *	OR fuer TYPE_INPUTFILE/OUTPUT_FILE
-	 */
-	public static final int TYPE_FORMATFIELD= 0x10;
-	/**
-	 *	OR fuer TYPE_OUTPUT_FILE
-	 */
-	public static final int TYPE_RESFIELD	= 0x20;
-	public static final int TYPE_RATEFIELD	= 0x40;
-	/**
-	 *	Dateiname fuer Schreibdatei
-	 */
-	public static final int TYPE_OUTPUTFILE	= 1;
-	/**
-	 *	Directory
-	 */
-	public static final int TYPE_FOLDER		= 2;
+// -------- public variables --------
 
-	public static final int SNDRES_16		= 0;
-	public static final int SNDRES_24		= 1;
-	public static final int SNDRES_32F		= 2;
-	public static final int SNDRES_32		= 3;
-	public static final int SNDRES_NUM		= 4;
+    public static final int TYPE_BASICMASK	= 0x0F;
+    /**
+     *	Datei zum Einlesen
+     */
+    public static final int TYPE_INPUTFILE	= 0;
+    /**
+     *	OR fuer TYPE_INPUTFILE/OUTPUT_FILE
+     */
+    public static final int TYPE_FORMATFIELD= 0x10;
+    /**
+     *	OR fuer TYPE_OUTPUT_FILE
+     */
+    public static final int TYPE_RESFIELD	= 0x20;
+    public static final int TYPE_RATEFIELD	= 0x40;
+    /**
+     *	Dateiname fuer Schreibdatei
+     */
+    public static final int TYPE_OUTPUTFILE	= 1;
+    /**
+     *	Directory
+     */
+    public static final int TYPE_FOLDER		= 2;
 
-	public static final int SNDRATE_96		= 0;
-	public static final int SNDRATE_48		= 1;
-	public static final int SNDRATE_44		= 2;
-	public static final int SNDRATE_32		= 3;
-	public static final int SNDRATE_NUM		= 4;
+    public static final int SNDRES_16		= 0;
+    public static final int SNDRES_24		= 1;
+    public static final int SNDRES_32F		= 2;
+    public static final int SNDRES_32		= 3;
+    public static final int SNDRES_NUM		= 4;
 
-	public static final int IMGRES_8		= 0;
-	public static final int IMGRES_16		= 1;
+    public static final int SNDRATE_96		= 0;
+    public static final int SNDRATE_48		= 1;
+    public static final int SNDRATE_44		= 2;
+    public static final int SNDRATE_32		= 3;
+    public static final int SNDRATE_NUM		= 4;
 
-// -------- private Variablen --------
+    public static final int IMGRES_8		= 0;
+    public static final int IMGRES_16		= 1;
 
-	private static final float[] sndRate	= { 96000.0f, 48000.0f, 44100.0f, 32000.0f };
+// -------- private variables --------
+
+    private static final float[] sndRate	= { 96000.0f, 48000.0f, 44100.0f, 32000.0f };
 //	private static final float[] movRate	= { 8.0f, 10.0f, 12.0f, 15.0f, 24.0f, 25.0f, 29.97f, 30.0f };
-	private static final float[] spectRate	= sndRate;
+    private static final float[] spectRate	= sndRate;
 
-	private static final String[] sndResID	= { "int16", "int24", "int32", "float32" };
-	private static final String[] sndResTxt	= { "16-bit int", "24-bit int", "32-bit float", "32-bit int" };
-	private static final String[] sndRateTxt= { "96 kHz", "48 kHz", "44.1 kHz", "32 kHz" };
-	private static final String[] spectRateTxt= sndRateTxt;
-	private static final String[] imgResTxt	= { "8-bit", "16-bit" };
-	private static final String[] movRateTxt= { "8 fps", "10 fps", "12 fps", "15 fps", "24 fps",
-												"25 fps", "29.97 fps", "30 fps" };
+    private static final String[] sndResID	= { "int16", "int24", "int32", "float32" };
+    private static final String[] sndResTxt	= { "16-bit int", "24-bit int", "32-bit float", "32-bit int" };
+    private static final String[] sndRateTxt= { "96 kHz", "48 kHz", "44.1 kHz", "32 kHz" };
+    private static final String[] spectRateTxt= sndRateTxt;
+    private static final String[] imgResTxt	= { "8-bit", "16-bit" };
+    private static final String[] movRateTxt= { "8 fps", "10 fps", "12 fps", "15 fps", "24 fps",
+                                                "25 fps", "29.97 fps", "30 fps" };
 
     private IOTextField			ggPath;
 //	private PathIcon			ggChoose;
-	private SelectPathButton			ggChoose;
-	private ColouredTextField	ggFormat	= null;
-	private VirtualChoice		ggType		= null;
-	private VirtualChoice		ggRes		= null;
-	private VirtualChoice		ggRate		= null;
-	
-	private static final Color  COLOR_ERR   = new Color( 0xFF, 0x00, 0x00, 0x2F );
-	private static final Color  COLOR_EXISTS= new Color( 0x00, 0x00, 0xFF, 0x2F );
-	private static final Color  COLOR_PROPSET=new Color( 0x00, 0xFF, 0x00, 0x2F );
+    private SelectPathButton			ggChoose;
+    private ColouredTextField	ggFormat	= null;
+    private VirtualChoice		ggType		= null;
+    private VirtualChoice		ggRes		= null;
+    private VirtualChoice		ggRate		= null;
+
+    private static final Color  COLOR_ERR   = new Color( 0xFF, 0x00, 0x00, 0x2F );
+    private static final Color  COLOR_EXISTS= new Color( 0x00, 0x00, 0xFF, 0x2F );
+    private static final Color  COLOR_PROPSET=new Color( 0x00, 0xFF, 0x00, 0x2F );
 
 //	private static final int MAXRESNUM	= 3;
 //	private static final int MAXRATENUM	= 4;
 
 //	protected Vector collListeners  = new Vector();
-	protected final Vector<PathField> collChildren = new Vector<PathField>();
+    protected final Vector<PathField> collChildren = new Vector<PathField>();
 
-	private int					type;
-	private int					handledTypes[]	= null;	// the ones that we can handle (auto setFormat)
+    private int					type;
+    private int					handledTypes[]	= null;	// the ones that we can handle (auto setFormat)
 //	private String				dlgTxt;
 
-	private String				scheme;
-	private String				protoScheme;
-	private PathField			superPaths[];
+    private String				scheme;
+    private String				protoScheme;
+    private PathField			superPaths[];
 
-	private boolean					init		= true;
-	private boolean					enabled		= true;
+    private boolean					init		= true;
+    private boolean					enabled		= true;
 
-	// constants for abbreviate
-	protected static final int ABBR_LENGTH = 12;
-	
-	private final EventManager elm = new EventManager( this );
+    // constants for abbreviate
+    protected static final int ABBR_LENGTH = 12;
 
-// -------- public Methoden --------
+    private final EventManager elm = new EventManager( this );
 
-	public PathField( int type, String dlgTxt )
-	{
-		super();
-		this.type		= type;
+// -------- public methods --------
+
+    public PathField( int type, String dlgTxt )
+    {
+        super();
+        this.type		= type;
 //		this.dlgTxt		= dlgTxt;
 
         GridBagLayout lay = new GridBagLayout();
         GridBagConstraints con = new GridBagConstraints();
-		ggPath			= new IOTextField();
+        ggPath			= new IOTextField();
         ggChoose        = new SelectPathButton(type, dlgTxt);
         ggChoose.addPathListener( this );
-		
-		setLayout(lay);
-		con.fill		= GridBagConstraints.HORIZONTAL;
 
-		con.anchor		= GridBagConstraints.WEST;
+        setLayout(lay);
+        con.fill		= GridBagConstraints.HORIZONTAL;
+
+        con.anchor		= GridBagConstraints.WEST;
 //		con.gridheight	= 1;
-		con.gridwidth	= GridBagConstraints.RELATIVE;
-		con.gridy		= 1;
-		con.weightx		= 1.0;
-		con.weighty		= 0.0;
-		lay.setConstraints(ggPath, con);
-		ggPath.addActionListener( this );		// High-Level Events: Return-Hit weiterleiten
-		add( ggPath );
+        con.gridwidth	= GridBagConstraints.RELATIVE;
+        con.gridy		= 1;
+        con.weightx		= 1.0;
+        con.weighty		= 0.0;
+        lay.setConstraints(ggPath, con);
+        ggPath.addActionListener( this );		// High-Level Events: Return-Hit weiterleiten
+        add( ggPath );
 
-		if( (type & TYPE_FORMATFIELD) != 0 ) {
-			con.gridx		= 0;
-			con.gridy		= 2;
-			con.gridwidth	= 1;
-			if( (type & TYPE_BASICMASK) == TYPE_INPUTFILE ) {
-				ggFormat	= new ColouredTextField();
-				ggFormat.setEditable( false );
-				ggFormat.setBackground( null );
+        if( (type & TYPE_FORMATFIELD) != 0 ) {
+            con.gridx		= 0;
+            con.gridy		= 2;
+            con.gridwidth	= 1;
+            if( (type & TYPE_BASICMASK) == TYPE_INPUTFILE ) {
+                ggFormat	= new ColouredTextField();
+                ggFormat.setEditable( false );
+                ggFormat.setBackground( null );
 //				ggFormat.setPaint( null );
 //				con.gridheight	= 1;
-				lay.setConstraints(ggFormat, con);
-				add( ggFormat );
-			} else {
-				ggType			= new VirtualChoice();
-				con.weightx		= 0.3;
-				lay.setConstraints(ggType, con);
-				add( ggType );
+                lay.setConstraints(ggFormat, con);
+                add( ggFormat );
+            } else {
+                ggType			= new VirtualChoice();
+                con.weightx		= 0.3;
+                lay.setConstraints(ggType, con);
+                add( ggType );
 //				ggType.addItemListener( this );
-				ggType.addSpecialItemListener( this );
-				if( (type & TYPE_RESFIELD) != 0 ) {
-					ggRes		= new VirtualChoice();
-					con.gridx++;
-					lay.setConstraints(ggRes, con);
-					add( ggRes );
+                ggType.addSpecialItemListener( this );
+                if( (type & TYPE_RESFIELD) != 0 ) {
+                    ggRes		= new VirtualChoice();
+                    con.gridx++;
+                    lay.setConstraints(ggRes, con);
+                    add( ggRes );
 //					ggRes.addItemListener( this );
-				}
-				if( (type & TYPE_RATEFIELD) != 0 ) {
-					ggRate		= new VirtualChoice();
-					con.gridx++;
-					lay.setConstraints(ggRate, con);
-					add( ggRate );
+                }
+                if( (type & TYPE_RATEFIELD) != 0 ) {
+                    ggRate		= new VirtualChoice();
+                    con.gridx++;
+                    lay.setConstraints(ggRate, con);
+                    add( ggRate );
 //					ggRate.addItemListener( this );
-				}
-			}
-			con.gridx++;
-			con.gridheight	= 3;
-			con.anchor		= GridBagConstraints.NORTHWEST;
-		} else {
-			con.gridheight	= 2;
-		}
+                }
+            }
+            con.gridx++;
+            con.gridheight	= 3;
+            con.anchor		= GridBagConstraints.NORTHWEST;
+        } else {
+            con.gridheight	= 2;
+        }
 
 //		con.gridwidth	= GridBagConstraints.REMAINDER;
-		con.gridy		= 0;
-		con.weightx		= 0.0;
-		con.weighty		= 1.0;
-		lay.setConstraints(ggChoose, con);
-		add( ggChoose );
-		
-		deriveFrom( new PathField[0], (ggType != null) ? "$E" : "" );
-		addComponentListener( this );
+        con.gridy		= 0;
+        con.weightx		= 0.0;
+        con.weighty		= 1.0;
+        lay.setConstraints(ggChoose, con);
+        add( ggChoose );
 
-		this.addPropertyChangeListener( "font", new PropertyChangeListener() {
-			public void propertyChange( PropertyChangeEvent e )
-			{
-				Font fnt = ((PathField) e.getSource()).getFont();
-				ggPath.setFont( fnt );
-				if( ggFormat != null ) ggFormat.setFont( fnt );
-			}
-		});
-	}
+        deriveFrom( new PathField[0], (ggType != null) ? "$E" : "" );
+        addComponentListener( this );
 
-	public static String getSoundResID( int idx )
-	{
-		return sndResID[ idx ];
-	}
-	
-	public static int getSoundResIdx( String id )
-	{
-		for( int idx = 0; idx < sndResID.length; idx++ ) {
-			if( sndResID[ idx ].equals( id )) return idx;
-		}
-		return -1;
-	}
-	
-	public static String getSoundResDescr( int idx )
-	{
-		return sndResTxt[ idx ];
-	}
-	
-	public static String getSoundRateID( int idx )
-	{
-		return String.valueOf( sndRate[ idx ]);
-	}
-	
-	public static int getSoundRateIdx( String id )
-	{
-		for( int idx = 0; idx < sndRate.length; idx++ ) {
-			if( String.valueOf( sndRate[ idx ]).equals( id )) return idx;
-		}
-		return -1;
-	}
-	
-	public static String getSoundRateDescr( int idx )
-	{
-		return sndRateTxt[ idx ];
-	}
-	
-	public void setPath( File path )
-	{
-		setPathIgnoreScheme( path );
-		scheme = createScheme( path.getPath() );
-	}
+        this.addPropertyChangeListener( "font", new PropertyChangeListener() {
+            public void propertyChange( PropertyChangeEvent e )
+            {
+                Font fnt = ((PathField) e.getSource()).getFont();
+                ggPath.setFont( fnt );
+                if( ggFormat != null ) ggFormat.setFont( fnt );
+            }
+        });
+    }
 
-	protected void setPathIgnoreScheme( File path )
-	{
-		ggPath.setText( path.getPath() );
-		ggChoose.setPath( path );
-		synchronized( collChildren ) {
-			for( int i = 0; i < collChildren.size(); i++ ) {
-				((PathField) collChildren.get( i )).motherSpeaks( path );
-			}
-		} // synchronized( collChildren )
-		feedback();
-	}
-	
-	protected void setPathAndDispatchEvent( File path )
-	{
-		setPathIgnoreScheme( path );
-		elm.dispatchEvent( new PathEvent( this, PathEvent.CHANGED, System.currentTimeMillis(), path ));
+    public static String getSoundResID( int idx )
+    {
+        return sndResID[ idx ];
+    }
+
+    public static int getSoundResIdx( String id )
+    {
+        for( int idx = 0; idx < sndResID.length; idx++ ) {
+            if( sndResID[ idx ].equals( id )) return idx;
+        }
+        return -1;
+    }
+
+    public static String getSoundResDescr( int idx )
+    {
+        return sndResTxt[ idx ];
+    }
+
+    public static String getSoundRateID( int idx )
+    {
+        return String.valueOf( sndRate[ idx ]);
+    }
+
+    public static int getSoundRateIdx( String id )
+    {
+        for( int idx = 0; idx < sndRate.length; idx++ ) {
+            if( String.valueOf( sndRate[ idx ]).equals( id )) return idx;
+        }
+        return -1;
+    }
+
+    public static String getSoundRateDescr( int idx )
+    {
+        return sndRateTxt[ idx ];
+    }
+
+    public void setPath( File path )
+    {
+        setPathIgnoreScheme( path );
+        scheme = createScheme( path.getPath() );
+    }
+
+    protected void setPathIgnoreScheme( File path )
+    {
+        ggPath.setText( path.getPath() );
+        ggChoose.setPath( path );
+        synchronized( collChildren ) {
+            for( int i = 0; i < collChildren.size(); i++ ) {
+                ((PathField) collChildren.get( i )).motherSpeaks( path );
+            }
+        } // synchronized( collChildren )
+        feedback();
+    }
+
+    protected void setPathAndDispatchEvent( File path )
+    {
+        setPathIgnoreScheme( path );
+        elm.dispatchEvent( new PathEvent( this, PathEvent.CHANGED, System.currentTimeMillis(), path ));
 //		actionComponent.dispatchEvent( new ActionEvent( this, ActionEvent.ACTION_PERFORMED, "" ));
-	}
+    }
 
     public File getPath() {
         return (new File(ggPath.getText()));
@@ -312,10 +312,10 @@ implements ActionListener, ComponentListener, ItemListener, PathListener,
         }
     }
 
-	/**
-	 *	Fill AudioFileDescr or ImageStream with
-	 *	data corresponding to Resolution + Rate
-	 */
+    /**
+     *	Fill AudioFileDescr or ImageStream with
+     *	data corresponding to Resolution + Rate
+     */
     public void fillStream(AudioFileDescr afd) {
         int idx;
 
@@ -353,10 +353,10 @@ implements ActionListener, ComponentListener, ItemListener, PathListener,
         }
     }
 
-	/**
-	 *	Fill AudioFileDescr or ImageStream with
-	 *	data corresponding to Resolution + Rate
-	 */
+    /**
+     *	Fill AudioFileDescr or ImageStream with
+     *	data corresponding to Resolution + Rate
+     */
     public void fillStream(SpectStream stream) {
         int ID;
 
@@ -386,20 +386,20 @@ implements ActionListener, ComponentListener, ItemListener, PathListener,
 
 // XXX QUICKTIME
 /*
-	public void fillStream( MovieStream stream )
-	{
-		int ID;
-		
-		if( ggRes != null ) {
-			stream.codec = ggRes.getSelectedIndex();
-		}
-		if( ggRate != null ) {
-			ID = ggRate.getSelectedIndex();
-			if( (ID >= 0) && (ID < movRate.length) ) {
-				stream.frameRate = movRate[ ID ];
-			}
-		}
-	}
+    public void fillStream( MovieStream stream )
+    {
+        int ID;
+
+        if( ggRes != null ) {
+            stream.codec = ggRes.getSelectedIndex();
+        }
+        if( ggRate != null ) {
+            ID = ggRate.getSelectedIndex();
+            if( (ID >= 0) && (ID < movRate.length) ) {
+                stream.frameRate = movRate[ ID ];
+            }
+        }
+    }
 */
 
     public int getType() {
@@ -410,32 +410,32 @@ implements ActionListener, ComponentListener, ItemListener, PathListener,
         }
     }
 
-	public JComboBox getTypeGadget()	{ return ggType; }
-	public JComboBox getResGadget()		{ return ggRes ; }
-	public JComboBox getRateGadget()	{ return ggRate; }
+    public JComboBox getTypeGadget()	{ return ggType; }
+    public JComboBox getResGadget()		{ return ggRes ; }
+    public JComboBox getRateGadget()	{ return ggRate; }
 
-	/**
-	 *  PathField offers a mechanism to automatically derive
-	 *  a path name from a "mother" PathField. This applies
-	 *  usually to output files whose names are derived from
-	 *  PathFields which represent input paths. The provided
-	 *  'scheme' String can contain the Tags
-	 *
-	 *  $Dx = Directory of superPath x; $Fx = Filename; $E = Extension; $Bx = Brief filename
-	 *
-	 *  where 'x' is the index in the provided array of
-	 *  mother PathFields. Whenever the mother contents
-	 *  changes, the child PathField will recalculate its
-	 *  name. When the user changes the contents of the child
-	 *  PathField, an algorithm tries to find out which components
-	 *  are related to the mother's pathname, parts that cannot
-	 *  be identified will not be automatically changing any more
-	 *  unless the user completely clears the PathField (i.e.
-	 *  restores full automation).
-	 *
-	 *  The user can abbreviate or extend filenames by pressing the appropriate
-	 *  key; in this case the $F and $B tags are exchanged in the scheme.
-	 */
+    /**
+     *  PathField offers a mechanism to automatically derive
+     *  a path name from a "mother" PathField. This applies
+     *  usually to output files whose names are derived from
+     *  PathFields which represent input paths. The provided
+     *  'scheme' String can contain the Tags
+     *
+     *  $Dx = Directory of superPath x; $Fx = Filename; $E = Extension; $Bx = Brief filename
+     *
+     *  where 'x' is the index in the provided array of
+     *  mother PathFields. Whenever the mother contents
+     *  changes, the child PathField will recalculate its
+     *  name. When the user changes the contents of the child
+     *  PathField, an algorithm tries to find out which components
+     *  are related to the mother's pathname, parts that cannot
+     *  be identified will not be automatically changing any more
+     *  unless the user completely clears the PathField (i.e.
+     *  restores full automation).
+     *
+     *  The user can abbreviate or extend filenames by pressing the appropriate
+     *  key; in this case the $F and $B tags are exchanged in the scheme.
+     */
     public void deriveFrom(PathField[] superPth, String schm) {
         superPaths  = superPth;
         scheme      = schm;
@@ -452,55 +452,55 @@ implements ActionListener, ComponentListener, ItemListener, PathListener,
         } // synchronized( collChildren )
     }
 
-	protected void motherSpeaks(File superPath) {
-		setPathAndDispatchEvent(new File(evalScheme(scheme)));
-	}
+    protected void motherSpeaks(File superPath) {
+        setPathAndDispatchEvent(new File(evalScheme(scheme)));
+    }
 
-	public void setEnabled(boolean state) {
-		if (state == enabled) return;
-		enabled = state;
+    public void setEnabled(boolean state) {
+        if (state == enabled) return;
+        enabled = state;
 
-		if (!state) {
-			ggChoose.requestFocus();    // tricky ggPath.looseFocus() ;)
-		}
-		ggPath  .setEnabled(state);
-		ggChoose.setEnabled(state);
-		if (ggType != null) ggType.setEnabled(state);
-		if (ggRes  != null) ggRes .setEnabled(state);
-		if (ggRate != null) ggRate.setEnabled(state);
+        if (!state) {
+            ggChoose.requestFocus();    // tricky ggPath.looseFocus() ;)
+        }
+        ggPath  .setEnabled(state);
+        ggChoose.setEnabled(state);
+        if (ggType != null) ggType.setEnabled(state);
+        if (ggRes  != null) ggRes .setEnabled(state);
+        if (ggRate != null) ggRate.setEnabled(state);
 
-		feedback();
+        feedback();
 
-		if (state) {
-			ggPath.requestFocus();
-		}
-	}
+        if (state) {
+            ggPath.requestFocus();
+        }
+    }
 
-	public void addPathListener( PathListener list )
-	{
-		elm.addListener( list );
-	}
+    public void addPathListener( PathListener list )
+    {
+        elm.addListener( list );
+    }
 
-	public void removePathListener( PathListener list )
-	{
-		elm.removeListener( list );
-	}
+    public void removePathListener( PathListener list )
+    {
+        elm.removeListener( list );
+    }
 
-	public void processEvent( BasicEvent e )
-	{
-		PathListener listener;
-		
-		for( int i = 0; i < elm.countListeners(); i++ ) {
-			listener = (PathListener) elm.getListener( i );
-			switch( e.getID() ) {
-			case PathEvent.CHANGED:
-				listener.pathChanged( (PathEvent) e );
-				break;
-			default:
-				assert false : e.getID();
-			}
-		} // for( i = 0; i < elm.countListeners(); i++ )
-	}
+    public void processEvent( BasicEvent e )
+    {
+        PathListener listener;
+
+        for( int i = 0; i < elm.countListeners(); i++ ) {
+            listener = (PathListener) elm.getListener( i );
+            switch( e.getID() ) {
+            case PathEvent.CHANGED:
+                listener.pathChanged( (PathEvent) e );
+                break;
+            default:
+                assert false : e.getID();
+            }
+        } // for( i = 0; i < elm.countListeners(); i++ )
+    }
 
     public void handleTypes(int types[]) {
         handledTypes = types;
@@ -512,9 +512,9 @@ implements ActionListener, ComponentListener, ItemListener, PathListener,
         }
     }
 
-	/**
-	 *	For Convenience a two-dimensional version
-	 */
+    /**
+     *	For Convenience a two-dimensional version
+     */
     public void handleTypes(int types[][]) {
         int i, j, num;
         int[] unitedTypes;
@@ -531,7 +531,7 @@ implements ActionListener, ComponentListener, ItemListener, PathListener,
         handleTypes(unitedTypes);
     }
 
-// -------- private Methoden --------
+// -------- private methods --------
 
     protected void calcFormat() {
         String fPath = getPath().getPath();
@@ -566,27 +566,27 @@ implements ActionListener, ComponentListener, ItemListener, PathListener,
         ggFormat.setPaint(success ? null : COLOR_ERR);
     }
 
-	protected void checkExist() {
-		String fPath = getPath().getPath();
-		boolean exists = false;
-		Color c;
+    protected void checkExist() {
+        String fPath = getPath().getPath();
+        boolean exists = false;
+        Color c;
 
-		if (fPath.length() > 0) {
-			try {
-				exists = new File(fPath).isFile();
-			} catch (SecurityException e) {
-				// ignore
-			}
-		}
-		c = exists && enabled ? COLOR_EXISTS : null;
-		if (c != ggPath.getPaint()) {
-			ggPath.setPaint(c);
-		}
-	}
+        if (fPath.length() > 0) {
+            try {
+                exists = new File(fPath).isFile();
+            } catch (SecurityException e) {
+                // ignore
+            }
+        }
+        c = exists && enabled ? COLOR_EXISTS : null;
+        if (c != ggPath.getPaint()) {
+            ggPath.setPaint(c);
+        }
+    }
 
-	/*
-	 *	Tags: $Dx = Directory of superPath x; $Fx = Filename; $E = Extension; $Bx = Brief filename
-	 */
+    /*
+     *	Tags: $Dx = Directory of superPath x; $Fx = Filename; $E = Extension; $Bx = Brief filename
+     */
     protected String evalScheme(String schm) {
         String txt2;
         int i, j, k;
@@ -646,15 +646,15 @@ implements ActionListener, ComponentListener, ItemListener, PathListener,
         return schm;
     }
 
-	/**
-	 *  A filename will be abbrevated. This is not so
-	 *  critical on MacOS X any more because filenames
-	 *  can be virtually as long as possible; on some
-	 *  systems however when filenames are combinations
-	 *  of more than one mother file this can be
-	 *  crucial to keep the total filename length within
-	 *  the file system's allowed bounds.
-	 */
+    /**
+     *  A filename will be abbrevated. This is not so
+     *  critical on MacOS X any more because filenames
+     *  can be virtually as long as possible; on some
+     *  systems however when filenames are combinations
+     *  of more than one mother file this can be
+     *  crucial to keep the total filename length within
+     *  the file system's allowed bounds.
+     */
     protected static String abbreviate(String longStr) {
         StringBuffer shortStr;
         int i, j;
@@ -798,7 +798,7 @@ implements ActionListener, ComponentListener, ItemListener, PathListener,
         setPathAndDispatchEvent(path);
     }
 
-// -------- Action Methoden (ggPath Return-Hit) --------
+// -------- Action methods (ggPath Return-Hit) --------
 // we're listening to ggPath
 
     public void actionPerformed(ActionEvent e) {
@@ -812,7 +812,7 @@ implements ActionListener, ComponentListener, ItemListener, PathListener,
         setPathAndDispatchEvent(new File(str));
     }
 
-// -------- Component Methoden (Panel) --------
+// -------- Component methods (Panel) --------
 
     public void componentResized(ComponentEvent e) {
         if ((ggType != null) && init) {    // makes us update info on type, res, rate etc.
@@ -825,7 +825,7 @@ implements ActionListener, ComponentListener, ItemListener, PathListener,
     public void componentHidden(ComponentEvent e) {}
     public void componentMoved (ComponentEvent e) {}
 
-// -------- Item Methoden (ggType) --------
+// -------- Item methods (ggType) --------
 
     public void itemStateChanged(ItemEvent e) {
         int mode, ID, i;
@@ -880,9 +880,9 @@ implements ActionListener, ComponentListener, ItemListener, PathListener,
             super(32);
 
             InputMap	inputMap	= getInputMap();
-			ActionMap	actionMap   = getActionMap();
-			int			i;
-			String		s;
+            ActionMap	actionMap   = getActionMap();
+            int			i;
+            String		s;
 
             inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, InputEvent.META_MASK), "abbr");
             actionMap.put("abbr", new AbstractAction() {
@@ -959,4 +959,3 @@ implements ActionListener, ComponentListener, ItemListener, PathListener,
         }
     } // class IOTextField
 }
-// class PathField

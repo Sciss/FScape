@@ -13,21 +13,26 @@
 
 package de.sciss.fscape.gui;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import java.text.*;
-import java.util.*;
-import javax.swing.*;
-
-import de.sciss.fscape.io.*;
-import de.sciss.fscape.prop.*;
-import de.sciss.fscape.session.*;
+import de.sciss.fscape.io.GenericFile;
+import de.sciss.fscape.prop.Presets;
+import de.sciss.fscape.prop.PropertyArray;
+import de.sciss.fscape.session.ModulePanel;
 import de.sciss.fscape.spect.Fourier;
-import de.sciss.fscape.util.*;
-
+import de.sciss.fscape.util.Constants;
+import de.sciss.fscape.util.Filter;
+import de.sciss.fscape.util.Util;
 import de.sciss.io.AudioFile;
 import de.sciss.io.AudioFileDescr;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.io.EOFException;
+import java.io.File;
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.Locale;
 
 /**
  *	Serialism sucked and it's still there out in the world in
@@ -35,13 +40,10 @@ import de.sciss.io.AudioFileDescr;
  *	important quality of music. This module generates tracks
  *	of three alternative parameters which can be used to
  *	organize sound.
- *
- *  @author		Hanns Holger Rutz
- *  @version	0.71, 14-Nov-07
  */
 public class SerialKillaDlg
-extends ModulePanel
-{
+        extends ModulePanel {
+
     // Properties (defaults)
     private static final int PR_INPUTFILE		= 0;		// pr.text
     private static final int PR_NOUTPUTFILE		= 1;
@@ -115,7 +117,7 @@ extends ModulePanel
     private static final String	PTRN_TILT			= "Mean tilt   : {0,number,#,##0.0} Hz";
     private static final String	PTRN_ENERGY			= "Mean energy : {0,number,#,##0.0} dB";
 
-// -------- public Methoden --------
+// -------- public methods --------
 
     /**
      *	!! setVisible() bleibt dem Aufrufer ueberlassen
@@ -153,7 +155,7 @@ extends ModulePanel
         presets	= static_presets;
         pr 		= (PropertyArray) static_pr.clone();
 
-    // -------- GUI bauen --------
+    // -------- build GUI --------
 
         GridBagConstraints	con;
 
@@ -280,7 +282,7 @@ extends ModulePanel
     }
 
     /**
-     *	Werte aus Prop-Array in GUI uebertragen
+     *	Transfer values from prop-array to GUI
      */
     public void fillGUI()
     {
@@ -289,7 +291,7 @@ extends ModulePanel
     }
 
     /**
-     *	Werte aus GUI in Prop-Array uebertragen
+     *	Transfer values from GUI to prop-array
      */
     public void fillPropertyArray()
     {
@@ -480,7 +482,7 @@ topLevel: try {
 //				progLen	   += (long) outLength;
 //			}
 //			if( pr.intg[ PR_GAINTYPE ] == GAIN_ABSOLUTE ) {
-//				gain		= (float) ((Param.transform( pr.para[ PR_GAIN ], Param.ABS_AMP, ampRef, null )).val);
+//				gain		= (float) ((Param.transform( pr.para[ PR_GAIN ], Param.ABS_AMP, ampRef, null )).value);
 //gain	= 1.0f;
 //			}
 //		// .... check running ....
@@ -714,7 +716,7 @@ topLevel: try {
 
 //			if( pr.intg[ PR_GAINTYPE ] == GAIN_UNITY ) {
 //				gain = (float) (Param.transform( pr.para[ PR_GAIN ], Param.ABS_AMP,
-//								new Param( 1.0 / (double) maxAmp, Param.ABS_AMP ), null )).val;
+//								new Param( 1.0 / (double) maxAmp, Param.ABS_AMP ), null )).value;
 //
 //				normalizeAudioFile( floatF, nOutF, inBuf, gain, 1.0f );
 //				for( ch = 0; ch < outChanNum; ch++ ) {
@@ -785,7 +787,7 @@ topLevel: try {
 //		}
     } // process()
 
-// -------- private Methoden --------
+// -------- private methods --------
 
     protected void reflectPropertyChanges()
     {
@@ -807,4 +809,3 @@ topLevel: try {
         }
     }
 }
-// class SerialKillaDlg

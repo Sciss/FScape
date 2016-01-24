@@ -94,8 +94,8 @@ public class LimiterDlg
             static_pr.textName = prTextName;
             static_pr.intg = prIntg;
             static_pr.intgName = prIntgName;
-			static_pr.bool		= prBool;
-			static_pr.boolName	= prBoolName;
+            static_pr.bool		= prBool;
+            static_pr.boolName	= prBoolName;
             static_pr.para = prPara;
             static_pr.paraName = prParaName;
             static_pr.para[PR_BOOST]    = new Param(  3.0, Param.DECIBEL_AMP);
@@ -266,8 +266,8 @@ public class LimiterDlg
             if (!threadRunning) break topLevel;
 
             // attack and release durations in sample frames re -60 dB
-            atk60      = Math.max(1, (int) AudioFileDescr.millisToSamples(inSpec, pr.para[PR_ATTACK ].val + 0.5));
-            rls60      = Math.max(1, (int) AudioFileDescr.millisToSamples(inSpec, pr.para[PR_RELEASE].val + 0.5));
+            atk60      = Math.max(1, (int) AudioFileDescr.millisToSamples(inSpec, pr.para[PR_ATTACK ].value + 0.5));
+            rls60      = Math.max(1, (int) AudioFileDescr.millisToSamples(inSpec, pr.para[PR_RELEASE].value + 0.5));
             // damping coefficients
             atkCoef    = Math.pow(1.0e-3, 1.0 / atk60);
             rlsCoef    = Math.pow(1.0e-3, 1.0 / rls60);
@@ -284,8 +284,8 @@ public class LimiterDlg
             for (int i = 1; i < rlsSize; i++) env[atkSize + i] = Math.pow(rlsCoef, i);
 
             ampRef      = new Param(1.0, Param.ABS_AMP);
-            boost       = (Param.transform(pr.para[PR_BOOST  ], Param.ABS_AMP, ampRef, null)).val;
-            ceil        = (Param.transform(pr.para[PR_CEILING], Param.ABS_AMP, ampRef, null)).val;
+            boost       = (Param.transform(pr.para[PR_BOOST  ], Param.ABS_AMP, ampRef, null)).value;
+            ceil        = (Param.transform(pr.para[PR_CEILING], Param.ABS_AMP, ampRef, null)).value;
 
             lapSize     = Math.max(atkSize, 8192);
             grainBufSize = envSize + lapSize;

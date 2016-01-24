@@ -489,7 +489,7 @@ public class PrefsUtil
 				for( j = 0; j < nl2.getLength(); j++ ) {
 					entry		= (Element) nl2.item( j );
 					prefs.put( entry.getAttribute( "key" ), entry.getAttribute( "value" ));
-//System.err.println( "auto : node = "+(prefs.name() )+"; key = "+entry.getAttribute( "key" )+"; val = "+entry.getAttribute( "value" ) );
+//System.err.println( "auto : node = "+(prefs.name() )+"; key = "+entry.getAttribute( "key" )+"; value = "+entry.getAttribute( "value" ) );
 
 				}
 				break;
