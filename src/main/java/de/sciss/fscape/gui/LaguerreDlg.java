@@ -42,7 +42,7 @@ import java.io.IOException;
  *	based on papers by G. Evangelista. This is totally slow
  *	and also buggy causing comb filter effects for wrong window
  *	ratios. However kind of works when splitting the sound file
- *	into two frequency bands which are warped independantly with
+ *	into two frequency bands which are warped independently with
  *	small windows for high frequencies and large windows for low
  *	frequencies. Tends to sound chirpy.
  */
@@ -114,18 +114,12 @@ public class LaguerreDlg
 
 // -------- public methods --------
 
-    /**
-     *	!! setVisible() bleibt dem Aufrufer ueberlassen
-     */
-    public LaguerreDlg()
-    {
-        super( "Laguerre Warping" );
+    public LaguerreDlg() {
+        super("Laguerre Warping");
         init2();
     }
 
-    protected void buildGUI()
-    {
-        // einmalig PropertyArray initialisieren
+    protected void buildGUI() {
         if( static_pr == null ) {
             static_pr			= new PropertyArray();
             static_pr.text		= prText;
@@ -317,28 +311,19 @@ public class LaguerreDlg
         initGUI( this, FLAGS_PRESETS | FLAGS_PROGBAR, gui );
     }
 
-    /**
-     *	Transfer values from prop-array to GUI
-     */
-    public void fillGUI()
-    {
+    public void fillGUI() {
         super.fillGUI();
-        super.fillGUI( gui );
+        super.fillGUI(gui);
     }
 
-    /**
-     *	Transfer values from GUI to prop-array
-     */
-    public void fillPropertyArray()
-    {
+    public void fillPropertyArray() {
         super.fillPropertyArray();
-        super.fillPropertyArray( gui );
+        super.fillPropertyArray(gui);
     }
 
 // -------- Processor Interface --------
 
-    protected void process()
-    {
+    protected void process() {
         int					i, j, len, ch, chunkLength;
         long				progOff, progLen;
         float				f1;
@@ -346,8 +331,8 @@ public class LaguerreDlg
         // io
         AudioFile			inF				= null;
         AudioFile			outF			= null;
-        AudioFileDescr			inStream;
-        AudioFileDescr			outStream;
+        AudioFileDescr		inStream;
+        AudioFileDescr		outStream;
         FloatFile[]			floatF			= null;
         File				tempFile[]		= null;
 
@@ -357,136 +342,135 @@ public class LaguerreDlg
         float[]				convBuf1, convBuf2;
         float[]				tempFlt;
 
-        int					inChanNum, inLength, inputStep, outputStep, winSize;
+        long                inLength;
+        int					inChanNum, inputStep, outputStep, winSize;
         int					transLen, skip, inputLen, outputLen, fltLen;
-        int					framesRead, framesWritten;
+        long                framesRead, framesWritten;
         float				warp, a1, b0, b1, x0, x1, y0, y1, b0init;
 
-        Param				ampRef			= new Param( 1.0, Param.ABS_AMP );			// transform-Referenz
+        Param				ampRef			= new Param(1.0, Param.ABS_AMP);    // transform reference
         Param				peakGain;
-        float				gain			= 1.0f;								 		// gain abs amp
+        float				gain			= 1.0f;								// gain abs amp
         float				maxAmp			= 0.0f;
 
         PathField			ggOutput;
 
-topLevel: try {
+    topLevel:
+        try {
 
         // ---- open input, output ----
 
             // input
-            inF				= AudioFile.openAsRead( new File( pr.text[ PR_INPUTFILE ]));
-            inStream		= inF.getDescr();
-            inChanNum		= inStream.channels;
-            inLength		= (int) inStream.length;
+            inF         = AudioFile.openAsRead(new File(pr.text[PR_INPUTFILE]));
+            inStream    = inF.getDescr();
+            inChanNum   = inStream.channels;
+            inLength    = inStream.length;
             // this helps to prevent errors from empty files!
-            if( (inLength * inChanNum) < 1 ) throw new EOFException( ERR_EMPTY );
-        // .... check running ....
-            if( !threadRunning ) break topLevel;
+            if ((inLength * inChanNum) < 1) throw new EOFException(ERR_EMPTY);
+            // .... check running ....
+            if (!threadRunning) break topLevel;
 
             // output
-            ggOutput	= (PathField) gui.getItemObj( GG_OUTPUTFILE );
-            if( ggOutput == null ) throw new IOException( ERR_MISSINGPROP );
-            outStream	= new AudioFileDescr( inStream );
-            ggOutput.fillStream( outStream );
-            outF		= AudioFile.openAsWrite( outStream );
-        // .... check running ....
-            if( !threadRunning ) break topLevel;
+            ggOutput    = (PathField) gui.getItemObj(GG_OUTPUTFILE);
+            if (ggOutput == null) throw new IOException(ERR_MISSINGPROP);
+            outStream   = new AudioFileDescr(inStream);
+            ggOutput.fillStream(outStream);
+            outF        = AudioFile.openAsWrite(outStream);
+            // .... check running ....
+            if (!threadRunning) break topLevel;
 
-        // ---- parameter inits ----
+        // ---- parameter init ----
 
-            warp		= Math.max( -0.98f, Math.min( 0.98f, (float) (pr.para[ PR_WARP ].value / 100) ));	// DAFx2000 'b'
-            f1			= (1.0f - warp) / (1.0f + warp);					// DAFx2000 (25)
-            winSize		= 32 << pr.intg[ PR_FRAMESIZE ];					// DAFx2000 'N'
-            j			= winSize >> 1;
-            transLen	= (int) (f1 * winSize + 0.5f);						// DAFx2000 'P' (26)
-            i			= pr.intg[ PR_OVERLAP ] + 1;
-            while( ((float) transLen / (float) i) > j ) i++;
-            inputStep	= (int) (((float) transLen / (float) i) + 0.5f);	// DAFx2000 'L'
-            fltLen		= Math.max( winSize, transLen );
-// System.out.println( "inputStep "+inputStep+"; winSize "+winSize+"; transLen "+transLen+"; fltLen "+fltLen+"; warp "+warp+"; f1 "+f1 );
-            win			= Filter.createFullWindow( winSize, Filter.WIN_HANNING );		// DAFx2000 (27)
-            outputStep	= inputStep;
+            warp        = Math.max(-0.98f, Math.min(0.98f, (float) (pr.para[PR_WARP].value / 100)));    // DAFx2000 'b'
+            f1          = (1.0f - warp) / (1.0f + warp);                    // DAFx2000 (25)
+            winSize     = 32 << pr.intg[PR_FRAMESIZE];                    // DAFx2000 'N'
+            j           = winSize >> 1;
+            transLen    = (int) (f1 * winSize + 0.5f);                        // DAFx2000 'P' (26)
+            i           = pr.intg[PR_OVERLAP] + 1;
+            while (((float) transLen / (float) i) > j) i++;
+            inputStep   = (int) (((float) transLen / (float) i) + 0.5f);    // DAFx2000 'L'
+            fltLen      = Math.max(winSize, transLen);
+            win         = Filter.createFullWindow(winSize, Filter.WIN_HANNING);        // DAFx2000 (27)
+            outputStep  = inputStep;
 
-            b0init		= (float) Math.sqrt( 1.0f - warp*warp );
+            b0init      = (float) Math.sqrt(1.0f - warp * warp);
 
             progOff		= 0;
-            progLen		= (long) inLength * (2 + inChanNum); // + winSize;
+            progLen		= inLength * (2 + inChanNum); // + winSize;
 
-            tempFlt		= new float[ fltLen ];
-            inputLen	= winSize + inputStep;
-            inBuf		= new float[ inChanNum ][ inputLen ];
-            outputLen	= transLen + outputStep;
-            outBuf		= new float[ inChanNum ][ outputLen ];
+            tempFlt     = new float[fltLen];
+            inputLen    = winSize + inputStep;
+            inBuf       = new float[inChanNum][inputLen];
+            outputLen   = transLen + outputStep;
+            outBuf      = new float[inChanNum][outputLen];
 
             // normalization requires temp files
-            if( pr.intg[ PR_GAINTYPE ] == GAIN_UNITY ) {
-                tempFile	= new File[ inChanNum ];
-                floatF		= new FloatFile[ inChanNum ];
-                for( ch = 0; ch < inChanNum; ch++ ) {		// first zero them because an exception might be thrown
-                    tempFile[ ch ]	= null;
-                    floatF[ ch ]	= null;
+            if (pr.intg[PR_GAINTYPE] == GAIN_UNITY) {
+                tempFile    = new File[inChanNum];
+                floatF      = new FloatFile[inChanNum];
+                for (ch = 0; ch < inChanNum; ch++) {        // first zero them because an exception might be thrown
+                    tempFile[ch] = null;
+                    floatF  [ch] = null;
                 }
-                for( ch = 0; ch < inChanNum; ch++ ) {
-                    tempFile[ ch ]	= IOUtil.createTempFile();
-                    floatF[ ch ]	= new FloatFile( tempFile[ ch ], GenericFile.MODE_OUTPUT );
+                for (ch = 0; ch < inChanNum; ch++) {
+                    tempFile[ch] = IOUtil.createTempFile();
+                    floatF  [ch] = new FloatFile(tempFile[ch], GenericFile.MODE_OUTPUT);
                 }
-                progLen	   += (long) inLength;
+                progLen += inLength;
             } else {
-                gain		= (float) ((Param.transform( pr.para[ PR_GAIN ], Param.ABS_AMP, ampRef, null )).value);
+                gain = (float) ((Param.transform(pr.para[PR_GAIN], Param.ABS_AMP, ampRef, null)).value);
             }
         // .... check running ....
-            if( !threadRunning ) break topLevel;
+            if (!threadRunning) break topLevel;
 
         // ----==================== the real stuff ====================----
 
-            framesRead		= 0;
-            framesWritten	= 0;
+            framesRead		= 0L;
+            framesWritten	= 0L;
             skip			= 0;
 
-            while( threadRunning && (framesWritten < inLength) ) {
+            while (threadRunning && (framesWritten < inLength)) {
 
-                chunkLength = Math.min( inputLen, inLength - framesRead + skip );
-            // ---- read input chunk ----
-                len			 = Math.max( 0, chunkLength - skip );
-                inF.readFrames( inBuf, skip, len );
-                framesRead	+= len;
-                progOff		+= len;
-//				off			+= len;
-            // .... progress ....
-                setProgression( (float) progOff / (float) progLen );
-            // .... check running ....
-                if( !threadRunning ) break topLevel;
+                chunkLength     = (int) Math.min(inputLen, inLength - framesRead + skip);
+                // ---- read input chunk ----
+                len             = Math.max(0, chunkLength - skip);
+                inF.readFrames(inBuf, skip, len);
+                framesRead     += len;
+                progOff        += len;
+                // .... progress ....
+                setProgression((float) progOff / (float) progLen);
+                // .... check running ....
+                if (!threadRunning) break topLevel;
 
                 // zero padding
-                if( chunkLength < inputLen ) {
-                    for( ch = 0; ch < inChanNum; ch++ ) {
-                        convBuf1 = inBuf[ ch ];
-                        for( i = chunkLength; i < convBuf1.length; i++ ) {
-                            convBuf1[ i ] = 0.0f;
+                if (chunkLength < inputLen) {
+                    for (ch = 0; ch < inChanNum; ch++) {
+                        convBuf1 = inBuf[ch];
+                        for (i = chunkLength; i < convBuf1.length; i++) {
+                            convBuf1[i] = 0.0f;
                         }
                     }
                 }
 
-                for( ch = 0; threadRunning && (ch < inChanNum); ch++ ) {
-                    convBuf1 = inBuf[ ch ];
-                    convBuf2 = outBuf[ ch ];
+                for (ch = 0; threadRunning && (ch < inChanNum); ch++) {
+                    convBuf1 = inBuf[ch];
+                    convBuf2 = outBuf[ch];
 
-                    for( i = 0, j = fltLen; i < winSize; i++ ) {
-                        tempFlt[ --j ] = convBuf1[ i ] * win[ i ];
+                    for (i = 0, j = fltLen; i < winSize; i++) {
+                        tempFlt[--j] = convBuf1[i] * win[i];
                     }
-                    while( j > 0 ) {
-                        tempFlt[ --j ] = 0.0f;
+                    while (j > 0) {
+                        tempFlt[--j] = 0.0f;
                     }
 
-                    a1			= -warp;						// inital allpass
+                    a1			= -warp;						// initial allpass
                     b0			= b0init;
                     b1			= 0.0f;
-                    for( j = 0; j < transLen; j++ ) {
+                    for (j = 0; j < transLen; j++) {
                         x1			= 0.0f;
                         y1			= 0.0f;
 
-//						for( i = 0; i < transLen; i++ ) {		// DAFx2000 (2 resp. 3)
-                        for( i = 0; i < fltLen; i++ ) {			// DAFx2000 (2 resp. 3)
+                        for (i = 0; i < fltLen; i++) {            // DAFx2000 (2 resp. 3)
                             x0			= tempFlt[i];
                             y0			= b0*x0 + b1*x1 - a1*y1;
                             tempFlt[i]	= y0;	// (work with double precision while computing cascades)
@@ -502,44 +486,42 @@ topLevel: try {
                     }
                 // .... progress ....
                     progOff += chunkLength - skip;
-                    setProgression( (float) progOff / (float) progLen );
+                    setProgression((float) progOff / (float) progLen);
 
                 } // for channels
             // .... check running ....
-                if( !threadRunning ) break topLevel;
+                if (!threadRunning) break topLevel;
 
-                chunkLength = Math.min( outputStep, inLength - framesWritten );
+                chunkLength = (int) Math.min(outputStep, inLength - framesWritten);
             // ---- write output chunk ----
-                if( floatF != null ) {
-                    for( ch = 0; ch < inChanNum; ch++ ) {
-                        floatF[ ch ].writeFloats( outBuf[ ch ], 0, chunkLength );
+                if (floatF != null) {
+                    for (ch = 0; ch < inChanNum; ch++) {
+                        floatF[ch].writeFloats(outBuf[ch], 0, chunkLength);
                     }
-                    progOff		  += chunkLength;
-//					off			  += len;
+                    progOff       += chunkLength;
                     framesWritten += chunkLength;
-                // .... progress ....
-                    setProgression( (float) progOff / (float) progLen );
+                    // .... progress ....
+                    setProgression((float) progOff / (float) progLen);
 
                 } else {
-                    for( ch = 0; ch < inChanNum; ch++ ) {
-                        Util.mult( outBuf[ ch ], 0, chunkLength, gain );
+                    for (ch = 0; ch < inChanNum; ch++) {
+                        Util.mult(outBuf[ch], 0, chunkLength, gain);
                     }
-                    outF.writeFrames( outBuf, 0, chunkLength );
-                    progOff		  += chunkLength;
-//					off			  += len;
+                    outF.writeFrames(outBuf, 0, chunkLength);
+                    progOff += chunkLength;
                     framesWritten += chunkLength;
-                // .... progress ....
-                    setProgression( (float) progOff / (float) progLen );
+                    // .... progress ....
+                    setProgression((float) progOff / (float) progLen);
                 }
             // .... check running ....
-                if( !threadRunning ) break topLevel;
+                if (!threadRunning) break topLevel;
 
                 // check max amp
-                for( ch = 0; ch < inChanNum; ch++ ) {
-                    convBuf1 = outBuf[ ch ];
-                    for( i = 0; i < chunkLength; i++ ) {
-                        f1 = Math.abs( convBuf1[ i ]);
-                        if( f1 > maxAmp ) {
+                for (ch = 0; ch < inChanNum; ch++) {
+                    convBuf1 = outBuf[ch];
+                    for (i = 0; i < chunkLength; i++) {
+                        f1 = Math.abs(convBuf1[i]);
+                        if (f1 > maxAmp) {
                             maxAmp = f1;
                         }
                     }
@@ -547,37 +529,37 @@ topLevel: try {
 
                 // overlaps
                 skip = winSize;
-                for( ch = 0; ch < inChanNum; ch++ ) {
-                    System.arraycopy( inBuf[ ch ], inputStep, inBuf[ ch ], 0, winSize );
-                    convBuf1 = outBuf[ ch ];
-                    System.arraycopy( convBuf1, outputStep, convBuf1, 0, transLen );
-                    for( i = transLen; i < outputLen; ) {
-                        convBuf1[ i++ ] = 0.0f;
+                for (ch = 0; ch < inChanNum; ch++) {
+                    System.arraycopy(inBuf[ch], inputStep, inBuf[ch], 0, winSize);
+                    convBuf1 = outBuf[ch];
+                    System.arraycopy(convBuf1, outputStep, convBuf1, 0, transLen);
+                    for (i = transLen; i < outputLen; ) {
+                        convBuf1[i++] = 0.0f;
                     }
                 }
 
             } // until framesWritten == outLength
         // .... check running ....
-            if( !threadRunning ) break topLevel;
+            if (!threadRunning) break topLevel;
 
         // ----==================== normalize output ====================----
 
-            if( pr.intg[ PR_GAINTYPE ] == GAIN_UNITY ) {
-                peakGain = new Param( (double) maxAmp, Param.ABS_AMP );
-                gain	 = (float) (Param.transform( pr.para[ PR_GAIN ], Param.ABS_AMP,
-                                    new Param( 1.0 / peakGain.value, peakGain.unit ), null )).value;
-                normalizeAudioFile( floatF, outF, inBuf, gain, 1.0f );
-                maxAmp	*= gain;
+            if (pr.intg[PR_GAINTYPE] == GAIN_UNITY) {
+                peakGain = new Param((double) maxAmp, Param.ABS_AMP);
+                gain = (float) (Param.transform(pr.para[PR_GAIN], Param.ABS_AMP,
+                        new Param(1.0 / peakGain.value, peakGain.unit), null)).value;
+                normalizeAudioFile(floatF, outF, inBuf, gain, 1.0f);
+                maxAmp *= gain;
 
-                for( ch = 0; ch < inChanNum; ch++ ) {
-                    floatF[ ch ].cleanUp();
-                    floatF[ ch ]	= null;
-                    tempFile[ ch ].delete();
-                    tempFile[ ch ]	= null;
+                for (ch = 0; ch < inChanNum; ch++) {
+                    floatF[ch].cleanUp();
+                    floatF[ch] = null;
+                    tempFile[ch].delete();
+                    tempFile[ch] = null;
                 }
             }
         // .... check running ....
-            if( !threadRunning ) break topLevel;
+            if (!threadRunning) break topLevel;
 
         // ---- Finish ----
 
@@ -590,12 +572,10 @@ topLevel: try {
             inBuf		= null;
 
             // inform about clipping/ low level
-            handleClipping( maxAmp );
-        }
-        catch( IOException e1 ) {
-            setError( e1 );
-        }
-        catch( OutOfMemoryError e2 ) {
+            handleClipping(maxAmp);
+        } catch (IOException e1) {
+            setError(e1);
+        } catch (OutOfMemoryError e2) {
             inStream	= null;
             outStream	= null;
             inBuf		= null;
@@ -603,71 +583,69 @@ topLevel: try {
             convBuf2	= null;
             System.gc();
 
-            setError( new Exception( ERR_MEMORY ));
+            setError(new Exception(ERR_MEMORY));
         }
 
     // ---- cleanup (topLevel) ----
-        if( inF != null ) {
+        if (inF != null) {
             inF.cleanUp();
             inF = null;
         }
-        if( outF != null ) {
+        if (outF != null) {
             outF.cleanUp();
             outF = null;
         }
-        if( floatF != null ) {
-            for( ch = 0; ch < floatF.length; ch++ ) {
-                if( floatF[ ch ] != null ) {
-                    floatF[ ch ].cleanUp();
-                    floatF[ ch ] = null;
+        if (floatF != null) {
+            for (ch = 0; ch < floatF.length; ch++) {
+                if (floatF[ch] != null) {
+                    floatF[ch].cleanUp();
+                    floatF[ch] = null;
                 }
-                if( tempFile[ ch ] != null ) {
-                    tempFile[ ch ].delete();
-                    tempFile[ ch ] = null;
+                if (tempFile[ch] != null) {
+                    tempFile[ch].delete();
+                    tempFile[ch] = null;
                 }
             }
         }
     } // process()
 
 
-    protected void reflectPropertyChanges()
-    {
+    protected void reflectPropertyChanges() {
         super.reflectPropertyChanges();
 
-        Component	c;
+        Component c;
 
-        c = gui.getItemObj( GG_WARPMODDEPTH );
-        if( c != null ) {
-            c.setEnabled( pr.bool[ PR_WARPMOD ]);
+        c = gui.getItemObj(GG_WARPMODDEPTH);
+        if (c != null) {
+            c.setEnabled(pr.bool[PR_WARPMOD]);
         }
-        c = gui.getItemObj( GG_WARPENV );
-        if( c != null ) {
-            c.setEnabled( pr.bool[ PR_WARPMOD ]);
+        c = gui.getItemObj(GG_WARPENV);
+        if (c != null) {
+            c.setEnabled(pr.bool[PR_WARPMOD]);
         }
-        c = gui.getItemObj( GG_OUTFREQ );
-        if( c != null ) {
-            c.setEnabled( inRate != 0f );
+        c = gui.getItemObj(GG_OUTFREQ);
+        if (c != null) {
+            c.setEnabled(inRate != 0f);
         }
     }
 
     /**
      *	Set new input file
      */
-    protected void setInput( String fname )
-    {
+    protected void setInput(String fname) {
         AudioFile		f		= null;
         AudioFileDescr	stream	= null;
 
-    // ---- Header lesen ----
+    // ---- read header ----
         try {
-            f		= AudioFile.openAsRead( new File( fname ));
-            stream	= f.getDescr();
+            f = AudioFile.openAsRead(new File(fname));
+            stream = f.getDescr();
             f.close();
 
             inRate = (float) stream.rate;
             recalcOutFreq();
 
-        } catch( IOException e1 ) {
+        } catch (IOException e1) {
             inRate = 0f;
         }
 
@@ -680,13 +658,13 @@ topLevel: try {
         double		omegaIn, omegaOut, warp;
         ParamField	ggOutFreq;
 
-        omegaIn		= pr.para[ PR_INFREQ ].value / inRate * Constants.PI2;
-        warp		= Math.max( -0.98, Math.min( 0.98, pr.para[ PR_WARP ].value / 100 ));	// DAFx2000 'b'
-        omegaOut	= omegaIn + 2 * Math.atan2( warp * Math.sin( omegaIn ), 1.0 - warp * Math.cos( omegaIn ));
+        omegaIn     = pr.para[PR_INFREQ].value / inRate * Constants.PI2;
+        warp        = Math.max(-0.98, Math.min(0.98, pr.para[PR_WARP].value / 100));    // DAFx2000 'b'
+        omegaOut    = omegaIn + 2 * Math.atan2(warp * Math.sin(omegaIn), 1.0 - warp * Math.cos(omegaIn));
 
-        ggOutFreq	= (ParamField) gui.getItemObj( GG_OUTFREQ );
-        if( ggOutFreq != null ) {
-            ggOutFreq.setParam( new Param( omegaOut / Constants.PI2 * inRate, Param.ABS_HZ ));
+        ggOutFreq   = (ParamField) gui.getItemObj(GG_OUTFREQ);
+        if (ggOutFreq != null) {
+            ggOutFreq.setParam(new Param(omegaOut / Constants.PI2 * inRate, Param.ABS_HZ));
         }
     }
 
@@ -696,14 +674,14 @@ topLevel: try {
         double		omegaIn, omegaOut, warp, d1;
         ParamField	ggWarp;
 
-        omegaIn		= pr.para[ PR_INFREQ ].value / inRate * Constants.PI2;
-        omegaOut	= pr.para[ PR_OUTFREQ ].value / inRate * Constants.PI2;
-        d1			= Math.tan( (omegaOut - omegaIn) / 2 );
-        warp		= Math.max( -0.98, Math.min( 0.98, d1 / (Math.sin( omegaIn ) + Math.cos( omegaIn ) * d1 )));	// DAFx2000 'b'
+        omegaIn     = pr.para[PR_INFREQ ].value / inRate * Constants.PI2;
+        omegaOut    = pr.para[PR_OUTFREQ].value / inRate * Constants.PI2;
+        d1          = Math.tan((omegaOut - omegaIn) / 2);
+        warp        = Math.max(-0.98, Math.min(0.98, d1 / (Math.sin(omegaIn) + Math.cos(omegaIn) * d1)));    // DAFx2000 'b'
 
-        ggWarp		= (ParamField) gui.getItemObj( GG_WARP );
-        if( ggWarp != null ) {
-            ggWarp.setParam( new Param( warp * 100, Param.FACTOR ));
+        ggWarp = (ParamField) gui.getItemObj(GG_WARP);
+        if (ggWarp != null) {
+            ggWarp.setParam(new Param(warp * 100, Param.FACTOR));
         }
     }
 }

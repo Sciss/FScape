@@ -635,8 +635,8 @@ ggCorrFine.setEnabled( false ); // XXX
             timeBuf		= null;
             xfadeBuf    = new float[inChanNum][maxXFade];
 
-            if( pr.bool[ PR_MARKERS ]) {	// now got it
-                outF	= AudioFile.openAsWrite( outStream );
+            if (pr.bool[PR_MARKERS]) {    // now got it
+                outF = AudioFile.openAsWrite(outStream);
             }
 
             lastCut = inLength;
@@ -672,7 +672,7 @@ ggCorrFine.setEnabled( false ); // XXX
                     fftBuf1     = fftBuf2;
                     fftBuf2     = convBuf1;
 
-                // ---------- xfade part ----------
+                // ---------- x-fade part ----------
                     if (i > 0) {
                         n	= lastCut - corrLength;
                         off	= 0;
