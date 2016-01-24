@@ -44,60 +44,53 @@ public abstract class AbstractRenderPlugIn
     /**
      *	Sub-classes should call super.init() !
      */
-    public void init( /* Document doc, */ Preferences prefs )
-    {
+    public void init(Preferences prefs) {
         // nothing
     }
 
     /**
      *	Sub-classes should call super.init() !
      */
-    public void dispose()
-    {
+    public void dispose() {
         // nothing
     }
 
     /**
      *	Default behaviour : returns null (no GUI)
      */
-    public JComponent getSettingsView( RenderContext context )
-    {
+    public JComponent getSettingsView(RenderContext context) {
         return null;
     }
 
     /**
      *	Default behaviour : simply calls consumer.consumerBegin()
      */
-    public boolean producerBegin( RenderContext context, RenderSource source )
-    throws IOException
-    {
-        return context.getConsumer().consumerBegin( context, source );
+    public boolean producerBegin(RenderContext context, RenderSource source)
+            throws IOException {
+        return context.getConsumer().consumerBegin(context, source);
     }
 
     /**
      *	Default behaviour : simply calls consumer.consumerRender(), i.e. bypass
      */
-    public boolean producerRender( RenderContext context, RenderSource source )
-    throws IOException
-    {
-        return context.getConsumer().consumerRender( context, source );
+    public boolean producerRender(RenderContext context, RenderSource source)
+            throws IOException {
+        return context.getConsumer().consumerRender(context, source);
     }
 
     /**
      *	Default behaviour : simply calls consumer.consumerFinish()
      */
-    public boolean producerFinish( RenderContext context, RenderSource source )
-    throws IOException
-    {
-        return context.getConsumer().consumerFinish( context, source );
+    public boolean producerFinish(RenderContext context, RenderSource source)
+            throws IOException {
+        return context.getConsumer().consumerFinish(context, source);
     }
 
     /**
      *	Default behaviour : simply calls consumer.consumerCancel()
      */
-    public void producerCancel( RenderContext context, RenderSource source )
-    throws IOException
-    {
-        context.getConsumer().consumerCancel( context, source );
+    public void producerCancel(RenderContext context, RenderSource source)
+            throws IOException {
+        context.getConsumer().consumerCancel(context, source);
     }
 }

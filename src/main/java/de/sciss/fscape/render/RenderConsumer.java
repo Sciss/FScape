@@ -9,17 +9,12 @@
  *
  *	For further information, please contact Hanns Holger Rutz at
  *	contact@sciss.de
- *
- *
- *  Changelog:
- *		14-Jul-05   created from de.sciss.meloncillo.render.RenderConsumer
- *		??-???-??	copied from eisenkraut
  */
 
 //package de.sciss.eisenkraut.render;
 package de.sciss.fscape.render;
 
-import java.io.*;
+import java.io.IOException;
 
 /**
  *	Classes implementing this interface
@@ -30,13 +25,12 @@ import java.io.*;
  *	unlike <code>RenderPlugIn</code>, the
  *	consumer cannot specify itself which
  *	data it wishes to receive (pull)
- *	but is provided with a preconfigured
+ *	but is provided with a pre-configured
  *	source object and requests (push).
  */
-public interface RenderConsumer
-{
+public interface RenderConsumer {
     /**
-     *	Initiates the consumation.
+     *	Initiates the consumption.
      *	The consumer should check the source's
      *	request fields to find out which
      *	data is to be written out.
@@ -45,12 +39,12 @@ public interface RenderConsumer
      *	@param	source	render source featuring
      *					the target requests
      *	@return	<code>false</code> if an error occurs
-     *			and consumation should be aborted
+     *			and consumption should be aborted
      *
      *	@throws	IOException	if a read/write error occurs
      */
-    public boolean consumerBegin( RenderContext context, RenderSource source )
-    throws IOException;
+    public boolean consumerBegin(RenderContext context, RenderSource source)
+            throws IOException;
 
     /**
      *	Requests the consumer to consume a block of rendered data.
@@ -59,12 +53,12 @@ public interface RenderConsumer
      *	@param	source	render source featuring
      *					the target requests and the rendered data block.
      *	@return	<code>false</code> if an error occurs
-     *			and consumation should be aborted
+     *			and consumption should be aborted
      *
      *	@throws	IOException	if a read/write error occurs
      */
-    public boolean consumerRender( RenderContext context, RenderSource source )
-    throws IOException;
+    public boolean consumerRender(RenderContext context, RenderSource source)
+            throws IOException;
 
     /**
      *	Tells the consumer to finish consumption.
@@ -73,12 +67,12 @@ public interface RenderConsumer
      *	@param	context	render context
      *	@param	source	render source
      *	@return	<code>false</code> if an error occurs
-     *			and consumation should be aborted
+     *			and consumption should be aborted
      *
      *	@throws	IOException	if a read/write error occurs
      */
-    public boolean consumerFinish( RenderContext context, RenderSource source )
-    throws IOException;
+    public boolean consumerFinish(RenderContext context, RenderSource source)
+            throws IOException;
 
     /**
      *	Tells the consumer that the rendering was
@@ -89,6 +83,6 @@ public interface RenderConsumer
      *
      *	@throws	IOException	if a read/write error occurs
      */
-    public void consumerCancel( RenderContext context, RenderSource source )
-    throws IOException;
+    public void consumerCancel(RenderContext context, RenderSource source)
+            throws IOException;
 }

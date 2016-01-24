@@ -26,8 +26,7 @@ package de.sciss.fscape.render;
  *	for progress bar and exception
  *	display.
  */
-public interface RenderHost
-{
+public interface RenderHost {
     /**
      *	Called by the plug-in to
      *	request a message display
@@ -40,7 +39,7 @@ public interface RenderHost
      *	@see	javax.swing.JOptionPane#ERROR_MESSAGE
      *	@see	javax.swing.JOptionPane#INFORMATION_MESSAGE
      */
-    public void	showMessage( int type, String text );
+    public void showMessage(int type, String text);
 
     /**
      *	Determines if the host is active
@@ -57,7 +56,7 @@ public interface RenderHost
      *				to 0.0 ... 1.0 . use -1 for
      *				indeterminate mode
      */
-    public void setProgression( float p );
+    public void setProgression(float p);
 
     /**
      *	Saves the last internally caught exception.
@@ -66,5 +65,5 @@ public interface RenderHost
      *
      *	@param	e	the recently caught exception
      */
-    public void setException( Exception e );
+    public void setException(Exception e);
 }

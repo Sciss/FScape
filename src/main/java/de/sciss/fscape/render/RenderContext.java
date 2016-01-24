@@ -21,9 +21,11 @@
 //package de.sciss.eisenkraut.render;
 package de.sciss.fscape.render;
 
-import java.util.*;
+import de.sciss.io.Span;
 
-import de.sciss.io.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
 /**
  *	This class contains static information
@@ -34,15 +36,14 @@ import de.sciss.io.*;
  *	communication through setting of map
  *	entries.
  */
-public class RenderContext
-{
+public class RenderContext {
     /**
      *  This variable is merely
      *  for free use by the plugin.
      *  It can be used to store variables
      *  so they needn't be global.
      */
-    public final HashMap  moduleMap  = new HashMap();
+    public final HashMap moduleMap = new HashMap();
 
     /**
      *  Key: Minimum required Blocksize<br>
@@ -104,8 +105,6 @@ public class RenderContext
      *
      *  @param  host				the object responsible for hosting
      *								the rendering process
-     *  @param  collReceivers		the receivers involved in the rendering
-     *  @param  collTransmitters	the transmitters involved in the rendering
      *  @param  time				the time span to render
      *  @param  sourceRate			the source sense data rate
      *
@@ -113,9 +112,8 @@ public class RenderContext
      *				the caller is responsible for ensuring their
      *				constancy.
      */
-    public RenderContext( RenderHost host, RenderConsumer consumer, java.util.List tracks,
-                          Span time, float sourceRate )
-    {
+    public RenderContext(RenderHost host, RenderConsumer consumer, java.util.List tracks,
+                         Span time, float sourceRate) {
         this.host			= host;
         this.consumer		= consumer;
         this.tracks			= tracks;
@@ -130,22 +128,19 @@ public class RenderContext
      *	@return		the plug-in host as passed to
      *				the constructor
      */
-    public RenderHost getHost()
-    {
+    public RenderHost getHost() {
         return host;
     }
 
     /**
      */
-    public RenderConsumer getConsumer()
-    {
+    public RenderConsumer getConsumer() {
         return consumer;
     }
 
     /**
      */
-    public java.util.List getTracks()
-    {
+    public java.util.List getTracks() {
         return tracks;
     }
 
@@ -154,8 +149,7 @@ public class RenderContext
      *
      *	@return	the rendering time span as passed to the constructor
      */
-    public Span getTimeSpan()
-    {
+    public Span getTimeSpan() {
         return time;
     }
 
@@ -164,8 +158,7 @@ public class RenderContext
      *
      *	@return	the source rate (in hertz) as passed to the constructor
      */
-    public float getSourceRate()
-    {
+    public float getSourceRate() {
         return sourceRate;
     }
 
@@ -177,8 +170,7 @@ public class RenderContext
      *
      *	@param	sourceBlockSize	the new block size in frames
      */
-    public void setSourceBlockSize( int sourceBlockSize )
-    {
+    public void setSourceBlockSize(int sourceBlockSize) {
         this.sourceBlockSize = sourceBlockSize;
     }
 
@@ -189,8 +181,7 @@ public class RenderContext
      *
      *	@return		the block size in frames
      */
-    public int getSourceBlockSize()
-    {
+    public int getSourceBlockSize() {
         return sourceBlockSize;
     }
 
@@ -206,10 +197,9 @@ public class RenderContext
      *					should "know" what kind of key required what
      *					kind of value class
      */
-    public void setOption( Object key, Object value )
-    {
-        options.put( key, value );
-        modifiedOptions.add( key );
+    public void setOption(Object key, Object value) {
+        options.put(key, value);
+        modifiedOptions.add(key);
     }
 
     /**
@@ -220,10 +210,9 @@ public class RenderContext
      *					are copied to the context options and
      *					appear in the modified options list
      */
-    public void setOptions( Map map )
-    {
-        options.putAll( map );
-        modifiedOptions.addAll( map.keySet() );
+    public void setOptions(Map map) {
+        options.putAll(map);
+        modifiedOptions.addAll(map.keySet());
     }
 
     /**
@@ -232,9 +221,8 @@ public class RenderContext
      *	@return		the value corresponding to the key
      *				or null if the option wasn't set.
      */
-    public Object getOption( Object key )
-    {
-        return options.get( key );
+    public Object getOption(Object key) {
+        return options.get(key);
     }
 
     /**
@@ -249,9 +237,8 @@ public class RenderContext
      *	@return	a set of keys which were modified
      *			since the last invocation of this method
      */
-    public java.util.Set getModifiedOptions()
-    {
-        java.util.Set result = new HashSet( modifiedOptions );
+    public java.util.Set getModifiedOptions() {
+        java.util.Set result = new HashSet(modifiedOptions);
         modifiedOptions.clear();
 
         return result;

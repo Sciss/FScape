@@ -19,12 +19,12 @@
 //package de.sciss.eisenkraut.render;
 package de.sciss.fscape.render;
 
+import javax.swing.*;
 import java.io.IOException;
-import java.util.prefs.*;
-import javax.swing.JComponent;
+import java.util.prefs.Preferences;
 
-public interface RenderPlugIn
-{
+public interface RenderPlugIn {
+
     public String getName();
     public boolean hasUserParameters();
     public boolean shouldDisplayParameters();
@@ -33,7 +33,7 @@ public interface RenderPlugIn
      *  This gets called right after the
      *  instantiation of a new render module
      */
-    public void init( Preferences prefs );
+    public void init(Preferences prefs);
 
     public void dispose();
 
@@ -56,7 +56,7 @@ public interface RenderPlugIn
      *			GUI elements which will be attached to the
      *			host frame.
      */
-    public JComponent getSettingsView( RenderContext context );
+    public JComponent getSettingsView(RenderContext context);
 
     /**
      *  Begins the rendering. If the parameters are
@@ -81,13 +81,13 @@ public interface RenderPlugIn
      *
      *	@throws	IOException	if a read/write error occurs
      */
-    public boolean producerBegin( RenderContext context, RenderSource source )
-    throws IOException;
+    public boolean producerBegin(RenderContext context, RenderSource source)
+            throws IOException;
 
     /**
      *  Renders some output from the provided block of
-     *  sense data. Options like target samplerate or
-     *  blocksize are considered to be set in beginRender()
+     *  sense data. Options like target sample-rate or
+     *  block size are considered to be set in beginRender()
      *  and thus it's not guaranteed that the host check
      *  a modification of these values. The module should
      *  invoke host.setProgression() if possible allowing
@@ -101,8 +101,8 @@ public interface RenderPlugIn
      *
      *	@throws	IOException	if a read/write error occurs
      */
-    public boolean producerRender( RenderContext context, RenderSource source )
-    throws IOException;
+    public boolean producerRender(RenderContext context, RenderSource source)
+            throws IOException;
 
     /**
      *  Allows the render module to perform any necessary
@@ -116,8 +116,8 @@ public interface RenderPlugIn
      *
      *	@throws	IOException	if a read/write error occurs
      */
-    public boolean producerFinish( RenderContext context, RenderSource source )
-    throws IOException;
+    public boolean producerFinish(RenderContext context, RenderSource source)
+            throws IOException;
 
     /**
      *  Tells the module that the rendering was aborted.
@@ -129,6 +129,6 @@ public interface RenderPlugIn
      *
      *	@throws	IOException	if a read/write error occurs
      */
-    public void producerCancel( RenderContext context, RenderSource source )
-    throws IOException;
+    public void producerCancel(RenderContext context, RenderSource source)
+            throws IOException;
 }

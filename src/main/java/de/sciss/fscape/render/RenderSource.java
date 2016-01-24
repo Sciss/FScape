@@ -9,18 +9,11 @@
  *
  *	For further information, please contact Hanns Holger Rutz at
  *	contact@sciss.de
- *
- *
- *  Changelog:
- *		14-Jul-05   created from de.sciss.meloncillo.render.RenderSource
- *		31-Aug-05	adds clipboard support (quick + dirty)
- *		??-???-??	copied from eisenkraut
  */
 
-//package de.sciss.eisenkraut.render;
 package de.sciss.fscape.render;
 
-import de.sciss.io.*;
+import de.sciss.io.Span;
 
 /**
  *  A RenderSource describes the source
@@ -32,9 +25,8 @@ import de.sciss.io.*;
  *  described by a transmitter trajectory)
  *  and trajectory data of a transmitter.
  */
-public class RenderSource
-{
-    public final int		numChannels;
+public class RenderSource {
+    public final int numChannels;
 
     /**
      *  The blockSpan describes the
@@ -64,37 +56,30 @@ public class RenderSource
 
     /**
      *  Constructs a new RenderSource, where
-     *  the arrays are preallocated for the
-     *  given number of transmitters and receivers.
+     *  the arrays are pre-allocated for the
+     *  given number of channels.
      *  Note that the final vectors are not
-     *  initialized, i.e. senseBlockBuf will
-     *  become new float[numTrns][numRcv][] etc.
-     *  All request fields are set to false by default.
-     *
-     *	@param	numTrns	number of transmitters used for rendering
-     *	@param	numRcv	number of receivers used for rendering
+     *  initialized, i.e. blockBuf will
+     *  become new float[numChannels][] etc.
      */
-    public RenderSource( int numChannels )
-    {
-        this.numChannels	= numChannels;
-        blockBuf			= new float[ numChannels ][];
+    public RenderSource(int numChannels) {
+        this.numChannels    = numChannels;
+        blockBuf            = new float[numChannels][];
     }
 
     /**
      *  Constructs a new RenderSource by
      *  copying a template. Note that the
      *  vectors themselves are not allocated
-     *  just like in the RenderSource( int numTrns, int numRcv )
-     *  constructor! However, the requests
-     *  are copied 1:1 to the new RenderSource.
+     *  just like in the `RenderSource(int numChannels)`
+     *  constructor!
      *
      *	@param	template	a template request whose dimensions
      *						and requests are copied to the newly
      *						created render source
      */
-    public RenderSource( RenderSource template )
-    {
-        this.numChannels	= template.numChannels;
-        blockBuf			= new float[ numChannels ][];
+    public RenderSource(RenderSource template) {
+        this.numChannels    = template.numChannels;
+        blockBuf            = new float[numChannels][];
     }
 }

@@ -93,7 +93,7 @@ public class AnalysisOp
 
     private static final String	prText[]		= { "" };
     private static final String	prTextName[]	= { PRN_FILENAME };
-    private static final int		prIntg[]		= { 6, 0, 0, 2, TYPE_FFT };
+    private static final int		prIntg[]	= { 6, 0, 0, 2, TYPE_FFT };
     private static final String	prIntgName[]	= { PRN_FFTLENGTH, PRN_OVERSMP, PRN_WINDOW, PRN_OVERLAP,
                                                         PRN_TYPE };
     private static final boolean	prBool[]	= { false, false, true };
@@ -432,8 +432,8 @@ for( i = 0; i <= Filter.WIN_MAX; i++ ) {
                     convBuf1 = inBuf[ch];
 
                     switch (pr.intg[PR_TYPE]) {
-                        case TYPE_CZT:                                // -------------------- CZT --------------------
-                            if (pr.bool[PR_ROTATE]) {
+                    case TYPE_CZT:                                // -------------------- CZT --------------------
+                        if (pr.bool[PR_ROTATE]) {
 
                             // we shift the origin so that the middle smp of inBuf becomes fftBuf[ 0 ],
                             //   this gives better phasograms
