@@ -170,33 +170,32 @@ topLevel:
 
             // ------------------------------ Hauptschleife ------------------------------
             runSlotsReady();
-mainLoop:	while( !threadDead ) {
-            // ---------- Frame einlesen ----------
-                for( readDone = 0; (readDone < 2) && !threadDead; ) {
+        mainLoop:
+            while (!threadDead) {
+                // ---------- Frame einlesen ----------
+                for (readDone = 0; (readDone < 2) && !threadDead; ) {
                     oldReadDone = readDone;
-                    for( i = 0; i < 2; i++ ) {
+                    for (i = 0; i < 2; i++) {
                         try {
-                            if( runInStream[ i ].framesReadable() > 0 ) {
-                                runInFr[ i ] = runInSlot[ i ].readFrame();
+                            if (runInStream[i].framesReadable() > 0) {
+                                runInFr[i] = runInSlot[i].readFrame();
                                 readDone++;
                             }
-                        }
-                        catch( InterruptedException ignored) {}
-                        catch( EOFException e ) {
+                        } catch (InterruptedException ignored) {
+                        } catch (EOFException e) {
                             break mainLoop;
                         }
                         runCheckPause();
                     }
 
-                    if( oldReadDone == readDone ) {		// konnte nix gelesen werden
+                    if (oldReadDone == readDone) {        // konnte nix gelesen werden
                         try {
-                             Thread.sleep( 500 );	// ...deshalb kurze Pause
-                        }
-                        catch( InterruptedException ignored) {}	// mainLoop wird gleich automatisch verlassen
+                            Thread.sleep(500);    // ...deshalb kurze Pause
+                        } catch (InterruptedException ignored) {}    // mainLoop wird gleich automatisch verlassen
                         runCheckPause();
                     }
                 }
-                if( threadDead ) break mainLoop;
+                if (threadDead) break mainLoop;
 
                 runOutFr	= runOutStream.allocFrame();
 

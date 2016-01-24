@@ -373,8 +373,7 @@ public class SplitterOp
                     if (oldWriteDone == writeDone) {    // nothing could be written
                         try {
                             Thread.sleep(500);    // ...thus pause shortly
-                        } catch (InterruptedException ignored) {
-                        }    // mainLoop will soon be automatically exited
+                        } catch (InterruptedException ignored) {}    // mainLoop will soon be automatically exited
                         runCheckPause();
                     }
                 }

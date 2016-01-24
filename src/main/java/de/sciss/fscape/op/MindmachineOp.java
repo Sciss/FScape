@@ -208,11 +208,10 @@ mainLoop:	while( !threadDead ) {
                         runCheckPause();
                     }
 
-                    if( oldReadDone == readDone ) {		// konnte nix gelesen werden
+                    if (oldReadDone == readDone) {        // konnte nix gelesen werden
                         try {
-                             Thread.sleep( 500 );	// ...deshalb kurze Pause
-                        }
-                        catch( InterruptedException ignored) {}	// mainLoop wird gleich automatisch verlassen
+                            Thread.sleep(500);    // ...deshalb kurze Pause
+                        } catch (InterruptedException ignored) {}    // mainLoop wird gleich automatisch verlassen
                         runCheckPause();
                     }
                 }

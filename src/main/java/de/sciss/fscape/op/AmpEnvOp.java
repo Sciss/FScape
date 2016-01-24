@@ -121,69 +121,67 @@ public class AmpEnvOp
     topLevel:
         try {
             // ------------------------------ Input-Slot ------------------------------
-            runInSlot = slots.elementAt( SLOT_INPUT );
-            if( runInSlot.getLinked() == null ) {
-                runStop();	// -> threadDead = true
+            runInSlot = slots.elementAt(SLOT_INPUT);
+            if (runInSlot.getLinked() == null) {
+                runStop();    // -> threadDead = true
             }
-            for( boolean initDone = false; !initDone && !threadDead; ) {
+            for (boolean initDone = false; !initDone && !threadDead; ) {
                 try {
-                    runInStream	= runInSlot.getDescr();	// throws InterruptedException
+                    runInStream = runInSlot.getDescr();    // throws InterruptedException
                     initDone = true;
+                } catch (InterruptedException ignored) {
                 }
-                catch( InterruptedException ignored) {}
                 runCheckPause();
             }
-            if( threadDead ) break topLevel;
+            if (threadDead) break topLevel;
 
             // ------------------------------ Output-Slot ------------------------------
-            runOutSlot	= slots.elementAt( SLOT_OUTPUT );
-            runOutStream = new SpectStream( runInStream );
-            runOutSlot.initWriter( runOutStream );
+            runOutSlot = slots.elementAt(SLOT_OUTPUT);
+            runOutStream = new SpectStream(runInStream);
+            runOutSlot.initWriter(runOutStream);
 
             // ------------------------------ init ------------------------------
 
             // create modulators
-            final Modulator envMod = new Modulator( new Param( 0.0, Param.ABS_AMP ), new Param( 1.0, Param.ABS_AMP ),
-                                             pr.envl[ PR_ENV ], runInStream );
+            final Modulator envMod = new Modulator(new Param(0.0, Param.ABS_AMP), new Param(1.0, Param.ABS_AMP),
+                    pr.envl[PR_ENV], runInStream);
 
             runSlotsReady();
             // ------------------------------ main process ------------------------------
         mainLoop:
-            while( !threadDead ) {
+            while (!threadDead) {
                 gain = (float) envMod.calc().value;
 
-                for( boolean readDone = false; (!readDone) && !threadDead; ) {
+                for (boolean readDone = false; (!readDone) && !threadDead; ) {
                     try {
-                        runInFr		= runInSlot.readFrame();	// throws InterruptedException
-                        readDone	= true;
-                        runOutFr	= runOutStream.allocFrame();
-                    }
-                    catch( InterruptedException ignored) {}
-                    catch( EOFException e ) {
+                        runInFr     = runInSlot.readFrame();    // throws InterruptedException
+                        readDone    = true;
+                        runOutFr    = runOutStream.allocFrame();
+                    } catch (InterruptedException ignored) {
+                    } catch (EOFException e) {
                         break mainLoop;
                     }
                     runCheckPause();
                 }
-                if( threadDead ) break mainLoop;
+                if (threadDead) break mainLoop;
 
-                Util.copy( runInFr.data, 0, runOutFr.data, 0, runInStream.bands << 1 );
-                for( int ch = 0; ch < runInStream.chanNum; ch++ ) {		// alle Kanaele
-                    convBuf1 = runOutFr.data[ ch ];
-                    for( int i = 0, j = 0; j < runInStream.bands; i += 2, j++ ) {
-                        convBuf1[ i ] *= gain;
+                Util.copy(runInFr.data, 0, runOutFr.data, 0, runInStream.bands << 1);
+                for (int ch = 0; ch < runInStream.chanNum; ch++) {        // alle Kanaele
+                    convBuf1 = runOutFr.data[ch];
+                    for (int i = 0, j = 0; j < runInStream.bands; i += 2, j++) {
+                        convBuf1[i] *= gain;
                     }
                 }
 
-                runInSlot.freeFrame( runInFr );
+                runInSlot.freeFrame(runInFr);
 
-                for( boolean writeDone = false; (!writeDone) && !threadDead; ) {
-                    try {	// Unterbrechung
-                        runOutSlot.writeFrame( runOutFr );	// throws InterruptedException
+                for (boolean writeDone = false; (!writeDone) && !threadDead; ) {
+                    try {    // Unterbrechung
+                        runOutSlot.writeFrame(runOutFr);    // throws InterruptedException
                         writeDone = true;
-                        runFrameDone( runOutSlot, runOutFr  );
-                        runOutStream.freeFrame( runOutFr );
-                    }
-                    catch( InterruptedException ignored) {}	// mainLoop wird eh gleich verlassen
+                        runFrameDone(runOutSlot, runOutFr);
+                        runOutStream.freeFrame(runOutFr);
+                    } catch (InterruptedException ignored) {}    // mainLoop wird eh gleich verlassen
                     runCheckPause();
                 }
             }
@@ -191,17 +189,15 @@ public class AmpEnvOp
             runInStream.closeReader();
             runOutStream.closeWriter();
 
-        }
-        catch( IOException e ) {
-            runQuit( e );
+        } catch (IOException e) {
+            runQuit(e);
             return;
-        }
-        catch( SlotAlreadyConnectedException e ) {
-            runQuit( e );
+        } catch (SlotAlreadyConnectedException e) {
+            runQuit(e);
             return;
         }
 
-        runQuit( null );
+        runQuit(null);
     }
 
 // -------- GUI methods --------

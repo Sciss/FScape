@@ -13,19 +13,21 @@
 
 package de.sciss.fscape.spect;
 
-import java.io.*;
-import java.rmi.*;
-import java.util.*;
+import de.sciss.fscape.gui.Spectrogram;
+import de.sciss.fscape.op.Operator;
+import de.sciss.fscape.op.SlotAlreadyConnectedException;
+import de.sciss.fscape.util.Slots;
 
-import de.sciss.fscape.gui.*;
-import de.sciss.fscape.op.*;
-import de.sciss.fscape.util.*;
+import java.io.IOException;
+import java.io.SyncFailedException;
+import java.rmi.NotBoundException;
+import java.util.NoSuchElementException;
 
 /**
- *	Verwaltung eines Klangstrom-Slots
+ *	Administration of a spectral stream slot
  */
-public class SpectStreamSlot
-{
+public class SpectStreamSlot {
+
 // -------- public variables --------
 
     public static final int	STATE_UNKNOWN	= 0;
@@ -34,13 +36,13 @@ public class SpectStreamSlot
     public static final int	STATE_WAITING	= 3;
     public static final int	STATE_DUMMY		= 4;	// kein Reader verlinkt
 
-    public int state = STATE_UNKNOWN;		// signalisert ggf. Warte-Prozesse
+    public int state = STATE_UNKNOWN;		        // signalisert ggf. Warte-Prozesse
                                                     // ZUGRIFF NUR IN SYNCHRONIZED( THIS) BLOCK
 
 // -------- private variables --------
 
-    protected int					flags;		// SLOTS_...
-    protected String				name;		// wird zurueckgegeben ueber toString()
+    protected int					flags;		    // SLOTS_...
+    protected String				name;		    // wird zurueckgegeben ueber toString()
     protected Operator				owner;
     protected Thread				ownerThread	= null;
 
@@ -52,36 +54,19 @@ public class SpectStreamSlot
     protected static final String ERR_STILLINUSE	= "Slot still in use";
 
 // -------- public methods --------
-    // public int getFlags();
-    // public String toString();
-    // public Operator getOwner();
-    // public SpectStreamSlot getLinked();
-    // public void linkTo( SpectStreamSlot dest );
-    // public void divorce();
-
-    // public Thread getOwnerThread();
-    // public void initWriter( SpectStream stream );
-    // public SpectStream getDescr();
-    // public void createSpectrogram();
-    // public float[] readFrame();
-    // public void writeFrame( float frame[] );
-    // public void freeFrame( float frame[] );
-    // public void cleanUp();
 
     /**
      *	@param type	Typ wie z.B. Slots.SLOTS_READER
      */
-    public SpectStreamSlot( Operator owner, int type, String name )
-    {
-        flags		= (type & Slots.SLOTS_TYPEMASK) | Slots.SLOTS_FREE;	// unlinked so far
-        this.name	= name;
-        this.owner	= owner;
+    public SpectStreamSlot(Operator owner, int type, String name) {
+        flags       = (type & Slots.SLOTS_TYPEMASK) | Slots.SLOTS_FREE;    // unlinked so far
+        this.name   = name;
+        this.owner  = owner;
     }
 
-    public SpectStreamSlot( Operator owner, int type )
-    {
-        this( owner, type, (type & Slots.SLOTS_TYPEMASK) == Slots.SLOTS_READER ?
-            Slots.SLOTS_DEFREADER : Slots.SLOTS_DEFWRITER );
+    public SpectStreamSlot(Operator owner, int type) {
+        this(owner, type, (type & Slots.SLOTS_TYPEMASK) == Slots.SLOTS_READER ?
+                Slots.SLOTS_DEFREADER : Slots.SLOTS_DEFWRITER);
     }
 
     public int getFlags()
@@ -112,15 +97,14 @@ public class SpectStreamSlot
     /**
      *	Verknuepft diesen Slot mit einem anderen
      */
-    public void linkTo( SpectStreamSlot dest )
-    throws	SyncFailedException,
-            SlotAlreadyConnectedException
-    {
-        if( (this.linked != null) || (dest.linked != null) ) {
+    public void linkTo(SpectStreamSlot dest)
+            throws SyncFailedException,
+            SlotAlreadyConnectedException {
+        if ((this.linked != null) || (dest.linked != null)) {
             throw new SlotAlreadyConnectedException();
         }
-        if( (this.flags & Slots.SLOTS_TYPEMASK) == (dest.flags & Slots.SLOTS_TYPEMASK) ) {
-            throw new SyncFailedException( "" );
+        if ((this.flags & Slots.SLOTS_TYPEMASK) == (dest.flags & Slots.SLOTS_TYPEMASK)) {
+            throw new SyncFailedException("");
         }
         this.linked = dest;
         this.flags |= Slots.SLOTS_LINKED;
@@ -134,15 +118,14 @@ public class SpectStreamSlot
      *	Trennt diesen Slot von seinem Counterpart
      */
     public void divorce()
-    throws NotBoundException
-    {
-        if( linked != null ) {
-            linked.linked  = null;
-            linked.flags  &= ~Slots.SLOTS_LINKED;
-            linked.flags  |= Slots.SLOTS_FREE;
-            this.linked    = null;
-            this.flags	  &= ~Slots.SLOTS_LINKED;
-            this.flags	  |= Slots.SLOTS_FREE;
+            throws NotBoundException {
+        if (linked != null) {
+            linked.linked = null;
+            linked.flags &= ~Slots.SLOTS_LINKED;
+            linked.flags |= Slots.SLOTS_FREE;
+            this.linked = null;
+            this.flags &= ~Slots.SLOTS_LINKED;
+            this.flags |= Slots.SLOTS_FREE;
         } else {
             throw new NotBoundException();
         }
@@ -162,24 +145,23 @@ public class SpectStreamSlot
      *
      *	erzeugt eine SlotAlreadyConnectedException, wenn der Slot bereits einen Stream fuehrt
      */
-    public void initWriter( SpectStream strm )
-    throws SlotAlreadyConnectedException
-    {
-        synchronized( this ) {
-            if( stream != null ) {			// nanu, schon ein Stream praesent?!
-                throw new SlotAlreadyConnectedException( ERR_STILLINUSE );
+    public void initWriter(SpectStream strm)
+            throws SlotAlreadyConnectedException {
+        synchronized (this) {
+            if (stream != null) {            // nanu, schon ein Stream praesent?!
+                throw new SlotAlreadyConnectedException(ERR_STILLINUSE);
             }
             strm.initWriter();
-            ownerThread	= Thread.currentThread();
-            stream		= strm;
-            state		= STATE_ACTIVE;
+            ownerThread = Thread.currentThread();
+            stream = strm;
+            state = STATE_ACTIVE;
         }
 
-        if( linked != null ) {
-            synchronized( linked ) {
+        if (linked != null) {
+            synchronized (linked) {
                 linked.stream = strm;
-                if( linked.state == STATE_WAITING ) {
-                    linked.notify();			// tell dem to start
+                if (linked.state == STATE_WAITING) {
+                    linked.notify();            // tell dem to start
                 }
             }
         } else {
@@ -199,19 +181,17 @@ public class SpectStreamSlot
      *	NICHT AUFRUFEN, WENN DER SLOT NICHT VERLINKT IST
      */
     public SpectStream getDescr()
-    throws InterruptedException
-    {
-        synchronized( this ) {
+            throws InterruptedException {
+        synchronized (this) {
             try {
-                ownerThread	= Thread.currentThread();
-                while( stream == null ) {
+                ownerThread = Thread.currentThread();
+                while (stream == null) {
                     state = STATE_WAITING;
                     wait();
                     state = STATE_ACTIVE;
                 }
                 stream.getDescr();
-            }
-            catch( InterruptedException e ) {
+            } catch (InterruptedException e) {
                 state = STATE_ACTIVE;
                 throw e;
             }
@@ -222,14 +202,13 @@ public class SpectStreamSlot
     /**
      *	Erzeugt ein laufendes Spectrogram des Slot-Streams
      */
-    public void createSpectrogram()
-    {
-        synchronized( this ) {
-            if( stream != null ) {
-                if( spectro == null ) {
-                    spectro = new Spectrogram( this );
+    public void createSpectrogram() {
+        synchronized (this) {
+            if (stream != null) {
+                if (spectro == null) {
+                    spectro = new Spectrogram(this);
                 }
-                spectro.newStream( stream );
+                spectro.newStream(stream);
             }
         }
     }
@@ -246,22 +225,21 @@ public class SpectStreamSlot
      *	des threadPaused + threadDead Flags fuehren!)
      */
     public SpectFrame readFrame()
-    throws	IOException,
-            InterruptedException
-    {
-        SpectFrame	fr			= null;
+            throws IOException,
+            InterruptedException {
+        SpectFrame fr = null;
 
-        synchronized( this ) {
+        synchronized (this) {
             try {
-                while( fr == null ) {
+                while (fr == null) {
                     try {
 //						System.out.println( "framesReadable : " + stream.framesReadable() );
-                        if( stream.framesReadable() != 0 ) {	// auch -1, loest ja EOFException aus
+                        if (stream.framesReadable() != 0) {    // auch -1, loest ja EOFException aus
                             fr = stream.readFrame();
-                            if( linked.state == STATE_WAITING ) {
+                            if (linked.state == STATE_WAITING) {
                                 // geschachtelte synchronized nur, wenn klar ist, dass der andere wartet!
-                                synchronized( linked ) {
-                                    linked.notify();			// yo, du kannst wieder schreiben
+                                synchronized (linked) {
+                                    linked.notify();            // yo, du kannst wieder schreiben
                                 }
                             }
                         } else {
@@ -269,11 +247,9 @@ public class SpectStreamSlot
                             wait();
                             state = STATE_ACTIVE;
                         }
-                    }
-                    catch( NoSuchElementException e ) {}	// dann warten wir eben
+                    } catch (NoSuchElementException ignored) {}    // dann warten wir eben
                 }
-            }
-            catch( InterruptedException e ) {
+            } catch (InterruptedException e) {
                 state = STATE_ACTIVE;
                 throw e;
             }
@@ -293,29 +269,28 @@ public class SpectStreamSlot
      *
      *	NICHT AUFRUFEN, WENN DER SLOT NICHT VERLINKT IST
      */
-    public void writeFrame( SpectFrame fr )
-    throws	IOException,
-            InterruptedException
-    {
-        if( state == STATE_DUMMY ) {
-            stream.writeDummy( fr );
+    public void writeFrame(SpectFrame fr)
+            throws IOException,
+            InterruptedException {
+        if (state == STATE_DUMMY) {
+            stream.writeDummy(fr);
             return;
         }
 
-        synchronized( this ) {
+        synchronized (this) {
             try {
-                while( fr != null ) {
+                while (fr != null) {
                     try {
-                        if( stream.framesWriteable() != 0 ) {	// auch -1, loest ja EOFException aus
-                            stream.writeFrame( fr );
-                            if( spectro != null ) {
-                                spectro.addFrame( fr );
+                        if (stream.framesWriteable() != 0) {    // auch -1, loest ja EOFException aus
+                            stream.writeFrame(fr);
+                            if (spectro != null) {
+                                spectro.addFrame(fr);
                             }
                             fr = null;
-                            if( linked.state == STATE_WAITING ) {
+                            if (linked.state == STATE_WAITING) {
                                 // geschachtelte synchronized nur, wenn klar ist, dass der andere wartet!
-                                synchronized( linked ) {
-                                    linked.notify();			// yo, du kannst wieder lesen
+                                synchronized (linked) {
+                                    linked.notify();            // yo, du kannst wieder lesen
                                 }
                             }
                         } else {
@@ -323,11 +298,9 @@ public class SpectStreamSlot
                             wait();
                             state = STATE_ACTIVE;
                         }
-                    }
-                    catch( IndexOutOfBoundsException e ) {}		// dann warten wir eben
+                    } catch (IndexOutOfBoundsException ignored) {}        // dann warten wir eben
                 }
-            }
-            catch( InterruptedException e ) {
+            } catch (InterruptedException e) {
                 state = STATE_ACTIVE;
                 throw e;
             }
@@ -337,9 +310,8 @@ public class SpectStreamSlot
     /**
      *	Gibt einen ueber dieses Objekt erzeugtes Frame frei
      */
-    public void freeFrame( SpectFrame fr )
-    {
-        stream.freeFrame( fr );
+    public void freeFrame(SpectFrame fr) {
+        stream.freeFrame(fr);
     }
 
     /**
@@ -347,41 +319,37 @@ public class SpectStreamSlot
      *	UNBEDINGT AUFRUFEN AUCH BEIM FEHLER-ABBRUCH, WEIL DER SLOT
      *	SONST NICHT WIEDERBENUTZT WERDEN KANN!
      */
-    public void cleanUp()
-    {
-        synchronized( this ) {
-            if( spectro != null ) {
+    public void cleanUp() {
+        synchronized (this) {
+            if (spectro != null) {
                 spectro.ownerTerminated();
                 spectro = null;
             }
 
-            if( stream != null ) {
+            if (stream != null) {
                 try {
-                    if( (flags & Slots.SLOTS_TYPEMASK) == Slots.SLOTS_READER ) {
+                    if ((flags & Slots.SLOTS_TYPEMASK) == Slots.SLOTS_READER) {
                         stream.closeReader();
                     }
-                }
-                catch( IOException e ) {}	// spielt keine Rolle mehr
+                } catch (IOException ignored) {}    // spielt keine Rolle mehr
 
                 try {
-                    if( (flags & Slots.SLOTS_TYPEMASK) == Slots.SLOTS_WRITER ) {
+                    if ((flags & Slots.SLOTS_TYPEMASK) == Slots.SLOTS_WRITER) {
                         stream.closeWriter();
                     }
-                }
-                catch( IOException e ) {}	// spielt keine Rolle mehr
-                stream	= null;
+                } catch (IOException ignored) {}    // spielt keine Rolle mehr
+                stream = null;
             }
-            this.state	= STATE_DEAD;
-            ownerThread	= null;
+            this.state = STATE_DEAD;
+            ownerThread = null;
         }
     }
 
     /**
      *	Liefert den zugehoerigen SpectStream
      */
-    public SpectStream getStream()
-    {
-        synchronized( this ) {
+    public SpectStream getStream() {
+        synchronized (this) {
             return stream;
         }
     }
@@ -391,18 +359,16 @@ public class SpectStreamSlot
      *
      *	@param	slot	darf null sein; das Ergebnis ist dann 0.0
      */
-    public static float progress( SpectStreamSlot slot )
-    {
-        if( (slot == null) || (slot.stream == null) ) return 0.0f;
+    public static float progress(SpectStreamSlot slot) {
+        if ((slot == null) || (slot.stream == null)) return 0.0f;
 
-        synchronized( slot ) {
-            if( (slot.flags & Slots.SLOTS_TYPEMASK) == Slots.SLOTS_READER ) {
-                return( (float) slot.stream.framesRead / slot.stream.frames );
+        synchronized (slot) {
+            if ((slot.flags & Slots.SLOTS_TYPEMASK) == Slots.SLOTS_READER) {
+                return ((float) slot.stream.framesRead / slot.stream.frames);
 
             } else {
-                return( (float) slot.stream.framesWritten / slot.stream.frames );
+                return ((float) slot.stream.framesWritten / slot.stream.frames);
             }
         }
     }
 }
-// class SpectStreamSlot

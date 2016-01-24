@@ -142,32 +142,16 @@ public class Operator
      */
     private float	threadProgress	= 0;
 
-// -------- Klassenkonstruktor --------
+// -------- static constructor --------
 
     static {
-        OPERATORS	= new TreeMap<String, String>();
+        OPERATORS = new TreeMap<String, String>();
     }
 
 // -------- public methods --------
-    // public static Hashtable getOperators();
 
-    // public Container createGUI( int type );
-
-    // public Component getIcon();
-    // public Presets getPresets();
-    // public Prefs getPrefs();
-
-    // public Enumeration getAliases);
-    // public Operator getOriginal();
-    // protected Operator registerAlias( Operator aliasOp );
-    // protected void forgetAlias( Operator aliasOp );
-
-    // public String getError();
-
-    public Operator()
-    {
-        // propertyarray defaults
-        if( op_static_pr == null ) {
+    public Operator() {
+        if (op_static_pr == null) {
             op_static_pr = new PropertyArray();
 
             op_static_pr.bool		= prBool;
@@ -176,15 +160,12 @@ public class Operator
             op_static_pr.intgName	= prIntgName;
         }
 
-//		icon		= new OpIcon( this );
-        slots		= new Vector<SpectStreamSlot>();
-        aliases		= new Vector<Operator>();
-//		pr			= (PropertyArray) static_pr.clone();
-//		presets		= new Properties();
+        slots = new Vector<SpectStreamSlot>();
+        aliases = new Vector<Operator>();
 
         // data flavors
-        if( Operator.flavor == null ) {
-            Operator.flavor	= new DataFlavor( getClass(), "Operator" );
+        if (Operator.flavor == null) {
+            Operator.flavor = new DataFlavor(getClass(), "Operator");
         }
     }
 
@@ -193,30 +174,29 @@ public class Operator
      *
      *	@return	 keys = "richtige" Namen; values = Klassennamen
      */
-    public static Map getOperators()
-    {
-        if( OPERATORS.isEmpty() ) {		// XXX spaeter die Liste extern nachladen!
-            OPERATORS.put( "Input file", "InputOp" );
-            OPERATORS.put( "Output file", "OutputOp" );
-            OPERATORS.put( "Analyse", "AnalysisOp" );
-            OPERATORS.put( "Synthesize", "SynthesisOp" );
-            OPERATORS.put( "Flip freq", "FlipFreqOp" );
-            OPERATORS.put( "Log freq", "LogFreqOp" );
-            OPERATORS.put( "Splitter", "SplitterOp" );
-            OPERATORS.put( "Unitor", "UnitorOp" );
-            OPERATORS.put( "Mono2Stereo", "Mono2StereoOp" );
-            OPERATORS.put( "Smear", "SmearOp" );
-            OPERATORS.put( "Zoom", "ZoomOp" );
-            OPERATORS.put( "Shrink", "ShrinkOp" );
-            OPERATORS.put( "Envelope", "EnvOp" );
-            OPERATORS.put( "Cepstral", "CepstralOp" );
-            OPERATORS.put( "Convolve", "ConvOp" );
-            OPERATORS.put( "Contrast", "ContrastOp" );
-            OPERATORS.put( "Extrapolate", "ExtrapolateOp" );
-            OPERATORS.put( "Tarnish", "TarnishOp" );
-            OPERATORS.put( "Percussion", "PercussionOp" );
-            OPERATORS.put( "Mindmachine", "MindmachineOp" );
-            OPERATORS.put( "Amp Env", "AmpEnvOp" );
+    public static Map getOperators() {
+        if (OPERATORS.isEmpty()) {        // XXX spaeter die Liste extern nachladen!
+            OPERATORS.put("Input file", "InputOp");
+            OPERATORS.put("Output file", "OutputOp");
+            OPERATORS.put("Analyse", "AnalysisOp");
+            OPERATORS.put("Synthesize", "SynthesisOp");
+            OPERATORS.put("Flip freq", "FlipFreqOp");
+            OPERATORS.put("Log freq", "LogFreqOp");
+            OPERATORS.put("Splitter", "SplitterOp");
+            OPERATORS.put("Unitor", "UnitorOp");
+            OPERATORS.put("Mono2Stereo", "Mono2StereoOp");
+            OPERATORS.put("Smear", "SmearOp");
+            OPERATORS.put("Zoom", "ZoomOp");
+            OPERATORS.put("Shrink", "ShrinkOp");
+            OPERATORS.put("Envelope", "EnvOp");
+            OPERATORS.put("Cepstral", "CepstralOp");
+            OPERATORS.put("Convolve", "ConvOp");
+            OPERATORS.put("Contrast", "ContrastOp");
+            OPERATORS.put("Extrapolate", "ExtrapolateOp");
+            OPERATORS.put("Tarnish", "TarnishOp");
+            OPERATORS.put("Percussion", "PercussionOp");
+            OPERATORS.put("Mindmachine", "MindmachineOp");
+            OPERATORS.put("Amp Env", "AmpEnvOp");
         }
         return OPERATORS;
     }
@@ -259,10 +239,9 @@ public class Operator
      *	Alle vom Operator belegten Ressourcen freigeben
      *	(danach nicht mehr benutzen!)
      */
-    public void dispose()
-    {
-        if( original != null ) {
-            original.forgetAlias( this );
+    public void dispose() {
+        if (original != null) {
+            original.forgetAlias(this);
         }
         disposed = true;
     }
@@ -293,59 +272,55 @@ public class Operator
      *	SyncFailedException, wenn "original" nicht dieselben Operator-Subklasse
      *	SlotAlreadyConnectedException, wenn dieser Op schon ein Alias ist
      */
-    public void turnIntoAlias( Operator orig )
-    throws SyncFailedException, SlotAlreadyConnectedException
-    {
-        while( orig.getOriginal() != null ) {
+    public void turnIntoAlias(Operator orig)
+            throws SyncFailedException, SlotAlreadyConnectedException {
+        while (orig.getOriginal() != null) {
             orig = orig.getOriginal();
         }
 
-        if( orig.getClass() != this.getClass() ) {
-            throw new SyncFailedException( ERR_ALIASSYNC );
+        if (orig.getClass() != this.getClass()) {
+            throw new SyncFailedException(ERR_ALIASSYNC);
         }
-        if( original != null ) {
-            throw new SlotAlreadyConnectedException( ERR_ALREADYALIAS );
+        if (original != null) {
+            throw new SlotAlreadyConnectedException(ERR_ALREADYALIAS);
         }
 
         original = orig;
-        orig.registerAlias( this );
-        pr.superPr.intg[ PR_FLAGS ] |= FLAGS_ALIAS;
-        ((OpIcon) getIcon()).operatorFlagsChanged( pr.superPr.intg[ PR_FLAGS ]);
+        orig.registerAlias(this);
+        pr.superPr.intg[PR_FLAGS] |= FLAGS_ALIAS;
+        ((OpIcon) getIcon()).operatorFlagsChanged(pr.superPr.intg[PR_FLAGS]);
     }
 
     /**
      *	Formt ein Alias in einen eigenstaendingen Operator um
      *	(wenn dieser Op kein Alias war, passiert nichts)
      */
-    public void turnIntoGenuine()
-    {
-        PropertyArray	oldSuper;
+    public void turnIntoGenuine() {
+        PropertyArray oldSuper;
 
-        if( original != null ) {
-            oldSuper		= pr.superPr;
-            pr				= new PropertyArray( original.getPropertyArray() );
-            pr.superPr		= oldSuper;
-            original.forgetAlias( this );
-            this.original	= null;
-            pr.superPr.intg[ PR_FLAGS ] &= ~FLAGS_ALIAS;
-            ((OpIcon) getIcon()).operatorFlagsChanged( pr.superPr.intg[ PR_FLAGS ]);
+        if (original != null) {
+            oldSuper        = pr.superPr;
+            pr              = new PropertyArray(original.getPropertyArray());
+            pr.superPr      = oldSuper;
+            original.forgetAlias(this);
+            this.original   = null;
+            pr.superPr.intg[PR_FLAGS] &= ~FLAGS_ALIAS;
+            ((OpIcon) getIcon()).operatorFlagsChanged(pr.superPr.intg[PR_FLAGS]);
         }
     }
 
     /**
      *	Registriert ein Alias
      */
-    protected void registerAlias( Operator aliasOp )
-    {
-        aliases.addElement( aliasOp );
+    protected void registerAlias(Operator aliasOp) {
+        aliases.addElement(aliasOp);
     }
 
     /**
      *	Meldet einen Alias ab (vor dessen Aufloesung)
      */
-    protected void forgetAlias( Operator aliasOp )
-    {
-        aliases.removeElement( aliasOp );
+    protected void forgetAlias(Operator aliasOp) {
+        aliases.removeElement(aliasOp);
     }
 
 // -------- GUI methods --------
@@ -353,9 +328,8 @@ public class Operator
     /**
      *	MUSS VON SUBCLASS UEBERLAGERT WERDEN
      */
-    public PropertyGUI createGUI( int type )
-    {
-        return new PropertyGUI( "lbNothing here" );
+    public PropertyGUI createGUI(int type) {
+        return new PropertyGUI("lbNothing here");
     }
 
     /**
@@ -383,8 +357,7 @@ public class Operator
     /**
      *	Runtime-Fehlermessage setzen
      */
-    public void setError( String threadError )
-    {
+    public void setError(String threadError) {
         this.threadError = threadError;
     }
 
@@ -399,23 +372,21 @@ public class Operator
     /**
      *	Fortschritt des Threads setzen
      */
-    public void setProgress( float progress )
-    {
+    public void setProgress(float progress) {
         this.threadProgress = progress;
     }
 
     /*
      *	run() initialisieren; muss von subclassen zuerst aufgerufen werden!
      */
-    protected void runInit()
-    {
+    protected void runInit() {
         PropertyArray oldSuper;
 
-        setProgress( 0.0f );
-        if( original != null ) {	// Aliase: Daten abgleichen
-            oldSuper	= pr.superPr;
-            pr			= new PropertyArray( original.getPropertyArray() );
-            pr.superPr	= oldSuper;
+        setProgress(0.0f);
+        if (original != null) {    // Aliase: Daten abgleichen
+            oldSuper    = pr.superPr;
+            pr          = new PropertyArray(original.getPropertyArray());
+            pr.superPr  = oldSuper;
         }
     }
 
@@ -443,45 +414,42 @@ public class Operator
      *
      *	@param	e	null, wenn ordnungsgemaess beendet; sonst die Fehler-Exception
      */
-    protected void runQuit( Exception e )
-    {
-        SpectStreamSlot	slot;
-        Enumeration		slts = getSlots( Slots.SLOTS_ANY ).elements();
+    protected void runQuit(Exception e) {
+        SpectStreamSlot slot;
+        Enumeration slts = getSlots(Slots.SLOTS_ANY).elements();
 
         threadDead = true;
-        while( slts.hasMoreElements() ) {
+        while (slts.hasMoreElements()) {
             slot = (SpectStreamSlot) slts.nextElement();
             slot.cleanUp();
         }
-        if( e == null ) {
-            setProgress( 1.0f );
+        if (e == null) {
+            setProgress(1.0f);
             getIcon().repaint();
         } else {
-            ((OpIcon) getIcon()).setSelected( OpIcon.STATE_ERROR );
-            setError( e.getMessage() );
-System.out.println( icon.getName() + ": aborted because of: " +threadError );
+            ((OpIcon) getIcon()).setSelected(OpIcon.STATE_ERROR);
+            setError(e.getMessage());
+            System.out.println(icon.getName() + ": aborted because of: " + threadError);
         }
 
-        owner.operatorTerminated( this );
+        owner.operatorTerminated(this);
     }
 
     /*
      *	prueft, ob der Operator pausieren soll und tut dies ggf.
      */
-    protected synchronized void runCheckPause()
-    {
+    protected synchronized void runCheckPause() {
         try {
-            if( threadPaused && !threadDead ) {
+            if (threadPaused && !threadDead) {
                 threadPausing = true;
-                owner.operatorPaused( this );
+                owner.operatorPaused(this);
 
-                while( threadPaused && !threadDead ) {
+                while (threadPaused && !threadDead) {
                     wait();
                 }
                 threadPausing = false;
             }
-        }
-        catch( InterruptedException e ) {
+        } catch (InterruptedException e) {
             threadPausing = false;
         }
     }
@@ -492,32 +460,28 @@ System.out.println( icon.getName() + ": aborted because of: " +threadError );
      *	@param	slot	Slot, der ein verarbeitetes Frame empfangen hat; darf null sein
      *	@param	fr		verarbeitetes Frame; darf null sein
      */
-    protected void runFrameDone( SpectStreamSlot slot, SpectFrame fr )
-    {
-        float	progress	= SpectStreamSlot.progress( slot );
+    protected void runFrameDone(SpectStreamSlot slot, SpectFrame fr) {
+        float progress = SpectStreamSlot.progress(slot);
 
-        if( progress - getProgress() >= 0.04f ) {
-            setProgress( progress );
-            ((OpIcon) getIcon()).paintProgress( null );
+        if (progress - getProgress() >= 0.04f) {
+            setProgress(progress);
+            ((OpIcon) getIcon()).paintProgress(null);
         }
     }
 
-    public void run()
-    {
+    public void run() {
         runInit();
         runSlotsReady();
-        runQuit( null );
+        runQuit(null);
     }
 
-    public synchronized void runStop()
-    {
-        threadPaused	= false;
-        threadDead		= true;
+    public synchronized void runStop() {
+        threadPaused    = false;
+        threadDead      = true;
         notify();
     }
 
-    public synchronized void runPause( boolean state )
-    {
+    public synchronized void runPause(boolean state) {
         threadPaused = state;
         notify();
     }
@@ -527,15 +491,14 @@ System.out.println( icon.getName() + ": aborted because of: " +threadError );
     /**
      *	@param filter	Jedes gesetzte Flag im filter-Parameter muss im Suchobject gesetzt sein!
      */
-    public Vector<SpectStreamSlot> getSlots( int filter )
-    {
+    public Vector<SpectStreamSlot> getSlots(int filter) {
         Vector<SpectStreamSlot> fltSlots = new Vector<SpectStreamSlot>();
         SpectStreamSlot slot;
 
-        for( int i = 0; i < slots.size(); i++ ) {
-            slot = slots.elementAt( i );
-            if(( slot.getFlags() & filter) == filter ) {
-                fltSlots.addElement( slot );
+        for (int i = 0; i < slots.size(); i++) {
+            slot = slots.elementAt(i);
+            if ((slot.getFlags() & filter) == filter) {
+                fltSlots.addElement(slot);
             }
         }
         return fltSlots;
@@ -544,25 +507,22 @@ System.out.println( icon.getName() + ": aborted because of: " +threadError );
     /**
      *	@return	null bei Fehler
      */
-    public SpectStreamSlot getSlot( String name )
-    {
+    public SpectStreamSlot getSlot(String name) {
         SpectStreamSlot slot;
-        for( int i = 0; i < slots.size(); i++ ) {
-            slot = slots.elementAt( i );
-            if( slot.toString().equals( name )) return slot;
+        for (int i = 0; i < slots.size(); i++) {
+            slot = slots.elementAt(i);
+            if (slot.toString().equals(name)) return slot;
         }
         return null;
     }
 
-    public void linkTo( String thisName, Slots destSlots, String destName )
-    throws SyncFailedException, SlotAlreadyConnectedException, NoSuchElementException
-    {
+    public void linkTo(String thisName, Slots destSlots, String destName)
+            throws SyncFailedException, SlotAlreadyConnectedException, NoSuchElementException {
         throw new NoSuchElementException();
     }
 
-    public void divorceFrom( String thisName, Slots srcSlots, String srcName )
-    throws NotBoundException, NoSuchElementException
-    {
+    public void divorceFrom(String thisName, Slots srcSlots, String srcName)
+            throws NotBoundException, NoSuchElementException {
         throw new NoSuchElementException();
     }
 
@@ -571,29 +531,26 @@ System.out.println( icon.getName() + ": aborted because of: " +threadError );
     /**
      *	@return	NB: MAY RETURN NULL IN CASE OF ERROR !
      */
-    public Object clone()
-    {
-        if( disposed ) return null;
+    public Object clone() {
+        if (disposed) return null;
 
-        Operator	op	= null;
+        Operator op = null;
 
         try {
-            op		= this.getClass().newInstance();
-            op.pr	= (PropertyArray)	this.getPropertyArray().clone();
+            op = this.getClass().newInstance();
+            op.pr = (PropertyArray) this.getPropertyArray().clone();
 
-            if( getOriginal() != null ) {
-                op.turnIntoAlias( getOriginal() );
+            if (getOriginal() != null) {
+                op.turnIntoAlias(getOriginal());
             }
-            ((OpIcon) op.getIcon()).setName( ((OpIcon) this.getIcon()).getName() );
+            ((OpIcon) op.getIcon()).setName(((OpIcon) this.getIcon()).getName());
 
             return op;
-        }
-        catch( InstantiationException ignored) {}
-        catch( IllegalAccessException ignored) {}
-        catch( SyncFailedException e3 ) {
+        } catch (InstantiationException ignored) {
+        } catch (IllegalAccessException ignored) {
+        } catch (SyncFailedException e3) {
             op.dispose();
-        }
-        catch( SlotAlreadyConnectedException e4 ) {
+        } catch (SlotAlreadyConnectedException e4) {
             op.dispose();
         }
 
@@ -602,14 +559,13 @@ System.out.println( icon.getName() + ": aborted because of: " +threadError );
 
 // -------- Transferable methods --------
 
-    public DataFlavor[] getTransferDataFlavors()
-    {
-        if( flavors == null ) {
+    public DataFlavor[] getTransferDataFlavors() {
+        if (flavors == null) {
             DataFlavor iconFlavors[] = icon.getTransferDataFlavors();
-            flavors			= new DataFlavor[ iconFlavors.length + 1 ];
-            flavors[ 0 ]	= Operator.flavor;
-            for( int i = 0; i < iconFlavors.length; i++ ) {
-                flavors[ i + 1 ] = iconFlavors[ i ];
+            flavors     = new DataFlavor[iconFlavors.length + 1];
+            flavors[0]  = Operator.flavor;
+            for (int i = 0; i < iconFlavors.length; i++) {
+                flavors[i + 1] = iconFlavors[i];
             }
         }
         return flavors;

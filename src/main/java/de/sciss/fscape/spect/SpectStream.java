@@ -13,8 +13,10 @@
 
 package de.sciss.fscape.spect;
 
-import java.io.*;
-import java.util.*;
+import java.io.EOFException;
+import java.io.IOException;
+import java.util.NoSuchElementException;
+import java.util.Vector;
 
 /**
  *	Klangstromklasse, mit der alle Operatoren arbeiten;
@@ -104,46 +106,24 @@ public class SpectStream
     protected int		bufSize;	// max. Frame-Zahl in activeBuf und deadBuf
 
 // -------- public methods --------
-    // public void initWriter();
-    // public void getDescr();
-
-    // public void setChannels( int chanNum );
-    // public void setBands( float loFreq, float hiFreq, int bands, int mode );
-    // public void setRate( float smpRate, int smpPerFrame );
-    // public void setEstimatedLength( int frames );
-
-    // public float[] allocFrame();
-    // public float[][] allocFrames( int frameNum );
-    // public void freeFrame( float frame[] );
-    // public void freeFrames( float frames[][] );
-
-    // public void writeFrame( float[] frame );
-    // public int writeFrames( float[][] frames );
-    // public float[] readFrame();
-    // public int readFrames( float[][] frames );
-    // public void closeWriter();
-    // public void closeReader()
-    // public int readableFrames();
-    // public int writeableFrames();
 
     /**
      *	@param	origin	Strom, dessen Daten wie Kanalzahl, Baender,
      *					Frequenzen etc. uebernommen werden
      *	@param	bufSize	Zahl der Frames, die der Puffer des Stroms maximal enthaelt
      */
-    public SpectStream( SpectStream origin, int bufSize )
-    {
-        if( origin != null ) {
-            synchronized( origin ) {
+    public SpectStream(SpectStream origin, int bufSize) {
+        if (origin != null) {
+            synchronized (origin) {
                 // copy params
-                this.chanNum		= origin.chanNum;
-                this.bands			= origin.bands;
-                this.loFreq			= origin.loFreq;
-                this.hiFreq			= origin.hiFreq;
-                this.freqMode		= origin.freqMode;
-                this.smpRate		= origin.smpRate;
-                this.smpPerFrame	= origin.smpPerFrame;
-                this.frames			= origin.frames;
+                this.chanNum        = origin.chanNum;
+                this.bands          = origin.bands;
+                this.loFreq         = origin.loFreq;
+                this.hiFreq         = origin.hiFreq;
+                this.freqMode       = origin.freqMode;
+                this.smpRate        = origin.smpRate;
+                this.smpPerFrame    = origin.smpPerFrame;
+                this.frames         = origin.frames;
             }
         } else {
             // initialize to null
@@ -157,22 +137,21 @@ public class SpectStream
             this.frames			= 0;
         }
 
-        this.bufSize	= bufSize;
-        activeBuf		= new Vector<SpectFrame> ( bufSize );
-        deadBuf			= new Vector<SpectFrame> ( bufSize );
+        this.bufSize    = bufSize;
+        activeBuf       = new Vector<SpectFrame>(bufSize);
+        deadBuf         = new Vector<SpectFrame>(bufSize);
     }
 
-    public SpectStream( SpectStream origin )
-    {
-        this( origin, origin.bufSize );
+    public SpectStream(SpectStream origin) {
+        this(origin, origin.bufSize);
     }
-    public SpectStream()
-    {
-        this( null, DEFAULT_BUF_SIZE );
+
+    public SpectStream() {
+        this(null, DEFAULT_BUF_SIZE);
     }
-    public SpectStream( int bufSize )
-    {
-        this( null, bufSize );
+
+    public SpectStream(int bufSize) {
+        this(null, bufSize);
     }
 
     /**
@@ -180,13 +159,12 @@ public class SpectStream
      *	DIES MUSS EIN EIGENTSTAENDIG LAUFENDER OPERATOR SEIN!
      *	AUF KEINEN FALL MEHRMALS AUFRUFEN
      */
-    public void initWriter()
-    {
-        synchronized( this ) {
+    public void initWriter() {
+        synchronized (this) {
             activeBuf.removeAllElements();
-            writerThread	= Thread.currentThread();
-            writerState		= STATE_ACTIVE;
-            framesWritten	= 0;
+            writerThread    = Thread.currentThread();
+            writerState     = STATE_ACTIVE;
+            framesWritten   = 0;
         }
     }
 
@@ -195,12 +173,11 @@ public class SpectStream
      *	DIES MUSS EIN EIGENTSTAENDIG LAUFENDER OPERATOR SEIN!
      *	AUF KEINEN FALL MEHRMALS AUFRUFEN
      */
-    public void getDescr()
-    {
-        synchronized( this ) {
-            readerThread	= Thread.currentThread();
-            readerState		= STATE_ACTIVE;
-            framesRead		= 0;
+    public void getDescr() {
+        synchronized (this) {
+            readerThread    = Thread.currentThread();
+            readerState     = STATE_ACTIVE;
+            framesRead      = 0;
         }
     }
 
@@ -210,11 +187,10 @@ public class SpectStream
      *
      *	@param chanNum	Zahl der Kanaele, 1 = mono, 2 = stereo etc.
      */
-    public void setChannels( int chanNum )
-    {
-        synchronized( this ) {
-            activeBuf.removeAllElements();	// Sicherheitsmassnahme
-            deadBuf.removeAllElements();
+    public void setChannels(int chanNum) {
+        synchronized (this) {
+            activeBuf.removeAllElements();    // Sicherheitsmassnahme
+            deadBuf  .removeAllElements();
             this.chanNum = chanNum;
         }
     }
@@ -228,15 +204,14 @@ public class SpectStream
      *	@param bands	Anzahl der Baender
      *	@param mode		Verteilungsmodus, MODE_LIN = linear, MODE_LOG = logarithmisch
      */
-    public void setBands( float loFreq, float hiFreq, int bands, int mode )
-    {
-        synchronized( this ) {
-            activeBuf.removeAllElements();	// Sicherheitsmassnahme
-            deadBuf.removeAllElements();
-            this.loFreq		= loFreq;
-            this.hiFreq		= hiFreq;
-            this.bands		= bands;
-            this.freqMode	= mode;
+    public void setBands(float loFreq, float hiFreq, int bands, int mode) {
+        synchronized (this) {
+            activeBuf.removeAllElements();    // Sicherheitsmassnahme
+            deadBuf  .removeAllElements();
+            this.loFreq     = loFreq;
+            this.hiFreq     = hiFreq;
+            this.bands      = bands;
+            this.freqMode   = mode;
         }
     }
 
@@ -247,20 +222,18 @@ public class SpectStream
      *	@param smpRate		Samplingfrequenz in Hz
      *	@param smpPerFrame	Zahl der Samples pro Frame
      */
-    public void setRate( float smpRate, int smpPerFrame )
-    {
-        synchronized( this ) {
-            this.smpRate		= smpRate;
-            this.smpPerFrame	= smpPerFrame;
+    public void setRate(float smpRate, int smpPerFrame) {
+        synchronized (this) {
+            this.smpRate        = smpRate;
+            this.smpPerFrame    = smpPerFrame;
         }
     }
 
     /**
      *	Geschaetzte Laenge (im Frames) festlegen
      */
-    public void setEstimatedLength( long frames )
-    {
-        this.frames	= frames;
+    public void setEstimatedLength(long frames) {
+        this.frames = frames;
     }
 
     /**
@@ -268,17 +241,16 @@ public class SpectStream
      *
      *	DER AUFRUFER SOLLTE java.lang.OutOfMemoryError CATCHEN!
      */
-    public SpectFrame allocFrame()
-    {
+    public SpectFrame allocFrame() {
         SpectFrame fr;
 
-        synchronized( this ) {
-            if( !deadBuf.isEmpty() ) {
+        synchronized (this) {
+            if (!deadBuf.isEmpty()) {
                 fr = deadBuf.firstElement();
-                deadBuf.removeElement( fr );
+                deadBuf.removeElement(fr);
                 fr.gainAccess();
             } else {
-                fr = new SpectFrame( chanNum, bands );
+                fr = new SpectFrame(chanNum, bands);
             }
         }
         return fr;
@@ -291,12 +263,11 @@ public class SpectStream
      *
      *	@param	frameNum	Anzahl der Frames (Index der ersten Dimension des Arrays)
      */
-    public static SpectFrame[] allocFrames( SpectStream stream, int frameNum )
-    {
-        SpectFrame frames[] = new SpectFrame[ frameNum ];
+    public static SpectFrame[] allocFrames(SpectStream stream, int frameNum) {
+        SpectFrame frames[] = new SpectFrame[frameNum];
 
-        for( int i = 0; i < frameNum; i++ ) {
-            frames[ i ] = stream.allocFrame();
+        for (int i = 0; i < frameNum; i++) {
+            frames[i] = stream.allocFrame();
         }
         return frames;
     }
@@ -309,14 +280,13 @@ public class SpectStream
      *
      *	Anschliessend sollten alle Referenzen dieses Frames auf NULL gesetzt werden!
      */
-    public void freeFrame( SpectFrame fr )
-    {
+    public void freeFrame(SpectFrame fr) {
         fr.looseAccess();
-        synchronized( fr ) {
-            if( fr.accessCount == 0 ) {
-                synchronized( this ) {
-                    if( deadBuf.size() < bufSize ) {
-                        deadBuf.addElement( fr );
+        synchronized (fr) {
+            if (fr.accessCount == 0) {
+                synchronized (this) {
+                    if (deadBuf.size() < bufSize) {
+                        deadBuf.addElement(fr);
                     }
                 }
             }
@@ -326,10 +296,9 @@ public class SpectStream
     /**
      *	Gibt mehrere Frames zurueck; vgl. freeFrame()
      */
-    public static void freeFrames( SpectStream stream, SpectFrame frames[] )
-    {
-        for( int i = 0; i < frames.length; i++ ) {
-            stream.freeFrame( frames[ i ]);
+    public static void freeFrames(SpectStream stream, SpectFrame frames[]) {
+        for (int i = 0; i < frames.length; i++) {
+            stream.freeFrame(frames[i]);
         }
     }
 
@@ -349,30 +318,28 @@ public class SpectStream
      *
      *	@param	fr  sollte mit allocFrame(s)() beschafft worden sein!
      */
-    public void writeFrame( SpectFrame fr )
-    throws	IOException,
-            IndexOutOfBoundsException
-    {
-        switch( framesWriteable() ) {
-        case -1:
-            closeWriter();
-            throw new EOFException( ERR_NOREADER );
+    public void writeFrame(SpectFrame fr)
+            throws IOException,
+            IndexOutOfBoundsException {
+        switch (framesWriteable()) {
+            case -1:
+                closeWriter();
+                throw new EOFException(ERR_NOREADER);
 
-        case 0:
-            throw new IndexOutOfBoundsException( ERR_BUFFULL );
+            case 0:
+                throw new IndexOutOfBoundsException(ERR_BUFFULL);
 
-        default:
-            synchronized( this ) {
-                fr.gainAccess();	// Frame nicht freigeben, bis vom Reader verarbeitet!
-                activeBuf.addElement( fr );
-                framesWritten++;
-            }
-            break;
+            default:
+                synchronized (this) {
+                    fr.gainAccess();    // Frame nicht freigeben, bis vom Reader verarbeitet!
+                    activeBuf.addElement(fr);
+                    framesWritten++;
+                }
+                break;
         }
     }
 
-    public void writeDummy( SpectFrame fr )
-    {
+    public void writeDummy(SpectFrame fr) {
         framesWritten++;
     }
 
@@ -382,19 +349,17 @@ public class SpectStream
      *	@return	-1, wenn readerseitig der Strom geschlossen wurde,
      *			sonst Zahl der geschriebenen Frames
      */
-    public static int writeFrames( SpectStream stream, SpectFrame frames[] )
-    throws IOException
-    {
+    public static int writeFrames(SpectStream stream, SpectFrame frames[])
+            throws IOException {
         int frameNum = 0;
 
         try {
-            for( int i = 0; i < frames.length; i++ ) {
-                stream.writeFrame( frames[ i ]);
+            for (int i = 0; i < frames.length; i++) {
+                stream.writeFrame(frames[i]);
                 frameNum++;
             }
-        }
-        catch( IndexOutOfBoundsException ignored) {}
-        catch( EOFException e ) {
+        } catch (IndexOutOfBoundsException ignored) {
+        } catch (EOFException e) {
             return -1;
         }
         return frameNum;
@@ -414,26 +379,25 @@ public class SpectStream
      *	in der Zukunft auf temporaere Dateien zugreift!
      */
     public SpectFrame readFrame()
-    throws	IOException,
-            NoSuchElementException
-    {
+            throws IOException,
+            NoSuchElementException {
         SpectFrame fr;
 
-        switch( framesReadable() ) {
-        case -1:
-            closeReader();
-            throw new EOFException( ERR_NOWRITER );
+        switch (framesReadable()) {
+            case -1:
+                closeReader();
+                throw new EOFException(ERR_NOWRITER);
 
-        case 0:
-            throw new NoSuchElementException( ERR_BUFEMPTY );
+            case 0:
+                throw new NoSuchElementException(ERR_BUFEMPTY);
 
-        default:
-            synchronized( this ) {
-                fr = activeBuf.firstElement();
-                activeBuf.removeElement( fr );
-                framesRead++;
-            }
-            return fr;
+            default:
+                synchronized (this) {
+                    fr = activeBuf.firstElement();
+                    activeBuf.removeElement(fr);
+                    framesRead++;
+                }
+                return fr;
         }
     }
 
@@ -445,20 +409,18 @@ public class SpectStream
      *	@return	-1, wenn writerseitig der Strom geschlossen wurde und KEIN
      *			frame mehr verfuegbar war, sonst Zahl der gelesenen Frames
      */
-    public static int readFrames( SpectStream stream, SpectFrame frames[] )
-    throws IOException
-    {
+    public static int readFrames(SpectStream stream, SpectFrame frames[])
+            throws IOException {
         int frameNum = 0;
 
         try {
-            for( int i = 0; i < frames.length; i++ ) {
-                frames[ i ] = stream.readFrame();
+            for (int i = 0; i < frames.length; i++) {
+                frames[i] = stream.readFrame();
                 frameNum++;
             }
-        }
-        catch( NoSuchElementException ignored) {}
-        catch( EOFException e ) {
-            if( frameNum == 0 ) {
+        } catch (NoSuchElementException ignored) {
+        } catch (EOFException e) {
+            if (frameNum == 0) {
                 frameNum = -1;
             }
         }
@@ -473,11 +435,10 @@ public class SpectStream
      *	Anschliessend sollten alle Referenzen des SpectStreams auf NULL gesetzt werden
      */
     public void closeWriter()
-    throws IOException
-    {
-        synchronized( this ) {
-            writerThread	= null;
-            writerState		= STATE_DEAD;
+            throws IOException {
+        synchronized (this) {
+            writerThread = null;
+            writerState = STATE_DEAD;
             deadBuf.removeAllElements();
         }
     }
@@ -491,11 +452,10 @@ public class SpectStream
      *	Anschliessend sollten alle Referenzen des SpectStreams auf NULL gesetzt werden
      */
     public void closeReader()
-    throws IOException
-    {
-        synchronized( this ) {
-            writerThread	= null;
-            writerState		= STATE_DEAD;
+            throws IOException {
+        synchronized (this) {
+            writerThread    = null;
+            writerState     = STATE_DEAD;
             activeBuf.removeAllElements();
         }
     }
@@ -507,13 +467,12 @@ public class SpectStream
      *			UND auch keine mehr kommen werden, weil der Writer den
      *			Strom geschlossen hat
      */
-    public int framesReadable()
-    {
+    public int framesReadable() {
         int frameNum;
 
-        synchronized( this ) {
+        synchronized (this) {
             frameNum = activeBuf.size();
-            if( (frameNum == 0) && (writerState == STATE_DEAD) ) {
+            if ((frameNum == 0) && (writerState == STATE_DEAD)) {
                 frameNum = -1;
             }
         }
@@ -527,13 +486,12 @@ public class SpectStream
      *			UND auch keine mehr abgeholt werden, weil der Reader den
      *			Strom geschlossen hat
      */
-    public int framesWriteable()
-    {
+    public int framesWriteable() {
         int frameNum;
 
-        synchronized( this ) {
+        synchronized (this) {
             frameNum = bufSize - activeBuf.size();
-            if( readerState == STATE_DEAD ) {
+            if (readerState == STATE_DEAD) {
                 frameNum = -1;
             }
         }
@@ -543,34 +501,32 @@ public class SpectStream
     /**
      *	Besorgt Zeit-Offset des naechsten Frames in Millisekunden
      */
-    public double getTime()
-    {
-        if( Thread.currentThread() == readerThread ) {
-            return( framesRead * ((double) smpPerFrame / smpRate) * 1000 );
+    public double getTime() {
+        if (Thread.currentThread() == readerThread) {
+            return (framesRead * ((double) smpPerFrame / smpRate) * 1000);
         } else {
-            return( framesWritten * ((double) smpPerFrame / smpRate) * 1000 );
+            return (framesWritten * ((double) smpPerFrame / smpRate) * 1000);
         }
     }
 
     /**
      *	Format-String erzeugen
      */
-    public static String getFormat( SpectStream stream )
-    {
-        String		chanTxt			= null;
-        String		lengthTxt;
-        int			min, sec, millis;
+    public static String getFormat(SpectStream stream) {
+        String chanTxt = null;
+        String lengthTxt;
+        int min, sec, millis;
 
-        switch( stream.chanNum ) {
-        case 1:
-            chanTxt	= "Mono ";
-            break;
-        case 2:
-            chanTxt = "Stereo ";
-            break;
-        default:
-            chanTxt = stream.chanNum + "-chn. ";
-            break;
+        switch (stream.chanNum) {
+            case 1:
+                chanTxt = "Mono ";
+                break;
+            case 2:
+                chanTxt = "Stereo ";
+                break;
+            default:
+                chanTxt = stream.chanNum + "-chn. ";
+                break;
         }
 
         millis	= (int) (framesToMillis( stream, stream.frames ) + 0.5);
@@ -588,18 +544,15 @@ public class SpectStream
     /**
      *	Berechnet die Frame-Nummer nach angebenen Millisekunden
      */
-    public static double millisToFrames( SpectStream stream, double ms )
-    {
+    public static double millisToFrames(SpectStream stream, double ms) {
         //			seconds * framesPerSec
-        return( (ms / 1000) * ((double) stream.smpRate / stream.smpPerFrame) );
+        return ((ms / 1000) * ((double) stream.smpRate / stream.smpPerFrame));
     }
 
     /**
      *	Rechnet Framezahl in Millisekunden um
      */
-    public static double framesToMillis( SpectStream stream, long frames )
-    {
-        return( frames * ((double) stream.smpPerFrame / stream.smpRate) * 1000 );
+    public static double framesToMillis(SpectStream stream, long frames) {
+        return (frames * ((double) stream.smpPerFrame / stream.smpRate) * 1000);
     }
 }
-// class SpectStream

@@ -52,10 +52,9 @@ public class Session
 
     private ProcessingThread				currentPT		= null;
 
-    public Session()
-    {
-        nodeID				= ++nodeIDAlloc;
-        osc					= new OSCRouterWrapper( null, this );
+    public Session() {
+        nodeID  = ++nodeIDAlloc;
+        osc     = new OSCRouterWrapper(null, this);
     }
 
     public int getNodeID()

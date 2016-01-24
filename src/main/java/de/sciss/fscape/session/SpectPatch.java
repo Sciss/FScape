@@ -73,33 +73,11 @@ public class SpectPatch {
 //	private static final String ERR_ILLEGALFILE	= "Wrong file format";
 
 // -------- public methods --------
-    // public boolean load( String fname );
-    // public boolean saveAs( String fname );
-    // public boolean save();
-    // public boolean revert();
-    // public boolean clear();
-    // public boolean close();
-
-    // public void start();
-    // public void stop();
-    // public void pause( boolean state );
-
-    // public void addOperator( Operator op );
-    // public void removeOperator( Operator op );
-
-    // public MainWindow getWindow();
-    // public String getName();
-    // public String getPathName();
-    // public Enumeration getOperators();
-
-    // public void setModified( boolean modified );
-    // public boolean getModified();
 
     /**
-     *	Leeres SpectPatch erzeugen
+     *	Create empty SpectPatch
      */
-    public SpectPatch( SpectPatchDlg win )
-    {
+    public SpectPatch(SpectPatchDlg win) {
         ops = new Vector<Operator>();
 
         this.win = win;
@@ -107,12 +85,11 @@ public class SpectPatch {
     }
 
     /**
-     *	Dieses SpectPatch ueberladen
+     *	Replaces contents of this SpectPatch
      *
-     *	@return	false bei Fehler
+     *	@return	`false` if error occurs
      */
-    public boolean load( Properties file  )
-    {
+    public boolean load(Properties file) {
         Operator		op, op2;
         Point			opLoc, conLoc;
         OpPanel			opPanel;
@@ -134,10 +111,10 @@ public class SpectPatch {
 
         try {
             // Datei geladen, wir koennen das Dokument leeren
-            if( !clear()) {
+            if (!clear()) {
                 return false;
             }
-            opPanel = win.getOpPanel();		// always do this *after* clear()
+            opPanel = win.getOpPanel();        // always do this *after* clear()
 //			opPanel.setVisible( false );
 
             for( int i = 0;
@@ -185,7 +162,7 @@ public class SpectPatch {
                                     slotName	= val.substring( k + 1 );
                                     op2ID		= Integer.parseInt( val.substring( 0, k ));
                                     op2			= tempOps.elementAt( op2ID );
-                                    slot2		= (SpectStreamSlot) op2.getSlot( slotName );
+                                    slot2		= op2.getSlot( slotName );
                                     if( slot2 != null ) {
                                         opPanel.linkOperators( slot1, slot2 );
                                         con		= opPanel.getConnector( slot1 );
@@ -318,7 +295,7 @@ public class SpectPatch {
         OpIcon			opIcon;
         OpConnector		con;
         OpPanel			opPanel = win.getOpPanel();
-        String			val;
+        String			value;
         StringBuffer	valBuf;
         Properties		file	= new Properties();
         Properties		head	= new Properties();
@@ -338,9 +315,9 @@ public class SpectPatch {
                 link.clear();
 
             // ---- Head ----
-                val		= op.getClass().getName();
-                val		= val.substring( val.lastIndexOf( '.' ) + 1 );
-                head.put( HEAD_CLASS, val );									// Operator-Klasse
+                value		= op.getClass().getName();
+                value		= value.substring( value.lastIndexOf( '.' ) + 1 );
+                head.put( HEAD_CLASS, value );									// Operator-Klasse
                 head.put( HEAD_NAME, opIcon.getName() );						// Icon-Name
                 BasicProperties.setPointProperty( head, HEAD_LOC, opIcon.getLocation() );	// Icon-Position
 
@@ -369,13 +346,13 @@ public class SpectPatch {
                     head.put( HEAD_ALIAS, valBuf.toString() );
                 }
 
-                val		= Presets.propertiesToValue( head );					// in String verwandeln
-                file.put( FILE_OP + i + FILE_OPHEAD, val );						// ...und schreiben
+                value		= Presets.propertiesToValue( head );					// in String verwandeln
+                file.put( FILE_OP + i + FILE_OPHEAD, value );						// ...und schreiben
 
             // ---- Properties ----
-                pa		= op.getPropertyArray();
-                val		= Presets.propertiesToValue( pa.toProperties( true ));	// Op-Einstellungen
-                file.put( FILE_OP + i + FILE_OPPROP, val );
+                pa      = op.getPropertyArray();
+                value   = Presets.propertiesToValue( pa.toProperties( true ));	// Op-Einstellungen
+                file.put( FILE_OP + i + FILE_OPPROP, value );
 
             // ---- Links ----
                 slots = op.getSlots( Slots.SLOTS_LINKED ).elements();
@@ -396,8 +373,8 @@ public class SpectPatch {
                             // nothing yet XXX
                         }
                     }
-                    val	= Presets.propertiesToValue( link );
-                    file.put( FILE_OP + i + slot1.toString(), val );
+                    value	= Presets.propertiesToValue( link );
+                    file.put( FILE_OP + i + slot1.toString(), value );
                 }
             }
         }
@@ -410,9 +387,8 @@ public class SpectPatch {
      *
      *	@return	false bei Fehler
      */
-    public boolean clear()
-    {
-        synchronized( ops ) {
+    public boolean clear() {
+        synchronized (ops) {
             win.clear();
             ops.removeAllElements();
 //			setFileName( null, null );
@@ -425,31 +401,29 @@ public class SpectPatch {
      *	Operatoren starten
      *	TEST STADIUM
      */
-    public void start()
-    {
-        Operator	op;
-        Thread		thread;
+    public void start() {
+        Operator op;
+        Thread thread;
 
-        synchronized( ops )
-        {
-            if( !running ) {
+        synchronized (ops) {
+            if (!running) {
                 pausing = false;
 
-                opThreadGroup = new ThreadGroup( "Operators" );
+                opThreadGroup = new ThreadGroup("Operators");
 
-                for( int i = 0; i < ops.size(); i++ ) {
-                    op = ops.elementAt( i );
-                    if( op.threadDead ) {
-                        thread = new Thread( opThreadGroup, op, op.getIcon().getName() );
-                        op.threadPaused	= false;
-                        op.threadDead	= false;
-                        op.owner		= this;
-                //		thread.setPriority( Thread.NORM_PRIORITY + 1 );
+                for (int i = 0; i < ops.size(); i++) {
+                    op = ops.elementAt(i);
+                    if (op.threadDead) {
+                        thread = new Thread(opThreadGroup, op, op.getIcon().getName());
+                        op.threadPaused = false;
+                        op.threadDead = false;
+                        op.owner = this;
+                        //		thread.setPriority( Thread.NORM_PRIORITY + 1 );
                         thread.start();
                     }
                 }
                 running = true;
-            //	Thread.currentThread().setPriority( Thread.NORM_PRIORITY - 1 );
+                //	Thread.currentThread().setPriority( Thread.NORM_PRIORITY - 1 );
             }
         }
     }
@@ -458,26 +432,24 @@ public class SpectPatch {
      *	Operatoren stoppen
      *	TEST STADIUM
      */
-    public void stop()
-    {
+    public void stop() {
         Operator		op;
         Enumeration		slots;
         SpectStreamSlot	slot;
 
-        synchronized( ops )
-        {
-            if( running ) {
+        synchronized (ops) {
+            if (running) {
                 pausing = false;
 
-                for( int i = 0; i < ops.size(); i++ ) {
-                    op = ops.elementAt( i );
-                    if( !op.threadDead ) {
+                for (int i = 0; i < ops.size(); i++) {
+                    op = ops.elementAt(i);
+                    if (!op.threadDead) {
                         op.runStop();
-                        slots = op.getSlots( Slots.SLOTS_LINKED ).elements();
-                        while( slots.hasMoreElements() ) {
+                        slots = op.getSlots(Slots.SLOTS_LINKED).elements();
+                        while (slots.hasMoreElements()) {
                             slot = (SpectStreamSlot) slots.nextElement();
-                            synchronized( slot ) {
-                                if( slot.state == SpectStreamSlot.STATE_WAITING ) {
+                            synchronized (slot) {
+                                if (slot.state == SpectStreamSlot.STATE_WAITING) {
                                     // wartende Ops informieren
                                     slot.getOwnerThread().interrupt();
                                 }
@@ -485,18 +457,17 @@ public class SpectPatch {
                         }
                     }
                 }
-                while( opThreadGroup.activeCount() > 0 ) {
+                while (opThreadGroup.activeCount() > 0) {
                     try {
-                        Thread.sleep( 500 );	// Operatoren schicken notify() beim Beenden!
-                    }
-                    catch( InterruptedException ignored) {}
+                        Thread.sleep(500);    // Operatoren schicken notify() beim Beenden!
+                    } catch (InterruptedException ignored) {}
                 }
                 running = false;
             }
         }
-    //	thread.setPriority( Thread.NORM_PRIORITY );
-        win.stop();		// moeglicherweise wurde gar kein Thread gestartet, der win.stop()
-    }					// aufrufen wuerde
+        //	thread.setPriority( Thread.NORM_PRIORITY );
+        win.stop();        // moeglicherweise wurde gar kein Thread gestartet, der win.stop()
+    }                    // aufrufen wuerde
 
     /**
      *	Operatoren pausieren / Pause beenden
@@ -504,26 +475,23 @@ public class SpectPatch {
      *
      *	@param	state	true = Pause einlegen; false = Pause beenden
      */
-    public synchronized void pause( boolean state )
-    {
+    public synchronized void pause(boolean state) {
         Operator		op;
         Enumeration		slots;
         SpectStreamSlot	slot;
         boolean			allPausing;
 
-        synchronized( ops )
-        {
-            if( running && (state != pausing) ) {
-
-                for( int i = 0; i < ops.size(); i++ ) {
-                    op = ops.elementAt( i );
-                    if( !op.threadDead ) {
-                        op.runPause( state );
-                        slots = op.getSlots( Slots.SLOTS_LINKED ).elements();
-                        while( slots.hasMoreElements() ) {
+        synchronized (ops) {
+            if (running && (state != pausing)) {
+                for (int i = 0; i < ops.size(); i++) {
+                    op = ops.elementAt(i);
+                    if (!op.threadDead) {
+                        op.runPause(state);
+                        slots = op.getSlots(Slots.SLOTS_LINKED).elements();
+                        while (slots.hasMoreElements()) {
                             slot = (SpectStreamSlot) slots.nextElement();
-                            synchronized( slot ) {
-                                if( slot.state == SpectStreamSlot.STATE_WAITING ) {
+                            synchronized (slot) {
+                                if (slot.state == SpectStreamSlot.STATE_WAITING) {
                                     // wartende Ops informieren
                                     slot.getOwnerThread().interrupt();
                                 }
@@ -531,20 +499,19 @@ public class SpectPatch {
                         }
                     }
                 }
-                if( state ) {
+                if (state) {
                     do {
                         try {
-                            Thread.sleep( 500 );
-                        }
-                        catch( InterruptedException ignored) {}
+                            Thread.sleep(500);
+                        } catch (InterruptedException ignored) {}
                         allPausing = true;
-                        for( int i = 0; i < ops.size(); i++ ) {
-                            op = ops.elementAt( i );
-                            if( !op.threadDead && !op.threadPausing ) {
+                        for (int i = 0; i < ops.size(); i++) {
+                            op = ops.elementAt(i);
+                            if (!op.threadDead && !op.threadPausing) {
                                 allPausing = false;
                             }
                         }
-                    } while( !allPausing );
+                    } while (!allPausing);
                 }
                 pausing = state;
             }
@@ -555,12 +522,11 @@ public class SpectPatch {
      *	Muss von Operatoren aufgerufen werden,
      *	wenn sie die run() Methode verlassen
      */
-    public synchronized void operatorTerminated( Operator op )
-    {
+    public synchronized void operatorTerminated(Operator op) {
 //		notify();
-        if( Thread.activeCount() == 1) {		// wenn ich der letzte bin
+        if (Thread.activeCount() == 1) {        // wenn ich der letzte bin
             running = false;
-            win.stop();							// ...dann die Gadgets wieder freigeben
+            win.stop();                            // ...dann die Gadgets wieder freigeben
         }
     }
 
@@ -568,18 +534,16 @@ public class SpectPatch {
      *	Muss von Operatoren aufgerufen werden,
      *	wenn sie in den Pause-Modus wechseln
      */
-    public synchronized void operatorPaused( Operator op )
-    {
+    public synchronized void operatorPaused(Operator op) {
 //		notify();
     }
 
     /**
      *	Neuen Operator hinzufuegen
      */
-    public void addOperator( Operator op )
-    {
-        synchronized( ops ) {
-            ops.addElement( op );
+    public void addOperator(Operator op) {
+        synchronized (ops) {
+            ops.addElement(op);
         }
 //		setModified( true );
     }
@@ -588,10 +552,9 @@ public class SpectPatch {
      *	Operator loeschen
      *	RUFT Operator.dispose() AUF!
      */
-    public void removeOperator( Operator op )
-    {
-        synchronized( ops ) {
-            ops.removeElement( op );
+    public void removeOperator(Operator op) {
+        synchronized (ops) {
+            ops.removeElement(op);
         }
         op.dispose();
     }
@@ -604,21 +567,19 @@ public class SpectPatch {
     //	}
 
     /**
-     *	(Datei)namen des Dokuments ermitteln
+     * (Datei)namen des Dokuments ermitteln
      *
-     *	@return	moeglicherweise null!
+     * @return moeglicherweise null!
      */
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
     /**
-     *	Liste aller Operatoren besorgen
+     * Liste aller Operatoren besorgen
      */
-    public Enumeration getOperators()
-    {
-        synchronized( ops ) {
+    public Enumeration getOperators() {
+        synchronized (ops) {
             return ops.elements();
         }
     }
