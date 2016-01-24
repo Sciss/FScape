@@ -50,8 +50,7 @@ public class PrefsPanel
     /**
      *  Creates a new preferences frame
      */
-    public PrefsPanel()
-    {
+    public PrefsPanel() {
         super(new BorderLayout());
         setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
 
@@ -173,22 +172,6 @@ public class PrefsPanel
         b.add( ggParam );
         tab.gridAdd( b, 1, row, -1, 1 );
 
-        //		row++;
-        //		prefs   = userPrefs;
-        //        key     = PrefsUtil.KEY_LOOKANDFEEL;
-        //		key2	= "prefsLookAndFeel";
-        //		title	= "Look-and-Feel:";
-        //		lb		= new JLabel( title, SwingConstants.TRAILING );
-        //		tab.gridAdd( lb, 0, row );
-        //		ggChoice = new PrefComboBox();
-        //		lafInfos = UIManager.getInstalledLookAndFeels();
-        //        for( int i = 0; i < lafInfos.length; i++ ) {
-        //            ggChoice.addItem( new StringItem( lafInfos[i].getClassName(), lafInfos[i].getName() ));
-        //        }
-        //		ggChoice.setPreferences( prefs, key );
-        //		ggChoice.addActionListener( new WarnPrefsChange( ggChoice, ggChoice, haveWarned, txtWarnLookAndFeel, title ));
-        //		tab.gridAdd( ggChoice, 1, row, -1, 1 );
-
         row++;
         key		= "lafdecoration"; // BasicWindowHandler.KEY_LAFDECORATION;
         key2	= "prefsLAFDecoration";
@@ -198,45 +181,6 @@ public class PrefsPanel
         tab.gridAdd( ggCheckBox, 1, row, -1, 1 );
         ggCheckBox.addActionListener( new WarnPrefsChange( ggCheckBox, ggCheckBox, haveWarned, txtWarnLookAndFeel, title ));
 
-        //		row++;
-        //       	key		= "internalframes"; // BasicWindowHandler.KEY_INTERNALFRAMES;
-        //		key2	= "prefsInternalFrames";
-        //		title	= getResourceString( key2 );
-        ////		lb		= new JLabel( title, JLabel.TRAILING );
-        ////		tab.gridAdd( lb, 0, row );
-        //		ggCheckBox  = new PrefCheckBox( title );
-        //		ggCheckBox.setPreferences( prefs, key );
-        //		tab.gridAdd( ggCheckBox, 1, row, -1, 1 );
-        //		ggCheckBox.addActionListener( new WarnPrefsChange( ggCheckBox, ggCheckBox, haveWarned, txtWarnLookAndFeel, title ));
-
-        //		row++;
-        //       	key		= CoverGrowBox.KEY_INTRUDINGSIZE;
-        //		key2	= "prefsIntrudingSize";
-        ////		lb		= new JLabel( getResourceString( key2 ), JLabel.TRAILING );
-        ////		tab.gridAdd( lb, 0, row );
-        //		ggCheckBox  = new PrefCheckBox( getResourceString( key2 ));
-        //		ggCheckBox.setPreferences( prefs, key );
-        //		tab.gridAdd( ggCheckBox, 1, row, -1, 1 );
-
-        //		row++;
-        //       	key		= "floatingpalettes"; // BasicWindowHandler.KEY_FLOATINGPALETTES;
-        //		key2	= "prefsFloatingPalettes";
-        ////		lb		= new JLabel( getResourceString( key2 ), JLabel.TRAILING );
-        ////		tab.gridAdd( lb, 0, row );
-        //		ggCheckBox  = new PrefCheckBox( getResourceString( key2 ));
-        //		ggCheckBox.setPreferences( prefs, key );
-        //		tab.gridAdd( ggCheckBox, 1, row, -1, 1 );
-        //		ggCheckBox.addActionListener( new WarnPrefsChange( ggCheckBox, ggCheckBox, haveWarned, txtWarnLookAndFeel, title ));
-
-//		row++;
-//  	prefs   = GUIUtil.getUserPrefs();
-//		key2	= "prefsKeyStrokeHelp";
-//		lb		= new JLabel( getResourceString( key2 ), JLabel.TRAILING );
-//		tab.gridAdd( lb, 0, row );
-//		ggKeyStroke = new KeyStrokeTextField();
-//		ggKeyStroke.setPreferences( prefs, key );
-//		tab.gridAdd( ggKeyStroke, 1, row, -1, 1 );
-
         key2	= "prefsGeneral";
         tab.makeCompactGrid();
         tabWrap = new JPanel( new BorderLayout() );
@@ -245,79 +189,35 @@ public class PrefsPanel
         // p.add( new HelpButton( key2 ));
         tabWrap.add( p, BorderLayout.SOUTH );
 
-        // ggTabPane.addTab("General", null, tabWrap, null);
-
-        // ---------- generic gadgets ----------
-
-//		ggButton	= new JButton( getResourceString( "buttonClose" ));
-//		buttonPanel = new JPanel( new FlowLayout( FlowLayout.RIGHT, 4, 4 ));
-//		buttonPanel.add( ggButton );
-//		ggButton.addActionListener( new ActionListener() {
-//			public void actionPerformed( ActionEvent newEvent )
-//			{
-//				setVisible( false );
-//				dispose();
-//			}	
-//		});
-//		if( app.getUserPrefs().getBoolean( PrefsUtil.KEY_INTRUDINGSIZE, false )) {
-//			buttonPanel.add( Box.createHorizontalStrut( 16 ));
-//		}
-
         cp.add( tabWrap /* ggTabPane */, BorderLayout.CENTER );
-
-        // ---------- listeners ----------
-
-//		addListener( new AbstractWindow.Adapter() {
-//			public void windowClosing( AbstractWindow.Event e )
-//			{
-//				setVisible( false );
-//				dispose();
-//			}
-//		});
-
-        // setDefaultCloseOperation( WindowConstants.DO_NOTHING_ON_CLOSE );
-        // init();
-        // app.addComponent( Main.COMP_PREFS, this );
     }
 
-    //	public void dispose()
-    //	{
-    //		super.dispose();
-    //	}
-
-    //	private static String getResourceString( String key )
-    //	{
-    //		return key;
-    //	}
-
     private static class WarnPrefsChange
-    implements ActionListener
-    {
-        private final PreferenceEntrySync	pes;
-        private final Component				c;
-        private final Flag					haveWarned;
-        private final String				text;
-        private final String				title;
-        private final String				initialValue;
+            implements ActionListener {
 
-        protected WarnPrefsChange( PreferenceEntrySync pes, Component c, Flag haveWarned, String text, String title )
-        {
-            this.pes		= pes;
-            this.c			= c;
-            this.haveWarned	= haveWarned;
-            this.text		= text;
-            this.title		= title;
+        private final PreferenceEntrySync pes;
+        private final Component c;
+        private final Flag      haveWarned;
+        private final String    text;
+        private final String    title;
+        private final String    initialValue;
 
-            initialValue	= pes.getPreferenceNode().get( pes.getPreferenceKey(), null );
+        protected WarnPrefsChange(PreferenceEntrySync pes, Component c, Flag haveWarned, String text, String title) {
+            this.pes        = pes;
+            this.c          = c;
+            this.haveWarned = haveWarned;
+            this.text       = text;
+            this.title      = title;
+
+            initialValue    = pes.getPreferenceNode().get(pes.getPreferenceKey(), null);
         }
 
-        public void actionPerformed( ActionEvent e )
-        {
-            final String newValue = pes.getPreferenceNode().get( pes.getPreferenceKey(), initialValue );
+        public void actionPerformed(ActionEvent e) {
+            final String newValue = pes.getPreferenceNode().get(pes.getPreferenceKey(), initialValue);
 
-            if( !newValue.equals( initialValue ) && !haveWarned.isSet() ) {
-                JOptionPane.showMessageDialog( c, text, title, JOptionPane.INFORMATION_MESSAGE );
-                haveWarned.set( true );
+            if (!newValue.equals(initialValue) && !haveWarned.isSet()) {
+                JOptionPane.showMessageDialog(c, text, title, JOptionPane.INFORMATION_MESSAGE);
+                haveWarned.set(true);
             }
         }
     }
