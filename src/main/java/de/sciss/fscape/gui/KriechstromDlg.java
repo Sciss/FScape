@@ -132,19 +132,13 @@ public class KriechstromDlg
 
 // -------- public methods --------
 
-    /**
-     *	!! setVisible() bleibt dem Aufrufer ueberlassen
-     */
-    public KriechstromDlg()
-    {
-        super( "Kriechstrom" );
+    public KriechstromDlg() {
+        super("Kriechstrom");
         init2();
     }
 
-    protected void buildGUI()
-    {
-        // einmalig PropertyArray initialisieren
-        if( static_pr == null ) {
+    protected void buildGUI() {
+        if (static_pr == null) {
             static_pr			= new PropertyArray();
             static_pr.text		= prText;
             static_pr.textName	= prTextName;
@@ -371,34 +365,27 @@ public class KriechstromDlg
         initGUI( this, FLAGS_PRESETS | FLAGS_PROGBAR, gui );
     }
 
-    /**
-     *	Transfer values from prop-array to GUI
-     */
-    public void fillGUI()
-    {
+    public void fillGUI() {
         super.fillGUI();
-        super.fillGUI( gui );
+        super.fillGUI(gui);
     }
 
-    /**
-     *	Transfer values from GUI to prop-array
-     */
-    public void fillPropertyArray()
-    {
+    public void fillPropertyArray() {
         super.fillPropertyArray();
-        super.fillPropertyArray( gui );
+        super.fillPropertyArray(gui);
     }
 
 // -------- Processor Interface --------
 
-    protected void process()
-    {
-        int					i, j, k, m, chunkLength;
+    protected void process() {
+        long                chunkLength;
+        int					i, j, k, m;
         int					len, ch;
         long				progOff, progLen;
         double				d1, d2, d3, d4, d5, d6, d7;
         float				f1, f2, f3, f4, f5, fadeY1, fadeY2;
         boolean				b1;
+        long                n;
 
         // io
         AudioFile			inF		= null;
@@ -412,8 +399,8 @@ public class KriechstromDlg
         float[][]			inBuf, outBuf;
         float[]				convBuf1, convBuf2;
 
-        int					inLength, outLength;
-        int					framesWritten;
+        long		        inLength, outLength;
+        long                framesWritten;
 
         SpectStream			mStream			= null;
         Modulator			mPosMod;
@@ -428,7 +415,7 @@ public class KriechstromDlg
 
         Random				rand			= new Random( System.currentTimeMillis() );
         int					chunkNumMin, chunkNumSpan, chunkLenMin, chunkLenSpan, chunkRepMin, chunkRepSpan;
-        int					inOffMin, relOff;
+        long                inOffMin, relOff;
 
         float				fltAmount;
         float[][]			filter			= null;
@@ -439,55 +426,56 @@ public class KriechstromDlg
         Param				ampRef			= new Param( 1.0, Param.ABS_AMP );	// transform-Referenz
         float				maxAmp			= 0.0f;
 
-topLevel: try {
+    topLevel:
+        try {
 
         // ---- open input ----
-            inF				= AudioFile.openAsRead( new File( pr.text[ PR_INPUTFILE ]));
-            inStream		= inF.getDescr();
-            inChanNum		= inStream.channels;
-            inLength		= (int) inStream.length;
+            inF         = AudioFile.openAsRead(new File(pr.text[PR_INPUTFILE]));
+            inStream    = inF.getDescr();
+            inChanNum   = inStream.channels;
+            inLength    = inStream.length;
             // this helps to prevent errors from empty files!
-            if( (inLength < 1) || (inChanNum < 1) ) throw new EOFException( ERR_EMPTY );
+            if ((inLength < 1) || (inChanNum < 1)) throw new EOFException(ERR_EMPTY);
 
         // ---- open output ----
-            ggOutput		= (PathField) gui.getItemObj( GG_OUTPUTFILE );
-            if( ggOutput == null ) throw new IOException( ERR_MISSINGPROP );
-            outStream		= new AudioFileDescr( inStream );
-            ggOutput.fillStream( outStream );
-            outF			= AudioFile.openAsWrite( outStream );
-        // .... check running ....
-            if( !threadRunning ) break topLevel;
+            ggOutput    = (PathField) gui.getItemObj(GG_OUTPUTFILE);
+            if (ggOutput == null) throw new IOException(ERR_MISSINGPROP);
+            outStream   = new AudioFileDescr(inStream);
+            ggOutput.fillStream(outStream);
+            outF        = AudioFile.openAsWrite(outStream);
+            // .... check running ....
+            if (!threadRunning) break topLevel;
 
-        // ---- misc inits ----
-            pInLength		= new Param( AudioFileDescr.samplesToMillis( inStream, inLength ), Param.ABS_MS );
-            pOutLength		= Param.transform( pr.para[ PR_OUTLENGTH ], Param.ABS_MS, pInLength, null );
-            outLength		= (int) (AudioFileDescr.millisToSamples( outStream, pOutLength.value) + 0.5);
+        // ---- misc init ----
+            pInLength   = new Param(AudioFileDescr.samplesToMillis(inStream, inLength), Param.ABS_MS);
+            pOutLength  = Param.transform(pr.para[PR_OUTLENGTH], Param.ABS_MS, pInLength, null);
+            outLength   = (long) (AudioFileDescr.millisToSamples(outStream, pOutLength.value) + 0.5);
 
-            mStream			= new SpectStream();
-            mStream.setChannels( inChanNum );
-            mStream.setBands( 0.0f, (float) inStream.rate / 2, 1, SpectStream.MODE_LIN );
-            mStream.setRate( (float) inStream.rate, 1 );				// !!
-            mStream.setEstimatedLength( outLength );
+            mStream     = new SpectStream();
+            mStream.setChannels(inChanNum);
+            mStream.setBands(0.0f, (float) inStream.rate / 2, 1, SpectStream.MODE_LIN);
+            mStream.setRate((float) inStream.rate, 1);                // !!
+            mStream.setEstimatedLength(outLength);
             mStream.getDescr();
 
-            mPosMod			= new Modulator( new Param( 0.0, Param.ABS_MS ), pInLength, pr.envl[ PR_KRIECHENV ], mStream );
+            mPosMod = new Modulator(new Param(0.0, Param.ABS_MS), pInLength, pr.envl[PR_KRIECHENV], mStream);
 //			foo	= mPosMod.calc();
 //			d1	= foo.value;
 //				mStream.framesRead++;			// dirty! XXX
 
 // System.out.println( "Total reads: "+mImpReads+"; morphs "+mMorphs );
 
-            chunkNumMin		= (int) (pr.para[ PR_MINCHUNKNUM ].value + 0.5);
-            chunkNumSpan	= (int) (pr.para[ PR_MAXCHUNKNUM ].value + 0.5) - chunkNumMin + 1;
-            if( chunkNumSpan < 0 ) {
-                chunkNumSpan = -chunkNumSpan;
-                chunkNumMin	 = (int) (pr.para[ PR_MAXCHUNKNUM ].value + 0.5);
+            chunkNumMin     = (int) (pr.para[PR_MINCHUNKNUM].value + 0.5);
+            chunkNumSpan    = (int) (pr.para[PR_MAXCHUNKNUM].value + 0.5) - chunkNumMin + 1;
+            if (chunkNumSpan < 0) {
+                chunkNumSpan    = -chunkNumSpan;
+                chunkNumMin     = (int) (pr.para[PR_MAXCHUNKNUM].value + 0.5);
             }
-            chunkRepMin		= (int) (pr.para[ PR_MINCHUNKREP ].value + 0.5);
-            chunkRepSpan	= (int) (pr.para[ PR_MAXCHUNKREP ].value + 0.5) - chunkRepMin + 1;
-            if( chunkRepSpan < 0 ) {
+            chunkRepMin     = (int) (pr.para[PR_MINCHUNKREP].value + 0.5);
+            chunkRepSpan    = (int) (pr.para[PR_MAXCHUNKREP].value + 0.5) - chunkRepMin + 1;
+            if (chunkRepSpan < 0) {
                 chunkRepSpan = -chunkRepSpan;
-                chunkRepMin	 = (int) (pr.para[ PR_MAXCHUNKREP ].value + 0.5);
+                chunkRepMin = (int) (pr.para[PR_MAXCHUNKREP].value + 0.5);
             }
             chunkLenMin		= (int) (AudioFileDescr.millisToSamples( outStream,
                                         (Param.transform( pr.para[ PR_MINCHUNKLEN ], Param.ABS_MS, null, null )).value) + 0.5);
@@ -498,21 +486,27 @@ topLevel: try {
                 chunkLenSpan = -chunkLenSpan;
                 chunkLenMin	 = i;
             }
-            inOffMin		= Math.max( 0, inLength - chunkLenMin );
+            inOffMin = Math.max(0, inLength - chunkLenMin);
 
-            fltAmount		= (float) Param.transform( pr.para[ PR_FLTAMOUNT ], Param.ABS_AMP, ampRef, null ).value;
-            if( fltAmount > 0.0f ) {	// create filter table
+            fltAmount = (float) Param.transform(pr.para[PR_FLTAMOUNT], Param.ABS_AMP, ampRef, null).value;
+            if (fltAmount > 0.0f) {    // create filter table
 
-                filter		= new float[ 512 ][ 3 ];
-                d1			= 1.0;
-                switch( pr.intg[ PR_FLTCOLOR ]) {
-                case FLTCOLOR_DARK:		d1 = 2.0; break;
-                case FLTCOLOR_NEUTRAL:	d1 = 0.8; break;
-                case FLTCOLOR_BRIGHT:	d1 = 0.4; break;
+                filter = new float[512][3];
+                d1 = 1.0;
+                switch (pr.intg[PR_FLTCOLOR]) {
+                    case FLTCOLOR_DARK:
+                        d1 = 2.0;
+                        break;
+                    case FLTCOLOR_NEUTRAL:
+                        d1 = 0.8;
+                        break;
+                    case FLTCOLOR_BRIGHT:
+                        d1 = 0.4;
+                        break;
                 }
 
-                for( i = 0; i < 512; i++ ) {	// 2nd order IIR filter, EDS script S. 101
-                    d2		= Math.exp( rand.nextDouble() * d1 ) * 20.0;
+                for (i = 0; i < 512; i++) {    // 2nd order IIR filter, EDS script S. 101
+                    d2 = Math.exp(rand.nextDouble() * d1) * 20.0;
 
 //					d2		= Constants.PI2 * d2 / inStream.smpRate;		// wc
 //d2 = Math.PI / 2;
@@ -563,58 +557,58 @@ topLevel: try {
 //d2 = Math.pow( rand.nextDouble(), 0.4 )  * 2.45 + 0.108;
 // fuer d3 = 0.67:
 //d2 = 0.24 ... 2.3;
-d2 = Math.pow( rand.nextDouble(), d1 )  * 2.06 + 0.24;
+                    d2 = Math.pow(rand.nextDouble(), d1) * 2.06 + 0.24;
 
 //					d3		= rand.nextDouble() * 0.9 + 0.1;			// bandwidth
-d3 = 0.67;
+                    d3 = 0.67;
 //					d5		= 100.0;									// gain;
-d5 = 1.0;
+                    d5 = 1.0;
                     d4		= Math.sin( d2 ) * sinh( Constants.ln2 / 2.0 * d3 * d2 / Math.sin( d2 ));	// gamma
                     d6		= d4 * Math.sqrt( d5 );
 //					d7		= 1.0 + d4 / Math.sqrt( d5 );				// a0
-d7 = 1.0;
-                    filter[i][0] = (float) ((1.0 + d6) / d7);			// b0
-                    filter[i][1] = (float) (-Math.cos( d2 ) * 2.0 / d7);	// b1, a1
-                    filter[i][2] = (float) ((1.0 - d6) / d7);			// b2, a2
+                    d7 = 1.0;
+                    filter[i][0] = (float) ((1.0 + d6) / d7);            // b0
+                    filter[i][1] = (float) (-Math.cos(d2) * 2.0 / d7);    // b1, a1
+                    filter[i][2] = (float) ((1.0 - d6) / d7);            // b2, a2
                 }
             }
 
             progOff			= 0;
-            progLen			= (long) outLength;
+            progLen			= outLength;
 
-        // ---- misc inits ----
+        // ---- misc init ----
 
-            regionList		= new Vector<KriechChunk>();		// Elemente = de.sciss.fscape.io.Region, chronologically added
-            inBuf			= new float[ inChanNum ][ 8192 ];
-            outBuf			= new float[ inChanNum ][ 8192 ];
-            pChunkLen		= new Param( 0.0, Param.ABS_MS );
+            regionList  = new Vector<KriechChunk>();        // Elemente = de.sciss.fscape.io.Region, chronologically added
+            inBuf       = new float[inChanNum][8192];
+            outBuf      = new float[inChanNum][8192];
+            pChunkLen   = new Param(0.0, Param.ABS_MS);
 
-            chunk			= new KriechChunk( inChanNum );
-            chunk.len		= 0;
-            chunk.outOff	= 0;
-            chunk.rep		= 0;
-            regionList.addElement( chunk );
-            framesWritten	= 0;
-            chunkNumMean	= (chunkNumSpan >> 1) + chunkNumMin;
-            chunkNumHist	= chunkNumMean;
-            chunkNumHistCnt	= 1;
+            chunk            = new KriechChunk(inChanNum);
+            chunk.len       = 0;
+            chunk.outOff    = 0;
+            chunk.rep       = 0;
+            regionList.addElement(chunk);
+            framesWritten   = 0L;
+            chunkNumMean    = (chunkNumSpan >> 1) + chunkNumMin;
+            chunkNumHist    = chunkNumMean;
+            chunkNumHistCnt = 1;
 
 
             // normalization requires temp files
-            if( pr.intg[ PR_GAINTYPE ] == GAIN_UNITY ) {
-                tempFile	= new File[ inChanNum ];
-                floatF		= new FloatFile[ inChanNum ];
-                for( ch = 0; ch < inChanNum; ch++ ) {		// first zero them because an exception might be thrown
-                    tempFile[ ch ]	= null;
-                    floatF[ ch ]	= null;
+            if (pr.intg[PR_GAINTYPE] == GAIN_UNITY) {
+                tempFile = new File[inChanNum];
+                floatF = new FloatFile[inChanNum];
+                for (ch = 0; ch < inChanNum; ch++) {        // first zero them because an exception might be thrown
+                    tempFile[ch] = null;
+                    floatF  [ch] = null;
                 }
-                for( ch = 0; ch < inChanNum; ch++ ) {
-                    tempFile[ ch ]	= IOUtil.createTempFile();
-                    floatF[ ch ]	= new FloatFile( tempFile[ ch ], GenericFile.MODE_OUTPUT );
+                for (ch = 0; ch < inChanNum; ch++) {
+                    tempFile[ch] = IOUtil.createTempFile();
+                    floatF  [ch] = new FloatFile(tempFile[ch], GenericFile.MODE_OUTPUT);
                 }
                 progLen += outLength / chunkNumMean;
             } else {
-                gain		= (float) (Param.transform( pr.para[ PR_GAIN ], Param.ABS_AMP, ampRef, null )).value;
+                gain = (float) (Param.transform(pr.para[PR_GAIN], Param.ABS_AMP, ampRef, null)).value;
             }
         // .... check running ....
             if( !threadRunning ) break topLevel;
@@ -627,32 +621,30 @@ d7 = 1.0;
                 b1			= false;
 
                 // calc next stop, remove obsolete chunks
-                k			= regionList.size();
-                for( i = 0; i < k; i++ ) {
-                    chunk	= (KriechChunk) regionList.elementAt( i );
-                    j		= chunk.len - framesWritten + chunk.outOff;
-                    if( j > 0 ) {
-                        chunkLength = Math.min( chunkLength, j );
-                        j -= chunk.fadeOut;
-                        if( (j >= 0) && (chunk.rep-- > 1) ) {		// repeat
-                            if( j == 0 ) {
-                                chunk			= new KriechChunk( chunk );
-                                chunk.outOff	= framesWritten;
+                k = regionList.size();
+                for (i = 0; i < k; i++) {
+                    chunk   = regionList.elementAt(i);
+                    n		= chunk.len - framesWritten + chunk.outOff;
+                    if (n > 0) {
+                        chunkLength = Math.min(chunkLength, n);
+                        n -= chunk.fadeOut;
+                        if ((n >= 0) && (chunk.rep-- > 1)) {        // repeat
+                            if( n == 0 ) {
+                                chunk           = new KriechChunk(chunk);
+                                chunk.outOff    = framesWritten;
                                 if( pr.bool[ PR_LENUPDATE ]) {
                                     chunk.len		= chunk.nextLen;
                                     chunkLength		= Math.min( chunkLength, chunk.len - (chunk.rep > 1 ? chunk.fadeOut : 0) );
-                                    chunk.nextLen	= Math.min( inLength - chunk.inOff,
-                                                                (int) (rand.nextFloat() * chunkLenSpan) + chunkLenMin );
+                                    chunk.nextLen   = (int) Math.min(inLength - chunk.inOff, (int) (rand.nextFloat() * chunkLenSpan) + chunkLenMin);
                                     pChunkLen.value = AudioFileDescr.samplesToMillis( outStream, chunk.len );
                                     m				= (int) (AudioFileDescr.millisToSamples( outStream,
                                                                 (Param.transform( pr.para[ PR_CROSSFADE ], Param.ABS_MS, pChunkLen, null )).value) + 0.5);
                                     chunk.fadeIn	= chunk.fadeOut;
                                     chunk.fadeOut	= Math.min( Math.min( chunk.nextLen >> 1, chunk.len - chunk.fadeIn ), m );
                                 }
-                                regionList.addElement( chunk );
-// System.out.println(" new rep : "+chunk.rep );
+                                regionList.addElement(chunk);
                             } else {
-                                chunkLength = Math.min( chunkLength, j );
+                                chunkLength = Math.min(chunkLength, n);
                             }
                         }
                     } else {
@@ -666,62 +658,55 @@ d7 = 1.0;
                 pPos				= mPosMod.calc();
                 mStream.framesRead	= framesWritten;
 
-                if( b1 ) { // chunks ceased to exist -> calc new chunk-num
-// System.out.println( (chunkNumHistCnt*chunkNumMean)/chunkNumHist );
-                    i			= (int) (Math.min( 1.0f, rand.nextFloat() * (chunkNumHistCnt*chunkNumMean)/chunkNumHist) * chunkNumSpan) + chunkNumMin;
-                    j			= i - regionList.size();
+                if (b1) { // chunks ceased to exist -> calc new chunk-num
+                    i = (int) (Math.min(1.0f, rand.nextFloat() * (chunkNumHistCnt * chunkNumMean) / chunkNumHist) * chunkNumSpan) + chunkNumMin;
+                    j = i - regionList.size();
 
-// System.out.println( "written : "+framesWritten +" ; new chunks : "+j );
-
-                    for( ; j > 0; j-- ) {
+                    for (; j > 0; j--) {
                         chunk			= new KriechChunk( inChanNum );
                         d1				= (rand.nextDouble() * 2.0 - 1.0) * pr.para[ PR_ENTRYPOINT ].value + pPos.value;
                         chunk.inOff		= Math.min( inOffMin, Math.max( 0, (int) (AudioFileDescr.millisToSamples( outStream, d1 ) + 0.5) ));
                         chunk.rep		= (int) (rand.nextFloat() * chunkRepSpan) + chunkRepMin;
-                        chunk.len		= Math.min( inLength - chunk.inOff, (int) (rand.nextFloat() * chunkLenSpan) + chunkLenMin );
+                        chunk.len       = (int) Math.min(inLength - chunk.inOff, (int) (rand.nextFloat() * chunkLenSpan) + chunkLenMin);
                         pChunkLen.value = AudioFileDescr.samplesToMillis( outStream, chunk.len );
                         k				= (int) (AudioFileDescr.millisToSamples( outStream,
                                                     (Param.transform( pr.para[ PR_CROSSFADE ], Param.ABS_MS, pChunkLen, null )).value) + 0.5);
                         chunk.fadeIn	= Math.min( chunk.len >> 1, k );
                         if( pr.bool[ PR_LENUPDATE ]) {
-                            chunk.nextLen	= Math.min( inLength - chunk.inOff, (int) (rand.nextFloat() * chunkLenSpan) + chunkLenMin );
-                            chunk.fadeOut	= Math.min( Math.min( chunk.nextLen >> 1, chunk.len - chunk.fadeIn ), k );
+                            chunk.nextLen = (int) Math.min(inLength - chunk.inOff, (int) (rand.nextFloat() * chunkLenSpan) + chunkLenMin);
+                            chunk.fadeOut = Math.min(Math.min(chunk.nextLen >> 1, chunk.len - chunk.fadeIn), k);
                         } else {
                             chunk.fadeOut	= Math.min( chunk.len - chunk.fadeIn, k );
                         }
                         chunk.outOff	= framesWritten;
 
-                        if( rand.nextFloat() < fltAmount ) {
-                            chunk.flt	= (int) (rand.nextFloat() * 512);
+                        if (rand.nextFloat() < fltAmount) {
+                            chunk.flt = (int) (rand.nextFloat() * 512);
                         } else {
-                            chunk.flt	= -1;
+                            chunk.flt = -1;
                         }
 
-// System.out.println( "New region : "+chunk.inOff + "; len: "+chunk.len+"; rep: "+chunk.rep+"; fadeIn "+chunk.fadeIn + "; fadeOut "+chunk.fadeOut );
+                        regionList.addElement(chunk);
 
-                        regionList.addElement( chunk );
-
-                        chunkLength		= Math.min( chunkLength, chunk.len - (chunk.rep > 1 ? chunk.fadeOut : 0) );
+                        chunkLength = Math.min(chunkLength, chunk.len - (chunk.rep > 1 ? chunk.fadeOut : 0));
                     }
                 }
 
                 // mix regions
-                while( (chunkLength > 0) && threadRunning ) {
-                    len = Math.min( 8192, chunkLength );
+                while ((chunkLength > 0) && threadRunning) {
+                    len = (int) Math.min(8192, chunkLength);
 
-                    for( i = 0; i < regionList.size(); i++ ) {
-                        chunk	= (KriechChunk) regionList.elementAt( i );
-                        relOff	= framesWritten - chunk.outOff;
-                        inF.seekFrame( chunk.inOff + relOff );
-                        inF.readFrames( inBuf, 0, len );
+                    for (i = 0; i < regionList.size(); i++) {
+                        chunk = regionList.elementAt(i);
+                        relOff = framesWritten - chunk.outOff;
+                        inF.seekFrame(chunk.inOff + relOff);
+                        inF.readFrames(inBuf, 0, len);
 
                         // --- filter ---
                         if( chunk.flt >= 0 ) {
                             convBuf2	= filter[ chunk.flt ];
                             for( ch = 0; ch < inChanNum; ch++ ) {
                                 convBuf1	= inBuf[ch];
-
-// System.out.println(" filter : "+convBuf2[0] +" ; "+convBuf2[1]+" ; "+convBuf2[2] );
 
                                 f1			= chunk.fltMem[ch][0];	// b1
                                 f2			= chunk.fltMem[ch][1];	// b2
@@ -749,82 +734,77 @@ d7 = 1.0;
                         }
 
                         // --- fade in ---
-                        j		= chunk.fadeIn - relOff;
-                        if( j > 0 ) {
-                            k		= j;
-                            j		= Math.min( j, len );
-                            fadeY2	= (float) (k - j) / (float) chunk.fadeIn;
-                            fadeY1	= 1.0f - (float) relOff / (float) chunk.fadeIn;
-                            f1		= (fadeY1 - fadeY2) / (j - 1);
-// System.out.println( "j "+ j+"; k "+k+"; Y1 "+fadeY1+"; Y2 "+fadeY2+"; f1 "+f1+"; relOff "+relOff );
+                        n = chunk.fadeIn - relOff;
+                        if (n > 0) {
+                            j       = (int) Math.min(n, len);
+                            fadeY2  = (float) (n - j) / (float) chunk.fadeIn;
+                            fadeY1  = 1.0f - (float) relOff / (float) chunk.fadeIn;
+                            f1      = (fadeY1 - fadeY2) / (j - 1);
 
-                            for( m = 0; m < j; m++ ) {
-// if( b2 ) System.out.println( 1.0f-(fadeY1*fadeY1) );
-                                for( ch = 0; ch < inChanNum; ch++ ) {
-                                    inBuf[ch][m] *= 1.0f - (fadeY1*fadeY1);
+                            for (m = 0; m < j; m++) {
+                                for (ch = 0; ch < inChanNum; ch++) {
+                                    inBuf[ch][m] *= 1.0f - (fadeY1 * fadeY1);
                                 }
                                 fadeY1 -= f1;
                             }
                         }
                         // --- fade out ---
-                        j = chunk.len - chunk.fadeOut - relOff;
-                        if( j < len ) {	// fade out
-                            k		= j;
-                            j		= Math.max( j, 0 );
-                            fadeY1	= (float) (j - k) / (float) chunk.fadeOut;
-                            fadeY2	= (float) (k - len) / (float) chunk.fadeOut;
-                            f1		= (fadeY2 + fadeY1) / (len - j - 1);
-// System.out.println( "OO Y1 "+fadeY1+"; Y2 "+fadeY2+"   ; j "+j+"; k "+k );
+                        n = chunk.len - chunk.fadeOut - relOff;
+                        if (n < len) {    // fade out
+                            j       = (int) Math.max(n, 0);
+                            fadeY1  = (float) (j - n) / (float) chunk.fadeOut;
+                            fadeY2  = (float) (n - len) / (float) chunk.fadeOut;
+                            f1      = (fadeY2 + fadeY1) / (len - j - 1);
 
-                            for( m = j; m < len; m++ ) {
-                                for( ch = 0; ch < inChanNum; ch++ ) {
-                                    inBuf[ch][m] *= 1.0f - (fadeY1*fadeY1);
+                            for (m = j; m < len; m++) {
+                                for (ch = 0; ch < inChanNum; ch++) {
+                                    inBuf[ch][m] *= 1.0f - (fadeY1 * fadeY1);
                                 }
                                 fadeY1 -= f1;
                             }
                         }
 
-                        if( i == 0 ) {
-                            for( ch = 0; ch < inChanNum; ch++ ) {
-                                System.arraycopy( inBuf[ch], 0, outBuf[ch], 0, len );
+                        if (i == 0) {
+                            for (ch = 0; ch < inChanNum; ch++) {
+                                System.arraycopy(inBuf[ch], 0, outBuf[ch], 0, len);
                             }
                         } else {
-                            for( ch = 0; ch < inChanNum; ch++ ) {
-                                Util.add( inBuf[ch], 0, outBuf[ch], 0, len );
+                            for (ch = 0; ch < inChanNum; ch++) {
+                                Util.add(inBuf[ch], 0, outBuf[ch], 0, len);
                             }
                         }
                     }
 
                     // write output
-                    if( floatF != null ) {
-                        for( ch = 0; ch < inChanNum; ch++ ) {
-                            convBuf1 = outBuf[ ch ];
-                            for( i = 0; i < len; i++ ) {	// measure max amp
-                                f1 = Math.abs( convBuf1[ i ]);
-                                if( f1 > maxAmp ) {
+                    if (floatF != null) {
+                        for (ch = 0; ch < inChanNum; ch++) {
+                            convBuf1 = outBuf[ch];
+                            for (i = 0; i < len; i++) {    // measure max amp
+                                f1 = Math.abs(convBuf1[i]);
+                                if (f1 > maxAmp) {
                                     maxAmp = f1;
                                 }
                             }
-                            floatF[ ch ].writeFloats( convBuf1, 0, len );
+                            floatF[ch].writeFloats(convBuf1, 0, len);
                         }
-                    } else {						// i.e. abs gain
-                        for( ch = 0; ch < inChanNum; ch++ ) {
-                            convBuf1 = outBuf[ ch ];
-                            for( i = 0; i < len; i++ ) {	// measure max amp + adjust gain
-                                f1				= Math.abs( convBuf1[ i ]);
-                                convBuf1[ i ]  *= gain;
-                                if( f1 > maxAmp ) {
+                    } else {                        // i.e. abs gain
+                        for (ch = 0; ch < inChanNum; ch++) {
+                            convBuf1 = outBuf[ch];
+                            for (i = 0; i < len; i++) {    // measure max amp + adjust gain
+                                f1 = Math.abs(convBuf1[i]);
+                                convBuf1[i] *= gain;
+                                if (f1 > maxAmp) {
                                     maxAmp = f1;
                                 }
                             }
                         }
-                        outF.writeFrames( outBuf, 0, len );
+                        outF.writeFrames(outBuf, 0, len);
                     }
                     framesWritten += len;
                     chunkLength   -= len;
                     progOff       += len;
                 // .... progress ....
-                    setProgression( (float) progOff / (float) progLen );
+                    setProgression((float) progOff / (float) progLen);
                 }
 
                 chunkNumHist += regionList.size();
@@ -832,26 +812,26 @@ d7 = 1.0;
 
             } // while framesWritten < outLength
         // .... check running ....
-            if( !threadRunning ) break topLevel;
+            if (!threadRunning) break topLevel;
 
             inF.close();
             inF = null;
 
         // ---- normalize output ----
 
-            if( pr.intg[ PR_GAINTYPE ] == GAIN_UNITY ) {
-                gain	 = (float) (Param.transform( pr.para[ PR_GAIN ], Param.ABS_AMP,
-                                    new Param( 1.0 / maxAmp, Param.ABS_AMP ), null )).value;
-                normalizeAudioFile( floatF, outF, outBuf, gain, 1.0f );
-                for( ch = 0; ch < inChanNum; ch++ ) {
-                    floatF[ ch ].cleanUp();
-                    floatF[ ch ] = null;
-                    tempFile[ ch ].delete();
-                    tempFile[ ch ] = null;
+            if (pr.intg[PR_GAINTYPE] == GAIN_UNITY) {
+                gain = (float) (Param.transform(pr.para[PR_GAIN], Param.ABS_AMP,
+                        new Param(1.0 / maxAmp, Param.ABS_AMP), null)).value;
+                normalizeAudioFile(floatF, outF, outBuf, gain, 1.0f);
+                for (ch = 0; ch < inChanNum; ch++) {
+                    floatF  [ch].cleanUp();
+                    floatF  [ch] = null;
+                    tempFile[ch].delete();
+                    tempFile[ch] = null;
                 }
             }
         // .... check running ....
-            if( !threadRunning ) break topLevel;
+            if (!threadRunning) break topLevel;
 
             outF.close();
             outF = null;
@@ -859,13 +839,11 @@ d7 = 1.0;
 //			setProgression( 1.0f );
 
             // inform about clipping/ low level
-            maxAmp		*= gain;
-            handleClipping( maxAmp );
-        }
-        catch( IOException e1 ) {
-            setError( e1 );
-        }
-        catch( OutOfMemoryError e2 ) {
+            maxAmp *= gain;
+            handleClipping(maxAmp);
+        } catch (IOException e1) {
+            setError(e1);
+        } catch (OutOfMemoryError e2) {
             inStream	= null;
             outStream	= null;
             inBuf		= null;
@@ -873,52 +851,50 @@ d7 = 1.0;
             convBuf2	= null;
             System.gc();
 
-            setError( new Exception( ERR_MEMORY ));
+            setError(new Exception(ERR_MEMORY));
         }
 
     // ---- cleanup (topLevel) ----
-        if( outF != null ) {
+        if (outF != null) {
             outF.cleanUp();
         }
-        if( inF != null ) {
+        if (inF != null) {
             inF.cleanUp();
         }
-        if( floatF != null ) {
-            for( ch = 0; ch < floatF.length; ch++ ) {
-                if( floatF[ ch ] != null ) floatF[ ch ].cleanUp();
-                if( tempFile[ ch ] != null ) tempFile[ ch ].delete();
+        if (floatF != null) {
+            for (ch = 0; ch < floatF.length; ch++) {
+                if (floatF  [ch] != null) floatF  [ch].cleanUp();
+                if (tempFile[ch] != null) tempFile[ch].delete();
             }
         }
     } // process()
 
 // -------- private methods --------
 
-    protected double sinh( double x )
-    {
-        return( (Math.exp( x ) - Math.exp( -x )) / 2 );
+    protected double sinh(double x) {
+        return ((Math.exp(x) - Math.exp(-x)) / 2);
     }
 
     /**
      *	Set new input file
      */
-    protected void setInput( String fname )
-    {
+    protected void setInput(String fname) {
         AudioFile		f		= null;
-        AudioFileDescr		stream	= null;
+        AudioFileDescr	stream	= null;
 
         ParamField		ggSlave;
         Param			ref;
 
     // ---- Header lesen ----
         try {
-            f		= AudioFile.openAsRead( new File( fname ));
-            stream	= f.getDescr();
+            f = AudioFile.openAsRead(new File(fname));
+            stream = f.getDescr();
             f.close();
 
-            ref		= new Param( AudioFileDescr.samplesToMillis( stream, stream.length ), Param.ABS_MS );
-            ggSlave = (ParamField) gui.getItemObj( GG_OUTLENGTH );
-            if( ggSlave != null ) {
-                ggSlave.setReference( ref );
+            ref = new Param(AudioFileDescr.samplesToMillis(stream, stream.length), Param.ABS_MS);
+            ggSlave = (ParamField) gui.getItemObj(GG_OUTLENGTH);
+            if (ggSlave != null) {
+                ggSlave.setReference(ref);
             }
 
         } catch( IOException ignored) {}
@@ -927,22 +903,21 @@ d7 = 1.0;
 // class KriechstromDlg
 
 /**
- *	internal class fuer die Synthese
+ *	internal class for synthesis
  */
-class KriechChunk
-{
-    int			inOff, len, rep;
-    int			fadeIn, fadeOut, outOff;
+class KriechChunk {
+    long        inOff, outOff;
+    int			len, rep;
+    int			fadeIn, fadeOut;
     int			nextLen;
     int			flt;
     float[][]	fltMem;
 
-    public KriechChunk( int numChan )
-    {
-        fltMem	= new float[ numChan ][ 4 ];
+    public KriechChunk(int numChan) {
+        fltMem = new float[numChan][4];
     }
 
-    public KriechChunk( KriechChunk src ) {
+    public KriechChunk(KriechChunk src) {
         this.inOff		= src.inOff;
         this.len		= src.len;
         this.rep		= src.rep;
@@ -950,6 +925,6 @@ class KriechChunk
         this.fadeOut	= src.fadeOut;
         this.nextLen	= src.nextLen;
         this.flt		= src.flt;
-        this.fltMem		= new float[ src.fltMem.length ][ 4 ];
+        this.fltMem		= new float[src.fltMem.length][4];
     }
 } // class KriechChunk
