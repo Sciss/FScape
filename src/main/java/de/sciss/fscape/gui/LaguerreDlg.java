@@ -381,16 +381,16 @@ public class LaguerreDlg
 
         // ---- parameter init ----
 
-            warp        = Math.max(-0.98f, Math.min(0.98f, (float) (pr.para[PR_WARP].value / 100)));    // DAFx2000 'b'
-            f1          = (1.0f - warp) / (1.0f + warp);                    // DAFx2000 (25)
-            winSize     = 32 << pr.intg[PR_FRAMESIZE];                    // DAFx2000 'N'
+            warp        = Math.max(-0.98f, Math.min(0.98f, (float) (pr.para[PR_WARP].value / 100))); // DAFx2000 'b'
+            f1          = (1.0f - warp) / (1.0f + warp);                                             // DAFx2000 (25)
+            winSize     = 32 << pr.intg[PR_FRAMESIZE];                                               // DAFx2000 'N'
             j           = winSize >> 1;
-            transLen    = (int) (f1 * winSize + 0.5f);                        // DAFx2000 'P' (26)
+            transLen    = (int) (f1 * winSize + 0.5f);                                               // DAFx2000 'P' (26)
             i           = pr.intg[PR_OVERLAP] + 1;
             while (((float) transLen / (float) i) > j) i++;
-            inputStep   = (int) (((float) transLen / (float) i) + 0.5f);    // DAFx2000 'L'
+            inputStep   = (int) (((float) transLen / (float) i) + 0.5f);                             // DAFx2000 'L'
             fltLen      = Math.max(winSize, transLen);
-            win         = Filter.createFullWindow(winSize, Filter.WIN_HANNING);        // DAFx2000 (27)
+            win         = Filter.createFullWindow(winSize, Filter.WIN_HANNING);                      // DAFx2000 (27)
             outputStep  = inputStep;
 
             b0init      = (float) Math.sqrt(1.0f - warp * warp);
@@ -406,7 +406,7 @@ public class LaguerreDlg
 
             // normalization requires temp files
             if (pr.intg[PR_GAINTYPE] == GAIN_UNITY) {
-                tempFile    = new File[inChanNum];
+                tempFile    = new File     [inChanNum];
                 floatF      = new FloatFile[inChanNum];
                 for (ch = 0; ch < inChanNum; ch++) {        // first zero them because an exception might be thrown
                     tempFile[ch] = null;
@@ -453,7 +453,7 @@ public class LaguerreDlg
                 }
 
                 for (ch = 0; threadRunning && (ch < inChanNum); ch++) {
-                    convBuf1 = inBuf[ch];
+                    convBuf1 = inBuf [ch];
                     convBuf2 = outBuf[ch];
 
                     for (i = 0, j = fltLen; i < winSize; i++) {
@@ -470,7 +470,7 @@ public class LaguerreDlg
                         x1			= 0.0f;
                         y1			= 0.0f;
 
-                        for (i = 0; i < fltLen; i++) {            // DAFx2000 (2 resp. 3)
+                        for (i = 0; i < fltLen; i++) {          // DAFx2000 (2 resp. 3)
                             x0			= tempFlt[i];
                             y0			= b0*x0 + b1*x1 - a1*y1;
                             tempFlt[i]	= y0;	// (work with double precision while computing cascades)
@@ -478,7 +478,7 @@ public class LaguerreDlg
                             x1			= x0;
                         }
 
-                        a1			= -warp;					// cascaded allpasses
+                        a1			= -warp;					// cascaded allpass filters
                         b0			= -warp;
                         b1			= 1.0f;
 
@@ -508,7 +508,7 @@ public class LaguerreDlg
                         Util.mult(outBuf[ch], 0, chunkLength, gain);
                     }
                     outF.writeFrames(outBuf, 0, chunkLength);
-                    progOff += chunkLength;
+                    progOff       += chunkLength;
                     framesWritten += chunkLength;
                     // .... progress ....
                     setProgression((float) progOff / (float) progLen);

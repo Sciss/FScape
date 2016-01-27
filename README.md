@@ -3,6 +3,7 @@
 # FScape
 
 [![Flattr this](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=sciss&url=https%3A%2F%2Fgithub.com%2FSciss%2FFScape&title=FScape%20Music%20Application&language=Java&tags=github&category=software)
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Sciss/FScape?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://travis-ci.org/Sciss/FScape.svg?branch=master)](https://travis-ci.org/Sciss/FScape)
 
 ## statement
@@ -37,6 +38,10 @@ FScape now builds with [sbt](http://www.scala-sbt.org/) 0.13. You can use the pr
  - to make a standalone jar: `sbt assembly`
  
 The release bundles are produced with tasks `universal:packageBin` and `debian:packageBin`.
+
+## contributing
+
+Please see the file [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
 ## source code distribution
 
