@@ -76,7 +76,7 @@ public class PercussionOp
         if (static_prefs == null) {
             static_prefs = new OpPrefs(getClass(), getDefaultPrefs());
         }
-        // propertyarray defaults
+        // property-array defaults
         if (static_pr == null) {
             static_pr = new PropertyArray();
 
@@ -90,7 +90,7 @@ public class PercussionOp
             static_presets = new Presets(getClass(), static_pr.toProperties(true));
         }
 
-        // superclass-Felder uebertragen
+        // superclass fields
         opName		= "PercussionOp";
         prefs		= static_prefs;
         presets		= static_presets;
@@ -107,9 +107,8 @@ public class PercussionOp
 // -------- Runnable methods --------
 
     public void run() {
-        runInit();		// superclass
+        runInit();
 
-        // Haupt-Variablen fuer den Prozess
         int				ch, i, j;
         float			f1, f2;
 
@@ -121,7 +120,7 @@ public class PercussionOp
         SpectFrame		runInFr			= null;
         SpectFrame		runOutFr		= null;
 
-        // Ziel-Frame Berechnung
+        // target frame
         int				srcBands, fftSize, fullFFTsize, complexFFTsize;
         float[]			fftBuf, convBuf1, convBuf2;
 
@@ -132,10 +131,10 @@ public class PercussionOp
             // ------------------------------ Input-Slot ------------------------------
             runInSlot = slots.elementAt(SLOT_INPUT);
             if (runInSlot.getLinked() == null) {
-                runStop();    // threadDead = true -> folgendes for() wird uebersprungen
+                runStop();    // threadDead = true -> successive for() will be skipped
             }
-            // diese while Schleife ist noetig, da beim initReader ein Pause eingelegt werden kann
-            // und die InterruptException ausgeloest wird; danach versuchen wir es erneut
+            // this while loop is needed since initReader may pause and an
+            // InterruptException may be thrown; then we try again
             for (boolean initDone = false; !initDone && !threadDead; ) {
                 try {
                     runInStream = runInSlot.getDescr();    // throws InterruptedException
@@ -150,7 +149,7 @@ public class PercussionOp
             runOutStream    = new SpectStream(runInStream);
             runOutSlot.initWriter(runOutStream);
 
-            // ------------------------------ Vorberechnungen ------------------------------
+            // ------------------------------ prepare ------------------------------
 
             srcBands	= runInStream.bands;
             fftSize		= srcBands - 1;
@@ -167,11 +166,11 @@ public class PercussionOp
             car = pr.intg[PR_CAR] - 1;
             cai = pr.intg[PR_CAI] - 1;
 
-            // ------------------------------ Hauptschleife ------------------------------
+            // ------------------------------ main loop ------------------------------
             runSlotsReady();
         mainLoop:
             while (!threadDead) {
-                // ---------- Frame einlesen ----------
+                // ---------- read frame ----------
                 for (boolean readDone = false; (!readDone) && !threadDead; ) {
                     try {
                         runInFr     = runInSlot.readFrame();    // throws InterruptedException
@@ -185,7 +184,7 @@ public class PercussionOp
                 }
                 if (threadDead) break mainLoop;
 
-            // ---------- Process: Ziel-Frame berechnen ----------
+            // ---------- Process: calculate target frame ----------
 
                 for (ch = 0; ch < runOutStream.chanNum; ch++) {
                     convBuf1 = runInFr .data[ch];
@@ -265,12 +264,12 @@ public class PercussionOp
                 runInSlot.freeFrame(runInFr);
 
                 for (boolean writeDone = false; (!writeDone) && !threadDead; ) {
-                    try {    // Unterbrechung
+                    try {    // interruption
                         runOutSlot.writeFrame(runOutFr);    // throws InterruptedException
                         writeDone = true;
                         runFrameDone(runOutSlot, runOutFr);
                         runOutStream.freeFrame(runOutFr);
-                    } catch (InterruptedException ignored) {}    // mainLoop wird eh gleich verlassen
+                    } catch (InterruptedException ignored) {}    // mainLoop will be left anyways
                     runCheckPause();
                 }
             } // end of main loop
