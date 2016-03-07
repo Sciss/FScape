@@ -9,15 +9,6 @@
  *
  *	For further information, please contact Hanns Holger Rutz at
  *	contact@sciss.de
- *
- *
- *  Changelog:
- *      25-Jan-05	created from de.sciss.meloncillo.util.PrefsUtil
- *		13-May-05	updated from Meloncillo
- *		22-Jul-05	suggests 57109 as default scsynth port ; no longer
- *					uses 'Built-in Audio' device on Mac (sc will use
- *					default system output instead) ; TEMPDIR refers to IOUtil
- *		24-Jun-06	created from de.sciss.eisenkraut.util.PrefsUtil and de.sciss.fscape.prop.MainPrefs
  */
  
 package de.sciss.fscape.util;
@@ -49,9 +40,6 @@ import java.util.prefs.Preferences;
  *	and some geometric object (de)serialization.
  *	Has utility methods for clearing preferences trees
  *	and importing and exporting from/to XML.
- *
- *  @author		Hanns Holger Rutz
- *  @version	0.71, 14-Nov-07
  */
 public class PrefsUtil
 {
@@ -134,17 +122,19 @@ public class PrefsUtil
 	
 	public static final String KEY_BAKDIR			= "backupdir";
 
+	public static final String KEY_LAF_WINDOWS		= "lafdecoration";
+
 	public static java.util.List createDefaults( Preferences mainPrefs, double lastVersion )
 	{
 		File f;
 //		String					value;
 //		Preferences				childPrefs, childPrefs2;
 //		final String			fs			= File.separator;
-		final boolean			isMacOS		= System.getProperty( "os.name" ).indexOf( "Mac OS" ) >= 0;
+		final boolean isMacOS = System.getProperty("os.name").contains("Mac OS");
 //        final boolean			isWindows	= System.getProperty( "os.name" ).indexOf( "Windows" ) >= 0;
 		final java.util.List	warnings	= new ArrayList();
-	
-		putDontOverwrite( IOUtil.getUserPrefs(), IOUtil.KEY_TEMPDIR, System.getProperty( "java.io.tmpdir" ));
+
+		putDontOverwrite(IOUtil.getUserPrefs(), IOUtil.KEY_TEMPDIR, System.getProperty("java.io.tmpdir"));
 
 //		// general
 //		putDontOverwrite( GUIUtil.getUserPrefs(), HelpGlassPane.KEY_KEYSTROKE_HELP, strokeToPrefs(
@@ -248,9 +238,9 @@ public class PrefsUtil
 				rect	= new Rectangle( Integer.parseInt( tok.nextToken() ), Integer.parseInt( tok.nextToken() ),
 										 Integer.parseInt( tok.nextToken() ), Integer.parseInt( tok.nextToken() ));
 			}
-			catch( NoSuchElementException e1 ) {}
-			catch( NumberFormatException e2 ) {}
-		}
+            catch (NoSuchElementException ignored) {}
+            catch (NumberFormatException  ignored) {}
+        }
 		return rect;
 	}
 
@@ -264,40 +254,38 @@ public class PrefsUtil
 				tok		= new StringTokenizer( value );
 				pt		= new Point( Integer.parseInt( tok.nextToken() ), Integer.parseInt( tok.nextToken() ));
 			}
-			catch( NoSuchElementException e1 ) {}
-			catch( NumberFormatException e2 ) {}
-		}
+            catch (NoSuchElementException ignored) {}
+            catch (NumberFormatException  ignored) {}
+        }
 		return pt;
 	}
 
-	public static Dimension stringToDimension( String value )
-	{
-		Dimension		dim	= null;
-		StringTokenizer tok;
-		
-		if( value != null ) {
-			try {
-				tok		= new StringTokenizer( value );
-				dim		= new Dimension( Integer.parseInt( tok.nextToken() ), Integer.parseInt( tok.nextToken() ));
-			}
-			catch( NoSuchElementException e1 ) {}
-			catch( NumberFormatException e2 ) {}
-		}
-		return dim;
-	}
-	
-	/**
+    public static Dimension stringToDimension(String value) {
+        Dimension dim = null;
+        StringTokenizer tok;
+
+        if (value != null) {
+            try {
+                tok = new StringTokenizer(value);
+                dim = new Dimension(Integer.parseInt(tok.nextToken()), Integer.parseInt(tok.nextToken()));
+            }
+            catch (NoSuchElementException ignored) {}
+            catch (NumberFormatException  ignored) {}
+        }
+        return dim;
+    }
+
+    /**
 	 *  Rectangle, z.B. von Frame.getBounds() in
 	 *  einen String konvertieren, der als Prefs
 	 *  gespeichert werden kann. Bei Fehler wird
 	 *  null zurueckgeliefert. 'value' darf null sein.
 	 */
-	public static String rectangleToString( Rectangle value )
-	{
-		return( value != null ? (value.x + " " + value.y + " " + value.width + " " + value.height) : null );
-	}
-	
-	public static String pointToString( Point value )
+    public static String rectangleToString(Rectangle value) {
+        return (value != null ? (value.x + " " + value.y + " " + value.width + " " + value.height) : null);
+    }
+
+    public static String pointToString( Point value )
 	{
 		return( value != null ? (value.x + " " + value.y) : null );
 	}
@@ -321,22 +309,22 @@ public class PrefsUtil
 	 *	@return		the KeyStroke parsed from the prefsValue or null if the string was
 	 *				invalid or <code>null</code>
 	 */
-	public static final KeyStroke prefsToStroke( String prefsValue )
-	{
-		if( prefsValue == null ) return null;
-		int i = prefsValue.indexOf( ' ' );
-		KeyStroke prefsStroke = null;
-		try {
-			if( i < 0 ) return null;
-			prefsStroke = KeyStroke.getKeyStroke( Integer.parseInt( prefsValue.substring( i+1 )),
-												  Integer.parseInt( prefsValue.substring( 0, i )));
-		}
-		catch( NumberFormatException e1 ) {}
+    public static KeyStroke prefsToStroke(String prefsValue) {
+        if (prefsValue == null) return null;
+        int i = prefsValue.indexOf(' ');
+        KeyStroke prefsStroke = null;
+        try {
+            if (i < 0) return null;
+            prefsStroke = KeyStroke.getKeyStroke(
+                    Integer.parseInt(prefsValue.substring(i + 1)),
+                    Integer.parseInt(prefsValue.substring(0, i)));
+        }
+        catch (NumberFormatException ignored) {}
 
-		return prefsStroke;
-	}
-	
-	/**
+        return prefsStroke;
+    }
+
+    /**
 	 *  Converts a KeyStroke into a string representation for
 	 *	preference storage.
 	 *
@@ -344,12 +332,11 @@ public class PrefsUtil
 	 *	@return		a string representation of the form &quot;modifiers keyCode&quot;
 	 *				or <code>null</code> if the prefsStroke is invalid or <code>null</code>
 	 */
-	public static final String strokeToPrefs( KeyStroke prefsStroke )
-	{
-		if( prefsStroke == null ) return null;
-		else return String.valueOf( prefsStroke.getModifiers() ) + ' ' +
-					String.valueOf( prefsStroke.getKeyCode() );
-	}
+    public static String strokeToPrefs(KeyStroke prefsStroke) {
+        if (prefsStroke == null) return null;
+        else return String.valueOf(prefsStroke.getModifiers()) + ' ' +
+                String.valueOf(prefsStroke.getKeyCode());
+    }
 
 	/**
 	 *  Traverse a preference node and optionally all
@@ -362,17 +349,17 @@ public class PrefsUtil
 		String[]	children;
 		int			i;
 
-		keys = prefs.keys();
-		for( i = 0; i < keys.length; i++ ) {
-			prefs.remove( keys[i] );
-		}
-		if( deep ) {
-			children	= prefs.childrenNames();
-			for( i = 0; i < children.length; i++ ) {
-				removeAll( prefs.node( children[i] ), deep );
-			}
-		}
-	}
+        keys = prefs.keys();
+        for (i = 0; i < keys.length; i++) {
+            prefs.remove(keys[i]);
+        }
+        if (deep) {
+            children = prefs.childrenNames();
+            for (i = 0; i < children.length; i++) {
+                removeAll(prefs.node(children[i]), true);
+            }
+        }
+    }
 
 	/**
 	 *  Get an Action object that will dump the
@@ -446,20 +433,20 @@ public class PrefsUtil
 				entry.setAttribute( "key", keys[i] );
 				entry.setAttribute( "value", value );
 			}
-			if( deep ) {
-				children	= prefs.childrenNames();
-				for( i = 0; i < children.length; i++ ) {
-					childElement = (Element) node.appendChild( domDoc.createElement( "node" ));
-					childElement.setAttribute( "name", children[i] );
-					toXML( prefs.node( children[i] ), deep, domDoc, childElement, options );
-				}
-			}
-		} catch( DOMException e1 ) {
-			throw IOUtil.map( e1 );
-		} catch( BackingStoreException e2 ) {
-			throw IOUtil.map( e2 );
-		}
-	}
+            if (deep) {
+                children = prefs.childrenNames();
+                for (i = 0; i < children.length; i++) {
+                    childElement = (Element) node.appendChild(domDoc.createElement("node"));
+                    childElement.setAttribute("name", children[i]);
+                    toXML(prefs.node(children[i]), true, domDoc, childElement, options);
+                }
+            }
+        } catch (DOMException e1) {
+            throw IOUtil.map(e1);
+        } catch (BackingStoreException e2) {
+            throw IOUtil.map(e2);
+        }
+    }
 
 	/**
 	 *  Similar to the XMLRepresentation interface,

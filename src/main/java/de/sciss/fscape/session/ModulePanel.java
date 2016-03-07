@@ -27,6 +27,7 @@ import de.sciss.common.ProcessingThread;
 import de.sciss.fscape.Application;
 import de.sciss.fscape.gui.EnvIcon;
 import de.sciss.fscape.gui.GUISupport;
+import de.sciss.fscape.gui.MarginBorderLayout;
 import de.sciss.fscape.gui.ParamField;
 import de.sciss.fscape.gui.PathField;
 import de.sciss.fscape.gui.ProcessPanel;
@@ -105,7 +106,6 @@ public abstract class ModulePanel
     protected static final int GG_OFF_ENVICON	= 0x000700;
     protected static final int GG_OFF_OTHER		= 0x000800;
 
-    private	JPanel			toolBar				= null;
     private ProcessPanel	pp					= null;
     private ProgressPanel	pProgress			= null;
     protected GUISupport	gui;
@@ -177,15 +177,18 @@ public abstract class ModulePanel
 // -------- public --------
 
     public ModulePanel(String procTitle) {
-        super(new BorderLayout(0, 6));
-        setBorder(BorderFactory.createEmptyBorder(0, 4, 4, 4));
+        // super(new BorderLayout(0, 6));
+        super(new MarginBorderLayout(0, 6, new Insets(0, 4, 4, 4)));
+        // this has no effect??
+        // setBorder(BorderFactory.createEmptyBorder(0, 4, 4, 4)); // top left bottom right
+        // setBorder(BorderFactory.createMatteBorder(20, 24, 24, 24, Color.red)); // top left bottom right
 
-        this.procTitle		= procTitle;
-        this.doc			= new Session();
+        this.procTitle  = procTitle;
+        this.doc        = new Session();
 
-        doc.setFrame( this );
+        doc.setFrame(this);
 
-        final MenuRoot					mr;
+        final MenuRoot mr;
 
     // -------- Basic Listeners --------
 
@@ -395,16 +398,15 @@ public abstract class ModulePanel
      *	@param	flags		FLAGS_...
      *	@param	c			die "Innereien" (i.d.R. ein GUISupport Panel)
      */
-    protected void initGUI( ModulePanel concrete, int flags, Component c )
-    {
+    protected void initGUI(ModulePanel concrete, int flags, Component c) {
         //		final Container					cp	= getContentPane();
         //
         //		cp.setLayout( new BorderLayout( 0, 2 ));
-        final Container cp = this;
+        final JPanel cp = this;
 
     // -------- Toolbar --------
-        if( (flags & FLAGS_TOOLBAR) != 0 ) {
-            toolBar		= new JPanel( new FlowLayout( FlowLayout.LEFT, 2, 2 ));
+        if ((flags & FLAGS_TOOLBAR) != 0) {
+            JPanel toolBar = new JPanel(new FlowLayout(FlowLayout.LEFT, 2, 2));
 
             //			if( (flags & FLAGS_PRESETS) != 0 ) {
             //                actionDeletePreset = new ActionDeletePreset("Delete Preset", null);
@@ -420,37 +422,37 @@ public abstract class ModulePanel
             //				presetNames.remove( Presets.DEFAULT );
             //				actionDeletePreset.setEnabled( !presetNames.isEmpty() );
             //			}
-            cp.add( toolBar, BorderLayout.NORTH );
+            cp.add(toolBar, BorderLayout.NORTH );
         }
 
-    // -------- Die Innereien --------
-        cp.add( c, BorderLayout.CENTER );
-        if( (flags & FLAGS_NOPRESETLOAD) == 0 ) {
-            loadPreset( Presets.DEFAULT );
+    // -------- internals --------
+        cp.add(c, BorderLayout.CENTER);
+        if ((flags & FLAGS_NOPRESETLOAD) == 0) {
+            loadPreset(Presets.DEFAULT);
         }
 
     // -------- Close/Process Gadgets --------
-        if( (flags & FLAGS_PROGBAR) != 0 ) {
-            pProgress		= new ProgressPanel();
-            pp				= new ProcessPanel( ((flags & FLAGS_PROGBARASYNC) == FLAGS_PROGBARASYNC ?
-                                                   ProcessPanel.TYPE_ASYNC : 0), pProgress, this );
-            pp.addProcessorListener( new ProcessorAdapter() {
-                public void processorStopped( ProcessorEvent e )
-                {
-                    if( isVisible() ) {
+        if ((flags & FLAGS_PROGBAR) != 0) {
+            pProgress = new ProgressPanel();
+            pp = new ProcessPanel(((flags & FLAGS_PROGBARASYNC) == FLAGS_PROGBARASYNC ?
+                    ProcessPanel.TYPE_ASYNC : 0), pProgress, this);
+            pp.addProcessorListener(new ProcessorAdapter() {
+                public void processorStopped(ProcessorEvent e) {
+                    if (isVisible()) {
                         Exception procErr = getError();
-                        if( procErr != null ) {
-                            displayError( procErr, getTitle() );
+                        if (procErr != null) {
+                            displayError(procErr, getTitle());
                         }
-                        if( clipping ) {
+                        if (clipping) {
                             clippingDlg();
                         }
                     }
                 }
             });
 
-            cp.add( pp, BorderLayout.SOUTH );
+            cp.add(pp, BorderLayout.SOUTH);
         }
+        // cp.setBorder(BorderFactory.createEmptyBorder(10, 14, 14, 14)); // top left bottom right
     }
 
     public ProcessingThread closeDocument(boolean force, Flag wasClosed) {
@@ -1216,35 +1218,32 @@ public abstract class ModulePanel
         return createTempFile( template.channels, template.rate );
     }
 
-    protected AudioFile createTempFile( int numChannels, double rate )
-    throws IOException
-    {
-            final AudioFileDescr afd = new AudioFileDescr();
-            AudioFile af;
+    protected AudioFile createTempFile(int numChannels, double rate)
+            throws IOException {
+        final AudioFileDescr afd = new AudioFileDescr();
+        AudioFile af;
 
-            afd.type			= AudioFileDescr.TYPE_AIFF;
-            afd.channels		= numChannels;
-            afd.rate			= rate;
-            afd.bitsPerSample	= 32;
-            afd.sampleFormat	= AudioFileDescr.FORMAT_FLOAT;
-            afd.file			= IOUtil.createTempFile( "fsc", ".aif" );
-            af					= AudioFile.openAsWrite( afd );
+        afd.type            = AudioFileDescr.TYPE_AIFF;
+        afd.channels        = numChannels;
+        afd.rate            = rate;
+        afd.bitsPerSample   = 32;
+        afd.sampleFormat    = AudioFileDescr.FORMAT_FLOAT;
+        afd.file            = IOUtil.createTempFile("fsc", ".aif");
+        af                  = AudioFile.openAsWrite(afd);
 
-            collTempFiles.add( af );
-            return af;
+        collTempFiles.add(af);
+        return af;
     }
 
-    protected void deleteTempFile( AudioFile af )
-    {
-        collTempFiles.remove( af );
+    protected void deleteTempFile(AudioFile af) {
+        collTempFiles.remove(af);
         af.cleanUp();
         af.getDescr().file.delete();
     }
 
-    private void deleteAllTempFiles()
-    {
-        while( !collTempFiles.isEmpty() ) {
-            deleteTempFile( (AudioFile) collTempFiles.get( 0 ));
+    private void deleteAllTempFiles() {
+        while (!collTempFiles.isEmpty()) {
+            deleteTempFile(collTempFiles.get(0));
         }
     }
 

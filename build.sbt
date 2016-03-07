@@ -21,6 +21,7 @@ lazy val commonSettings = Seq(
   mainClass in Compile := Some("de.sciss.fscape.FScape"),
   libraryDependencies ++= Seq(
     "de.sciss"    %  "weblaf"             % "1.29-SNAPSHOT",
+    "de.sciss"    %  "weblaf-submin"      % "1.29-SNAPSHOT",
     "de.sciss"    %% "desktop-mac"        % "0.7.1",
     // "de.sciss" %% "audiowidgets-swing" % "1.6.2",
     "de.sciss"    %% "raphael-icons"      % "1.0.2",

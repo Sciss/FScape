@@ -13,20 +13,20 @@
 
 package de.sciss.fscape
 
-import de.sciss.fscape.session.ModulePanel
-import de.sciss.desktop.impl.WindowImpl
-import de.sciss.desktop._
-import scala.swing._
-import de.sciss.file._
-import de.sciss.io.IOUtil
-import de.sciss.fscape.{FScape => App}
 import javax.swing.SwingUtilities
+
+import de.sciss.desktop.{Menu, Window, _}
+import de.sciss.desktop.impl.WindowImpl
+import de.sciss.file._
+import de.sciss.fscape.proc.{ProcessorAdapter, ProcessorEvent}
+import de.sciss.fscape.session.ModulePanel
+import de.sciss.fscape.{FScape => App}
+import de.sciss.io.IOUtil
 import de.sciss.swingplus.OverlayPanel
-import de.sciss.desktop.Window
-import de.sciss.desktop.Menu
-import Swing._
-import de.sciss.fscape.proc.{ProcessorEvent, ProcessorAdapter}
+
 import scala.io.Source
+import scala.swing.Swing._
+import scala.swing._
 import scala.util.control.NonFatal
 
 final class DocumentWindow(val module: ModulePanel) extends WindowImpl {

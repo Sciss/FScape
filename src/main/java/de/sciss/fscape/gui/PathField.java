@@ -178,8 +178,9 @@ public class PathField
             con.gridwidth	= 1;
             if( (type & TYPE_BASICMASK) == TYPE_INPUTFILE ) {
                 ggFormat	= new ColouredTextField();
-                ggFormat.setEditable( false );
-                ggFormat.setBackground( null );
+                ggFormat.setEditable (false);
+                ggFormat.setFocusable(false);
+                // ggFormat.setBackground( null );
 //				ggFormat.setPaint( null );
 //				con.gridheight	= 1;
                 lay.setConstraints(ggFormat, con);

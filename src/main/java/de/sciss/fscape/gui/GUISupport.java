@@ -97,6 +97,7 @@ public class GUISupport
         hID		= new Hashtable<Object, Integer>();
         lay		= new GridBagLayout();
         con		= new GridBagConstraints();
+
         setLayout( lay );
         setType( type );
 //		setFont( Main.getFont( Main.FONT_GUI ));

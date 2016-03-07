@@ -191,8 +191,8 @@ public class OSCRoot
 //				rcv.startListening();
                 serv.addOSCListener( this );
                 serv.start();
-                System.out.println(Application.name + " " +
-                        getResourceString("oscRcvAt") + " " + protocol.toUpperCase() + " " + getResourceString("oscPort") + " " + port);
+//                System.out.println(Application.name + " " +
+//                        getResourceString("oscRcvAt") + " " + protocol.toUpperCase() + " " + getResourceString("oscPort") + " " + port);
             }
             catch( IOException e1 ) {
                 if( serv != null ) {

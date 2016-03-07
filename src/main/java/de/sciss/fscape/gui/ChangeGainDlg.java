@@ -123,7 +123,7 @@ public class ChangeGainDlg
         GridBagConstraints	con;
 
         PathField			ggInputFile, ggOutputFile;
-        JTextField			ggInputFormat;
+        JLabel              ggInputFormat;
         JButton				ggFindPeak;
         Component[]			ggGain;
         PathField[]			ggInputs;
@@ -172,7 +172,7 @@ public class ChangeGainDlg
         ggInputFile.handleTypes( GenericFile.TYPES_SOUND );
         con.gridwidth	= 1;
         con.weightx		= 0.1;
-        gui.addLabel( new JLabel( "Filename", SwingConstants.RIGHT ));
+        gui.addLabel( new JLabel( "File:", SwingConstants.RIGHT ));
         con.gridwidth	= GridBagConstraints.REMAINDER;
         con.weightx		= 0.9;
         gui.addPathField( ggInputFile, GG_INPUTFILE, pathL );
@@ -183,12 +183,14 @@ public class ChangeGainDlg
         con.weightx		= 0.1;
         gui.addButton( ggFindPeak, GG_FINDPEAK, al );
 
-        ggInputFormat	= new JTextField();
-        ggInputFormat.setEditable( false );
-        ggInputFormat.setBackground( null );
+        ggInputFormat	= new JLabel(); // JTextField();
+        // ggInputFormat.setEditable(false);
+        // ggInputFormat.setFocusable(false);
+        // ggInputFormat.setBackground( null );
         con.gridwidth	= GridBagConstraints.REMAINDER;
         con.weightx		= 0.9;
-        gui.addTextField( ggInputFormat, GG_INPUTFORMAT, al );
+        // gui.addTextField( ggInputFormat, GG_INPUTFORMAT, al );
+        gui.addGadget(ggInputFormat, GG_INPUTFORMAT);
 
     // -------- Output-Gadgets --------
     gui.addLabel( new GroupLabel( "Output", GroupLabel.ORIENT_HORIZONTAL,
@@ -202,7 +204,7 @@ public class ChangeGainDlg
         ggOutputFile.deriveFrom( ggInputs, "$D0$F0Gain$E" );
         con.gridwidth	= 1;
         con.weightx		= 0.1;
-        gui.addLabel( new JLabel( "Filename", SwingConstants.RIGHT ));
+        gui.addLabel( new JLabel( "File:", SwingConstants.RIGHT ));
         con.gridwidth	= GridBagConstraints.REMAINDER;
         con.weightx		= 0.9;
         gui.addPathField( ggOutputFile, GG_OUTPUTFILE, pathL );
@@ -212,14 +214,14 @@ public class ChangeGainDlg
         ggGain			= createGadgets( GGTYPE_GAIN );
         con.weightx		= 0.1;
         con.gridwidth	= 1;
-        gui.addLabel( new JLabel( "Gain", SwingConstants.RIGHT ));
+        gui.addLabel( new JLabel( "Gain:", SwingConstants.RIGHT ));
         con.weightx		= 0.4;
         gui.addParamField( (ParamField) ggGain[ 0 ], GG_GAIN, null );
         con.weightx		= 0.5;
         con.gridwidth	= GridBagConstraints.REMAINDER;
         gui.addChoice( (JComboBox) ggGain[ 1 ], GG_GAINTYPE, null );
 
-        initGUI( this, FLAGS_PRESETS | FLAGS_PROGBAR, gui );
+        initGUI(this, FLAGS_PRESETS | FLAGS_PROGBAR, gui);
     }
 
     public void fillGUI() {
@@ -238,7 +240,9 @@ public class ChangeGainDlg
      */
     public void clearInput() {
         peakKnown = false;
-        gui.stringToJTextField("", GG_INPUTFORMAT);
+        // gui.stringToJTextField("", GG_INPUTFORMAT);
+        JLabel gg = (JLabel) gui.getItemObj(GG_INPUTFORMAT);
+        gg.setText("");
     }
 
 // -------- Processor Interface --------
@@ -597,7 +601,9 @@ public class ChangeGainDlg
         msgForm.setLocale( Locale.US );
         msgForm.applyPattern( msgPtrn );
 
-        gui.stringToJTextField( msgForm.format( msgArgs ), GG_INPUTFORMAT );
+        // gui.stringToJTextField(msgForm.format(msgArgs), GG_INPUTFORMAT);
+        final JLabel ggInfo = (JLabel) gui.getItemObj(GG_INPUTFORMAT);
+        ggInfo.setText(msgForm.format(msgArgs));
     }
 }
 // class ChangeGainDlg

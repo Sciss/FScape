@@ -17,22 +17,20 @@ import java.awt.{Color, GraphicsEnvironment, Toolkit}
 import java.net.URL
 import javax.swing.{ImageIcon, KeyStroke}
 
-import com.alee.laf.WebLookAndFeel
-import com.alee.managers.style.StyleManager
-import com.alee.managers.style.skin.dark.DarkSkin
-import de.sciss.desktop.impl.{LogWindowImpl, SwingApplicationImpl, WindowImpl}
+import de.sciss.desktop.impl.{WindowHandlerImpl, LogWindowImpl, SwingApplicationImpl, WindowImpl}
 import de.sciss.desktop.{Desktop, Escape, KeyStrokes, Menu, OptionPane, Window, WindowHandler}
 import de.sciss.file._
 import de.sciss.fscape.gui.PrefsPanel
 import de.sciss.fscape.impl.DocumentHandlerImpl
 import de.sciss.fscape.net.{OSCRoot, OSCRouter, OSCRouterWrapper, RoutedOSCMessage}
 import de.sciss.fscape.session.{ModulePanel, Session}
+import de.sciss.fscape.util.PrefsUtil
 import org.pegdown.PegDownProcessor
 
 import scala.collection.breakOut
 import scala.swing.Swing._
 import scala.swing.event.{Key, MouseClicked}
-import scala.swing.{Dialog, Action, Alignment, BoxPanel, EditorPane, Label, Orientation, ScrollPane, Swing}
+import scala.swing.{Action, Alignment, BoxPanel, Dialog, EditorPane, Label, Orientation, ScrollPane, Swing}
 import scala.util.Try
 import scala.util.control.NonFatal
 
@@ -41,9 +39,18 @@ object FScape extends SwingApplicationImpl("FScape") {
 
   type Document = Session
 
-  private var osc = null: OSCRouterWrapper
+  private var osc       = null: OSCRouterWrapper
+  private var oscServer = null: OSCRoot
 
   lazy val version: String = buildInfoString("version")
+
+  override lazy val windowHandler: WindowHandler = new WindowHandlerImpl(this, menuFactory) {
+    override def usesNativeDecoration: Boolean = {
+      val res = userPrefs[Boolean](PrefsUtil.KEY_LAF_WINDOWS).getOrElse(false)
+      // println(s"deco = $res")
+      !res
+    }
+  }
 
   /** Base directory of FScape installation.
     * I.e. parent directory of `help`, `sounds` etc.
@@ -68,8 +75,8 @@ object FScape extends SwingApplicationImpl("FScape") {
   }
 
   override protected def init(): Unit = {
-    WebLookAndFeel.install()
-    StyleManager.setSkin(new DarkSkin)
+    import de.sciss.weblaf.submin.SubminSkin
+    SubminSkin.install()
 
 //    try {
 //      val web = "com.alee.laf.WebLookAndFeel"
@@ -112,8 +119,8 @@ object FScape extends SwingApplicationImpl("FScape") {
 
     // --- osc ----
     // warning : sequence is crucial
-    val oscServer = new OSCRoot(Escape.prefsPeer(userPrefs / OSCRoot.DEFAULT_NODE), 0x4653)
-    osc           = new OSCRouterWrapper(oscServer, OSCRouterImpl)
+    oscServer = new OSCRoot(Escape.prefsPeer(userPrefs / OSCRoot.DEFAULT_NODE), 0x4653)
+    osc       = new OSCRouterWrapper(oscServer, OSCRouterImpl)
     Application.documentHandler = new DocumentHandlerImpl(oscServer)
 
     val f = new MainWindow
@@ -399,6 +406,15 @@ object FScape extends SwingApplicationImpl("FScape") {
   }
 
   def tryQuit(): Unit = if (Desktop.mayQuit()) quit()
+
+  override def quit(): Unit = {
+    try {
+      oscServer.quit()
+    } catch {
+      case NonFatal(e) => // ignore
+    }
+    super.quit()
+  }
 
   private class ActionModule(key: String, text: String, stroke: Option[KeyStroke]) extends Action(text) {
     accelerator = stroke

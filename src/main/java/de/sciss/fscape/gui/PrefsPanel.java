@@ -22,6 +22,7 @@ import de.sciss.app.PreferenceEntrySync;
 import de.sciss.fscape.Application;
 import de.sciss.fscape.io.GenericFile;
 import de.sciss.fscape.net.OSCRoot;
+import de.sciss.fscape.util.PrefsUtil;
 import de.sciss.gui.PrefCheckBox;
 import de.sciss.gui.PrefComboBox;
 import de.sciss.gui.PrefParamField;
@@ -173,7 +174,8 @@ public class PrefsPanel
         tab.gridAdd( b, 1, row, -1, 1 );
 
         row++;
-        key		= "lafdecoration"; // BasicWindowHandler.KEY_LAFDECORATION;
+        prefs   = userPrefs;
+        key		= PrefsUtil.KEY_LAF_WINDOWS; // "lafdecoration"; // BasicWindowHandler.KEY_LAFDECORATION;
         key2	= "prefsLAFDecoration";
         title	= "Look-and-Feel Window Decoration";
         ggCheckBox = new PrefCheckBox(title);
