@@ -15,12 +15,13 @@ package de.sciss.fscape
 
 import java.awt.{Color, GraphicsEnvironment, Toolkit}
 import java.net.URL
-import javax.swing.{ImageIcon, KeyStroke, UIManager}
+import javax.swing.{ImageIcon, KeyStroke}
 
-import com.alee.laf.checkbox.WebCheckBoxStyle
-import com.alee.laf.progressbar.WebProgressBarStyle
-import de.sciss.desktop.{WindowHandler, OptionPane, Desktop, KeyStrokes, Escape, DialogSource, Menu, Window}
+import com.alee.laf.WebLookAndFeel
+import com.alee.managers.style.StyleManager
+import com.alee.managers.style.skin.dark.DarkSkin
 import de.sciss.desktop.impl.{LogWindowImpl, SwingApplicationImpl, WindowImpl}
+import de.sciss.desktop.{Desktop, Escape, KeyStrokes, Menu, OptionPane, Window, WindowHandler}
 import de.sciss.file._
 import de.sciss.fscape.gui.PrefsPanel
 import de.sciss.fscape.impl.DocumentHandlerImpl
@@ -29,9 +30,9 @@ import de.sciss.fscape.session.{ModulePanel, Session}
 import org.pegdown.PegDownProcessor
 
 import scala.collection.breakOut
-import scala.swing.{EditorPane, Swing, ScrollPane, Action, BoxPanel, Orientation, Alignment, Label}
 import scala.swing.Swing._
 import scala.swing.event.{Key, MouseClicked}
+import scala.swing.{Dialog, Action, Alignment, BoxPanel, EditorPane, Label, Orientation, ScrollPane, Swing}
 import scala.util.Try
 import scala.util.control.NonFatal
 
@@ -67,20 +68,23 @@ object FScape extends SwingApplicationImpl("FScape") {
   }
 
   override protected def init(): Unit = {
-    try {
-      val web = "com.alee.laf.WebLookAndFeel"
-      UIManager.installLookAndFeel("Web Look And Feel", web)
-      UIManager.setLookAndFeel(web) // Prefs.lookAndFeel.getOrElse(Prefs.defaultLookAndFeel).getClassName)
-    } catch {
-      case NonFatal(_) =>
-    }
-    WebCheckBoxStyle   .animated            = false
-    WebProgressBarStyle.progressTopColor    = Color.lightGray
-    WebProgressBarStyle.progressBottomColor = Color.gray
-    // XXX TODO: how to really turn off animation?
-    WebProgressBarStyle.highlightWhite      = new Color(255, 255, 255, 0) // 48)
-    WebProgressBarStyle.highlightDarkWhite  = new Color(255, 255, 255, 0)
-    // StyleConstants.animate = false
+    WebLookAndFeel.install()
+    StyleManager.setSkin(new DarkSkin)
+
+//    try {
+//      val web = "com.alee.laf.WebLookAndFeel"
+//      UIManager.installLookAndFeel("Web Look And Feel", web)
+//      UIManager.setLookAndFeel(web) // Prefs.lookAndFeel.getOrElse(Prefs.defaultLookAndFeel).getClassName)
+//    } catch {
+//      case NonFatal(_) =>
+//    }
+//    WebCheckBoxStyle   .animated            = false
+//    WebProgressBarStyle.progressTopColor    = Color.lightGray
+//    WebProgressBarStyle.progressBottomColor = Color.gray
+//    // XXX TODO: how to really turn off animation?
+//    WebProgressBarStyle.highlightWhite      = new Color(255, 255, 255, 0) // 48)
+//    WebProgressBarStyle.highlightDarkWhite  = new Color(255, 255, 255, 0)
+//    // StyleConstants.animate = false
 
     // set some default preferences
     if (userPrefs.get[String]("headroom").isEmpty) {
@@ -399,7 +403,15 @@ object FScape extends SwingApplicationImpl("FScape") {
   private class ActionModule(key: String, text: String, stroke: Option[KeyStroke]) extends Action(text) {
     accelerator = stroke
 
-    def apply(): Unit = newDocument(key, visible = true)
+    def apply(): Unit =
+      newDocument(key, visible = true)
+        .failed.foreach { ex =>
+          Dialog.showMessage(
+            message     = GUI.formatException(ex),
+            title       = text,
+            messageType = Dialog.Message.Error
+          )
+      }
   }
 
   private object ActionHelpIndex extends Action("Index") {
