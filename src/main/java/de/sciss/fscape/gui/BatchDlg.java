@@ -988,19 +988,19 @@ tb.setFloatable( false );
 
             BatchObject bObj;
 
-            setText( "" );
+            tr.setText( "" );
 
             switch( column ) {
             case 0:
                 if( !(obj instanceof Integer) ) break;
-                setText( obj.toString() );
-                setHorizontalAlignment( RIGHT );
+                tr.setText( obj.toString() );
+                tr.setHorizontalAlignment( SwingConstants.RIGHT );
                 break;
 
             case 1:
                 if( !(obj instanceof BatchObject) ) break;
                 bObj = (BatchObject) obj;
-                setText( CMD_NAMES[ bObj.command ]);
+                tr.setText( CMD_NAMES[ bObj.command ]);
                 break;
 
             case 2:
@@ -1010,8 +1010,8 @@ tb.setFloatable( false );
                 switch( bObj.command ) {
                 case BatchObject.CMD_MODULE:
                     if( bObj.process == 0.0f ) {
-                        setFont( boldFont );
-                        setText( bObj.modObj.name );
+                        tr.setFont( boldFont );
+                        tr.setText( bObj.modObj.name );
                     } else {
                         progBar.setString( bObj.modObj.name );
                         progBar.setValue( (int) (bObj.process * 100) );
@@ -1019,23 +1019,23 @@ tb.setFloatable( false );
                     }
                     break;
                 case BatchObject.CMD_DELFILE:
-                    setText( bObj.fileObj );
+                    tr.setText( bObj.fileObj );
                     break;
                 case BatchObject.CMD_BEGLOOP:
-                    setFont( monoFont );
-                    setText( bObj.loopObj.variable + " = " + bObj.loopObj.startIdx + " TO " + bObj.loopObj.stopIdx );
+                    tr.setFont( monoFont );
+                    tr.setText( bObj.loopObj.variable + " = " + bObj.loopObj.startIdx + " TO " + bObj.loopObj.stopIdx );
                     break;
                 case BatchObject.CMD_ENDLOOP:
-                    setFont( monoFont );
-                    setText( String.valueOf( bObj.loopObj.variable ));
+                    tr.setFont( monoFont );
+                    tr.setText( String.valueOf( bObj.loopObj.variable ));
                     break;
                 case BatchObject.CMD_SKIP:
                 case BatchObject.CMD_LABEL:
-                    setFont( italicFont );
-                    setText( bObj.labelObj );
+                    tr.setFont( italicFont );
+                    tr.setText( bObj.labelObj );
                     break;
                 default:
-                    setText( "" );
+                    tr.setText( "" );
                     break;
                 }
                 break;
@@ -1044,7 +1044,7 @@ tb.setFloatable( false );
                 if( !(obj instanceof BatchObject) ) break;
                 bObj = (BatchObject) obj;
                 if( BatchObject.CMD_CANERROR[ bObj.command ]) {
-                    setText( ERR_NAMES[ bObj.errorCmd ]);
+                    tr.setText( ERR_NAMES[ bObj.errorCmd ]);
                 }
                 break;
 
@@ -1052,17 +1052,17 @@ tb.setFloatable( false );
                 if( !(obj instanceof BatchObject) ) break;
                 bObj = (BatchObject) obj;
                 if( (bObj.errorCmd == BatchObject.ERR_SKIP) && BatchObject.CMD_CANERROR[ bObj.command ]) {
-                    setFont( italicFont );
-                    setText( bObj.labelObj );
+                    tr.setFont( italicFont );
+                    tr.setText( bObj.labelObj );
                 }
                 break;
 
             default:
-                setText( obj.toString() );
+                tr.setText( obj.toString() );
                 break;
             }
 
-            return this;
+            return tr; // this;
         }
     } // BatchCellRenderer
 

@@ -62,13 +62,13 @@ public class ChannelMgrDlg
     private static final int PR_GAIN			= 0;		// pr.para
 //	private static final int PR_RESIDUAL		= 0;		// pr.bool
 
-    private static final String PRN_INPUTFILE		= "InputFile";
+    private static final String PRN_INPUTFILE	= "InputFile";
     private static final String PRN_OUTPUTFILE	= "OutputFile";
     private static final String PRN_OUTPUTTYPE	= "OutputType";
-    private static final String PRN_OUTPUTRES		= "OutputReso";
-    private static final String PRN_CHANMODE		= "ChanMode";
-    private static final String PRN_NAMEMODE		= "NameMode";
-    private static final String PRN_INPUTLIST		= "InputList";
+    private static final String PRN_OUTPUTRES	= "OutputReso";
+    private static final String PRN_CHANMODE	= "ChanMode";
+    private static final String PRN_NAMEMODE	= "NameMode";
+    private static final String PRN_INPUTLIST	= "InputList";
     private static final String PRN_OUTPUTLIST	= "OutputList";
 
     private static final String[]	CHAN_NAMES		= { "Split channels", "Merge channels" };
@@ -165,7 +165,7 @@ public class ChannelMgrDlg
         JComboBox			ggChanMode, ggNameMode;
         JButton				ggCmd;
         JScrollPane			ggInputScroll, ggOutputScroll;
-        BasicCellRenderer   bcr;
+//        BasicCellRenderer   bcr;
 
         gui				= new GUISupport();
         con				= gui.getGridBagConstraints();
@@ -286,14 +286,14 @@ public class ChannelMgrDlg
                     i = ggOutputList.getSelectedIndex();
                     if( i == -1 ) break;
 
-                    ((OutputEntry) ggOutputListModel.elementAt( i )).auto = true;
+                    ((OutputEntry) ((ListEntry) ggOutputListModel.elementAt( i )).peer).auto = true;
                     recalcOutChanNum();
                     outListToPathField();
                     break;
 
                 case GG_CMDOUTAUTOALL:
                     for( i = 0; i < ggOutputListModel.size(); i++ ) {
-                        ((OutputEntry) ggOutputListModel.elementAt( i )).auto = true;
+                        ((OutputEntry) ((ListEntry) ggOutputListModel.elementAt( i )).peer).auto = true;
                     }
                     recalcOutChanNum();
                     outListToPathField();
@@ -323,20 +323,23 @@ public class ChannelMgrDlg
         con.gridwidth	= GridBagConstraints.REMAINDER;
         ggInputListModel= new DefaultListModel();
         ggInputList		= new JList( ggInputListModel );
-        bcr				= new BasicCellRenderer() {
-            public Component getListCellRendererComponent( JList list, Object obj, int index, boolean isSelected,
-                                                           boolean cellHasFocus )
-            {
-                super.getListCellRendererComponent( list, obj, index, isSelected, cellHasFocus );
-                if( obj instanceof InputEntry ) {
-                    setText( ((InputEntry) obj).name );
-                } else if( obj instanceof OutputEntry ) {
-                    setText( ((OutputEntry) obj).name );
-                }
-                return this;
-            }
-        };
-        ggInputList.setCellRenderer( bcr );
+//        bcr				= new BasicCellRenderer() {
+//            public Component getListCellRendererComponent( JList list, Object obj, int index, boolean isSelected,
+//                                                           boolean cellHasFocus )
+//            {
+//                return super.getListCellRendererComponent( list,
+//                        obj instanceof InputEntry ? ((InputEntry) obj).name :
+//                            obj instanceof OutputEntry ? ((OutputEntry) obj).name : obj.toString(),
+//                    index, isSelected, cellHasFocus );
+////                if( obj instanceof InputEntry ) {
+////                    setText( ((InputEntry) obj).name );
+////                } else if( obj instanceof OutputEntry ) {
+////                    setText( ((OutputEntry) obj).name );
+////                }
+////                return this;
+//            }
+//        };
+//        ggInputList.setCellRenderer( bcr );
         ggInputList.addListSelectionListener( lsl );
         con.gridwidth	= 5;
         con.gridheight	= 4;
@@ -418,7 +421,7 @@ public class ChannelMgrDlg
         con.gridwidth	= GridBagConstraints.REMAINDER;
         ggOutputListModel= new DefaultListModel();
         ggOutputList	= new JList( ggOutputListModel );
-        ggOutputList.setCellRenderer( bcr );
+        // ggOutputList.setCellRenderer( bcr );
         ggOutputList.addListSelectionListener( lsl );
         con.gridwidth	= 5;
         con.gridheight	= 4;
@@ -487,7 +490,7 @@ public class ChannelMgrDlg
 
         for( i = 0; i < num; i++ ) {
             ie = InputEntry.valueOf( p.getProperty( String.valueOf( i )));
-            ggInputListModel.addElement( ie );
+            ggInputListModel.addElement ( new ListEntry ( ie ) );
         }
 
         ggOutputListModel.removeAllElements();
@@ -496,7 +499,7 @@ public class ChannelMgrDlg
 
         for( i = 0; i < num; i++ ) {
             oe = OutputEntry.valueOf( p.getProperty( String.valueOf( i )));
-            ggOutputListModel.addElement( oe );
+            ggOutputListModel.addElement( new ListEntry( oe ));
         }
 
         pr.text[ PR_OUTPUTFILE ] = suckMyPlasma;
@@ -518,14 +521,14 @@ public class ChannelMgrDlg
         num	= ggInputListModel.size();
         p	= new Properties();
         for( i = 0; i < num; i++ ) {
-            p.put( String.valueOf( i ), ((InputEntry) ggInputListModel.elementAt( i )).toString() );
+            p.put( String.valueOf( i ), ((ListEntry) ggInputListModel.elementAt( i )).peer.toString() );
         }
         getPropertyArray().text[ PR_INPUTLIST ] = Presets.propertiesToValue( p );
 
         num = ggOutputListModel.size();
         p	= new Properties();
         for( i = 0; i < num; i++ ) {
-            p.put( String.valueOf( i ), ((OutputEntry) ggOutputListModel.elementAt( i )).toString() );
+            p.put( String.valueOf( i ), ((ListEntry) ggOutputListModel.elementAt( i )).peer.toString() );
         }
         getPropertyArray().text[ PR_OUTPUTLIST ] = Presets.propertiesToValue( p );
     }
@@ -576,7 +579,7 @@ public class ChannelMgrDlg
             outLength	= 0x7FFFFFFF;
 
             for( int i = 0; (i < numInputs) && threadRunning; i++ ) {
-                inF[i]		= AudioFile.openAsRead( new File( inPath + ((InputEntry) ggInputListModel.elementAt( i )).name ));
+                inF[i]		= AudioFile.openAsRead( new File( inPath + ((ListEntry) ggInputListModel.elementAt( i )).peer.getName() ));
                 inStream[i]	= inF[i].getDescr();
                 maxInChanNum= Math.max( maxInChanNum, inStream[i].channels );
                 totOutChan += inStream[i].channels;
@@ -611,7 +614,7 @@ public class ChannelMgrDlg
                 outStream[i].channels	= outChanNum;
                 outStream[i].file		= new File(
                     outPath + outFileName + (pr.intg[ PR_CHANMODE ] == CHAN_SPLIT ?
-                        ("-" + ((OutputEntry) ggOutputListModel.elementAt( i )).name) : "") + outFileExt );
+                        ("-" + ((ListEntry) ggOutputListModel.elementAt( i )).peer.getName ()) : "") + outFileExt );
                 outF[i]		= AudioFile.openAsWrite( outStream[i] );
             }
         // .... check running ....
@@ -785,7 +788,7 @@ public class ChannelMgrDlg
                 ggInputList.clearSelection(); // deselect( i );
             }
             i = ggInputListModel.size();
-            ggInputListModel.add( i, ie );
+            ggInputListModel.add( i, new ListEntry( ie ));
             ggInputList.setSelectedIndex( i );
             ggInputList.ensureIndexIsVisible( i );
 
@@ -825,14 +828,14 @@ public class ChannelMgrDlg
 
         i = ggOutputList.getSelectedIndex();
         if( i == -1 ) return;
-        currentOutEntry = ((OutputEntry) ggOutputListModel.elementAt( i ));
+        currentOutEntry = ((OutputEntry) ((ListEntry) ggOutputListModel.elementAt( i )).peer);
 
         if( (cExt.equals( currentOutEntry.name )) || (pr.intg[ PR_CHANMODE ] == CHAN_MERGE) ) return;
 
         currentOutEntry.name = cExt;
         currentOutEntry.auto = false;
 
-        ggOutputListModel.setElementAt( currentOutEntry, i );
+        ggOutputListModel.setElementAt( new ListEntry(currentOutEntry), i );
         ggOutputList.ensureIndexIsVisible( i );
         ggOutputList.setSelectedIndex( i );
     }
@@ -852,7 +855,7 @@ public class ChannelMgrDlg
 
         if( i == -1 ) return;
 
-        currentInEntry = (InputEntry) ggInputListModel.elementAt( i );
+        currentInEntry = (InputEntry) ((ListEntry) ggInputListModel.elementAt( i )).peer;
 
         PathField	ggInputFile = (PathField) gui.getItemObj( GG_INPUTFILE );
         String		fPath;
@@ -872,7 +875,7 @@ public class ChannelMgrDlg
     protected void outListToPathField() {
         PathField	ggOutputFile	= (PathField) gui.getItemObj( GG_OUTPUTFILE );
         int			i				= ggOutputList.getSelectedIndex();
-        OutputEntry currentOutEntry = (i != -1) ? (OutputEntry) ggOutputListModel.elementAt( i ) : null;
+        OutputEntry currentOutEntry = (i != -1) ? (OutputEntry) ((ListEntry) ggOutputListModel.elementAt( i )).peer : null;
 
         if( ggOutputFile == null ) {
             obscure();
@@ -888,7 +891,7 @@ public class ChannelMgrDlg
         OutputEntry	oe;
 
         for( i = 0, ch = 0; i < ggInputListModel.size(); i++ ) {
-            ch += ((InputEntry) ggInputListModel.elementAt( i )).chan;
+            ch += ((InputEntry) ((ListEntry) ggInputListModel.elementAt( i )).peer).chan;
         }
 
         if( pr.intg[ PR_CHANMODE ] == CHAN_MERGE ) {
@@ -906,17 +909,17 @@ public class ChannelMgrDlg
             }
         }
         for( i = 0; i < ggOutputListModel.size(); i++ ) {
-            oe		= (OutputEntry) ggOutputListModel.elementAt( i );
+            oe		= (OutputEntry) ((ListEntry) ggOutputListModel.elementAt( i )).peer;
             if( oe.auto ) {
                 oe.name = createAutoExt( i, guiOutChanNum);
-                ggOutputListModel.setElementAt( oe, i );
+                ggOutputListModel.setElementAt( new ListEntry( oe ), i );
             }
         }
         while( guiOutChanNum > ggOutputListModel.size() ) {
             oe		= new OutputEntry();
             oe.auto = true;
             oe.name	= createAutoExt( ggOutputListModel.size(), guiOutChanNum);
-            ggOutputListModel.addElement( oe );
+            ggOutputListModel.addElement( new ListEntry( oe ));
         }
         if( (oldIdx >= 0) && (oldIdx < guiOutChanNum) ) {
             ggOutputList.setSelectedIndex( oldIdx );
@@ -947,75 +950,103 @@ public class ChannelMgrDlg
 
         return cExt;
     }
-}
 
-/**
- *	Internal class for list entries
- */
-class InputEntry {
-    String			name;
-    int				chan;
-
-    private final static String	PR_NAME		= "nam";
-    private final static String	PR_CHAN		= "cha";
-
-// -------- StringComm methods --------
-
-    public String toString() {
-        Properties p = new Properties();
-
-        p.put(PR_NAME, this.name);
-        p.put(PR_CHAN, String.valueOf(this.chan));
-        return (Presets.propertiesToValue(p));
+    static interface Entry {
+        public String getName();
     }
 
-    public static InputEntry valueOf( String s )
-    {
-        Properties	p		= Presets.valueToProperties( s );
-        InputEntry	ie		= new InputEntry();
+    static class ListEntry {
+        private final Entry peer;
 
-        ie.name				= p.getProperty( PR_NAME );
-        try {
-            ie.chan			= Integer.parseInt( p.getProperty( PR_CHAN ));
-        }
-        catch( NumberFormatException ignored) {}
-        catch( NullPointerException ignored) {}
-
-        return ie;
-    }
-}
-
-/**
- *	Internal class for list entries
- */
-class OutputEntry {
-    String			name;
-    boolean			auto;
-
-    private final static String	PR_NAME		= "nam";
-    private final static String	PR_AUTO		= "aut";
-
-// -------- StringComm methods --------
-
-    public String toString() {
-        Properties p = new Properties();
-
-        p.put(PR_NAME, this.name);
-        p.put(PR_AUTO, String.valueOf(this.auto));
-        return (Presets.propertiesToValue(p));
-    }
-
-    public static OutputEntry valueOf(String s) {
-        Properties p = Presets.valueToProperties(s);
-        OutputEntry oe = new OutputEntry();
-
-        oe.name = p.getProperty(PR_NAME);
-        try {
-            oe.auto = Boolean.valueOf(p.getProperty(PR_AUTO)).booleanValue();
-        } catch (NumberFormatException ignored) {
-        } catch (NullPointerException ignored) {
+        public ListEntry(Entry peer) {
+            this.peer = peer;
         }
 
-        return oe;
+        @Override
+        public String toString ()
+        {
+            return peer.getName ();
+        }
+    }
+
+    /**
+     *	Internal class for list entries
+     */
+    static class InputEntry implements Entry {
+        String			name;
+        int				chan;
+
+        private final static String	PR_NAME		= "nam";
+        private final static String	PR_CHAN		= "cha";
+
+        public String getName ()
+        {
+            return name;
+        }
+
+        // -------- StringComm methods --------
+
+        public String toString() {
+            Properties p = new Properties();
+
+            p.put(PR_NAME, this.name);
+            p.put(PR_CHAN, String.valueOf(this.chan));
+            return (Presets.propertiesToValue(p));
+        }
+
+        public static InputEntry valueOf( String s )
+        {
+            Properties	p		= Presets.valueToProperties( s );
+            InputEntry	ie		= new InputEntry();
+
+            ie.name				= p.getProperty( PR_NAME );
+            try {
+                ie.chan			= Integer.parseInt( p.getProperty( PR_CHAN ));
+            }
+            catch( NumberFormatException ignored) {}
+            catch( NullPointerException ignored) {}
+
+            return ie;
+        }
+    }
+
+    /**
+     *	Internal class for list entries
+     */
+    static class OutputEntry implements Entry {
+        String			name;
+        boolean			auto;
+
+        private final static String	PR_NAME		= "nam";
+        private final static String	PR_AUTO		= "aut";
+
+        public String getName ()
+        {
+            return name;
+        }
+
+        // -------- StringComm methods --------
+
+        public String toString() {
+            Properties p = new Properties();
+
+            p.put(PR_NAME, this.name);
+            p.put(PR_AUTO, String.valueOf(this.auto));
+            return (Presets.propertiesToValue(p));
+        }
+
+        public static OutputEntry valueOf(String s) {
+            Properties p = Presets.valueToProperties(s);
+            OutputEntry oe = new OutputEntry();
+
+            oe.name = p.getProperty(PR_NAME);
+            try {
+                oe.auto = Boolean.valueOf(p.getProperty(PR_AUTO)).booleanValue();
+            } catch (NumberFormatException ignored) {
+            } catch (NullPointerException ignored) {
+            }
+
+            return oe;
+        }
     }
 }

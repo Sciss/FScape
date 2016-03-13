@@ -52,11 +52,14 @@ public class ProgressPanel
         // Shapes.Picker(p);
         final Shape icnShp = p.createTransformedShape(AffineTransform.getScaleInstance(0.5, 0.5));
 
+        final Color colrNormal      = getForeground ();
+        final Color colrDisabled    = new Color(colrNormal.getRGB () & 0xFFFFFF | 0x60000000, true);
+
         Icon icnCancel = new Icon() {
             @Override
             public void paintIcon(Component c, Graphics g, int x, int y) {
                 Graphics2D g2 = (Graphics2D) g;
-                g2.setColor(ggCancel.isEnabled() ? Color.black : Color.gray);
+                g2.setColor(ggCancel.isEnabled() ? colrNormal : colrDisabled);
                 g2.translate(x, y);
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 g2.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);

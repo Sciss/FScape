@@ -297,6 +297,7 @@ public class ConvertDlg
         gui.addLabel( new JLabel( "Conversion settings", SwingConstants.CENTER ));
         con.fill		= GridBagConstraints.BOTH;
         ggSettings		= new JScrollPane(); // ( ScrollPane.SCROLLBARS_AS_NEEDED );
+        ggSettings.putClientProperty ( "styleId", "nofocus" );
         ggSettings.setPreferredSize( new Dimension( 256, 256 ));	// XXX
         con.gridwidth	= GridBagConstraints.REMAINDER;
         con.weightx		= 1.0;

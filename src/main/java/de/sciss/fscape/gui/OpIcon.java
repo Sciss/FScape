@@ -32,14 +32,14 @@ public class OpIcon
 
 // -------- private static variables --------
 
-//	private static final String ibName	= "images" + File.separator + "op.gif";		// IconBitmap
-    private static final int ibWidth	= 45;			// Breite der Icons
-    private static final int ibHeight	= 45;			// Hoehe der Icons
+//	private static final String ibName	= "images" + File.separator + "op.png";		// IconBitmap
+    private static final int ibWidth	= 45;			// width of icons
+    private static final int ibHeight	= 45;			// height of icons
 
     private static IconBitmap opib		= null;
     private static IconicComponent basicIcons[];
 
-    private static DataFlavor flavors[] = null;	// alle erlaubten DataFlavors
+    private static DataFlavor flavors[] = null;	// all supported DataFlavors
 
 // -------- public variables --------
 
@@ -131,7 +131,7 @@ public class OpIcon
     {
         if( opib == null ) {
             final Image imgOp = Toolkit.getDefaultToolkit().getImage(
-                OpIcon.class.getResource( "op.gif" ));
+                OpIcon.class.getResource( "op.png" ));
             opib = new IconBitmap( imgOp, ibWidth, ibHeight );
             basicIcons = new IconicComponent[ 5 ];
             for( int i = 0; i < basicIcons.length; i++ ) {

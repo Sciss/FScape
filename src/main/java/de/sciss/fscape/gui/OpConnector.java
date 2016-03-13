@@ -13,23 +13,11 @@
 
 package de.sciss.fscape.gui;
 
-import java.awt.AWTEvent;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
-import java.awt.SystemColor;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.MouseEvent;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Path2D;
 import java.util.Vector;
 
 import javax.swing.JPanel;
@@ -53,7 +41,7 @@ public class OpConnector
     private static final int ibWidth	= 19;			// Breite der Icons
     private static final int ibHeight	= 19;			// Hoehe der Icons
 
-    private static IconBitmap arrowib;
+//    private static IconBitmap arrowib;
 
 // -------- public variables --------
 
@@ -65,13 +53,21 @@ public class OpConnector
     public static final int STATE_NORMAL	= 0;
     public static final int STATE_SELECTED	= 3;
 
-// -------- Klassenkonstruktor --------
+    private static final Path2D shpArrow = new Path2D.Float ( Path2D.WIND_NON_ZERO, 5 );
+    private static final AffineTransform rotateArrow = new AffineTransform();
+
+// -------- static constructor --------
 
     static	// Icon-Bitmap laden
     {
-        final Image imgArrows = Toolkit.getDefaultToolkit().getImage(
-            OpConnector.class.getResource( "arrows.gif" ));
-        arrowib = new IconBitmap( imgArrows, ibWidth, ibHeight );
+//        final Image imgArrows = Toolkit.getDefaultToolkit().getImage(
+//            OpConnector.class.getResource( "arrows.gif" ));
+//        arrowib = new IconBitmap( imgArrows, ibWidth, ibHeight );
+
+        shpArrow.moveTo(-4, 0);
+        shpArrow.lineTo(0, -8);
+        shpArrow.lineTo(4, 0);
+        shpArrow.closePath ();
     }
 
 // -------- private variables --------
@@ -282,7 +278,7 @@ newVisualProps();
         g.clearRect(0, 0, w, h);
         g.draw3DRect(1, 1, width - 3, height - 3, true);
         g.setColor(Color.black);
-        g.drawRect(0, 0, width - 1, height - 1);
+        // g.drawRect(0, 0, width - 1, height - 1);
 
         if (labName != null) {
 //System.err.println( "drawing string "+labName );
@@ -291,8 +287,9 @@ newVisualProps();
     }
 
     public void drawArrowCorrect(Graphics2D g) {
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g.setColor(Color.black);
+        // g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        // g.setColor(Color.black);
+        // g.setColor ( getParent ().getForeground () );
 
         if (isVisible()) {
             g.drawLine(srcP.x, srcP.y, thisP.x, thisP.y);
@@ -362,10 +359,16 @@ newVisualProps();
         g.drawLine( srcX, srcY, destX, destY );
 
         if( mode ) {
-            int	ID = (((int) Math.rint( (Math.atan2( destX - srcX, -destY + srcY )
-                                       / Math.PI * 24.0 ))) + 48) % 48;
-
-            arrowib.paint( g, ID, destX - (ARROW_WIDTH >> 1), destY - (ARROW_HEIGHT >> 1) );
+            final double angle = Math.atan2( destX - srcX, -destY + srcY );
+//            int	ID = (((int) Math.rint( angle / Math.PI * 24.0 ))) + 48) % 48;
+//
+//            arrowib.paint( g, ID, destX - (ARROW_WIDTH >> 1), destY - (ARROW_HEIGHT >> 1) );
+            rotateArrow.setToRotation(angle);
+            // rotateArrow.translate ( destX, destY );
+            final Shape s = rotateArrow.createTransformedShape ( shpArrow );
+            g.translate(destX, destY);
+            g.fill(s);
+            g.translate(-destX, -destY);
 
         } else {
 

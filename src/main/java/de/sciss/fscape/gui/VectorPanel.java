@@ -64,6 +64,11 @@ public class VectorPanel
     {
         super( new BorderLayout() );
 
+        final Color c1 = getForeground ();
+        final Color c2 = getBackground ();
+        // cheesy check to determine whether we are running on light or dark scheme.
+        final boolean isDark = c1.getRed () + c1.getGreen () + c1.getBlue () > c2.getRed () + c2.getGreen () + c2.getBlue ();
+
         JPanel							buttonPane;
         JButton							ggUpdate;
         Box								box;
@@ -73,7 +78,7 @@ public class VectorPanel
         this.client		= client;
 
         // ---- create vector display ----
-        ggVectorDisplay	= new VectorDisplay();
+        ggVectorDisplay	= new VectorDisplay( isDark );
         ggVectorDisplay.addTopPainter( this );
         ggVectorDisplay.setCursor( csrCrossHair );
 
@@ -122,8 +127,8 @@ public class VectorPanel
         }
 
         // ---- create axis gadgets ----
-        haxis			= new Axis( Axis.HORIZONTAL );
-        vaxis			= new Axis( Axis.VERTICAL );
+        haxis			= new Axis( Axis.HORIZONTAL, isDark );
+        vaxis			= new Axis( Axis.VERTICAL  , isDark );
         box				= Box.createHorizontalBox();
         box.add( Box.createHorizontalStrut( vaxis.getPreferredSize().width ));
         box.add( haxis );

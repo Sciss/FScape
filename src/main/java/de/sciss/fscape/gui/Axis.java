@@ -72,6 +72,9 @@ public class Axis
     private VectorSpace			space;
 
     private final Paint			pntBackground;
+    private final Paint			pntTicks;
+    private final Paint			pntLabel;
+
     private final BufferedImage img;
     private final Font			fntLabel;	// = new Font( "Helvetica", Font.PLAIN, 10 );
 
@@ -88,11 +91,19 @@ public class Axis
     private final MessageFormat msgForm			= new MessageFormat( msgNormalPtrn[ 0 ], Locale.US );  // XXX US locale
     private	final Object[]		msgArgs			= new Object[ 2 ];
 
-    private static final int[]	pntBarGradientPixels ={ 0xFFB8B8B8, 0xFFC0C0C0, 0xFFC8C8C8, 0xFFD3D3D3,
+    private static final int[]	pntBarGradPixLight = {
+            0xFFB8B8B8, 0xFFC0C0C0, 0xFFC8C8C8, 0xFFD3D3D3,
             0xFFDBDBDB, 0xFFE4E4E4, 0xFFEBEBEB, 0xFFF1F1F1,
             0xFFF6F6F6, 0xFFFAFAFA, 0xFFFBFBFB, 0xFFFCFCFC,
             0xFFF9F9F9, 0xFFF4F4F4, 0xFFEFEFEF };
-    private static final int	barExtent		= pntBarGradientPixels.length;
+
+    private static final int[]	pntBarGradPixDark = {
+            0xFF080808, 0xFF101010, 0xFF141414, 0xFF1B1B1B,
+            0xFF1D1D1D, 0xFF222222, 0xFF252525, 0xFF282828,
+            0xFF2B2B2B, 0xFF2D2D2D, 0xFF2D2D2D, 0xFF2E2E2E,
+            0xFF2C2C2C, 0xFF2A2A2A, 0xFF272727};
+
+    private static final int	barExtent		= pntBarGradPixLight.length;
 
     private final AffineTransform trnsVertical	= new AffineTransform();
 
@@ -148,7 +159,12 @@ public class Axis
 
     public Axis( int orient )
     {
-        this( orient, 0 );
+        this( orient, false );
+    }
+
+    public Axis( int orient, boolean dark )
+    {
+        this( orient, 0, dark );
     }
 
     /**
@@ -156,10 +172,15 @@ public class Axis
      */
     public Axis( int orient, int flags )
     {
-        this( orient, flags, null );
+        this( orient, flags, false );
     }
 
-    public Axis( int orient, int flags, ComponentHost host )
+    public Axis( int orient, int flags, boolean dark )
+    {
+        this( orient, flags, dark, null );
+    }
+
+    public Axis( int orient, int flags, boolean dark, ComponentHost host )
     {
         super();
 
@@ -188,8 +209,12 @@ public class Axis
         setFlags( flags );
 
         img = new BufferedImage( imgWidth, imgHeight, BufferedImage.TYPE_INT_ARGB );
+        final int[] pntBarGradientPixels = dark ? pntBarGradPixDark : pntBarGradPixLight;
         img.setRGB( 0, 0, imgWidth, imgHeight, pntBarGradientPixels, 0, imgWidth );
         pntBackground = new TexturePaint( img, new Rectangle( 0, 0, imgWidth, imgHeight ));
+
+        pntTicks    = dark ? new Color(192, 192, 192, 0xA0): Color.lightGray;
+        pntLabel    = dark ? Color.lightGray : Color.black;
 
         setOpaque( true );
     }
@@ -258,16 +283,16 @@ public class Axis
 
         if( orient == VERTICAL ) {
             g2.transform( trnsVertical );
-            y   = w - 3 - fm.getMaxDescent();
+            y   = w - 2 /* 3 */ - fm.getMaxDescent();
         } else {
-            y   = h - 3 - fm.getMaxDescent();
+            y   = h - 2 /* 3 */ - fm.getMaxDescent();
         }
-        g2.setColor( Color.lightGray );
+        g2.setPaint( pntTicks /* Color.lightGray */ );
         g2.draw( shpTicks );
 //		g2.setStroke( strkOrig );
 
         g2.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
-        g2.setColor( Color.black );
+        g2.setPaint( pntLabel /* Color.black */ );
 
         for( int i = 0; i < labels.length; i++ ) {
             g2.drawString( labels[ i ], labelPos[ i ], y );

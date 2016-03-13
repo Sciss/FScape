@@ -51,7 +51,7 @@ public class ProcessPanel
     public static final int	STATE_STOPPED	= 0;
     public static final int	STATE_RUNNING	= 1;
     public static final int	STATE_PAUSING	= 2;
-    public static final int STATE_WARMUP	= 3;	// Process gestartet, aber noch keine Rueckmeldung
+    public static final int STATE_WARMUP	= 3;	// Process has started but not given feedback yet
 
 // -------- private variables --------
 
@@ -74,8 +74,8 @@ public class ProcessPanel
 // -------- public methods --------
 
     /**
-     *	@param	type		TYPE_... (ODER-verknuepft)
-     *	@param	proc		zu startender Algorithmus
+     *	@param	type		TYPE_... (OR-combined)
+     *	@param	proc		algorithm to run
      */
     public ProcessPanel( final int type, final ProgressPanel pProgress, Processor proc )
     {

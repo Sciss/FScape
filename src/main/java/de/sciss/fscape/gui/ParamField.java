@@ -18,7 +18,6 @@ import de.sciss.app.EventManager;
 import de.sciss.fscape.util.Constants;
 import de.sciss.fscape.util.Param;
 import de.sciss.fscape.util.ParamSpace;
-import de.sciss.gui.Jog;
 import de.sciss.gui.NumberEvent;
 import de.sciss.gui.NumberField;
 import de.sciss.gui.NumberListener;
@@ -82,6 +81,12 @@ public class ParamField
     {
         super();
 
+        final Color c1 = getForeground ();
+        final Color c2 = getBackground ();
+        // cheesy check to determine whether we are running on light or dark scheme.
+        final boolean isDark = c1.getRed () + c1.getGreen () + c1.getBlue () > c2.getRed () + c2.getGreen () + c2.getBlue ();
+        // System.out.println("isDark? " + isDark);
+
 //		para			= new Param();
         spaces			= new ParamSpace[ 1 ];
         spaces[ 0 ]		= Constants.spaces[ Constants.emptySpace ];
@@ -96,14 +101,8 @@ ggNumber = new NumberField();
 ggNumber.setSpace( currentSpace );
 //ggNumber.setNumber( paraToNumber( para ));
 //		ggJog	= new DataWheel( ggNumber );
-        ggJog	= new Jog() {
-            @Override
-            public void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g;
-                g2.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
-                super.paintComponent(g);
-            }
-        };
+        // ggJog	= new Jog(isDark);
+        ggJog	= new Jog(isDark);
         ggUnits	= new JComboBox();
         lbUnits = new JLabel();
 
@@ -162,8 +161,14 @@ ggNumber.setSpace( currentSpace );
         ggJog.setBorder( BorderFactory.createEmptyBorder( 0, 2, 0, 2 ));
         add( ggJog );
 
+//        final Jog oldJog = new Jog(false);
+//        con.gridx += 1;
+//        lay.setConstraints( oldJog, con );
+//        oldJog.setBorder( BorderFactory.createEmptyBorder( 0, 2, 0, 2 ));
+//        add( oldJog );
+
         con.gridheight	= 1;
-        con.gridx		= 1;
+        con.gridx	   += 1;
         con.gridy		= 1;
         con.weightx		= 1.0;
         con.weighty		= 0.0;
@@ -184,7 +189,7 @@ ggNumber.setSpace( currentSpace );
         });			// High-Level Events: Return-Hit weiterleiten
         add( ggNumber );
 
-        con.gridx		= 2;
+        con.gridx	   += 1;
         con.weightx		= 0.0;
         con.gridwidth	= GridBagConstraints.REMAINDER;
         lay.setConstraints( ggUnits, con );

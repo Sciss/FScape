@@ -74,13 +74,13 @@ public class DragContext
 
         dragStarted	= false;
 
-        if( srcName == OpPanel.OBJ_NAME ) {
+        if( srcName.equals ( OpPanel.OBJ_NAME ) ) {
             container = (Container) source;
         } else {
             container = source.getParent();
         }
 
-        dragCursor	= new Cursor( ((srcName == OpIcon.OBJ_NAME) && (type == MOVE)) ?
+        dragCursor	= new Cursor( (( srcName.equals ( OpIcon.OBJ_NAME ) ) && (type == MOVE)) ?
                                   Cursor.MOVE_CURSOR : Cursor.CROSSHAIR_CURSOR );
         threshold	= 5;
     }
@@ -160,7 +160,7 @@ public class DragContext
 
         if( dragStarted ) {
 
-            if( srcName == OpIcon.OBJ_NAME ) {
+            if( srcName.equals ( OpIcon.OBJ_NAME ) ) {
 
                 switch( type ) {
                 case MOVE:
@@ -216,7 +216,7 @@ public class DragContext
                     break;
                 }
 
-            } else if( srcName == OpConnector.OBJ_NAME ) {
+            } else if( srcName.equals ( OpConnector.OBJ_NAME ) ) {
                 // XXX
                 dragSuccessful = true;
             }
@@ -232,7 +232,7 @@ public class DragContext
     {
         if( dragStarted ) {
 
-            if( (target != null) && (target.toString() == OpIcon.OBJ_NAME) ) {
+            if( (target != null) && ( target.toString ().equals ( OpIcon.OBJ_NAME ) ) ) {
                 ((OpIcon) target).setSelected( targetLastState );
             }
             paintScheme( false );
@@ -250,8 +250,10 @@ public class DragContext
 
         if( g == null ) return;
 
+        // g.setRenderingHint ( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
         g.setXORMode( container.getBackground() );
-        g.setColor( Color.black );
+        // g.setColor( Color.black );
+        g.setColor( container.getForeground () );
 
         switch( type ) {
         case MOVE:
@@ -269,7 +271,8 @@ public class DragContext
                 g2 = (Graphics2D) target.getGraphics();	// nochmal "innerhalb" des OpIcons zeichnen
                 if( g2 != null ) {
                     g2.setXORMode( container.getBackground() );
-                    g2.setColor( Color.black );
+                    // g2.setColor( Color.black );
+                    g2.setColor( container.getForeground () );
                     loc = target.getLocation();
                     OpConnector.drawArrow( g2, srcPoint.x - loc.x, srcPoint.y - loc.y,
                                            targetPoint.x - loc.x, targetPoint.y - loc.y,

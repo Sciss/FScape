@@ -63,8 +63,13 @@ public class VectorDisplay
 
     private static final Stroke	strkLine	= new BasicStroke( 0.5f );
     private static final Paint	pntArea		= new Color( 0x42, 0x5E, 0x9D, 0x7F );
-    private static final Paint	pntLine		= Color.black;
-    private static final Paint	pntLabel	= new Color( 0x00, 0x00, 0x00, 0x3F );
+
+//    private static final Paint	pntLine		= Color.black;
+//    private static final Paint	pntLabel	= new Color( 0x00, 0x00, 0x00, 0x3F );
+
+    private final Paint	pntBg;
+    private final Paint	pntLine;
+    private final Paint	pntLabel;
 
     private final AffineTransform trnsScreenToVirtual  = new AffineTransform();
     private final AffineTransform trnsVirtualToScreen  = new AffineTransform();
@@ -85,7 +90,17 @@ public class VectorDisplay
      */
     public VectorDisplay()
     {
-        this( new float[0] );
+        this( new float[0]);
+    }
+
+    public VectorDisplay(float[] vector)
+    {
+        this( vector, false );
+    }
+
+    public VectorDisplay( boolean dark )
+    {
+        this (new float[0], dark);
     }
 
     /**
@@ -95,7 +110,7 @@ public class VectorDisplay
      *
      *  @param  vector  the initial vector data
      */
-    public VectorDisplay( float[] vector )
+    public VectorDisplay( float[] vector, boolean dark )
     {
         setOpaque( false );
         setMinimumSize( new Dimension( 64, 16 ));
@@ -103,7 +118,11 @@ public class VectorDisplay
         recentSize  = getMinimumSize();
         setVector( null, vector );
 //		addComponentListener( this );
-    }
+
+        pntBg       = dark ? Color.darkGray : Color.lightGray;
+        pntLine     = dark ? Color.lightGray : Color.black;
+        pntLabel	= dark ? new Color( 0xFF, 0xFF, 0xFF, 0x3F ) : new Color( 0x00, 0x00, 0x00, 0x3F );
+   }
 
     /**
      *  Replaces the existing vector by another one.
@@ -289,9 +308,10 @@ public class VectorDisplay
         if( image == null ) return;
 
         Graphics2D g2 = (Graphics2D) image.getGraphics();
-//		g2.setColor( Color.white );
-//		g2.fillRect( 0, 0, recentSize.width, recentSize.height );
+		g2.setPaint( pntBg );
+		g2.fillRect( 0, 0, image.getWidth ( this ), image.getHeight ( this ));
         g2.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
+        g2.setRenderingHint( RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE );
 //		g2.setRenderingHint( RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY );
         if( fillArea ) {
             g2.setPaint( pntArea );

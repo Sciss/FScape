@@ -74,7 +74,7 @@ public class PrefsPanel
         Box								b;
 
         Preferences						prefs;
-        String							key, key2, title;
+        String							key, title;
         int								row;
 
         // ggTabPane			= new JTabbedPane();
@@ -86,7 +86,6 @@ public class PrefsPanel
         row		= 0;
         prefs   = IOUtil.getUserPrefs();
         key		= IOUtil.KEY_TEMPDIR;
-        key2	= "prefsTmpDir";
         lb		= new JLabel("Temporary Folder:", SwingConstants.TRAILING );
         tab.gridAdd( lb, 0, row );
         ggPath	= new PrefPathField( PathField.TYPE_FOLDER, "Temporary Folder");
@@ -95,7 +94,6 @@ public class PrefsPanel
 
         row++;
         prefs   = userPrefs;
-        key2	= "prefsAudioFileFormat";
         lb		= new JLabel("Default Audio File Format:", SwingConstants.TRAILING );
         tab.gridAdd( lb, 0, row );
         b		= Box.createHorizontalBox();
@@ -124,7 +122,6 @@ public class PrefsPanel
 
         row++;
         prefs   = userPrefs;
-        key2	= "prefsHeadroom";
         key		= "headroom";
         lb		= new JLabel("Default Headroom:", SwingConstants.TRAILING );
         tab.gridAdd( lb, 0, row );
@@ -137,58 +134,59 @@ public class PrefsPanel
         osc		= OSCRoot.getInstance();
         prefs   = osc.getPreferences();
         key		= OSCRoot.KEY_ACTIVE;
-//		key2	= "prefsOSCActive";
-        key2	= "prefsOSCServer";
         lb		= new JLabel("OSC Server:", SwingConstants.TRAILING );
         tab.gridAdd( lb, 0, row );
         b		= Box.createHorizontalBox();
         ggCheckBox = new PrefCheckBox("Active");
         ggCheckBox.setPreferences( prefs, key );
-//		tab.gridAdd( ggCheckBox, 1, row, -1, 1 );
         b.add( ggCheckBox );
 
         key		= OSCRoot.KEY_PROTOCOL;
-        key2	= "prefsOSCProtocol";
         lb		= new JLabel("Protocol:", SwingConstants.TRAILING );
-//		tab.gridAdd( lb, 2, row );
         b.add( Box.createHorizontalStrut( 16 ));
         b.add( lb );
         ggChoice = new PrefComboBox();
         ggChoice.addItem( new StringItem( OSCChannel.TCP, "TCP" ));
         ggChoice.addItem( new StringItem( OSCChannel.UDP, "UDP" ));
         ggChoice.setPreferences( prefs, key );
-//		tab.gridAdd( ggChoice, 3, row, -1, 1 );
         b.add( ggChoice );
 
         key		= OSCRoot.KEY_PORT;
-        key2	= "prefsOSCPort";
         lb		= new JLabel("Port:", SwingConstants.TRAILING );
-//		tab.gridAdd( lb, 4, row );
         b.add( Box.createHorizontalStrut( 16 ));
         b.add( lb );
         ggParam  = new PrefParamField();
         ggParam.addSpace( spcIntegerFromZero );
         ggParam.setPreferences( prefs, key );
-//		tab.gridAdd( ggParam, 5, row, -1, 1 );
         b.add( ggParam );
         tab.gridAdd( b, 1, row, -1, 1 );
 
         row++;
         prefs   = userPrefs;
-        key		= PrefsUtil.KEY_LAF_WINDOWS; // "lafdecoration"; // BasicWindowHandler.KEY_LAFDECORATION;
-        key2	= "prefsLAFDecoration";
+        key		= PrefsUtil.KEY_LAF_TYPE;
+        title	= "Look-and-Feel";
+        ggChoice = new PrefComboBox();
+        ggChoice.addItem( new StringItem( PrefsUtil.VALUE_LAF_TYPE_NATIVE   , "Native"));
+        ggChoice.addItem( new StringItem( PrefsUtil.VALUE_LAF_TYPE_METAL    , "Metal"));
+        ggChoice.addItem( new StringItem( PrefsUtil.VALUE_LAF_TYPE_WEB      , "Light (Web)"));
+        ggChoice.addItem( new StringItem( PrefsUtil.VALUE_LAF_TYPE_SUBMIN   , "Dark (Submin)"));
+        ggChoice.setPreferences( prefs, key );
+        tab.gridAdd( ggChoice, 1, row, -1, 1 );
+        ggChoice.addActionListener( new WarnPrefsChange( ggChoice, ggChoice, haveWarned, txtWarnLookAndFeel, title ));
+
+        row++;
+        prefs   = userPrefs;
+        key		= PrefsUtil.KEY_LAF_WINDOWS;
         title	= "Look-and-Feel Window Decoration";
         ggCheckBox = new PrefCheckBox(title);
         ggCheckBox.setPreferences( prefs, key );
         tab.gridAdd( ggCheckBox, 1, row, -1, 1 );
         ggCheckBox.addActionListener( new WarnPrefsChange( ggCheckBox, ggCheckBox, haveWarned, txtWarnLookAndFeel, title ));
 
-        key2	= "prefsGeneral";
         tab.makeCompactGrid();
         tabWrap = new JPanel( new BorderLayout() );
         tabWrap.add( tab, BorderLayout.NORTH );
         p		= new JPanel( new FlowLayout( FlowLayout.RIGHT ));
-        // p.add( new HelpButton( key2 ));
         tabWrap.add( p, BorderLayout.SOUTH );
 
         cp.add( tabWrap /* ggTabPane */, BorderLayout.CENTER );
@@ -218,7 +216,12 @@ public class PrefsPanel
             final String newValue = pes.getPreferenceNode().get(pes.getPreferenceKey(), initialValue);
 
             if (!newValue.equals(initialValue) && !haveWarned.isSet()) {
-                JOptionPane.showMessageDialog(c, text, title, JOptionPane.INFORMATION_MESSAGE);
+                EventQueue.invokeLater ( new Runnable() {
+                    public void run ()
+                    {
+                        JOptionPane.showMessageDialog(c, text, title, JOptionPane.INFORMATION_MESSAGE);
+                    }
+                });
                 haveWarned.set(true);
             }
         }

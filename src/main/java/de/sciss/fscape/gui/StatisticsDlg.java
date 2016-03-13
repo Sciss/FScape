@@ -297,7 +297,13 @@ public class StatisticsDlg
         con.gridwidth	= GridBagConstraints.REMAINDER;
         gui.addChoice( ggAnalysisWin, GG_ANALYSISWIN, il );
 
-        ggVectorDisplay		= new VectorDisplay();
+        final Color c1 = getForeground ();
+        final Color c2 = getBackground ();
+        // cheesy check to determine whether we are running on light or dark scheme.
+        final boolean isDark = c1.getRed () + c1.getGreen () + c1.getBlue () > c2.getRed () + c2.getGreen () + c2.getBlue ();
+
+        ggVectorDisplay		= new VectorDisplay(isDark);
+        // ggVectorDisplay.setBackground ( getBackground () );
         con.weightx		= 1.0;
         con.weighty		= 1.0;
         gui.registerGadget( ggVectorDisplay, GG_DATASET );
@@ -307,13 +313,14 @@ public class StatisticsDlg
         ggVectorDisplay.setPreferredSize( new Dimension( 256, 256 )); // XXX
         displayPane		= new JPanel( new BorderLayout() );
         displayPane.add( ggVectorDisplay, BorderLayout.CENTER );
-        haxis			= new Axis( Axis.HORIZONTAL );
-        vaxis			= new Axis( Axis.VERTICAL );
+
+        haxis			= new Axis( Axis.HORIZONTAL, isDark );
+        vaxis			= new Axis( Axis.VERTICAL  , isDark );
         box				= Box.createHorizontalBox();
         box.add( Box.createHorizontalStrut( vaxis.getPreferredSize().width ));
         box.add( haxis );
-        displayPane.add( box, BorderLayout.NORTH );
-        displayPane.add( vaxis, BorderLayout.WEST );
+        displayPane.add( box  , BorderLayout.NORTH );
+        displayPane.add( vaxis, BorderLayout.WEST  );
         gui.addGadget( displayPane, -1 );
 
         ggChannel		= new JComboBox();

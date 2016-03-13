@@ -184,6 +184,7 @@ public class ChangeGainDlg
         gui.addButton( ggFindPeak, GG_FINDPEAK, al );
 
         ggInputFormat	= new JLabel(); // JTextField();
+        ggInputFormat.setBorder ( BorderFactory.createEmptyBorder ( 0, 6, 0, 6 ) );
         // ggInputFormat.setEditable(false);
         // ggInputFormat.setFocusable(false);
         // ggInputFormat.setBackground( null );

@@ -172,7 +172,7 @@ public class PropertyGUI
 
                 attrTok		= new StringTokenizer( objTok.nextToken(), "," );
                 token		= attrTok.nextToken();
-                objCode		= token.charAt( 0 ) << 8 + token.charAt( 1 );
+                objCode		= (token.charAt( 0 ) << 8) + token.charAt( 1 );
                 objName		= token.substring( 2 );
 
                 // Componente erzeugen
@@ -250,7 +250,7 @@ public class PropertyGUI
                 // Attribute uebersetzen
                 while( attrTok.hasMoreTokens() ) {
                     token		= attrTok.nextToken();
-                    attrCode	= token.charAt( 0 ) << 8 + token.charAt( 1 );
+                    attrCode	= (token.charAt( 0 ) << 8) + token.charAt( 1 );
                     attrName	= token.substring( 2 );
 
                     // generic
@@ -581,7 +581,7 @@ public class PropertyGUI
 
                     if( conditionFulfilled ) {		// Bedingung erfuellt, Cmd ausfuehren
 
-                        cmdCode	= cmd.charAt( 0 ) << 8 + cmd.charAt( 1 );
+                        cmdCode	= (cmd.charAt( 0 ) << 8) + cmd.charAt( 1 );
                         // generic
                         switch( cmdCode ) {
                         case actionEnable:

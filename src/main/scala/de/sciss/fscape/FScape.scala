@@ -15,7 +15,8 @@ package de.sciss.fscape
 
 import java.awt.{Color, GraphicsEnvironment, Toolkit}
 import java.net.URL
-import javax.swing.{ImageIcon, KeyStroke}
+import javax.swing.plaf.metal.MetalLookAndFeel
+import javax.swing.{UIManager, ImageIcon, KeyStroke}
 
 import de.sciss.desktop.impl.{WindowHandlerImpl, LogWindowImpl, SwingApplicationImpl, WindowImpl}
 import de.sciss.desktop.{Desktop, Escape, KeyStrokes, Menu, OptionPane, Window, WindowHandler}
@@ -74,24 +75,30 @@ object FScape extends SwingApplicationImpl("FScape") {
     case NonFatal(e) => "?"
   }
 
-  override protected def init(): Unit = {
-    import de.sciss.weblaf.submin.SubminSkin
-    SubminSkin.install()
+  private[this] def setLookAndFeel(className: String): Unit =
+    UIManager.setLookAndFeel(className)
 
-//    try {
-//      val web = "com.alee.laf.WebLookAndFeel"
-//      UIManager.installLookAndFeel("Web Look And Feel", web)
-//      UIManager.setLookAndFeel(web) // Prefs.lookAndFeel.getOrElse(Prefs.defaultLookAndFeel).getClassName)
-//    } catch {
-//      case NonFatal(_) =>
-//    }
-//    WebCheckBoxStyle   .animated            = false
-//    WebProgressBarStyle.progressTopColor    = Color.lightGray
-//    WebProgressBarStyle.progressBottomColor = Color.gray
-//    // XXX TODO: how to really turn off animation?
-//    WebProgressBarStyle.highlightWhite      = new Color(255, 255, 255, 0) // 48)
-//    WebProgressBarStyle.highlightDarkWhite  = new Color(255, 255, 255, 0)
-//    // StyleConstants.animate = false
+  override protected def init(): Unit = {
+    try {
+      userPrefs.getOrElse[String](PrefsUtil.KEY_LAF_TYPE, "") match {
+        case PrefsUtil.VALUE_LAF_TYPE_NATIVE  => setLookAndFeel(UIManager.getSystemLookAndFeelClassName)
+        case PrefsUtil.VALUE_LAF_TYPE_METAL   => setLookAndFeel(classOf[MetalLookAndFeel].getName)
+        case PrefsUtil.VALUE_LAF_TYPE_WEB     =>
+          val web = "com.alee.laf.WebLookAndFeel"
+          UIManager.installLookAndFeel("Web Look And Feel", web)
+          setLookAndFeel(web)
+        case other =>
+          if (other != PrefsUtil.VALUE_LAF_TYPE_SUBMIN) {
+            userPrefs.put[String](PrefsUtil.KEY_LAF_TYPE, PrefsUtil.VALUE_LAF_TYPE_SUBMIN)
+          }
+          import de.sciss.weblaf.submin.SubminSkin
+          SubminSkin.install()
+        // case _ => // do not explicitly set look-and-feel
+      }
+    } catch {
+      case NonFatal(e) =>
+        Console.err.println(s"Could not set look-and-feel: ${e.getClass.getSimpleName} - ${e.getMessage}")
+    }
 
     // set some default preferences
     if (userPrefs.get[String]("headroom").isEmpty) {
@@ -270,7 +277,7 @@ object FScape extends SwingApplicationImpl("FScape") {
            |<font size=+1><b>About ${App.name}</b></font><p>
            |Version $version<p>
            |<p>
-           |Copyright (c) 2001&ndash;2015 Hanns Holger Rutz.<p>
+           |Copyright (c) 2001&ndash;2016 Hanns Holger Rutz.<p>
            |This software is published under the GNU General Public License v3+<p>
            |<p>
            |Winner of the 2014 LoMus award (ex aequo).

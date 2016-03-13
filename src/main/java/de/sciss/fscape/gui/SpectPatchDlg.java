@@ -84,6 +84,7 @@ public class SpectPatchDlg
         gagaPanel				= new OpPanel( this );
 //System.err.println( "BUILDING "+gagaPanel+" (me = "+this.hashCode()+")" );
         JScrollPane ggScroll	= new JScrollPane( gagaPanel );
+        ggScroll.putClientProperty ( "styleId", "nofocus" );
 
         gui				= new GUISupport(); // not used but necessary to prevent null ptr exception
 
