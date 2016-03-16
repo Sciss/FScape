@@ -18,6 +18,7 @@ import java.net.URL
 import javax.swing.plaf.metal.MetalLookAndFeel
 import javax.swing.{UIManager, ImageIcon, KeyStroke}
 
+import com.sun.awt.AWTUtilities
 import de.sciss.desktop.impl.{WindowHandlerImpl, LogWindowImpl, SwingApplicationImpl, WindowImpl}
 import de.sciss.desktop.{Desktop, Escape, KeyStrokes, Menu, OptionPane, Window, WindowHandler}
 import de.sciss.file._
@@ -31,7 +32,7 @@ import org.pegdown.PegDownProcessor
 import scala.collection.breakOut
 import scala.swing.Swing._
 import scala.swing.event.{Key, MouseClicked}
-import scala.swing.{Action, Alignment, BoxPanel, Dialog, EditorPane, Label, Orientation, ScrollPane, Swing}
+import scala.swing._
 import scala.util.Try
 import scala.util.control.NonFatal
 
@@ -50,6 +51,19 @@ object FScape extends SwingApplicationImpl("FScape") {
       val res = userPrefs[Boolean](PrefsUtil.KEY_LAF_WINDOWS).getOrElse(false)
       // println(s"deco = $res")
       !res
+    }
+
+    override def addWindow(w: Window): Unit = {
+      if (!usesNativeDecoration) {
+        // AWTUtilities.setWindowOpaque(w.component.peer.asInstanceOf[java.awt.Window], false)
+        w.component.peer.getRootPane.putClientProperty("styleId", "frame-decorated")
+      }
+      super.addWindow(w)
+    }
+
+    // bug in WebLaF
+    if (UIManager.getLookAndFeel.getName.startsWith("Web") && !usesNativeDecoration) {
+      javax.swing.JFrame.setDefaultLookAndFeelDecorated(false)
     }
   }
 
@@ -118,10 +132,10 @@ object FScape extends SwingApplicationImpl("FScape") {
     System.setErr(Console.err)  // por que?
 
     // ---- bridge to Java world ----
-    Application.userPrefs = de.sciss.desktop.Escape.prefsPeer(userPrefs)
-    Application.name      = App.name
-    Application.version   = App.version
-    Application.clipboard = Toolkit.getDefaultToolkit.getSystemClipboard
+    Application.userPrefs   = de.sciss.desktop.Escape.prefsPeer(userPrefs)
+    Application.name        = App.name
+    Application.version     = App.version
+    Application.clipboard   = Toolkit.getDefaultToolkit.getSystemClipboard
     Application.installDir  = FScape.installDir
 
     // --- osc ----
@@ -133,6 +147,33 @@ object FScape extends SwingApplicationImpl("FScape") {
     val f = new MainWindow
     f.front()
     oscServer.init()
+
+//    new swing.Frame {
+//      title = "Hello"
+//      size = new Dimension(400, 200)
+//      peer.setUndecorated(true)
+//      peer.getRootPane.putClientProperty("styleId", "frame-decorated")
+//      location = new Point(400, 400)
+//      visible = true
+//    }
+
+//    new javax.swing.JFrame {
+//      setTitle("Hello")
+//      setSize(new Dimension(400, 200))
+//      setUndecorated(true)
+//      getRootPane.putClientProperty("styleId", "frame-decorated")
+//      setLocation(new Point(400, 400))
+//      setVisible(true)
+//    }
+
+//    val ff = new javax.swing.JFrame();
+//    ff.getRootPane().putClientProperty("styleId", "frame");
+//    ff.getRootPane().putClientProperty("styleId", "frame-decorated");
+//    ff.setTitle("Hello");
+//    ff.setSize(new Dimension(400, 200));
+////      ff.setUndecorated(true);
+//    ff.setLocation(new Point(400, 400));
+//    ff.setVisible(true);
   }
 
   private type ItemConfig   = (String, String, Option[KeyStroke])
