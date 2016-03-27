@@ -125,11 +125,11 @@ public class PrefsUtil
     /**
      * Value: String of "native", "metal", "web", "submin"
      */
-    public static final String KEY_LAF_TYPE             = "laf-type";
-    public static final String VALUE_LAF_TYPE_NATIVE    = "native";
-    public static final String VALUE_LAF_TYPE_METAL     = "metal";
-    public static final String VALUE_LAF_TYPE_WEB       = "web";
-    public static final String VALUE_LAF_TYPE_SUBMIN    = "submin";
+    public static final String KEY_LAF_TYPE                 = "laf-type";
+    public static final String VALUE_LAF_TYPE_NATIVE        = "native";
+    public static final String VALUE_LAF_TYPE_METAL         = "metal";
+    public static final String VALUE_LAF_TYPE_SUBMIN_LIGHT  = "light";
+    public static final String VALUE_LAF_TYPE_SUBMIN_DARK   = "dark";
 
     public static final String KEY_LAF_WINDOWS		= "lafdecoration";
 

@@ -23,11 +23,7 @@ import de.sciss.fscape.Application;
 import de.sciss.fscape.io.GenericFile;
 import de.sciss.fscape.net.OSCRoot;
 import de.sciss.fscape.util.PrefsUtil;
-import de.sciss.gui.PrefCheckBox;
-import de.sciss.gui.PrefComboBox;
-import de.sciss.gui.PrefParamField;
-import de.sciss.gui.SpringPanel;
-import de.sciss.gui.StringItem;
+import de.sciss.gui.*;
 import de.sciss.io.IOUtil;
 import de.sciss.net.OSCChannel;
 import de.sciss.util.Flag;
@@ -166,13 +162,13 @@ public class PrefsPanel
         key		= PrefsUtil.KEY_LAF_TYPE;
         title	= "Look-and-Feel";
         ggChoice = new PrefComboBox();
-        ggChoice.addItem( new StringItem( PrefsUtil.VALUE_LAF_TYPE_NATIVE   , "Native"));
-        ggChoice.addItem( new StringItem( PrefsUtil.VALUE_LAF_TYPE_METAL    , "Metal"));
-        ggChoice.addItem( new StringItem( PrefsUtil.VALUE_LAF_TYPE_WEB      , "Light (Web)"));
-        ggChoice.addItem( new StringItem( PrefsUtil.VALUE_LAF_TYPE_SUBMIN   , "Dark (Submin)"));
-        ggChoice.setPreferences( prefs, key );
-        tab.gridAdd( ggChoice, 1, row, -1, 1 );
-        ggChoice.addActionListener( new WarnPrefsChange( ggChoice, ggChoice, haveWarned, txtWarnLookAndFeel, title ));
+        ggChoice.addItem(new StringItem(PrefsUtil.VALUE_LAF_TYPE_NATIVE      , "Native"));
+        ggChoice.addItem(new StringItem(PrefsUtil.VALUE_LAF_TYPE_METAL       , "Metal"));
+        ggChoice.addItem(new StringItem(PrefsUtil.VALUE_LAF_TYPE_SUBMIN_LIGHT, "Submin Light"));
+        ggChoice.addItem(new StringItem(PrefsUtil.VALUE_LAF_TYPE_SUBMIN_DARK , "Submin Dark"));
+        ggChoice.setPreferences(prefs, key);
+        tab.gridAdd(ggChoice, 1, row, -1, 1);
+        ggChoice.addActionListener(new WarnPrefsChange(ggChoice, ggChoice, haveWarned, txtWarnLookAndFeel, title));
 
         row++;
         prefs   = userPrefs;
@@ -181,7 +177,7 @@ public class PrefsPanel
         ggCheckBox = new PrefCheckBox(title);
         ggCheckBox.setPreferences( prefs, key );
         tab.gridAdd( ggCheckBox, 1, row, -1, 1 );
-        ggCheckBox.addActionListener( new WarnPrefsChange( ggCheckBox, ggCheckBox, haveWarned, txtWarnLookAndFeel, title ));
+        ggCheckBox.addActionListener(new WarnPrefsChange(ggCheckBox, ggCheckBox, haveWarned, txtWarnLookAndFeel, title));
 
         tab.makeCompactGrid();
         tabWrap = new JPanel( new BorderLayout() );

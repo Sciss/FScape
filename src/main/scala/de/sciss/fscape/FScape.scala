@@ -27,6 +27,7 @@ import de.sciss.fscape.impl.DocumentHandlerImpl
 import de.sciss.fscape.net.{OSCRoot, OSCRouter, OSCRouterWrapper, RoutedOSCMessage}
 import de.sciss.fscape.session.{ModulePanel, Session}
 import de.sciss.fscape.util.PrefsUtil
+import de.sciss.submin.Submin
 import org.pegdown.PegDownProcessor
 
 import scala.collection.breakOut
@@ -97,16 +98,9 @@ object FScape extends SwingApplicationImpl("FScape") {
       userPrefs.getOrElse[String](PrefsUtil.KEY_LAF_TYPE, "") match {
         case PrefsUtil.VALUE_LAF_TYPE_NATIVE  => setLookAndFeel(UIManager.getSystemLookAndFeelClassName)
         case PrefsUtil.VALUE_LAF_TYPE_METAL   => setLookAndFeel(classOf[MetalLookAndFeel].getName)
-        case PrefsUtil.VALUE_LAF_TYPE_WEB     =>
-          val web = "com.alee.laf.WebLookAndFeel"
-          UIManager.installLookAndFeel("Web Look And Feel", web)
-          setLookAndFeel(web)
         case other =>
-          if (other != PrefsUtil.VALUE_LAF_TYPE_SUBMIN) {
-            userPrefs.put[String](PrefsUtil.KEY_LAF_TYPE, PrefsUtil.VALUE_LAF_TYPE_SUBMIN)
-          }
-          import de.sciss.weblaf.submin.SubminSkin
-          SubminSkin.install()
+          val isDark = other == PrefsUtil.VALUE_LAF_TYPE_SUBMIN_DARK
+          Submin.install(isDark)
         // case _ => // do not explicitly set look-and-feel
       }
     } catch {
