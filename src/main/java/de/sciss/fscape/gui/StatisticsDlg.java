@@ -27,6 +27,7 @@ import de.sciss.fscape.spect.Fourier;
 import de.sciss.fscape.util.Constants;
 import de.sciss.fscape.util.Filter;
 import de.sciss.fscape.util.Util;
+import de.sciss.gui.Axis;
 import de.sciss.gui.VectorSpace;
 import de.sciss.io.AudioFile;
 import de.sciss.io.AudioFileDescr;
@@ -300,9 +301,9 @@ public class StatisticsDlg
         final Color c1 = getForeground ();
         final Color c2 = getBackground ();
         // cheesy check to determine whether we are running on light or dark scheme.
-        final boolean isDark = c1.getRed () + c1.getGreen () + c1.getBlue () > c2.getRed () + c2.getGreen () + c2.getBlue ();
+//        final boolean isDark = c1.getRed () + c1.getGreen () + c1.getBlue () > c2.getRed () + c2.getGreen () + c2.getBlue ();
 
-        ggVectorDisplay		= new VectorDisplay(isDark);
+        ggVectorDisplay		= new VectorDisplay(); // (isDark);
         // ggVectorDisplay.setBackground ( getBackground () );
         con.weightx		= 1.0;
         con.weighty		= 1.0;
@@ -314,8 +315,8 @@ public class StatisticsDlg
         displayPane		= new JPanel( new BorderLayout() );
         displayPane.add( ggVectorDisplay, BorderLayout.CENTER );
 
-        haxis			= new Axis( Axis.HORIZONTAL, isDark );
-        vaxis			= new Axis( Axis.VERTICAL  , isDark );
+        haxis			= new Axis( Axis.HORIZONTAL);
+        vaxis			= new Axis( Axis.VERTICAL  );
         box				= Box.createHorizontalBox();
         box.add( Box.createHorizontalStrut( vaxis.getPreferredSize().width ));
         box.add( haxis );

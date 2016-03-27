@@ -17,6 +17,7 @@
 
 package de.sciss.fscape.gui;
 
+import de.sciss.gui.Axis;
 import de.sciss.gui.VectorSpace;
 
 import javax.swing.*;
@@ -47,27 +48,25 @@ public class VectorPanel
 
     // GUI components
     private final VectorDisplay	ggVectorDisplay;
-    private final Axis			haxis, vaxis;
+    private final Axis hAxis, vAxis;
     private JCheckBox			ggHLog			= null;
     private JCheckBox			ggVLog			= null;
 
     // mouse listening
-    private FontMetrics			fntMetr;
-    private static final Color	colrCross		= new Color( 0x00, 0x00, 0x00, 0x7F );
-    private static final Color	colrTextBg		= new Color( 0xFF, 0xFF, 0xFF, 0xA0 );
-    private final Cursor		csrCrossHair	= new Cursor( Cursor.CROSSHAIR_CURSOR );
+    private FontMetrics fntMetrics;
+    private static final Color	colrCross		= new Color(0x00, 0x00, 0x00, 0x7F);
+    private static final Color	colrTextBg		= new Color(0xFF, 0xFF, 0xFF, 0xA0);
+    private final Cursor		csrCrossHair	= new Cursor(Cursor.CROSSHAIR_CURSOR);
     private String				lastTxt;
     private boolean				paintCrossHair	= false;
     private Point				lastPt			= null;		// X-Hair
 
-    public VectorPanel( VectorPanel.Client client, int flags )
-    {
-        super( new BorderLayout() );
+    public VectorPanel(VectorPanel.Client client, int flags) {
+        super(new BorderLayout());
 
-        final Color c1 = getForeground ();
-        final Color c2 = getBackground ();
-        // cheesy check to determine whether we are running on light or dark scheme.
-        final boolean isDark = c1.getRed () + c1.getGreen () + c1.getBlue () > c2.getRed () + c2.getGreen () + c2.getBlue ();
+        final Color c1 = getForeground();
+        final Color c2 = getBackground();
+        final boolean isDark = UIManager.getBoolean("dark-skin");
 
         JPanel							buttonPane;
         JButton							ggUpdate;
@@ -78,26 +77,24 @@ public class VectorPanel
         this.client		= client;
 
         // ---- create vector display ----
-        ggVectorDisplay	= new VectorDisplay( isDark );
-        ggVectorDisplay.addTopPainter( this );
-        ggVectorDisplay.setCursor( csrCrossHair );
+        ggVectorDisplay = new VectorDisplay(isDark);
+        ggVectorDisplay.addTopPainter(this);
+        ggVectorDisplay.setCursor(csrCrossHair);
 
-        mouseListener	= new MouseInputAdapter() {
-            public void mousePressed( MouseEvent e )
-            {
+        mouseListener = new MouseInputAdapter() {
+            public void mousePressed(MouseEvent e) {
                 ggVectorDisplay.requestFocus();
-                redrawCrosshair( e );
+                redrawCrossHair(e);
             }
 
-            public void mouseDragged( MouseEvent e )
-            {
-                redrawCrosshair( e );
+            public void mouseDragged(MouseEvent e) {
+                redrawCrossHair(e);
             }
         };
-        ggVectorDisplay.addMouseListener( mouseListener );
-        ggVectorDisplay.addMouseMotionListener( mouseListener );
+        ggVectorDisplay.addMouseListener(mouseListener);
+        ggVectorDisplay.addMouseMotionListener(mouseListener);
 
-        this.add( ggVectorDisplay, BorderLayout.CENTER );
+        this.add(ggVectorDisplay, BorderLayout.CENTER);
 
         // ---- create south button panel gadgets ----
         if( (flags & GADGET_MASK) != 0 ) {
@@ -127,27 +124,25 @@ public class VectorPanel
         }
 
         // ---- create axis gadgets ----
-        haxis			= new Axis( Axis.HORIZONTAL, isDark );
-        vaxis			= new Axis( Axis.VERTICAL  , isDark );
-        box				= Box.createHorizontalBox();
-        box.add( Box.createHorizontalStrut( vaxis.getPreferredSize().width ));
-        box.add( haxis );
-        this.add( box, BorderLayout.NORTH );
-        this.add( vaxis, BorderLayout.WEST );
+        hAxis   = new Axis(Axis.HORIZONTAL);
+        vAxis   = new Axis(Axis.VERTICAL  );
+        box     = Box.createHorizontalBox();
+        box.add(Box.createHorizontalStrut(vAxis.getPreferredSize().width));
+        box.add(hAxis);
+        this.add(box  , BorderLayout.NORTH);
+        this.add(vAxis, BorderLayout.WEST );
 
-        fntMetr			= getFontMetrics( getFont() );
-        this.addPropertyChangeListener( new PropertyChangeListener() {
-            public void propertyChange( PropertyChangeEvent e )
-            {
-                if( e.getPropertyName().equals( "font" )) {
-                    fntMetr = getFontMetrics( (Font) e.getNewValue() );
+        fntMetrics = getFontMetrics(getFont());
+        this.addPropertyChangeListener(new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent e) {
+                if (e.getPropertyName().equals("font")) {
+                    fntMetrics = getFontMetrics((Font) e.getNewValue());
                 }
             }
         });
     }
 
-    protected void redrawCrosshair( MouseEvent e )
-    {
+    protected void redrawCrossHair(MouseEvent e) {
         Dimension	dim			= ggVectorDisplay.getSize();
         int			x			= e.getX();
         int			y			= e.getY();
@@ -155,83 +150,80 @@ public class VectorPanel
         int			dataLen;
         double		dx, dy;
         float[]		v;
-        boolean		hlog		= ggHLog != null && ggHLog.isSelected();
-        boolean		vlog		= ggVLog != null && ggVLog.isSelected();
+        boolean		hLog		= ggHLog != null && ggHLog.isSelected();
+        boolean		vLog		= ggVLog != null && ggVLog.isSelected();
 
         paintCrossHair	= false;
 
-        if( (space != null) && !e.isAltDown() ) {
+        if ((space != null) && !e.isAltDown()) {
 
             v		= ggVectorDisplay.getVector();
             dataLen	= v.length;
             if( dataLen < 1 ) return;
 
-            if( (x >= 0) && (y >= 0) && (x < dim.width) && (y < dim.height) ) {
-                if( e.isShiftDown() ) {
-                    dy	= space.vUnityToSpace( 1.0 - (double) y / (dim.height - 1) );
-                    dx	= space.hUnityToSpace( (double) x / (dim.width - 1) );
+            if ((x >= 0) && (y >= 0) && (x < dim.width) && (y < dim.height)) {
+                if (e.isShiftDown()) {
+                    dy = space.vUnityToSpace(1.0 - (double) y / (dim.height - 1));
+                    dx = space.hUnityToSpace((double) x / (dim.width - 1));
                 } else {
-                    x	= (int) ((double) x / (dim.width - 1) * (dataLen - 1) + 0.5);
-                    dy	= v[ x ];
-                    dx	= space.hUnityToSpace( (double) x / (dataLen - 1) );
-                    y	= (int) ((1.0 - space.vSpaceToUnity( dy )) * (dim.height - 1) + 0.5);
-                    x	= e.getX(); // (int) (rec.space.hSpaceToUnity( dx ) * (dim.width - 1) + 0.5);
+                    x  = (int) ((double) x / (dim.width - 1) * (dataLen - 1) + 0.5);
+                    dy = v[x];
+                    dx = space.hUnityToSpace((double) x / (dataLen - 1));
+                    y  = (int) ((1.0 - space.vSpaceToUnity(dy)) * (dim.height - 1) + 0.5);
+                    x  = e.getX(); // (int) (rec.space.hSpaceToUnity( dx ) * (dim.width - 1) + 0.5);
                 }
-                lastPt	= new Point( x, y );
+                lastPt = new Point(x, y);
 
-                yTxt	= client.formatVText( dy, vlog );
-                xTxt	= client.formatHText( dx, hlog );
-                lastTxt	= yTxt + " @ " + xTxt;
-                paintCrossHair	= true;
+                yTxt = client.formatVText(dy, vLog);
+                xTxt = client.formatHText(dx, hLog);
+                lastTxt = yTxt + " @ " + xTxt;
+                paintCrossHair = true;
             }
         }
         ggVectorDisplay.repaint();
     }
 
-    protected void requestUpdate()
-    {
-        boolean	hlog	= ggHLog != null && ggHLog.isSelected();
-        boolean	vlog	= ggVLog != null && ggVLog.isSelected();
+    protected void requestUpdate() {
+        boolean hLog = ggHLog != null && ggHLog.isSelected();
+        boolean vLog = ggVLog != null && ggVLog.isSelected();
 
-        client.requestUpdate( hlog, vlog );
+        client.requestUpdate(hLog, vLog);
     }
 
-    public void setVector( float[] data )
-    {
-        ggVectorDisplay.setVector( this, data );
+    public void setVector(float[] data) {
+        ggVectorDisplay.setVector(this, data);
     }
 
-    public void setSpace( VectorSpace space )
-    {
-        this.space	= space;
-        ggVectorDisplay.setMinMax( (float) space.vmin, (float) space.vmax );
-        haxis.setSpace( space );
-        vaxis.setSpace( space );
+    public void setSpace(VectorSpace space) {
+        this.space = space;
+        ggVectorDisplay.setMinMax((float) space.vmin, (float) space.vmax);
+        hAxis.setSpace(space);
+        vAxis.setSpace(space);
     }
 
 // -------- TopPainter methods --------
 
-    public void paintOnTop( Graphics2D g )
-    {
+    public void paintOnTop(Graphics2D g) {
         Dimension dim = ggVectorDisplay.getSize();
 
-        if( paintCrossHair ) {
-            g.setColor( colrCross );
-            g.drawLine( 0, lastPt.y, dim.width - 1, lastPt.y );
-            g.drawLine( lastPt.x, 0, lastPt.x, dim.height - 1 );
-            g.setColor( colrTextBg );
-            g.fillRect( 1, 1, fntMetr.stringWidth( lastTxt ) + 6, fntMetr.getHeight() + 4 );
-            g.setColor( Color.blue );
-            g.drawString( lastTxt, 4, fntMetr.getHeight() + 1 );
+        if (paintCrossHair) {
+            g.setColor(colrCross);
+            g.drawLine(0, lastPt.y, dim.width - 1, lastPt.y);
+            g.drawLine(lastPt.x, 0, lastPt.x, dim.height - 1);
+            g.setColor(colrTextBg);
+            g.fillRect(1, 1, fntMetrics.stringWidth(lastTxt) + 6, fntMetrics.getHeight() + 4);
+            g.setColor(Color.blue);
+            g.drawString(lastTxt, 4, fntMetrics.getHeight() + 1);
         }
     }
 
 // -------- internal client class --------
 
-    public interface Client
-    {
-        public void requestUpdate( boolean hlog, boolean vlog );
-        public String formatVText( double vvalue, boolean vlog );
-        public String formatHText( double hvalue, boolean hlog );
+    public interface Client {
+        public void requestUpdate(boolean hLog, boolean vLog);
+
+        public String formatVText(double vValue, boolean vLog);
+
+        public String formatHText(double hValue, boolean hLog);
     }
 }

@@ -71,7 +71,7 @@ public class ParamField
     private Param			reference	= null;	// statischer Referenz-Wert
     private ParamField		refField	= null;	// dynamisches Referenz-Feld
 
-    private ParamSpace	spaces[];		// e.g. Constants.spaces[ ... ]
+    protected ParamSpace	spaces[];		// e.g. Constants.spaces[ ... ]
     private int			currentSpaceIdx;	// ArrayIndex in spaces[]
     private ParamSpace	currentSpace;
 
@@ -83,9 +83,6 @@ public class ParamField
 
         final Color c1 = getForeground ();
         final Color c2 = getBackground ();
-        // cheesy check to determine whether we are running on light or dark scheme.
-        final boolean isDark = c1.getRed () + c1.getGreen () + c1.getBlue () > c2.getRed () + c2.getGreen () + c2.getBlue ();
-        // System.out.println("isDark? " + isDark);
 
 //		para			= new Param();
         spaces			= new ParamSpace[ 1 ];
@@ -102,7 +99,7 @@ ggNumber.setSpace( currentSpace );
 //ggNumber.setNumber( paraToNumber( para ));
 //		ggJog	= new DataWheel( ggNumber );
         // ggJog	= new Jog(isDark);
-        ggJog	= new Jog(isDark);
+        ggJog	= new Jog();
         ggUnits	= new JComboBox();
         lbUnits = new JLabel();
 

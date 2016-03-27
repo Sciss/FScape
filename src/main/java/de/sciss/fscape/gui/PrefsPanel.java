@@ -23,7 +23,11 @@ import de.sciss.fscape.Application;
 import de.sciss.fscape.io.GenericFile;
 import de.sciss.fscape.net.OSCRoot;
 import de.sciss.fscape.util.PrefsUtil;
-import de.sciss.gui.*;
+import de.sciss.gui.PrefCheckBox;
+import de.sciss.gui.PrefComboBox;
+import de.sciss.gui.PrefParamField;
+import de.sciss.gui.SpringPanel;
+import de.sciss.gui.StringItem;
 import de.sciss.io.IOUtil;
 import de.sciss.net.OSCChannel;
 import de.sciss.util.Flag;
@@ -59,11 +63,11 @@ public class PrefsPanel
         final Preferences userPrefs = Application.userPrefs;
 
         JPanel							p, tabWrap;
-        SpringPanel						tab;
-        PrefParamField					ggParam;
+        SpringPanel tab;
+        PrefParamField ggParam;
         PrefPathField					ggPath;
-        PrefCheckBox					ggCheckBox;
-        PrefComboBox					ggChoice;
+        PrefCheckBox ggCheckBox;
+        PrefComboBox ggChoice;
         JTabbedPane						ggTabPane;
         JLabel							lb;
         UIManager.LookAndFeelInfo[]		lafInfos;

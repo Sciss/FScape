@@ -788,7 +788,7 @@ topLevel: try {
 
 // -------- VectorPanel.Client interface --------
 
-    public void requestUpdate( boolean hlog, boolean vlog )
+    public void requestUpdate(boolean hLog, boolean vLog)
     {
         int				i, j, decimate = 1, dispLen, fftLength, outLength;
         Point			impLength;
@@ -814,7 +814,7 @@ topLevel: try {
         if( outLength <= 0 ) return;
 
         for( fftLength = 2; fftLength < outLength; fftLength <<= 1 ) ;
-        if( hlog ) {	// oversampling in log.freq mode because lo freq are spread
+        if(hLog) {	// oversampling in log.freq mode because lo freq are spread
             for( ; fftLength < 8192; fftLength <<= 1, impLength = new Point( impLength.x * 2, impLength.y * 2 )) ;
         } else {	// fft size min. 4096, decimation so displayed vector is not greater than 4096
             for( ; fftLength < 4096; fftLength <<= 1, impLength = new Point( impLength.x * 2, impLength.y * 2 )) ;
@@ -840,7 +840,7 @@ topLevel: try {
 
 // Random r = new Random( System.currentTimeMillis() );
 
-        if( hlog ) {
+        if(hLog) {
             dispLen		= 2049; // 4097;
             magBuf		= new float[ dispLen ];
             fc			= 1000.0;		// gewuenschte centerfreq
@@ -894,7 +894,7 @@ topLevel: try {
             fmin		= 0.0;
             fmax		= afd.rate/2;
         }
-        if( vlog ) {
+        if(vLog) {
             for( j = 0; j < dispLen; j++ ) {
                 magBuf[ j ] = (float) (decibelWeight * Math.log( Math.max( 1.0e-8, magBuf[ j ])));
             }
@@ -913,7 +913,7 @@ topLevel: try {
 
         // outBuf			= null;
 
-        if( hlog ) {
+        if(hLog) {
             space = VectorSpace.createLogLinSpace( fmin, fmax, fc, min, max, null, null, null, null );
         } else {
             space = VectorSpace.createLinSpace( fmin, fmax, min, max, null, null, null, null );
@@ -922,17 +922,17 @@ topLevel: try {
         spectPane.setVector( magBuf );
     }
 
-    public String formatHText( double x, boolean hlog )
+    public String formatHText(double hValue, boolean hLog)
     {
-        return( msgHertz.format( new Object[] {x}));
+        return( msgHertz.format( new Object[] {hValue}));
     }
 
-    public String formatVText( double y, boolean vlog )
+    public String formatVText(double vValue, boolean vLog)
     {
-        if( vlog ) {
-            return( msgDecibel.format( new Object[] {y}));
+        if(vLog) {
+            return( msgDecibel.format( new Object[] {vValue}));
         } else {
-            return( msgPlain.format( new Object[] {y}));
+            return( msgPlain.format( new Object[] {vValue}));
         }
     }
 

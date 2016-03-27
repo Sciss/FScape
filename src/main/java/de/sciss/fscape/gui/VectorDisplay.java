@@ -43,11 +43,6 @@ import java.util.Vector;
  *  Examples of using <code>VectorDisplay</code>s aer
  *  the <code>SigmaReceiverEditor</code> and the
  *  <code>SimpleTransmitterEditor</code>.
- *
- *  @todo		a vertical (y) wrapping mode should be implemented
- *				similar to x-wrap, useful for circular value spaces like angles
- *  @todo		due to a bug in horizontal wrapping, the modified span
- *				information is wrong?
  */
 public class VectorDisplay
         extends JComponent {
@@ -88,19 +83,16 @@ public class VectorDisplay
      *  The defaults are wrapX = false, wrapY = false,
      *  min = 0, max = 1.0, fillArea = true, no label
      */
-    public VectorDisplay()
-    {
-        this( new float[0]);
+    public VectorDisplay() {
+        this(new float[0]);
     }
 
-    public VectorDisplay(float[] vector)
-    {
-        this( vector, false );
+    public VectorDisplay(float[] vector) {
+        this(vector, UIManager.getBoolean("dark-skin"));
     }
 
-    public VectorDisplay( boolean dark )
-    {
-        this (new float[0], dark);
+    public VectorDisplay(boolean dark) {
+        this(new float[0], dark);
     }
 
     /**
@@ -137,21 +129,21 @@ public class VectorDisplay
     {
         this.vector = vector;
 
-        recalcPath();
+        recalculatePath();
         repaint();
     }
 
     /**
      *  Gets the current data array.
      *
-     *  @return		the current vector data of the editor. valid data
-     *				is from index 0 to the end of the array.
-     *
-     *  @warning			the returned array is not a copy and therefore
+     *  Warning:		the returned array is not a copy and therefore
      *						any modifications are forbidden. this also implies
      *						that relevant data be copied by the listener
      *						immediately upon receiving the vector.
-     *  @synchronization	should only be called in the event thread
+     *  Synchronization:	should only be called in the event thread
+     *
+     *  @return		the current vector data of the editor. valid data
+     *				is from index 0 to the end of the array.
      */
     public float[] getVector()
     {
@@ -166,12 +158,12 @@ public class VectorDisplay
      *  user drawings are limited to these values unless
      *  wrapY is set to true (not yet implemented).
      *
-     *  @param  min		new minimum y value
-     *  @param  max		new maximum y value
-     *
-     *  @warning	the current vector is left untouched,
+     *  Warning:	the current vector is left untouched,
      *				even if values lie outside the new
      *				allowed range.
+     *
+     *  @param  min		new minimum y value
+     *  @param  max		new maximum y value
      */
     public void setMinMax( float min, float max )
     {
@@ -240,11 +232,11 @@ public class VectorDisplay
 
         if( d.width != recentSize.width || d.height != recentSize.height ) {
             recentSize = d;
-            recalcTransforms();
+            recalculateTransforms();
             recreateImage();
             redrawImage();
         } else if( pathTrns == null ) {
-            recalcTransforms();
+            recalculateTransforms();
             recreateImage();	// XXX since we don't clear the background any more to preserve Aqua LAF
             redrawImage();
         }
@@ -274,9 +266,9 @@ public class VectorDisplay
      *  a specific portion of the surface,
      *  it must make an appropriate repaint call!
      *
-     *  @param  p   the painter to be added to the paint queue
+     *  Synchronization:	this method must be called in the event thread
      *
-     *  @synchronization	this method must be called in the event thread
+     *  @param  p   the painter to be added to the paint queue
      */
     public void addTopPainter( TopPainter p )
     {
@@ -288,9 +280,9 @@ public class VectorDisplay
     /**
      *  Removes a registered top painter.
      *
-     *  @param  p   the painter to be removed from the paint queue
+     *  Synchronization:	this method must be called in the event thread
      *
-     *  @synchronization	this method must be called in the event thread
+     *  @param  p   the painter to be removed from the paint queue
      */
     public void removeTopPainter( TopPainter p )
     {
@@ -308,8 +300,8 @@ public class VectorDisplay
         if( image == null ) return;
 
         Graphics2D g2 = (Graphics2D) image.getGraphics();
-		g2.setPaint( pntBg );
-		g2.fillRect( 0, 0, image.getWidth ( this ), image.getHeight ( this ));
+        g2.setPaint( pntBg );
+        g2.fillRect( 0, 0, image.getWidth ( this ), image.getHeight ( this ));
         g2.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
         g2.setRenderingHint( RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE );
 //		g2.setRenderingHint( RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY );
@@ -336,8 +328,8 @@ public class VectorDisplay
      *  Recalculates a Java2D path from the vector
      *  that will be used for painting operations
      */
-	private void recalcPath() {
-		int			i;
+    private void recalculatePath() {
+        int			i;
         float		f1;
         float		f2 = (min - max) / recentSize.height + min;
 
@@ -352,7 +344,7 @@ public class VectorDisplay
             path.lineTo( 1.01f, vector[vector.length-1] );
             path.lineTo( 1.01f, f2 );
             path.closePath();
-// System.out.println( "recalced path" );
+// System.out.println( "recalculated path" );
         }
         pathTrns = null;
     }
@@ -363,18 +355,18 @@ public class VectorDisplay
      *  Recalculates the transforms between
      *  screen and virtual space
      */
-	private void recalcTransforms() {
-		trnsVirtualToScreen.setToTranslation(0.0, recentSize.height);
-		trnsVirtualToScreen.scale(recentSize.width, recentSize.height / (min - max));
-		trnsVirtualToScreen.translate(0.0, -min);
-		trnsScreenToVirtual.setToTranslation(0.0, min);
-		trnsScreenToVirtual.scale(1.0 / recentSize.width, (min - max) / recentSize.height);
-		trnsScreenToVirtual.translate(0.0, -recentSize.height);
+    private void recalculateTransforms() {
+        trnsVirtualToScreen.setToTranslation(0.0, recentSize.height);
+        trnsVirtualToScreen.scale(recentSize.width, recentSize.height / (min - max));
+        trnsVirtualToScreen.translate(0.0, -min);
+        trnsScreenToVirtual.setToTranslation(0.0, min);
+        trnsScreenToVirtual.scale(1.0 / recentSize.width, (min - max) / recentSize.height);
+        trnsScreenToVirtual.translate(0.0, -recentSize.height);
 
-		pathTrns = path.createTransformedShape(trnsVirtualToScreen);
-	}
+        pathTrns = path.createTransformedShape(trnsVirtualToScreen);
+    }
 
-	/**
+    /**
      *  Converts a location on the screen
      *  into a point the virtual space.
      *  Neither input nor output point need to
@@ -383,9 +375,9 @@ public class VectorDisplay
      *  @param  screenPt		point in screen space
      *  @return the input point transformed to virtual space
      */
-	public Point2D screenToVirtual(Point2D screenPt) {
-		return trnsScreenToVirtual.transform(screenPt, null);
-	}
+    public Point2D screenToVirtual(Point2D screenPt) {
+        return trnsScreenToVirtual.transform(screenPt, null);
+    }
 
     /**
      *  Converts a shape in the screen space
@@ -394,9 +386,9 @@ public class VectorDisplay
      *  @param  screenShape		arbitrary shape in screen space
      *  @return the input shape transformed to virtual space
      */
-	public Shape screenToVirtual(Shape screenShape) {
-		return trnsScreenToVirtual.createTransformedShape(screenShape);
-	}
+    public Shape screenToVirtual(Shape screenShape) {
+        return trnsScreenToVirtual.createTransformedShape(screenShape);
+    }
 
     /**
      *  Converts a point in the virtual space
@@ -407,8 +399,8 @@ public class VectorDisplay
      *  @return				point in the display space
      */
     public Point2D virtualToScreen(Point2D virtualPt) {
-		return trnsVirtualToScreen.transform(virtualPt, null);
-	}
+        return trnsVirtualToScreen.transform(virtualPt, null);
+    }
 
     /**
      *  Converts a shape in the virtual space
@@ -418,8 +410,8 @@ public class VectorDisplay
      *  @return the input shape transformed to screen space
      */
     public Shape virtualToScreen(Shape virtualShape) {
-		return trnsVirtualToScreen.createTransformedShape(virtualShape);
-	}
+        return trnsVirtualToScreen.createTransformedShape(virtualShape);
+    }
 
     /**
      *  Converts a rectangle in the virtual space
@@ -429,13 +421,13 @@ public class VectorDisplay
      *  @return the input rectangle transformed to screen space,
      *			suitable for graphics clipping operations
      */
-	public Rectangle virtualToScreenClip(Rectangle2D virtualClip) {
-		Point2D screenPt1 = trnsVirtualToScreen.transform(new Point2D.Double(virtualClip.getMinX(),
-				virtualClip.getMinY()), null);
-		Point2D screenPt2 = trnsVirtualToScreen.transform(new Point2D.Double(virtualClip.getMaxX(),
-				virtualClip.getMaxY()), null);
+    public Rectangle virtualToScreenClip(Rectangle2D virtualClip) {
+        Point2D screenPt1 = trnsVirtualToScreen.transform(new Point2D.Double(virtualClip.getMinX(),
+                virtualClip.getMinY()), null);
+        Point2D screenPt2 = trnsVirtualToScreen.transform(new Point2D.Double(virtualClip.getMaxX(),
+                virtualClip.getMaxY()), null);
 
-		return new Rectangle((int) Math.floor(screenPt1.getX()), (int) Math.floor(screenPt1.getY()),
-				(int) Math.ceil(screenPt2.getX()), (int) Math.ceil(screenPt2.getY()));
-	}
+        return new Rectangle((int) Math.floor(screenPt1.getX()), (int) Math.floor(screenPt1.getY()),
+                (int) Math.ceil(screenPt2.getX()), (int) Math.ceil(screenPt2.getY()));
+    }
 }
