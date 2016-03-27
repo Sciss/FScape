@@ -1003,38 +1003,36 @@ public abstract class ModulePanel
      *	@param	type	GGTYPE_...
      *	@return	Array mit den Gadgets. GGTYPE_GAIN: c[0]=ParamField,c[1]=JComboBox( GAIN_...)
      */
-    protected Component[] createGadgets( int type )
-    {
+    protected Component[] createGadgets(int type) {
         final Component c[];
 
-        switch( type ) {
-        case GGTYPE_GAIN:
-            final ParamField gg1 = new ParamField( Constants.spaces[ Constants.decibelAmpSpace ]);
-            final JComboBox  gg2 = new JComboBox();
-            gg2.addItem( "normalized" );
-            gg2.addItem( "immediate" );
-            ggGain		= gg1;
-            ggGainType	= gg2;
-            c = new Component[] { gg1, gg2 };
-            gg2.addActionListener( new ActionListener() {
-                public void actionPerformed( ActionEvent e )
-                {
-                    switch( gg2.getSelectedIndex() ) {
-                    case GAIN_ABSOLUTE:
-                        gg1.setParam( new Param( 0.0, Param.DECIBEL_AMP ));
-                        break;
-                    case GAIN_UNITY:
-                        gg1.setParam( getDefaultGain() );
-                        break;
-                    default:
-                        break;
+        switch (type) {
+            case GGTYPE_GAIN:
+                final ParamField gg1 = new ParamField(Constants.spaces[Constants.decibelAmpSpace]);
+                final JComboBox gg2 = new JComboBox();
+                gg2.addItem("normalized");
+                gg2.addItem("immediate");
+                ggGain = gg1;
+                ggGainType = gg2;
+                c = new Component[]{gg1, gg2};
+                gg2.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        switch (gg2.getSelectedIndex()) {
+                            case GAIN_ABSOLUTE:
+                                gg1.setParam(new Param(0.0, Param.DECIBEL_AMP));
+                                break;
+                            case GAIN_UNITY:
+                                gg1.setParam(getDefaultGain());
+                                break;
+                            default:
+                                break;
+                        }
                     }
-                }
-            });
-            break;
+                });
+                break;
 
-        default:
-            throw new IllegalArgumentException( String.valueOf( type ));
+            default:
+                throw new IllegalArgumentException(String.valueOf(type));
         }
         return c;
     }

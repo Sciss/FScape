@@ -379,20 +379,8 @@ public class BatchDlg extends ModulePanel {
         con.gridwidth	= 1;
         con.weightx		= 0.05;
         con.weighty		= 0.0;
-final JToolBar tb = new JToolBar();
-tb.setBorderPainted( false );
-tb.setFloatable( false );
-//		ggCmd			= new JButton( "Add" );
-//		gui.addButton( ggCmd, GG_CMDADD, al );
-//		ggCmd			= new JButton( "Cut" );
-//		gui.addButton( ggCmd, GG_CMDCUT, al );
-//		ggCmd			= new JButton( "Copy" );
-//		gui.addButton( ggCmd, GG_CMDCOPY, al );
-//		ggCmd			= new JButton( "Paste" );
-//		gui.addButton( ggCmd, GG_CMDPASTE, al );
-//		ggCmd			= new JButton( "Edit" );
-//		con.gridwidth	= GridBagConstraints.REMAINDER;
-//		gui.addButton( ggCmd, GG_CMDEDIT, al );
+        final JPanel tb = new JPanel(new FlowLayout());
+
         ggCmd			= new JButton( " Add " );
         gui.registerGadget( ggCmd, GG_CMDADD );
         tb.add( ggCmd );
@@ -463,13 +451,13 @@ tb.setFloatable( false );
         super.fillGUI();
         super.fillGUI( gui );
 
-        p	= Presets.valueToProperties( getPropertyArray().text[ PR_BATCH ]);
-        num	= p.size();
+        p = Presets.valueToProperties(getPropertyArray().text[PR_BATCH]);
+        num	= p == null ? 0 : p.size();
         batchVector.clear();
 
-        for( i = 0; i < num; i++ ) {
-            bObj = BatchObject.valueOf( (String) p.get( String.valueOf( i )));
-            batchVector.add( bObj );
+        for (i = 0; i < num; i++) {
+            bObj = BatchObject.valueOf((String) p.get(String.valueOf(i)));
+            batchVector.add(bObj);
         }
 
         batchTM.fireTableDataChanged();
@@ -492,11 +480,7 @@ tb.setFloatable( false );
         getPropertyArray().text[ PR_BATCH ] = Presets.propertiesToValue( p );
     }
 
-    /*
-     *	Batch-JTable bauen
-     */
-    private void initBatchTable()
-    {
+    private void initBatchTable() {
         TableColumn			column;
         BatchCellEditor		batchCE;
         int					i;
@@ -506,33 +490,33 @@ tb.setFloatable( false );
         batchCR     = new BatchCellRenderer();
 
         // int[] prefWidth = { 16, 64, 256, 48, 48 };
-        int[] prefWidth = { 60, 112, 256, 96, 118 };
-        for ( i = 0; i < prefWidth.length; i++) {
-            column = batchTable.getColumnModel().getColumn( i );
-            column.setPreferredWidth( prefWidth[i] );
-            column.setCellRenderer( batchCR );
+        int[] prefWidth = {60, 112, 256, 96, 118};
+        for (i = 0; i < prefWidth.length; i++) {
+            column = batchTable.getColumnModel().getColumn(i);
+            column.setPreferredWidth(prefWidth[i]);
+            column.setCellRenderer(batchCR);
         }
-        batchTable.getTableHeader().setReorderingAllowed( false );
+        batchTable.getTableHeader().setReorderingAllowed(false);
 
         JComboBox cmdCombo = new JComboBox();
-        for( i = 0; i < BatchCellRenderer.CMD_NAMES.length; i++ ) {
-            cmdCombo.addItem( BatchCellRenderer.CMD_NAMES[i] );
+        for (i = 0; i < BatchCellRenderer.CMD_NAMES.length; i++) {
+            cmdCombo.addItem(BatchCellRenderer.CMD_NAMES[i]);
         }
         JComboBox errCombo = new JComboBox();
-        for( i = 0; i < BatchCellRenderer.ERR_NAMES.length; i++ ) {
-            errCombo.addItem( BatchCellRenderer.ERR_NAMES[i] );
+        for (i = 0; i < BatchCellRenderer.ERR_NAMES.length; i++) {
+            errCombo.addItem(BatchCellRenderer.ERR_NAMES[i]);
         }
 
         batchCE = new BatchCellEditor();
-        batchTable.getColumnModel().getColumn(1).setCellEditor( new DefaultCellEditor( cmdCombo ));
-        batchTable.getColumnModel().getColumn(2).setCellEditor( batchCE );
-        batchTable.getColumnModel().getColumn(3).setCellEditor( new DefaultCellEditor( errCombo ));
-        batchTable.getColumnModel().getColumn(4).setCellEditor( batchCE );
+        batchTable.getColumnModel().getColumn(1).setCellEditor(new DefaultCellEditor(cmdCombo));
+        batchTable.getColumnModel().getColumn(2).setCellEditor(batchCE);
+        batchTable.getColumnModel().getColumn(3).setCellEditor(new DefaultCellEditor(errCombo));
+        batchTable.getColumnModel().getColumn(4).setCellEditor(batchCE);
 
-        batchTable.setShowHorizontalLines( true );
-        batchTable.setShowVerticalLines( true );
-        batchTable.setIntercellSpacing( new Dimension( 1, 1 ));
-        batchTable.setGridColor( Color.lightGray );
+        batchTable.setShowHorizontalLines(true);
+        batchTable.setShowVerticalLines(true);
+        batchTable.setIntercellSpacing(new Dimension(1, 1));
+        // batchTable.setGridColor(Color.lightGray);
 
         batchTM.addTableModelListener( tml );
         batchTable.getSelectionModel().addListSelectionListener( new ListSelectionListener() {
@@ -543,31 +527,27 @@ tb.setFloatable( false );
         });
     }
 
-    /**
-     *	Params-JTable bauen
-     */
-    protected void initParamTable()
-    {
+    protected void initParamTable() {
         TableColumn			column;
         int					i;
         BasicCellRenderer   bcr = new BasicCellRenderer();
 
-        paramTM		= new ParamTableModel();
-        paramTM.addTableModelListener( tml );
-        paramTable  = new JTable( paramTM );
-        paramTable.getTableHeader().setReorderingAllowed( false );
+        paramTM = new ParamTableModel();
+        paramTM.addTableModelListener(tml);
+        paramTable = new JTable(paramTM);
+        paramTable.getTableHeader().setReorderingAllowed(false);
 
-        int[] prefWidth = { 108, 324 };
-        for ( i = 0; i < prefWidth.length; i++) {
-            column = paramTable.getColumnModel().getColumn( i );
-            column.setPreferredWidth( prefWidth[i] );
-            column.setCellRenderer( bcr );
+        int[] prefWidth = {108, 324};
+        for (i = 0; i < prefWidth.length; i++) {
+            column = paramTable.getColumnModel().getColumn(i);
+            column.setPreferredWidth(prefWidth[i]);
+            column.setCellRenderer(bcr);
         }
 
-        paramTable.setShowHorizontalLines( true );
-        paramTable.setShowVerticalLines( true );
-        paramTable.setIntercellSpacing( new Dimension( 1, 1 ));
-        paramTable.setGridColor( Color.lightGray );
+        paramTable.setShowHorizontalLines(true);
+        paramTable.setShowVerticalLines(true);
+        paramTable.setIntercellSpacing(new Dimension(1, 1));
+        // paramTable.setGridColor(Color.lightGray);
     }
 
 // -------- Processor Interface --------
@@ -596,7 +576,7 @@ tb.setFloatable( false );
         batchLoop:
             for( line = 0; threadRunning && (line < lines); ) {
 
-            // ============================== recalc progress weights ==============================
+            // ============================== recalculate progress weights ==============================
             // ============================== execute command ==============================
 
                 bObj		= batchVector.get( line );
@@ -859,13 +839,13 @@ tb.setFloatable( false );
             while( (j = sb.indexOf( searchStr )) >= 0 ) {
                 final String	procStr	 = String.valueOf( lObj.processIdx );
                 final int		numZeros = String.valueOf( lObj.stopIdx ).length() - procStr.length();
-                final String	replc;
+                final String	replace;
                 if( useZeros ) {
-                    replc	= "000000".substring( 0, numZeros ) + procStr;
+                    replace	= "000000".substring( 0, numZeros ) + procStr;
                 } else {
-                    replc	= procStr;
+                    replace	= procStr;
                 }
-                sb.replace( j, j + 2, replc );
+                sb.replace( j, j + 2, replace );
             }
             result = sb.toString();
             if( idx > 0 ) {
@@ -1298,7 +1278,7 @@ tb.setFloatable( false );
         protected  LoopObject     loopObj     = new LoopObject();
         protected  String			fileObj     = "file";
         protected  String			labelObj    = "label";
-        protected  float			process		= 0.0f;		// wird >0 waehrend des Ablaufeens des zugehoerigen Moduls
+        protected  float			process		= 0.0f;		// becomes >0 during the processing of the accompanying module
 
         private final static String	PR_CMD		= "comd";
         private final static String	PR_ERRCMD	= "ecmd";
@@ -1324,10 +1304,9 @@ tb.setFloatable( false );
             labelObj    = source.labelObj;
         }
 
-        public static BatchObject valueOf( String s )
-        {
-            Properties	p			= Presets.valueToProperties( s );
-            BatchObject	bObj		= new BatchObject();
+        public static BatchObject valueOf(String s) {
+            Properties p        = Presets.valueToProperties(s);
+            BatchObject	bObj	= new BatchObject();
             String		s2;
             Properties  p2;
             Enumeration en;
@@ -1350,17 +1329,17 @@ tb.setFloatable( false );
             catch( NumberFormatException e1 ) { /* ignored */ }
             catch( NullPointerException e2 ) { /* ignored */ }
 
-            s2 = (String) p.get( PR_MODPAR );
-            if( s2 != null ) bObj.modObj.prParam = Presets.valueToProperties( s2 );
-            s2 = (String) p.get( PR_MODMOD );
-            if( s2 != null ) {
-                p2 = Presets.valueToProperties( s2 );
-                bObj.modObj.modParam	= new String[ p2.size() ][ 2 ];
-                en					= p2.propertyNames();
-                for( i = 0; en.hasMoreElements(); i++ ) {
+            s2 = (String) p.get(PR_MODPAR);
+            if (s2 != null) bObj.modObj.prParam = Presets.valueToProperties(s2);
+            s2 = (String) p.get(PR_MODMOD);
+            if (s2 != null) {
+                p2 = Presets.valueToProperties(s2);
+                bObj.modObj.modParam = new String[p2.size()][2];
+                en = p2.propertyNames();
+                for (i = 0; en.hasMoreElements(); i++) {
                     s2 = (String) en.nextElement();
-                    bObj.modObj.modParam[i][0]  = s2;
-                    bObj.modObj.modParam[i][1]  = p2.getProperty( s2 );
+                    bObj.modObj.modParam[i][0] = s2;
+                    bObj.modObj.modParam[i][1] = p2.getProperty(s2);
                 }
             }
             return bObj;
@@ -1400,18 +1379,17 @@ tb.setFloatable( false );
      */
     protected static class LoopObject {
 
-        protected  char   variable    = 'A';
-        protected  int    startIdx    = 1;
-        protected  int    stopIdx     = 9;
-        protected  int	processIdx;
+        protected  char variable    = 'A';
+        protected  int  startIdx    = 1;
+        protected  int  stopIdx     = 9;
+        protected  int  processIdx;
 
         protected LoopObject() { /* nothing */}
 
-        protected LoopObject( LoopObject source )
-        {
-            variable    = source.variable;
-            startIdx    = source.startIdx;
-            stopIdx     = source.stopIdx;
+        protected LoopObject(LoopObject source) {
+            variable = source.variable;
+            startIdx = source.startIdx;
+            stopIdx  = source.stopIdx;
         }
     } // LoopObject
 

@@ -43,33 +43,32 @@ public class IconicComponent
     protected Dimension d;
     protected int ID;
 
-    private static DataFlavor flavors[] = null;	// alle erlaubten DataFlavors
+    private static DataFlavor flavors[] = null;	// all supported DataFlavors
 
 // -------- public methods --------
     // public void setID( int ID );
     // public int getID();
 
     /**
-     *	@param	ib	IconBitmap, die die Graphik enthaelt
+     *	@param	ib	IconBitmap that contains the image
      *	@param	ID	Icon-ID in der Bitmap-Matrix
      */
-    protected IconicComponent( IconBitmap ib, int ID )
-    {
-        this.ib	= ib;
-        d		= ib.getDimension();
-        setSize( getPreferredSize() );
-        setID( ID );
+    protected IconicComponent(IconBitmap ib, int ID) {
+        this.ib = ib;
+        d = ib.getDimension();
+        setSize(getPreferredSize());
+        setID(ID);
 
         // data flavor
-        if( flavor == null ) {
-            flavor			= new DataFlavor( getClass(), "Icon" );
-            flavors			= new DataFlavor[ 1 ];
-            flavors[ 0 ]	= IconicComponent.flavor;
+        if (flavor == null) {
+            flavor = new DataFlavor(getClass(), "Icon");
+            flavors = new DataFlavor[1];
+            flavors[0] = IconicComponent.flavor;
         }
     }
 
     /**
-     *	@param	ib	IconBitmap, die die Graphik enthaelt
+     *	@param	ib	IconBitmap that contains the image
      */
     protected IconicComponent( IconBitmap ib )
     {
@@ -77,9 +76,9 @@ public class IconicComponent
     }
 
     /**
-     *	ID des Icons setzen
+     *	Sets the identifier of the icon
      *
-     *	@param	ID	Icon-ID in der Bitmap-Matrix
+     *	@param	ID	Icon-ID in the Bitmap-Matrix
      */
     public void setID( int ID )
     {
@@ -87,9 +86,9 @@ public class IconicComponent
     }
 
     /**
-     *	ID des Icons ermitteln
+     *	Returns the identifier of the icon
      *
-     *	@return	Icon-ID in der Bitmap-Matrix
+     *	@return	Icon-ID in the Bitmap-Matrix
      */
     public int getID()
     {
@@ -115,7 +114,7 @@ public class IconicComponent
 // -------- Dragable methods --------
 
     /**
-     *	Zeichnet ein Schema des Icons
+     *	Draws a contour of the icon
      */
     public void paintScheme(Graphics g, int x, int y, boolean mode) {
         g.drawRect(x - (d.width >> 1), y - (d.height >> 1), d.width - 1, d.height - 1);
@@ -128,9 +127,9 @@ public class IconicComponent
     }
 
     public boolean isDataFlavorSupported(DataFlavor fl) {
-        DataFlavor flavs[] = getTransferDataFlavors();
-        for (int i = 0; i < flavs.length; i++) {
-            if (flavs[i].equals(fl)) return true;
+        DataFlavor flavors[] = getTransferDataFlavors();
+        for (int i = 0; i < flavors.length; i++) {
+            if (flavors[i].equals(fl)) return true;
         }
         return false;
     }

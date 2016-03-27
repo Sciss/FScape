@@ -26,6 +26,7 @@ import de.sciss.fscape.util.Filter;
 import de.sciss.fscape.util.Param;
 import de.sciss.io.AudioFileDescr;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
@@ -64,10 +65,16 @@ public class FilterBox
     public Param	otSpacing;
 
     // graphical representation
-    private static final Stroke	strkLine	= new BasicStroke( 0.5f );
-    private static final Paint	pntBack		= new Color( 0xFF, 0xFF, 0xFF, 0x7F );
-    private static final Paint	pntArea		= new Color( 0x42, 0x5E, 0x9D, 0x7F );
-    private static final Paint	pntLine		= Color.black;
+    private static final Stroke strkLine    = new BasicStroke(0.5f);
+
+//    private static final Paint  pntBack     = new Color(0xFF, 0xFF, 0xFF, 0x7F);
+//    private static final Paint  pntArea     = new Color(0x42, 0x5E, 0x9D, 0x7F);
+//    private static final Paint  pntLine     = Color.black;
+
+    private final boolean isDark = UIManager.getBoolean("dark-skin");
+    private final        Paint pntBack = isDark ? Color.darkGray  : Color.lightGray;
+    private static final Paint pntArea = new Color(0x42, 0x5E, 0x9D, 0x7F);
+    private final        Paint pntLine = isDark ? Color.lightGray : Color.black;
 
 // -------- private variables --------
 
@@ -94,8 +101,8 @@ public class FilterBox
 
 // -------- public methods --------
 
-	public FilterBox() {
-		super();
+    public FilterBox() {
+        super();
 
         cutOff		= new Param( 1000.0, Param.ABS_HZ );
         rollOff		= new Param(    0.0, Param.OFFSET_HZ );
@@ -106,8 +113,7 @@ public class FilterBox
         otSpacing	= new Param( 1000.0, Param.OFFSET_HZ );
     }
 
-    public FilterBox( FilterBox proto )
-    {
+    public FilterBox(FilterBox proto) {
         super();
 
         cutOff		= (Param) proto.cutOff.clone();
@@ -422,51 +428,50 @@ public class FilterBox
         return ICON_HEIGHT;
     }
 
-    public void paintIcon( Component c, Graphics g, int x, int y )
-    {
-        Graphics2D g2 = (Graphics2D) g;
-        AffineTransform origTrns	= g2.getTransform();
+    public void paintIcon(Component c, Graphics g, int x, int y) {
+        final Graphics2D g2 = (Graphics2D) g;
+        final AffineTransform origTrns = g2.getTransform();
 
-        g2.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
-        g2.setStroke( strkLine );
-        g2.setPaint( pntBack );
-        g2.translate( x, y );
-        g2.fillRect( 0, 0, ICON_WIDTH, ICON_HEIGHT );
-        g2.setPaint( pntArea );
-        g2.fillPolygon( iconPolyX[ filterType ], iconPolyY[ filterType ], iconPolyX[ filterType ].length );
-        g2.setPaint( pntLine );
-        g2.drawPolyline( iconPolyX[ filterType ], iconPolyY[ filterType ], iconLineNum[ filterType ]);
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setStroke(strkLine);
+        g2.setPaint(pntBack);
+        g2.translate(x, y);
+        g2.fillRect(0, 0, ICON_WIDTH, ICON_HEIGHT);
+        g2.setPaint(pntArea);
+        g2.fillPolygon(iconPolyX[filterType], iconPolyY[filterType], iconPolyX[filterType].length);
+        g2.setPaint(pntLine);
+        g2.drawPolyline(iconPolyX[filterType], iconPolyY[filterType], iconLineNum[filterType]);
 
-        if( sign ) {
-            g2.drawArc( 0, 0, 6, 6, 0, 360 );
-            g2.drawLine( 0, 6, 6, 0 );
+        if (sign) {
+            g2.drawArc(0, 0, 6, 6, 0, 360);
+            g2.drawLine(0, 6, 6, 0);
         }
 
-        g2.translate( 8, 0 );
+        g2.translate(8, 0);
 
-        if( gain.value < 0.0 ) {
-            g2.drawLine( 6, 0, 0, 3 );
-            g2.drawLine( 0, 3, 6, 6 );
-        } else if( gain.value > 0.0 ) {
-            g2.drawLine( 0, 0, 6, 3 );
-            g2.drawLine( 6, 3, 0, 6 );
+        if (gain.value < 0.0) {
+            g2.drawLine(6, 0, 0, 3);
+            g2.drawLine(0, 3, 6, 6);
+        } else if (gain.value > 0.0) {
+            g2.drawLine(0, 0, 6, 3);
+            g2.drawLine(6, 3, 0, 6);
         }
 
-        g2.translate( 8, 0 );
+        g2.translate(8, 0);
 
-        if( delay.value != 0.0 ) {
-            g2.drawLine( 1, 0, 5, 0 );
-            g2.drawLine( 3, 0, 3, 6 );
+        if (delay.value != 0.0) {
+            g2.drawLine(1, 0, 5, 0);
+            g2.drawLine(3, 0, 3, 6);
         }
 
-        g2.translate( 8, 0 );
+        g2.translate(8, 0);
 
-        if( overtones ) {
-            g2.drawLine( 0, 0, 0, 6 );
-            g2.drawLine( 2, 1, 2, 6 );
-            g2.drawLine( 4, 2, 4, 6 );
-            g2.drawLine( 6, 3, 6, 6 );
+        if (overtones) {
+            g2.drawLine(0, 0, 0, 6);
+            g2.drawLine(2, 1, 2, 6);
+            g2.drawLine(4, 2, 4, 6);
+            g2.drawLine(6, 3, 6, 6);
         }
-        g2.setTransform( origTrns );
+        g2.setTransform(origTrns);
     }
 }

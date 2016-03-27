@@ -251,9 +251,8 @@ public class DragContext
         if( g == null ) return;
 
         // g.setRenderingHint ( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
-        g.setXORMode( container.getBackground() );
-        // g.setColor( Color.black );
-        g.setColor( container.getForeground () );
+        g.setXORMode(container.getBackground());
+        g.setColor(container.getForeground());
 
         switch( type ) {
         case MOVE:

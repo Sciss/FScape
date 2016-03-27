@@ -93,9 +93,8 @@ public class EditEnvDlg
      *
      *	@param parent	aufrufendes Fenster
      */
-    public EditEnvDlg( Component parent, Envelope env )
-    {
-        super( parent, "Edit Curve: ", true );
+    public EditEnvDlg(Component parent, Envelope env) {
+        super(parent, "Edit Curve: ", true);
 
         // einmalig PropertyArray initialisieren
         if( static_pr == null ) {
@@ -118,10 +117,8 @@ public class EditEnvDlg
         GridBagLayout			lay;
         EditEnvDlgListener 		list;
 
-        Panel		toolBar;
         JComboBox	ggPresets;
         Iterator	presetNames;
-        ToolIcon	ggAddPreset, ggDelPreset;
 
         CurvePanel	ggAtkCurve, ggSusCurve, ggRlsCurve;
         GroupLabel	lbAtk, lbSus, lbRls;
@@ -136,32 +133,45 @@ public class EditEnvDlg
         gui		= new GUISupport();
         con		= gui.getGridBagConstraints();
         lay		= gui.getGridBagLayout();
-        list	= new EditEnvDlgListener( this );
-        con.insets = new Insets( 2, 2, 2, 2 );
+        list	= new EditEnvDlgListener(this);
+        con.insets = new Insets(2, 2, 2, 2);
 
     // -------- Toolbar --------
         con.fill = GridBagConstraints.HORIZONTAL;
-        toolBar = new Panel();
-        toolBar.setLayout( new FlowLayout( FlowLayout.LEFT, 2, 2 ) );
+        final JPanel toolBar = new JPanel(new FlowLayout(FlowLayout.LEADING, 4, 2));
+        // toolBar.putClientProperty("styleId", "attached");
+        // toolBar.setLayout( new FlowLayout( FlowLayout.LEFT, 2, 2 ) );
 
-        ggAddPreset = new ToolIcon( ToolIcon.ID_ADDPRESET, null );
-        gui.registerGadget( ggAddPreset, GG_ADDPRESET );
-        ggAddPreset.addMouseListener( list );
-        ggDelPreset = new ToolIcon( ToolIcon.ID_DELPRESET, null );
-        gui.registerGadget( ggDelPreset, GG_DELPRESET );
-        ggDelPreset.addMouseListener( list );
+        final JButton ggAddPreset = new JButton("Add");
+        ggAddPreset.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addPreset();
+            }
+        });
+        gui.registerGadget(ggAddPreset, GG_ADDPRESET);
+        // ggAddPreset.addMouseListener(list);
+        final JButton ggDelPreset = new JButton("Remove");
+        ggDelPreset.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                removePreset();
+            }
+        });
+        gui.registerGadget(ggDelPreset, GG_DELPRESET);
+        // ggDelPreset.addMouseListener(list);
 
         ggPresets = new JComboBox();
         presetNames = getPresets().presetNames().iterator();
         while( presetNames.hasNext() ) {
-            ggPresets.addItem( (String) presetNames.next() );
+            ggPresets.addItem(presetNames.next());
         }
         ggPresets.setSelectedItem( Presets.DEFAULT );						// default waehlen und
         ggDelPreset.setEnabled( false );							// DelPreset deaktivieren
         gui.registerGadget( ggPresets, GG_PRESETS );
         ggPresets.addItemListener( list );
 
-        toolBar.add( new JLabel( "Preset" ));
+        toolBar.add(new JLabel("Preset:"));
         toolBar.add( ggAddPreset );
         toolBar.add( ggDelPreset );
         toolBar.add( ggPresets );
@@ -407,6 +417,82 @@ timeSpace[ 2 ]			= new ParamSpace( timeSpace[ 2 ].inc, timeSpace[ 2 ].max, timeS
         return presets;
     }
 
+    private void addPreset() {
+        final JComboBox ggPresets = (JComboBox) gui.getItemObj(EditEnvDlg.GG_PRESETS);
+        if (ggPresets != null) {
+            final String name = JOptionPane.showInputDialog( enc_this, "Enter preset name" );
+            if( name != null && name.length() > 0 ) {
+                if( name.equals( Presets.DEFAULT )) {
+                    JOptionPane.showMessageDialog( enc_this, "Cannot overwrite defaults!" );
+                    return; // break topLevel;
+                }
+
+                boolean exists = false;
+                for (int i = ggPresets.getItemCount() - 1;
+                     (i >= 0) && !exists; i--) {
+                    exists = ggPresets.getItemAt(i).equals(name);    // existiert schon?
+                }
+                if (exists) {
+                    final int res = JOptionPane.showConfirmDialog(enc_this, "Overwrite existing preset\n\"" +
+                            name + "\"", "Confirm", JOptionPane.YES_NO_OPTION);
+                    if (res != 0) return; // break topLevel;    // nicht ueberschreiben
+                }
+
+                GUIToEnvelope();
+                final PropertyArray pa = getPropertyArray();
+                final Properties preset = pa.toProperties(false);
+
+                if (!preset.isEmpty()) {                                // erfolgreich?
+
+                    if (getPresets().setPreset(name, preset) != null) {
+
+                        if (!exists) {
+                            ggPresets.addItem(name);            // neues JComboBox-Item
+                        }
+                        ggPresets.setSelectedItem(name);
+
+                        final Component ggDel = gui.getItemObj(EditEnvDlg.GG_DELPRESET);
+                        if( ggDel != null ) {
+                            ggDel.setEnabled( true );		// enable del
+                        }
+                    } else {
+                        // vorerst keine Fehlermeldung XXX
+                    }
+                } else {
+                    // vorerst keine Fehlermeldung XXX
+                }
+            }
+        }
+    }
+
+    private void removePreset() {
+        final JComboBox ggPresets = (JComboBox) gui.getItemObj( EditEnvDlg.GG_PRESETS );
+        if( ggPresets != null) {
+            final String name = ggPresets.getSelectedItem().toString();
+            if( name != null ) {
+                if( name.equals( Presets.DEFAULT )) {
+                    JOptionPane.showMessageDialog( enc_this, "Cannot delete defaults!" );
+                    return; // break topLevel;
+                }
+
+                if (getPresets().removePreset(name) != null) {
+
+                    ggPresets.removeItem( name );
+                    if( ggPresets.getItemCount() == 0 ||
+                            ggPresets.getSelectedItem().equals( Presets.DEFAULT )) {
+
+                        final Component ggDel = gui.getItemObj( EditEnvDlg.GG_DELPRESET );
+                        if( ggDel != null ) {
+                            ggDel.setEnabled( false );		// cannot del default
+                        }
+                    }
+                } else {
+                    // vorerst keine Fehlermeldung XXX
+                }
+            }
+        }
+    }
+
     /**
      *	Dialog-Ergebnis ermitteln
      *
@@ -435,9 +521,9 @@ timeSpace[ 2 ]			= new ParamSpace( timeSpace[ 2 ].inc, timeSpace[ 2 ].max, timeS
      *	Implementation der Listener
      */
     private class EditEnvDlgListener
-    implements	ActionListener, AdjustmentListener,
-                ItemListener, MouseListener, ParamListener
-    {
+            implements ActionListener, AdjustmentListener,
+            ItemListener, MouseListener, ParamListener {
+
     // -------- private variables --------
 
         private EditEnvDlg dlg;		// Edit-Dialog, der den Listener installiert
@@ -449,8 +535,7 @@ timeSpace[ 2 ]			= new ParamSpace( timeSpace[ 2 ].inc, timeSpace[ 2 ].max, timeS
         /**
          *	@param dlg	Edit-Dialog, der den Listener installiert
          */
-        public EditEnvDlgListener( EditEnvDlg dlg )
-        {
+        public EditEnvDlgListener(EditEnvDlg dlg) {
             this.dlg = dlg;
         }
 
@@ -645,107 +730,20 @@ timeSpace[ 2 ]			= new ParamSpace( timeSpace[ 2 ].inc, timeSpace[ 2 ].max, timeS
 
     // -------- Mouse methods --------
 
-        public void mouseClicked( MouseEvent e )
-        {
-            int				ID = gui.getItemID( e );
-            Component		associate;
-            String			name;
-    //		PromptDlg		prompt;
-    //		ConfirmDlg		confirm;
-            boolean			exists;
-            int				i;
-            PropertyArray	pa;
-            Properties		preset;
-
-    topLevel: switch( ID ) {
-            case EditEnvDlg.GG_ADDPRESET:		// ------------------------------ Add Preset -------------------
-
-                associate = gui.getItemObj( EditEnvDlg.GG_PRESETS );
-                if( associate != null) {
-
-                    name = JOptionPane.showInputDialog( enc_this, "Enter preset name" );
-                    if( name != null && name.length() > 0 ) {
-                        if( name.equals( Presets.DEFAULT )) {
-                            JOptionPane.showMessageDialog( enc_this, "Cannot overwrite defaults!" );
-                            break topLevel;
-                        }
-
-                        for( i = ((JComboBox) associate).getItemCount() - 1, exists = false;
-                            (i >= 0) && !exists; i-- ) {
-                            exists = ((JComboBox) associate).getItemAt( i ).equals( name );	// existiert schon?
-                        }
-                        if( exists ) {
-                            i = JOptionPane.showConfirmDialog( enc_this,  "Overwrite existing preset\n\"" +
-                                                      name + "\"", "Confirm", JOptionPane.YES_NO_OPTION );
-                            if( i != 0 ) break topLevel;	// nicht ueberschreiben
-                        }
-
-                        dlg.GUIToEnvelope();
-                        pa		= dlg.getPropertyArray();
-                        preset	= pa.toProperties( false );
-
-                        if( !preset.isEmpty() ) {								// erfolgreich?
-
-                            if( dlg.getPresets().setPreset( name, preset ) != null ) {
-
-                                if( !exists ) {
-                                    ((JComboBox) associate).addItem( name );			// neues JComboBox-Item
-                                }
-                                ((JComboBox) associate).setSelectedItem( name );
-
-                                associate = gui.getItemObj( EditEnvDlg.GG_DELPRESET );
-                                if( associate != null ) {
-                                    associate.setEnabled( true );		// enable del
-                                }
-                            } else {
-                                // vorerst keine Fehlermeldung XXX
-                            }
-                        } else {
-                            // vorerst keine Fehlermeldung XXX
-                        }
-                    }
-                }
-                break;
-
-            case EditEnvDlg.GG_DELPRESET:		// ------------------------------ Delete Preset ----------------
-
-                associate = gui.getItemObj( EditEnvDlg.GG_PRESETS );
-                if( associate != null) {
-
-                    name = ((JComboBox) associate).getSelectedItem().toString();
-                    if( name != null ) {
-                        if( name.equals( Presets.DEFAULT )) {
-                            JOptionPane.showMessageDialog( enc_this, "Cannot delete defaults!" );
-                            break topLevel;
-                        }
-
-                        if( dlg.getPresets().removePreset( name ) != null ) {
-
-                            ((JComboBox) associate).removeItem( name );
-                            if( ((JComboBox) associate).getItemCount() == 0 ||
-                                ((JComboBox) associate).getSelectedItem().equals( Presets.DEFAULT )) {
-
-                                associate = gui.getItemObj( EditEnvDlg.GG_DELPRESET );
-                                if( associate != null ) {
-                                    associate.setEnabled( false );		// cannot del default
-                                }
-                            }
-                        } else {
-                            // vorerst keine Fehlermeldung XXX
-                        }
-                    }
-                }
-                break;
-
-            default:
-                break;
-            }
+        public void mouseClicked(MouseEvent e) {
         }
 
-        public void mousePressed( MouseEvent e ) {}
-        public void mouseReleased( MouseEvent e ) {}
-        public void mouseEntered( MouseEvent e ) {}
-        public void mouseExited( MouseEvent e ) {}
+        public void mousePressed(MouseEvent e) {
+        }
+
+        public void mouseReleased(MouseEvent e) {
+        }
+
+        public void mouseEntered(MouseEvent e) {
+        }
+
+        public void mouseExited(MouseEvent e) {
+        }
     }
     // class EditEnvDlgListener
 }

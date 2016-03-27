@@ -94,7 +94,15 @@ public class CompactPanel
     }
 
     public void compact() {
+        compact(0, 0);
+    }
+
+    public void compact(int left, int top) {
+        compact(left, top, 4, 2);
+    }
+
+    public void compact(int left, int top, int padx, int pady) {
         addEmptyColumns();
-        GUIUtil.makeCompactSpringGrid(this, rowIdx + 1, numColumns, 0, 0, 4, 2);
+        GUIUtil.makeCompactSpringGrid(this, rowIdx + 1, numColumns, left, top, padx, pady);
     }
 }

@@ -68,11 +68,11 @@ public class ToolIcon
 
 //	private static final String ibName	= "images" + File.separator + "tools.png";	// IconBitmap
 
-    static	// Icon-Bitmap laden
+    static    // Icon-Bitmap laden
     {
         final Image imgTools = Toolkit.getDefaultToolkit().getImage(
-            ToolIcon.class.getResource( "tools.png" ));
-        toolib = new IconBitmap( imgTools, ibWidth, ibHeight );
+                ToolIcon.class.getResource("tools.png"));
+        toolib = new IconBitmap(imgTools, ibWidth, ibHeight);
     }
 
 // -------- public methods --------
@@ -80,18 +80,16 @@ public class ToolIcon
     /**
      *	@param	ID		Icon-ID
      */
-    public ToolIcon( int ID, String toolTip )
-    {
-        super( toolib, ID );
-        setToolTipText( toolTip );
+    public ToolIcon(int ID, String toolTip) {
+        super(toolib, ID);
+        setToolTipText(toolTip);
 
         // Event handling
-        enableEvents( AWTEvent.MOUSE_EVENT_MASK );
+        enableEvents(AWTEvent.MOUSE_EVENT_MASK);
 
-        addPropertyChangeListener( "enabled", new PropertyChangeListener() {
-            public void propertyChange( PropertyChangeEvent e )
-            {
-                setSelected( isEnabled() ? STATE_NORMAL : STATE_DISABLED );
+        addPropertyChangeListener("enabled", new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent e) {
+                setSelected(isEnabled() ? STATE_NORMAL : STATE_DISABLED);
             }
         });
     }
@@ -101,10 +99,9 @@ public class ToolIcon
      *
      *	@param ID	Icon-ID (nur logisch!)
      */
-    public void setID( int ID )	// override Icon...
-    {
+    public void setID(int ID) {
         this.basicID = ID;
-        super.setID( ID * STATE_FACTOR + state );
+        super.setID(ID * STATE_FACTOR + state);
         repaint();
     }
 
@@ -113,56 +110,47 @@ public class ToolIcon
      *
      *	@return	Icon-ID (nur logisch!)
      */
-    public int getID()		// override Icon...
-    {
+    public int getID() {
         return basicID;
     }
 
-//	public boolean isFocusTraversable()
-//	{
-//		return false;
-//	}
-
 // -------- private methods --------
 
-    protected void setSelected( int state )
-    {
-        super.setID( basicID * STATE_FACTOR + state );
+    protected void setSelected(int state) {
+        super.setID(basicID * STATE_FACTOR + state);
         this.state = state;
         repaint();
     }
 
     // won't be invoked when gadget is disabled XXX wrong!
-    protected void processMouseEvent( MouseEvent e )
-    {
-        if( isEnabled() ) {
-            switch( e.getID() ) {
-            case MouseEvent.MOUSE_PRESSED:
-                setSelected( STATE_SELECTED );
-                clicked = true;
-                break;
-            case MouseEvent.MOUSE_ENTERED:
-                if( clicked ) setSelected( STATE_SELECTED );
-                break;
-            case MouseEvent.MOUSE_RELEASED:
-                setSelected( STATE_NORMAL );
-                clicked = false;
-                break;
-            case MouseEvent.MOUSE_EXITED:
-                if( clicked ) setSelected( STATE_NORMAL );
-                break;
-            default:
-                break;
+    protected void processMouseEvent(MouseEvent e) {
+        if (isEnabled()) {
+            switch (e.getID()) {
+                case MouseEvent.MOUSE_PRESSED:
+                    setSelected(STATE_SELECTED);
+                    clicked = true;
+                    break;
+                case MouseEvent.MOUSE_ENTERED:
+                    if (clicked) setSelected(STATE_SELECTED);
+                    break;
+                case MouseEvent.MOUSE_RELEASED:
+                    setSelected(STATE_NORMAL);
+                    clicked = false;
+                    break;
+                case MouseEvent.MOUSE_EXITED:
+                    if (clicked) setSelected(STATE_NORMAL);
+                    break;
+                default:
+                    break;
             }
         }
-        super.processMouseEvent( e );
+        super.processMouseEvent(e);
     }
 
     /*
      *	for sub classes, die obige Process-Routine ueberschreiben
      */
-    protected void passMouseEvent( MouseEvent e )
-    {
-        super.processMouseEvent( e );
+    protected void passMouseEvent(MouseEvent e) {
+        super.processMouseEvent(e);
     }
 }

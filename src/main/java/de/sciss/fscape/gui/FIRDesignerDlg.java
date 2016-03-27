@@ -55,9 +55,6 @@ import java.util.Locale;
  *	combining window'ed sinc filters
  *	that be written out as IR files
  *	to be used in the convolution modules.
- *
- *	@todo		support calculation for minimum phase
- *	@todo		automatically truncate file size if zero samples are at the end (minimum phase)
  */
 public class FIRDesignerDlg
         extends ModulePanel
@@ -185,12 +182,11 @@ public class FIRDesignerDlg
         JCheckBox			ggSign, ggOvertones, ggMinPhase;
         ParamSpace			spcBandwidth[], spcDelay[], spcLimit[];
         JTabbedPane			ggTab;
-        Box					box, pageBox;
+        Box					box;
         CompactPanel		panel;
         Component[]			ggGain;
 
         gui				= new GUISupport();
-        pageBox			= Box.createVerticalBox();
 
         ItemListener il = new ItemListener() {
             public void itemStateChanged( ItemEvent e )
@@ -384,75 +380,75 @@ public class FIRDesignerDlg
         };
 
     // -------- I/O-Gadgets --------
-        pageBox.add( new GroupLabel( "FIR Output", GroupLabel.ORIENT_HORIZONTAL,
-                                     GroupLabel.BRACE_NONE ));
+        final Box panelTop = Box.createVerticalBox();
+        panelTop.add(new GroupLabel("FIR Output", GroupLabel.ORIENT_HORIZONTAL,
+                GroupLabel.BRACE_NONE));
 
         panel			= new CompactPanel();
         ggOutputFile	= new PathField( PathField.TYPE_OUTPUTFILE + PathField.TYPE_FORMATFIELD +
                                          PathField.TYPE_RESFIELD + PathField.TYPE_RATEFIELD,
                                          "Select output file" );
-        ggOutputFile.handleTypes( GenericFile.TYPES_SOUND );
-        gui.registerGadget( ggOutputFile, GG_OUTPUTFILE );
+        ggOutputFile.handleTypes(GenericFile.TYPES_SOUND);
+        gui.registerGadget(ggOutputFile, GG_OUTPUTFILE);
 //		ggOutputFile.addActionListener( this );
-        gui.registerGadget( ggOutputFile.getTypeGadget(), GG_OUTPUTTYPE );
-        gui.registerGadget( ggOutputFile.getResGadget(), GG_OUTPUTRES );
-        gui.registerGadget( ggOutputFile.getRateGadget(), GG_OUTPUTRATE );
-        panel.addGadget( new JLabel( "File name", SwingConstants.RIGHT ));
-        panel.addGadget( ggOutputFile );
+        gui.registerGadget(ggOutputFile.getTypeGadget(), GG_OUTPUTTYPE);
+        gui.registerGadget(ggOutputFile.getResGadget(), GG_OUTPUTRES);
+        gui.registerGadget(ggOutputFile.getRateGadget(), GG_OUTPUTRATE);
+        panel.addGadget(new JLabel("File name:", SwingConstants.RIGHT));
+        panel.addGadget(ggOutputFile);
 
         panel.newLine();
-        box				= Box.createHorizontalBox();
-        ggGain			= createGadgets( GGTYPE_GAIN );
-        panel.addGadget( new JLabel( "Gain", SwingConstants.RIGHT ));
-        gui.registerGadget(ggGain[ 0 ], GG_GAIN );
-        ((ParamField) ggGain[ 0 ]).addParamListener( paramL );
-        gui.registerGadget(ggGain[ 1 ], GG_GAINTYPE );
-        ((JComboBox) ggGain[ 1 ]).addItemListener( il );
-        box.add( ggGain[ 0 ]);
-        box.add( ggGain[ 1 ]);
-        panel.addGadget( box );
+        box = Box.createHorizontalBox();
+        ggGain = createGadgets(GGTYPE_GAIN);
+        panel.addGadget(new JLabel("Gain", SwingConstants.RIGHT));
+        gui.registerGadget(ggGain[0], GG_GAIN);
+        ((ParamField) ggGain[0]).addParamListener(paramL);
+        gui.registerGadget(ggGain[1], GG_GAINTYPE);
+        ((JComboBox) ggGain[1]).addItemListener(il);
+        box.add(ggGain[0]);
+        box.add(ggGain[1]);
+        panel.addGadget(box);
 
         panel.compact();
-        pageBox.add( panel );
+        panelTop.add(panel);
+
+        final JPanel pageBox = new JPanel(new BorderLayout());
+
+        pageBox.add(panelTop, BorderLayout.NORTH);
 
     // -------- FIR Design-Parameter --------
-        pageBox.add( new GroupLabel( "Filter Settings", GroupLabel.ORIENT_HORIZONTAL,
-                                     GroupLabel.BRACE_NONE ));
+        final JPanel panelMid = new JPanel(new BorderLayout());
+        panelMid.add(new GroupLabel("Filter Settings", GroupLabel.ORIENT_HORIZONTAL,
+                GroupLabel.BRACE_NONE), BorderLayout.NORTH);
 
-        ggCircuit		= new CircuitPanel( new FilterBox() );
-//		gui.addGadget( ggCircuit, GG_CIRCUIT );
-        ggTab			= new JTabbedPane();
-        ggTab.addTab( "Circuit", ggCircuit );
-        gui.registerGadget( ggCircuit, GG_CIRCUIT );
-        ggCircuit.addActionListener( al );
+        ggCircuit = new CircuitPanel(new FilterBox());
+        ggTab = new JTabbedPane();
+        ggTab.putClientProperty("styleId", "attached");
+        ggTab.addTab("Circuit", ggCircuit);
+        gui.registerGadget(ggCircuit, GG_CIRCUIT);
+        ggCircuit.addActionListener(al);
 
-        spectPane		= new VectorPanel( this, VectorPanel.FLAG_HLOG_GADGET | VectorPanel.FLAG_VLOG_GADGET |
-                                                 VectorPanel.FLAG_UPDATE_GADGET );
-        ggTab.addTab( "Mag. spectrum", spectPane );
-//		ggTab.addChangeListener( new ChangeListener() {
-//			public void stateChanged( ChangeEvent e )
-//			{
-//				if( ggTab.getSelectedIndex() == 1 ) updateVectorDisplay();
-//			}
-//		});
+        spectPane = new VectorPanel(this, VectorPanel.FLAG_HLOG_GADGET | VectorPanel.FLAG_VLOG_GADGET |
+                VectorPanel.FLAG_UPDATE_GADGET);
+        ggTab.addTab("Mag. spectrum", spectPane);
 
         panel			= new CompactPanel();
         box				= Box.createHorizontalBox();
         ggFilterType	= new JComboBox();
-        ggFilterType.addItem( "All Pass" );
-        ggFilterType.addItem( "Low Pass" );
-        ggFilterType.addItem( "High Pass" );
-        ggFilterType.addItem( "Band Pass" );
-        ggFilterType.addItem( "Band Stop" );
-        panel.addGadget( new JLabel( "Type", SwingConstants.RIGHT ));
-        gui.registerGadget( ggFilterType, GG_FILTERTYPE );
-        ggFilterType.addItemListener( il );
-        box.add( ggFilterType );
-        ggSign			= new JCheckBox( "Subtract" );
-        gui.registerGadget( ggSign, GG_SIGN );
-        ggSign.addItemListener( il );
-        box.add( ggSign );
-        panel.addGadget( box );
+        ggFilterType.addItem("All Pass");
+        ggFilterType.addItem("Low Pass");
+        ggFilterType.addItem("High Pass");
+        ggFilterType.addItem("Band Pass");
+        ggFilterType.addItem("Band Stop");
+        panel.addGadget(new JLabel("Type:", SwingConstants.RIGHT));
+        gui.registerGadget(ggFilterType, GG_FILTERTYPE);
+        ggFilterType.addItemListener(il);
+        box.add(ggFilterType);
+        ggSign = new JCheckBox("Subtract");
+        gui.registerGadget(ggSign, GG_SIGN);
+        ggSign.addItemListener(il);
+        box.add(ggSign);
+        panel.addGadget(box);
 
         spcBandwidth	= new ParamSpace[ 2 ];
         spcBandwidth[0]	= Constants.spaces[ Constants.offsetHzSpace ];
@@ -466,97 +462,100 @@ public class FIRDesignerDlg
         spcDelay[1]		= Constants.spaces[ Constants.absBeatsSpace ];
 
         panel.newLine();
-        ggCutOff		= new ParamField( Constants.spaces[ Constants.absHzSpace ]);
-        panel.addGadget( new JLabel( "Cutoff", SwingConstants.RIGHT ));
-        gui.registerGadget( ggCutOff, GG_CUTOFF );
-        ggCutOff.addParamListener( paramL );
-        panel.addGadget( ggCutOff );
+        ggCutOff = new ParamField(Constants.spaces[Constants.absHzSpace]);
+        panel.addGadget(new JLabel("Cutoff:", SwingConstants.RIGHT));
+        gui.registerGadget(ggCutOff, GG_CUTOFF);
+        ggCutOff.addParamListener(paramL);
+        panel.addGadget(ggCutOff);
 
         panel.newLine();
-        ggRollOff		= new ParamField( spcBandwidth );
-        ggRollOff.setReference( ggCutOff );
-        panel.addGadget( new JLabel( "Rolloff", SwingConstants.RIGHT ));
-        gui.registerGadget( ggRollOff, GG_ROLLOFF );
-        ggRollOff.addParamListener( paramL );
-        panel.addGadget( ggRollOff );
+        ggRollOff = new ParamField(spcBandwidth);
+        ggRollOff.setReference(ggCutOff);
+        panel.addGadget(new JLabel("Roll-off:", SwingConstants.RIGHT));
+        gui.registerGadget(ggRollOff, GG_ROLLOFF);
+        ggRollOff.addParamListener(paramL);
+        panel.addGadget(ggRollOff);
 
         panel.newLine();
-        ggBandwidth		= new ParamField( spcBandwidth );
-        ggBandwidth.setReference( ggCutOff );
-        panel.addGadget( new JLabel( "Bandwidth", SwingConstants.RIGHT ));
-        gui.registerGadget( ggBandwidth, GG_BANDWIDTH );
-        ggBandwidth.addParamListener( paramL );
-        panel.addGadget( ggBandwidth );
+        ggBandwidth = new ParamField(spcBandwidth);
+        ggBandwidth.setReference(ggCutOff);
+        panel.addGadget(new JLabel("Bandwidth:", SwingConstants.RIGHT));
+        gui.registerGadget(ggBandwidth, GG_BANDWIDTH);
+        ggBandwidth.addParamListener(paramL);
+        panel.addGadget(ggBandwidth);
 
         panel.newLine();
-        ggFilterGain	= new ParamField( Constants.spaces[ Constants.decibelAmpSpace ]);
-        panel.addGadget( new JLabel( "Gain", SwingConstants.RIGHT ));
-        gui.registerGadget( ggFilterGain, GG_FILTERGAIN );
-        ggFilterGain.addParamListener( paramL );
-        panel.addGadget( ggFilterGain );
+        ggFilterGain = new ParamField(Constants.spaces[Constants.decibelAmpSpace]);
+        panel.addGadget(new JLabel("Gain:", SwingConstants.RIGHT));
+        gui.registerGadget(ggFilterGain, GG_FILTERGAIN);
+        ggFilterGain.addParamListener(paramL);
+        panel.addGadget(ggFilterGain);
 
         panel.newLine();
-        ggDelay			= new ParamField( spcDelay );
-        panel.addGadget( new JLabel( "Delay", SwingConstants.RIGHT ));
-        gui.registerGadget( ggDelay, GG_DELAY );
-        ggDelay.addParamListener( paramL );
-        panel.addGadget( ggDelay );
+        ggDelay = new ParamField(spcDelay);
+        panel.addGadget(new JLabel("Delay:", SwingConstants.RIGHT));
+        gui.registerGadget(ggDelay, GG_DELAY);
+        ggDelay.addParamListener(paramL);
+        panel.addGadget(ggDelay);
 
         panel.newLine();
         panel.addEmptyColumn();
-        ggOvertones		= new JCheckBox( "Add 'overtones'" );
-        gui.registerGadget( ggOvertones, GG_OVERTONES );
-        ggOvertones.addItemListener( il );
-        panel.addGadget( ggOvertones );
+        ggOvertones = new JCheckBox("Add 'overtones'");
+        gui.registerGadget(ggOvertones, GG_OVERTONES);
+        ggOvertones.addItemListener(il);
+        panel.addGadget(ggOvertones);
 
         panel.newLine();
-        ggOTLimit		= new ParamField( spcLimit );
-        ggOTLimit.setReference( ggCutOff );
-        panel.addGadget( new JLabel( "Limit freq", SwingConstants.RIGHT ));
-        gui.registerGadget( ggOTLimit, GG_OTLIMIT );
-        ggOTLimit.addParamListener( paramL );
-        panel.addGadget( ggOTLimit );
+        ggOTLimit = new ParamField(spcLimit);
+        ggOTLimit.setReference(ggCutOff);
+        panel.addGadget(new JLabel("Limit freq:", SwingConstants.RIGHT));
+        gui.registerGadget(ggOTLimit, GG_OTLIMIT);
+        ggOTLimit.addParamListener(paramL);
+        panel.addGadget(ggOTLimit);
 
         panel.newLine();
-        ggOTSpacing		= new ParamField( spcBandwidth );
-        ggOTSpacing.setReference( ggCutOff );
-        panel.addGadget( new JLabel( "Spacing", SwingConstants.RIGHT ));
-        gui.registerGadget( ggOTSpacing, GG_OTSPACING );
-        ggOTSpacing.addParamListener( paramL );
-        panel.addGadget( ggOTSpacing );
+        ggOTSpacing = new ParamField(spcBandwidth);
+        ggOTSpacing.setReference(ggCutOff);
+        panel.addGadget(new JLabel("Spacing:", SwingConstants.RIGHT));
+        gui.registerGadget(ggOTSpacing, GG_OTSPACING);
+        ggOTSpacing.addParamListener(paramL);
+        panel.addGadget(ggOTSpacing);
 
-        panel.compact();
-//		splitPane	= new JSplitPane( JSplitPane.HORIZONTAL_SPLIT, ggTab, panel );
-//		pageBox.add( splitPane );
-box = Box.createHorizontalBox();
-box.add( ggTab );
-box.add( panel );
-pageBox.add( box );
+        panel.compact(8, 0);
 
-        panel			= new CompactPanel();
-        ggWindow		= new JComboBox();
-        GUISupport.addItemsToChoice( Filter.getWindowNames(), ggWindow );
-        panel.addGadget( new JLabel( "IIR\u2192FIR win", SwingConstants.RIGHT ));	// unicode 2192 = arrow right
-        gui.registerGadget( ggWindow, GG_WINDOW );
-        ggWindow.addItemListener( il );
-        panel.addGadget( ggWindow );
+        final JPanel p2 = new JPanel(new BorderLayout());
+        panelMid.add(ggTab, BorderLayout.CENTER);
+        p2.add(panel, BorderLayout.NORTH);
+        panelMid.add(p2   , BorderLayout.EAST);
+        pageBox.add(panelMid, BorderLayout.CENTER);
 
-        ggQuality		= new JComboBox();
+        final JPanel panelBot = new JPanel(new FlowLayout(FlowLayout.LEADING, 4, 2));
+        // panel = new CompactPanel();
+        ggWindow = new JComboBox();
+        GUISupport.addItemsToChoice(Filter.getWindowNames(), ggWindow);
+        panelBot.add(new JLabel("IIR\u2192FIR win:", SwingConstants.RIGHT));    // unicode 2192 = arrow right
+        gui.registerGadget(ggWindow, GG_WINDOW);
+        ggWindow.addItemListener(il);
+        panelBot.add(ggWindow);
+
+        ggQuality = new JComboBox();
         for (String QUAL_NAME : QUAL_NAMES) {
             ggQuality.addItem(QUAL_NAME);
         }
-        panel.addGadget( new JLabel( "Filter Length", SwingConstants.RIGHT ));
-        gui.registerGadget( ggQuality, GG_QUALITY );
-        ggQuality.addItemListener( il );
-        panel.addGadget( ggQuality );
+        panelBot.add(Box.createHorizontalStrut(4));
+        panelBot.add(new JLabel("Filter Length:", SwingConstants.RIGHT));
+        gui.registerGadget(ggQuality, GG_QUALITY);
+        ggQuality.addItemListener(il);
+        panelBot.add(ggQuality);
 
-        ggMinPhase		= new JCheckBox( "Make minimum phase" );
-        gui.registerGadget( ggMinPhase, GG_MINPHASE );
-        ggMinPhase.addItemListener( il );
-        panel.addGadget( ggMinPhase );
+        ggMinPhase = new JCheckBox("Make minimum phase");
+        gui.registerGadget(ggMinPhase, GG_MINPHASE);
+        ggMinPhase.addItemListener(il);
+        panelBot.add(Box.createHorizontalStrut(4));
+        panelBot.add(ggMinPhase);
 
-        panel.compact();
-        pageBox.add( panel );
+        // panel.compact();
+        pageBox.add(panelBot, BorderLayout.SOUTH);
 
         initGUI( this, FLAGS_PRESETS | FLAGS_PROGBAR, pageBox );
     }

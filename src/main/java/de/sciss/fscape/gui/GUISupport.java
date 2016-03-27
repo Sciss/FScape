@@ -41,58 +41,19 @@ public class GUISupport
 
 // -------- private variables --------
 
-    private final Hashtable<Integer, Component> hObj;			// keys = IDs, objects = Gadgets
-    private final Hashtable<Object, Integer> hID;			// keys = Gadgets, objects = IDs
+    private final Hashtable<Integer, Component> hObj;   // keys = IDs, objects = Gadgets
+    private final Hashtable<Object , Integer  > hID;	// keys = Gadgets, objects = IDs
     protected final GridBagLayout lay;
     protected final GridBagConstraints con;
 
     private int type;
 
 // -------- public methods --------
-    // public GridBagLayout getGridBagLayout();
-    // public GridBagConstraints getGridBagConstraints();
-
-    // public int getItemID( ComponentEvent e );
-    // public Component getItemObj( int ID );
-    // public void addLabel( JLabel lb );
-    // public void addButton( JButton gg, int ID, ActionListener l );
-    // public void addCanvas( Canvas gg, int ID, MouseListener l );
-    // public void addCheckbox( JCheckBox gg, int ID, ItemListener l );
-    // public void addChoice( JComboBox gg, int ID, ItemListener l );
-    // public void addScrollbar( Scrollbar gg, int ID, AdjustmentListener l );
-    // public void addScrollPane( ScrollPane gg, int ID, AdjustmentListener l );
-    // public void addTextField( JTextField gg, int ID, ActionListener l );
-    // public void addParamField( ParamField gg, int ID, ActionListener l );
-    // public void addPathField( PathField gg, int ID, ActionListener l );
-    // public void addFontField( FontField gg, int ID, ActionListener l );
-    // public void addGadget( Component gg, int hashKey );
-    // public void addGadget( Component gg, int hashKey, Container container );
-
-    // public static void sendComponentAsleep( Component c );
-    // public static boolean isComponentSleeping( Component c );
-    // public static void wakeComponent( Component c );
-    // public static void sendComponentAsleep( Frame f );
-    // public static void wakeComponent( Frame f );
-    // public static void sendMenuBarSleeping( Frame f );
-    // public static boolean isMenuBarAsleep( Frame f );
-    // public static void wakeMenuBar( Frame f );
-    // public static void beep();
-
-    // public JCheckBox stringToCheckbox( String s, int ID );
-    // public JComboBox stringToChoice( String s, int ID );
-    // public Scrollbar stringToScrollbar( String s, int ID );
-    // public JTextField stringToJTextField( String s, int ID );
-
-    // public String JCheckBoxToString( int ID );
-    // public String JComboBoxToString( int ID );
-    // public String ScrollbarToString( int ID );
-    // public String JTextFieldToString( int ID );
 
     /**
      *	@param type	GUI-Typ (ID)
      */
-    public GUISupport( int type )
-    {
+    public GUISupport(int type) {
         hObj	= new Hashtable<Integer, Component>();
         hID		= new Hashtable<Object, Integer>();
         lay		= new GridBagLayout();
@@ -143,12 +104,10 @@ public class GUISupport
      *	@param e	ComponentEvent, das durch Gadgetklick ausgeloest wurde
      *	@return	Gadget-ID, -1 bei Fehler
      */
-    public int getItemID( EventObject e )
-//	public int getItemID( AWTEvent e )
-    {
-        Integer ID = (Integer) hID.get( e.getSource());
-        if( ID != null )
-            return( ID.intValue() );
+    public int getItemID(EventObject e) {
+        Integer ID = hID.get(e.getSource());
+        if (ID != null)
+            return (ID.intValue());
         else
             return -1;
     }
@@ -159,23 +118,21 @@ public class GUISupport
      *	@param ID	Gadget-ID
      *	@return	Componente, null bei Fehler
      */
-    public Component getItemObj( int ID )
-    {
-        return( (Component) hObj.get( new Integer( ID )));
+    public Component getItemObj(int ID) {
+        return hObj.get(new Integer(ID));
     }
 
     /**
      *	@param lb	hinzuzufuegende Componente vom Typ JLabel
      */
-    public void addLabel( JLabel lb )
-    {
-        lay.setConstraints( lb, con );
-        add( lb );
+    public void addLabel(JLabel lb) {
+        lay.setConstraints(lb, con);
+        add(lb);
     }
-    public void addLabel( GroupLabel lb )
-    {
-        lay.setConstraints( lb, con );
-        add( lb );
+
+    public void addLabel(GroupLabel lb) {
+        lay.setConstraints(lb, con);
+        add(lb);
     }
 
     /**
@@ -183,115 +140,101 @@ public class GUISupport
      *	@param ID	ID, ueber die bei JButtonclick das Object identifiziert werden kann
      *	@param l	wo sollen Clicks gemeldet werden?
      */
-    public void addButton( JButton gg, int ID, ActionListener l )
-    {
-        addGadget( gg, ID );
-        if( l != null ) gg.addActionListener( l );
+    public void addButton(JButton gg, int ID, ActionListener l) {
+        addGadget(gg, ID);
+        if (l != null) gg.addActionListener(l);
     }
+
     /**
      *	@param gg	hinzuzufuegende Componente vom Typ Canvas
      *	@param ID	ID, ueber die bei Mausereignissen das Object identifiziert werden kann
      *	@param l	wo sollen Mausereignisse gemeldet werden? darf null sein
      */
-    public void addCanvas( JComponent gg, int ID, MouseListener l )
-    {
-        addGadget( gg, ID );
-        if( l != null ) gg.addMouseListener( l );
+    public void addCanvas(JComponent gg, int ID, MouseListener l) {
+        addGadget(gg, ID);
+        if (l != null) gg.addMouseListener(l);
     }
+
     /**
      *	@param gg	hinzuzufuegende Componente vom Typ JCheckBox
      *	@param ID	ID, ueber die bei Buttonclick das Object identifiziert werden kann
      *	@param l	wo sollen Clicks gemeldet werden?
      */
-    public void addCheckbox( JCheckBox gg, int ID, ItemListener l )
-    {
-        addGadget( gg, ID );
-        if( l != null ) gg.addItemListener( l );
+    public void addCheckbox(JCheckBox gg, int ID, ItemListener l) {
+        addGadget(gg, ID);
+        if (l != null) gg.addItemListener(l);
     }
+
     /**
      *	@param gg	hinzuzufuegende Componente vom Typ JComboBox
      *	@param ID	ID, ueber die bei Buttonclick das Object identifiziert werden kann
      *	@param l	wo sollen Clicks gemeldet werden?
      */
-    public void addChoice( JComboBox gg, int ID, ItemListener l )
-    {
-        addGadget( gg, ID );
-        if( l != null ) gg.addItemListener( l );
+    public void addChoice(JComboBox gg, int ID, ItemListener l) {
+        addGadget(gg, ID);
+        if (l != null) gg.addItemListener(l);
     }
+
     /**
      *	@param gg	hinzuzufuegende Componente vom Typ Scrollbar
      *	@param ID	ID, ueber die bei Veraenderungen das Object identifiziert werden kann
      *	@param l	wo sollen Veraenderungen gemeldet werden?
      */
-    public void addScrollbar( Scrollbar gg, int ID, AdjustmentListener l )
-    {
-        addGadget( gg, ID );
-        if( l != null ) gg.addAdjustmentListener( l );
+    public void addScrollbar(Scrollbar gg, int ID, AdjustmentListener l) {
+        addGadget(gg, ID);
+        if (l != null) gg.addAdjustmentListener(l);
     }
+
     /**
      *	@param gg	hinzuzufuegende Componente vom Typ ScrollPane
      *	@param ID	ID, ueber die bei Veraenderungen das Object identifiziert werden kann
      *	@param l	wo sollen Veraenderungen gemeldet werden?
      */
-    public void addScrollPane( JScrollPane gg, int ID, AdjustmentListener l )
-    {
-        addGadget( gg, ID );
+    public void addScrollPane(JScrollPane gg, int ID, AdjustmentListener l) {
+        addGadget(gg, ID);
 // XXX		gg.getHAdjustable().addAdjustmentListener( l );
 // XXX		gg.getVAdjustable().addAdjustmentListener( l );
     }
+
     /**
      *	@param gg	hinzuzufuegende Componente vom Typ Textfield
      *	@param ID	ID, ueber die bei Veraenderung das Object identifiziert werden kann
      *	@param l	wo sollen Veraenderungen gemeldet werden?
      */
-    public void addTextField( JTextField gg, int ID, ActionListener l )
-    {
-        addGadget( gg, ID );
-        if( l != null ) gg.addActionListener( l );
+    public void addTextField(JTextField gg, int ID, ActionListener l) {
+        addGadget(gg, ID);
+        if (l != null) gg.addActionListener(l);
     }
+
     /**
      *	@param gg	hinzuzufuegende Componente vom Typ ParamField
      *	@param ID	ID, ueber die bei Veraenderung das Object identifiziert werden kann
      *	@param l	wo sollen Veraenderungen gemeldet werden?
      */
-    public void addParamField( ParamField gg, int ID, ParamListener l )
-//	public void addParamField( ParamField gg, int ID, ActionListener l )
-    {
-        addGadget( gg, ID );
-        if( l != null ) gg.addParamListener( l );
+    public void addParamField(ParamField gg, int ID, ParamListener l) {
+        addGadget(gg, ID);
+        if (l != null) gg.addParamListener(l);
     }
+
     /**
      *	@param gg	hinzuzufuegende Componente vom Typ PathField
      *	@param ID	ID, ueber die bei Veraenderung das Object identifiziert werden kann
      *	@param l	wo sollen Veraenderungen gemeldet werden?
      */
-    public void addPathField( PathField gg, int ID, PathListener l )
-//	public void addPathField( PathField gg, int ID, ActionListener l )
-    {
-        addGadget( gg, ID );
-        if( l != null ) gg.addPathListener( l );
+    public void addPathField(PathField gg, int ID, PathListener l) {
+        addGadget(gg, ID);
+        if (l != null) gg.addPathListener(l);
     }
-//	/**
-//	 *	@param gg	hinzuzufuegende Componente vom Typ FontField
-//	 *	@param ID	ID, ueber die bei Veraenderung das Object identifiziert werden kann
-//	 *	@param l	wo sollen Veraenderungen gemeldet werden?
-//	 */
-//	public void addFontField( FontField gg, int ID, ActionListener l )
-//	{
-//		addGadget( gg, ID );
-////		gg.addActionListener( l );
-//	}
 
     /**
-     *	Fuegt eine Componente dem GUI-Panel hinzu
+     *	Adds a component to the panel
      *
-     *	@param	hashKey	Gadget-ID wie auch bei addCheckbox etc.
+     *	@param	hashKey	widget identifier, as is used in <code>addCheckbox</code> etc.
      */
-    public void addGadget( Component gg, int hashKey )
-    {
-        lay.setConstraints( gg, con );
-        add( gg );
-        registerGadget( gg, hashKey );
+    public void addGadget(Component gg, int hashKey) {
+        lay.setConstraints(gg, con);
+        add(gg);
+        registerGadget(gg, hashKey);
     }
 
     /**
@@ -300,21 +243,19 @@ public class GUISupport
      *
      *	@param	hashKey	Gadget-ID wie auch bei addCheckbox etc.
      */
-    public void registerGadget( Component gg, int hashKey )
-    {
-        Integer ID = new Integer( hashKey );
-        hObj.put( ID, gg );		// ID = key
-        hID.put( gg, ID );		// ID = value
+    public void registerGadget(Component gg, int hashKey) {
+        Integer ID = new Integer(hashKey);
+        hObj.put(ID, gg);        // ID = key
+        hID.put(gg, ID);        // ID = value
     }
 
     /**
      *	Haengt alle Strings in einem Array
      *	als Items an ein JComboBox-Gadget
      */
-    public static void addItemsToChoice( String items[], JComboBox gg )
-    {
-        for( int i = 0; i < items.length; i++ ) {
-            gg.addItem( items[ i ]);
+    public static void addItemsToChoice(String items[], JComboBox gg) {
+        for (int i = 0; i < items.length; i++) {
+            gg.addItem(items[i]);
         }
     }
 
@@ -326,26 +267,25 @@ public class GUISupport
      *
      *	@param	sort	true, wenn alphabetisch sortiert werden soll
      */
-    public static void addItemsToChoice( Enumeration items, JComboBox gg, boolean sort )
-    {
+    public static void addItemsToChoice(Enumeration items, JComboBox gg, boolean sort) {
         String item;
 
-        if( sort ) {
-            String	itemUC;
-            int		i;
-            while( items.hasMoreElements() ) {
-                item	= (String) items.nextElement();
-                itemUC	= item.toUpperCase();
-                for( i = 0; i < gg.getItemCount(); i++ ) {
-                    if( itemUC.compareTo( gg.getItemAt( i ).toString().toUpperCase() ) < 0 ) break;
+        if (sort) {
+            String itemUC;
+            int i;
+            while (items.hasMoreElements()) {
+                item = (String) items.nextElement();
+                itemUC = item.toUpperCase();
+                for (i = 0; i < gg.getItemCount(); i++) {
+                    if (itemUC.compareTo(gg.getItemAt(i).toString().toUpperCase()) < 0) break;
                 }
-                gg.insertItemAt( item, i );
+                gg.insertItemAt(item, i);
             }
 
         } else {
-            while( items.hasMoreElements() ) {
+            while (items.hasMoreElements()) {
                 item = (String) items.nextElement();
-                gg.addItem( item );
+                gg.addItem(item);
             }
         }
     }
@@ -353,8 +293,7 @@ public class GUISupport
     /**
      *	Gibt Warnton aus
      */
-    public static void beep()
-    {
+    public static void beep() {
         Toolkit.getDefaultToolkit().beep();
     }
 
@@ -364,12 +303,11 @@ public class GUISupport
      *
      *	@param	g	sollte im XOR-Modus sein!
      */
-    public static void rubberGlide( Rectangle src, Rectangle dest, Graphics g )
-    {
-        int		x1, y1, x2, y2, j;
-        long	startTime;
+    public static void rubberGlide(Rectangle src, Rectangle dest, Graphics g) {
+        int x1, y1, x2, y2, j;
+        long startTime;
 
-        for( int i = 0; i < 17; i++ ) {
+        for (int i = 0; i < 17; i++) {
 
             j = 16 - i;
             x1 = (src.x * j + dest.x * i) >> 4;
@@ -378,19 +316,18 @@ public class GUISupport
             y2 = ((src.y + src.height) * j + (dest.y + dest.height) * i) >> 4;
 
             startTime = System.currentTimeMillis();
-            g.drawRect( x1, y1, x2 - x1 - 1, y2 - y1 - 1 );
-            while( (System.currentTimeMillis() - startTime) < 12 ) ;	// Thread.sleep() not accurate
-            g.drawRect( x1, y1, x2 - x1 - 1, y2 - y1 - 1 );
+            g.drawRect(x1, y1, x2 - x1 - 1, y2 - y1 - 1);
+            while ((System.currentTimeMillis() - startTime) < 12) ;    // Thread.sleep() not accurate
+            g.drawRect(x1, y1, x2 - x1 - 1, y2 - y1 - 1);
         }
     }
 
     /**
      *	Konvertiert einen Font in den Text eines JTextFields
      */
-    public static void fontToJTextField( Font fnt, JTextField tf )
-    {
-        tf.setText( fnt.getName() + " (" + fnt.getSize() + " pt)" );
-        tf.setFont( fnt );
+    public static void fontToJTextField(Font fnt, JTextField tf) {
+        tf.setText(fnt.getName() + " (" + fnt.getSize() + " pt)");
+        tf.setFont(fnt);
     }
 
     /**
@@ -400,18 +337,17 @@ public class GUISupport
      *	@param	ID	Gadget-ID einer JCheckBox auf diesem GUI
      *	@return	das Gadget oder null bei Fehler
      */
-    public JCheckBox stringToCheckbox( String s, int ID )
-    {
-        boolean		selected;
-        JCheckBox	gg			= (JCheckBox) getItemObj( ID );
+    public JCheckBox stringToCheckbox(String s, int ID) {
+        boolean selected;
+        JCheckBox gg = (JCheckBox) getItemObj(ID);
 
-        if( gg != null ) {
+        if (gg != null) {
             try {
-                selected = Boolean.valueOf( s ).booleanValue();
-                gg.setSelected( selected );
+                selected = Boolean.valueOf(s).booleanValue();
+                gg.setSelected(selected);
                 return gg;
+            } catch (NumberFormatException ignored) {
             }
-            catch( NumberFormatException e ) {}
         }
         return null;
     }
@@ -423,18 +359,17 @@ public class GUISupport
      *	@param	ID	Gadget-ID eines JComboBoxs auf diesem GUI
      *	@return	das Gadget oder null bei Fehler
      */
-    public JComboBox stringToChoice( String s, int ID )
-    {
-        int		chosen;
-        JComboBox	gg		= (JComboBox) getItemObj( ID );
+    public JComboBox stringToChoice(String s, int ID) {
+        int chosen;
+        JComboBox gg = (JComboBox) getItemObj(ID);
 
-        if( gg != null ) {
+        if (gg != null) {
             try {
-                chosen = Integer.parseInt( s );
-                gg.setSelectedIndex( chosen );
+                chosen = Integer.parseInt(s);
+                gg.setSelectedIndex(chosen);
                 return gg;
+            } catch (NumberFormatException ignored) {
             }
-            catch( NumberFormatException e ) {}
         }
         return null;
     }
@@ -446,18 +381,17 @@ public class GUISupport
      *	@param	ID	Gadget-ID einer Scrollbar auf diesem GUI
      *	@return	das Gadget oder null bei Fehler
      */
-    public Scrollbar stringToScrollbar( String s, int ID )
-    {
-        int			position;
-        Scrollbar	gg		= (Scrollbar) getItemObj( ID );
+    public Scrollbar stringToScrollbar(String s, int ID) {
+        int position;
+        Scrollbar gg = (Scrollbar) getItemObj(ID);
 
-        if( gg != null ) {
+        if (gg != null) {
             try {
-                position = Integer.parseInt( s );
-                gg.setValue( position );
+                position = Integer.parseInt(s);
+                gg.setValue(position);
                 return gg;
+            } catch (NumberFormatException ignored) {
             }
-            catch( NumberFormatException e ) {}
         }
         return null;
     }
@@ -469,12 +403,11 @@ public class GUISupport
      *	@param	ID	Gadget-ID eines JTextFields auf diesem GUI
      *	@return	das Gadget oder null bei Fehler
      */
-    public JTextField stringToJTextField( String s, int ID )
-    {
-        JTextField gg = (JTextField) getItemObj( ID );
+    public JTextField stringToJTextField(String s, int ID) {
+        JTextField gg = (JTextField) getItemObj(ID);
 
-        if( gg != null ) {
-            gg.setText( s );
+        if (gg != null) {
+            gg.setText(s);
             return gg;
         }
         return null;
@@ -487,12 +420,11 @@ public class GUISupport
      *	@param	ID	Gadget-ID eines PathFields auf diesem GUI
      *	@return	das Gadget oder null bei Fehler
      */
-    public PathField stringToPathField( String s, int ID )
-    {
-        PathField gg = (PathField) getItemObj( ID );
+    public PathField stringToPathField(String s, int ID) {
+        PathField gg = (PathField) getItemObj(ID);
 
-        if( gg != null ) {
-            gg.setPath( new File( s ));
+        if (gg != null) {
+            gg.setPath(new File(s));
             return gg;
         }
         return null;
@@ -505,11 +437,10 @@ public class GUISupport
      *	@param	ID	Gadget-ID eines ParamFields auf diesem GUI
      *	@return	das Gadget oder null bei Fehler
      */
-    public ParamField stringToParamField( String s, int ID )
-    {
-        ParamField gg = (ParamField) getItemObj( ID );
+    public ParamField stringToParamField(String s, int ID) {
+        ParamField gg = (ParamField) getItemObj(ID);
 
-        if( gg != null ) {
+        if (gg != null) {
 // NOT YET			gg.setParam( s );
             return gg;
         }
@@ -522,12 +453,11 @@ public class GUISupport
      *	@param	ID	Gadget-ID einer JCheckBox auf diesem GUI
      *	@return	null bei Fehler
      */
-    public String checkboxToString( int ID )
-    {
-        JCheckBox gg = (JCheckBox) getItemObj( ID );
+    public String checkboxToString(int ID) {
+        JCheckBox gg = (JCheckBox) getItemObj(ID);
 
-        if( gg != null ) {
-            return String.valueOf( gg.isSelected() );
+        if (gg != null) {
+            return String.valueOf(gg.isSelected());
         }
         return null;
     }
@@ -538,12 +468,11 @@ public class GUISupport
      *	@param	ID	Gadget-ID eines JComboBoxs auf diesem GUI
      *	@return	null bei Fehler
      */
-    public String choiceToString( int ID )
-    {
-        JComboBox gg = (JComboBox) getItemObj( ID );
+    public String choiceToString(int ID) {
+        JComboBox gg = (JComboBox) getItemObj(ID);
 
-        if( gg != null ) {
-            return String.valueOf( gg.getSelectedIndex() );
+        if (gg != null) {
+            return String.valueOf(gg.getSelectedIndex());
         }
         return null;
     }
@@ -554,12 +483,11 @@ public class GUISupport
      *	@param	ID	Gadget-ID einer Scrollbar auf diesem GUI
      *	@return	null bei Fehler
      */
-    public String scrollbarToString( int ID )
-    {
-        Scrollbar gg = (Scrollbar) getItemObj( ID );
+    public String scrollbarToString(int ID) {
+        Scrollbar gg = (Scrollbar) getItemObj(ID);
 
-        if( gg != null ) {
-            return String.valueOf( gg.getValue() );
+        if (gg != null) {
+            return String.valueOf(gg.getValue());
         }
         return null;
     }
@@ -570,11 +498,10 @@ public class GUISupport
      *	@param	ID	Gadget-ID eines JTextFields auf diesem GUI
      *	@return	null bei Fehler
      */
-    public String textFieldToString( int ID )
-    {
-        JTextField gg = (JTextField) getItemObj( ID );
+    public String textFieldToString(int ID) {
+        JTextField gg = (JTextField) getItemObj(ID);
 
-        if( gg != null ) {
+        if (gg != null) {
             return gg.getText();
         }
         return null;
@@ -586,11 +513,10 @@ public class GUISupport
      *	@param	ID	Gadget-ID eines PathFields auf diesem GUI
      *	@return	null bei Fehler
      */
-    public String pathFieldToString( int ID )
-    {
-        PathField gg = (PathField) getItemObj( ID );
+    public String pathFieldToString(int ID) {
+        PathField gg = (PathField) getItemObj(ID);
 
-        if( gg != null ) {
+        if (gg != null) {
             return gg.getPath().getPath();
         }
         return null;
@@ -602,8 +528,7 @@ public class GUISupport
      *	@param	ID	Gadget-ID eines ParamFields auf diesem GUI
      *	@return	null bei Fehler
      */
-    public String paramFieldToString( int ID )
-    {
+    public String paramFieldToString(int ID) {
 //		ParamField gg = (ParamField) getItemObj( ID );
 //
 // XXX NOT YET		if( gg != null ) {
@@ -611,42 +536,4 @@ public class GUISupport
 //		}
         return null;
     }
-
-//	/**
-//	 *	Displays a dialog with an error message
-//	 *	retrieved from Exception e
-//	 *
-//	 *	@param	e		may be null
-//	 *	@param	parent	may be null (only a beep will be output)
-//	 */
-//	public static void displayError( Frame parent, Exception e )
-//	{
-//		String		className;
-//		int			i;
-//		String		msg;
-//		String[]	options = { "Print stack", "Ok" };
-//	
-//		if( parent != null ) {
-//			if( e != null ) {
-//				className	= e.getClass().getName();
-//				i			= className.lastIndexOf( '.' );
-//				msg			= e.getLocalizedMessage();
-//				if( className.endsWith( "Exception" )) {
-//					className = ((i > 0) ? ('(' + className.substring( 0, i ) + ") ") : "") +
-//								className.substring( i + 1, className.length() - 9 );
-//				} else {
-//					className = ((i > 0) ? ('(' + className.substring( 0, i ) + ") ") : "") +
-//								className.substring( i + 1 );
-//				}
-//				i = JOptionPane.showOptionDialog( parent, className + ((msg != null) ? ("\n"+msg) : ""), "Error", JOptionPane.YES_NO_OPTION,
-//						JOptionPane.ERROR_MESSAGE, null, options, options[1] );
-//				if( i == 0 ) {
-//					e.printStackTrace();
-//				}
-//			} else {
-//				JOptionPane.showMessageDialog( Main.getWindow(), "Unknown error occured.\n" +
-//					"Please report how this happened!" );
-//			}
-//		}
-//	}
 }

@@ -300,11 +300,8 @@ public class StatisticsDlg
 
         final Color c1 = getForeground ();
         final Color c2 = getBackground ();
-        // cheesy check to determine whether we are running on light or dark scheme.
-//        final boolean isDark = c1.getRed () + c1.getGreen () + c1.getBlue () > c2.getRed () + c2.getGreen () + c2.getBlue ();
 
-        ggVectorDisplay		= new VectorDisplay(); // (isDark);
-        // ggVectorDisplay.setBackground ( getBackground () );
+        ggVectorDisplay		= new VectorDisplay();
         con.weightx		= 1.0;
         con.weighty		= 1.0;
         gui.registerGadget( ggVectorDisplay, GG_DATASET );

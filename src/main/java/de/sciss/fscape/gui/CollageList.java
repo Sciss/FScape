@@ -123,21 +123,19 @@ public class CollageList
 
     // ........ public methods ........
 
-        public CollageCanvas( CollageList cl )
-        {
+        public CollageCanvas(CollageList cl) {
             super();
 
-            this.cl 		= cl;
-            setForeground( SystemColor.control );
+            this.cl = cl;
+            setForeground(SystemColor.control);
         }
 
-        public void paint( Graphics g )
-        {
-            Dimension	dim = getSize();
+        public void paint(Graphics g) {
+            Dimension dim = getSize();
 
-            g.draw3DRect( 1, 1, dim.width - 3, dim.height - 3, true );
-            g.setColor( Color.black );
-            g.drawRect( 0, 0, dim.width - 1, dim.height - 1 );
+            g.draw3DRect(1, 1, dim.width - 3, dim.height - 3, true);
+            g.setColor(Color.black);
+            g.drawRect(0, 0, dim.width - 1, dim.height - 1);
         }
 
 //		public Dimension getPreferredSize()

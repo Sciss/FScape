@@ -36,14 +36,12 @@ public abstract class BasicDialog
     // the node's name is the class name's last part (omitting the package)
     protected final Preferences	classPrefs;
 
-    protected BasicDialog( Component parent, String title, boolean mode )
-    {
-        this( parent, title, mode, "" );
+    protected BasicDialog(Component parent, String title, boolean mode) {
+        this(parent, title, mode, "");
     }
 
-    protected BasicDialog( Component parent, String title, boolean mode, String nodeSuffix )
-    {
-        super( determineFrame( parent ), title, mode );
+    protected BasicDialog(Component parent, String title, boolean mode, String nodeSuffix) {
+        super(determineFrame(parent), title, mode);
 
         String  className   = getClass().getName();
         classPrefs			= Application.userPrefs.node(

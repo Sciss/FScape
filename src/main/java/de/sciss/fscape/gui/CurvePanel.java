@@ -93,11 +93,22 @@ public class CurvePanel
 
     private final MouseInputAdapter mia;
 
+    private final boolean isDark = UIManager.getBoolean("dark-skin");
+    
+    private static Paint pntGridLight  = Color.lightGray;
+    private static Paint pntGridDark   = Color.darkGray;
+    private static Paint pntGridLightD = new Color(192, 192, 192, 0x7F);
+    private static Paint pntGridDarkD  = new Color( 64,  64,  64, 0x7F);
+
+    private static Paint pntLineLight  = Color.black;
+    private static Paint pntLineDark   = new Color(200, 200, 200);
+    private static Paint pntLineLightD = new Color(  0,   0,   0, 0x7F);
+    private static Paint pntLineDarkD  = new Color(200, 200, 200, 0x7F);
+
 // -------- public methods --------
 
-    public CurvePanel()
-    {
-        super( null );
+    public CurvePanel() {
+        super(null);
 
         actionComponent		= new Button();
         dummyPoint			= new CurvePoint();
@@ -105,12 +116,12 @@ public class CurvePanel
         curve				= new Curve( Constants.spaces[ Constants.emptySpace ],
                                          Constants.spaces[ Constants.emptySpace ]);
 
-        setBackground( Color.white );
-        setOpaque( true );
-        dim	= new Dimension( 64, 64 );
-        setMinimumSize( dim );
-        setPreferredSize( new Dimension( 128, 128 ));
-        setSize( dim );
+        // setBackground(Color.white);
+        setOpaque(true);
+        dim = new Dimension(64, 64);
+        setMinimumSize(dim);
+        setPreferredSize(new Dimension(128, 128));
+        setSize(dim);
 
         addComponentListener( new ComponentAdapter() {
             public void componentResized( ComponentEvent e )
@@ -204,14 +215,14 @@ public class CurvePanel
 
                     // clear rubberband
                     g = getGraphics();
-                    g.setXORMode( getBackground() );
-                    g.setColor( Color.black );
-                    g.drawRect( dragLastX - (CP_WIDTH>>1), dragLastY - (CP_HEIGHT>>1), CP_WIDTH-1, CP_HEIGHT-1 );
+                    g.setXORMode(getBackground());
+                    g.setColor(Color.black);
+                    g.drawRect(dragLastX - (CP_WIDTH >> 1), dragLastY - (CP_HEIGHT >> 1), CP_WIDTH - 1, CP_HEIGHT - 1);
 
-                    movePoint( dragSource, dragPoint.x, dragPoint.y );
+                    movePoint(dragSource, dragPoint.x, dragPoint.y);
 
                     dragState = false;
-                    setCursor( lastCursor );
+                    setCursor(lastCursor);
                     g.dispose();
 
                 } else {
@@ -228,8 +239,7 @@ public class CurvePanel
                 dragSource	= null;
             }
 
-            public void mouseDragged( MouseEvent e )
-            {
+            public void mouseDragged(MouseEvent e) {
                 Graphics	g;
                 Point		cpLoc;
                 int			currentX;
@@ -246,8 +256,8 @@ public class CurvePanel
                 currentY	= e.getY() + cpLoc.y;
 
                 g = getGraphics();
-                g.setXORMode( getBackground() );
-                g.setColor( Color.black );
+                g.setXORMode(getBackground());
+                g.setColor(Color.black);
 
                 if( !dragState ) {		// check if distance is ok to start drag
                     if( (currentX-dragLastX)*(currentX-dragLastX) +
@@ -294,67 +304,64 @@ public class CurvePanel
             }
         };
 
-        addMouseListener( mia );
-        addMouseMotionListener( mia );
+        addMouseListener(mia);
+        addMouseMotionListener(mia);
 
-        addPropertyChangeListener( "enabled", new PropertyChangeListener() {
-            public void propertyChange( PropertyChangeEvent e )
-            {
-                ActionEvent	parentE;
+        addPropertyChangeListener("enabled", new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent e) {
+                ActionEvent parentE;
 
-                if( currentCurvePoint != dummyPoint ) {
-                    currentCurvePoint.setSelected( CP_STATE_NORMAL );
+                if (currentCurvePoint != dummyPoint) {
+                    currentCurvePoint.setSelected(CP_STATE_NORMAL);
                     currentCurvePoint = dummyPoint;
                     // Listener benachrichtigen
-                    parentE = new ActionEvent( enc_this, ActionEvent.ACTION_PERFORMED,
-                                               ACTION_POINTDESELECTED );
-                    actionComponent.dispatchEvent( parentE );
+                    parentE = new ActionEvent(enc_this, ActionEvent.ACTION_PERFORMED,
+                            ACTION_POINTDESELECTED);
+                    actionComponent.dispatchEvent(parentE);
                 }
 
-                setBackground( isEnabled() ? Color.white : null );
+                // setBackground( isEnabled() ? Color.white : null );
             }
         });
 
-        setCurve( curve );
+        setCurve(curve);
 
-        setFocusable( false );
+        setFocusable(false);
     }
 
     /**
      *	Kurve zuweisen
      */
-    public void setCurve( Curve curve )
-    {
-        ActionEvent	parentE;
-        CurvePoint	cp;
+    public void setCurve(Curve curve) {
+        ActionEvent parentE;
+        CurvePoint cp;
 
         clear();
 
-        synchronized( this.curve ) {
-            this.curve			= (Curve) curve.clone();
-            currentCurvePoint	= dummyPoint;
+        synchronized (this.curve) {
+            this.curve = (Curve) curve.clone();
+            currentCurvePoint = dummyPoint;
 
-            for( int i = curve.size(); i > 0; i-- ) {
+            for (int i = curve.size(); i > 0; i--) {
                 cp = new CurvePoint();
-                cp.addMouseListener( mia );
-                cp.addMouseMotionListener( mia );
-                add( cp );
+                cp.addMouseListener(mia);
+                cp.addMouseMotionListener(mia);
+                add(cp);
             }
         }
         recalcScreenPoints();
         repaint();
         // Listener benachrichtigen
-        parentE = new ActionEvent( this, ActionEvent.ACTION_PERFORMED,
-                                   ACTION_POINTDESELECTED );
-        actionComponent.dispatchEvent( parentE );
+        parentE = new ActionEvent(this, ActionEvent.ACTION_PERFORMED,
+                ACTION_POINTDESELECTED);
+        actionComponent.dispatchEvent(parentE);
     }
 
     /**
      *	Kurve besorgen
      */
-    public Curve getCurve()
-    {
-        synchronized( curve ) {
+    public Curve getCurve() {
+        synchronized (curve) {
             return (Curve) curve.clone();
         }
     }
@@ -362,28 +369,26 @@ public class CurvePanel
     /**
      *	Alle Punkte entfernen
      */
-    public void clear()
-    {
-        ActionEvent	parentE;
-        CurvePoint	cp;
+    public void clear() {
+        ActionEvent parentE;
+        CurvePoint cp;
 
-        synchronized( curve ) {
-            currentCurvePoint	= dummyPoint;
-//			removeAll();
+        synchronized (curve) {
+            currentCurvePoint = dummyPoint;
 
-            while( curve.size() > 0 ) {
-                curve.removePoint( 0 );
-                cp = (CurvePoint) getComponent( 0 );
-                remove( cp );
-                cp.removeMouseListener( mia );
-                cp.removeMouseMotionListener( mia );
+            while (curve.size() > 0) {
+                curve.removePoint(0);
+                cp = (CurvePoint) getComponent(0);
+                remove(cp);
+                cp.removeMouseListener(mia);
+                cp.removeMouseMotionListener(mia);
             }
         }
         repaint();
         // Listener benachrichtigen
-        parentE = new ActionEvent( this, ActionEvent.ACTION_PERFORMED,
-                                   ACTION_POINTDESELECTED );
-        actionComponent.dispatchEvent( parentE );
+        parentE = new ActionEvent(this, ActionEvent.ACTION_PERFORMED,
+                ACTION_POINTDESELECTED);
+        actionComponent.dispatchEvent(parentE);
     }
 
     /**
@@ -395,8 +400,7 @@ public class CurvePanel
      *	@param	vSpace	neuer vertikaler Space, darf null sein
      *					(= keine Aenderung)
      */
-    public void rescale( ParamSpace hSpace, ParamSpace vSpace )
-    {
+    public void rescale(ParamSpace hSpace, ParamSpace vSpace) {
         ActionEvent	parentE;
         Curve		newCurve;
         DoublePoint	pt ,pt2;
@@ -468,75 +472,10 @@ public class CurvePanel
     }
 
     /**
-     *	Aendert die Werte fuer X-Max / Y-Max
-     *
-     *	@param	maxX	neues X-Maximum; Double.NEGATIVE_INFINITY
-     *					= keine Aenderung
-     *	@param	maxY	neues Y-Maximum; Double.NEGATIVE_INFINITY
-     *					= keine Aenderung
-     */
-/*	public void rescale( double maxX, double maxY )
-    {
-        ActionEvent	parentE;
-        Curve		newCurve;
-        DoublePoint	pt;
-        double		hScaling, vScaling;
-        ParamSpace	newHSpace, newVSpace;
-
-        int			index;
-
-        synchronized( curve ) {
-
-            if( maxX == Double.NEGATIVE_INFINITY ) {
-                maxX = curve.hSpace.max;
-            }
-            if( maxY == Double.NEGATIVE_INFINITY ) {
-                maxY = curve.vSpace.max;
-            }
-
-            // neue Spaces
-            newHSpace	= new ParamSpace( curve.hSpace.min, maxX, curve.hSpace.inc, curve.hSpace.unit );
-            newVSpace	= new ParamSpace( curve.vSpace.min, maxY, curve.vSpace.inc, curve.vSpace.unit );
-
-            // Scalierung berechnen
-            hScaling	= (newHSpace.max - newHSpace.min) / (curve.hSpace.max - curve.hSpace.min);
-            vScaling	= (newVSpace.max - newVSpace.min) / (curve.vSpace.max - curve.vSpace.min);
-
-            // Punkte skalieren
-            newCurve = new Curve( newHSpace, newVSpace, curve.type );
-            for( int i = curve.size() - 1; i >= 0; i-- )
-            {
-                pt		= curve.getPoint( i );
-
-                index	= newCurve.addPoint( (pt.x - curve.hSpace.min) * hScaling + newHSpace.min,
-                                             (pt.y - curve.vSpace.min) * vScaling + newVSpace.min );
-                if( index < 0 ) {	// ueberfluessiger Punkt
-                    remove( i );
-                }
-            }
-
-            this.curve = newCurve;
-        }
-
-        recalcScreenPoints();
-        repaint();
-        // Listener benachrichtigen
-        parentE = new ActionEvent( this, ActionEvent.ACTION_PERFORMED,
-                                   ACTION_SPACECHANGED );
-        actionComponent.dispatchEvent( parentE );
-        if( currentCurvePoint != dummyPoint ) {
-            parentE = new ActionEvent( this, ActionEvent.ACTION_PERFORMED,
-                                       ACTION_POINTCHANGED );
-            actionComponent.dispatchEvent( parentE );
-        }
-    }
-*/
-    /**
      *	Derzeitigen horizontalen Space ermitteln
      */
-    public ParamSpace getHSpace()
-    {
-        synchronized( curve ) {
+    public ParamSpace getHSpace() {
+        synchronized (curve) {
             return curve.hSpace;
         }
     }
@@ -544,9 +483,8 @@ public class CurvePanel
     /**
      *	Derzeitigen vertikalen Space ermitteln
      */
-    public ParamSpace getVSpace()
-    {
-        synchronized( curve ) {
+    public ParamSpace getVSpace() {
+        synchronized (curve) {
             return curve.vSpace;
         }
     }
@@ -573,16 +511,15 @@ public class CurvePanel
      *
      *	@return	null, wenn Fehler oder kein Punkt angewaehlt
      */
-    public DoublePoint getPoint()
-    {
-        CurvePoint	cp		= currentCurvePoint;
-        int			index	= getComponentIndex( cp );
-        DoublePoint	pt;
+    public DoublePoint getPoint() {
+        CurvePoint cp = currentCurvePoint;
+        int index = getComponentIndex(cp);
+        DoublePoint pt;
 
-        if( (cp == dummyPoint) || (index < 0) ) return null;
+        if ((cp == dummyPoint) || (index < 0)) return null;
 
-        synchronized( curve ) {
-            pt = curve.getPoint( index );
+        synchronized (curve) {
+            pt = curve.getPoint(index);
             return pt;
         }
     }
@@ -592,12 +529,11 @@ public class CurvePanel
      *
      *	@return	false, wenn kein Punkt angewaehlt ist
      */
-    public boolean setPoint( DoublePoint pt )
-    {
-        CurvePoint	cp = currentCurvePoint;
-        if( cp == dummyPoint ) return false;
+    public boolean setPoint(DoublePoint pt) {
+        CurvePoint cp = currentCurvePoint;
+        if (cp == dummyPoint) return false;
 
-        movePoint( cp, pt.x, pt.y );
+        movePoint(cp, pt.x, pt.y);
         return true;
     }
 
@@ -606,8 +542,7 @@ public class CurvePanel
      *
      *	@return	null bei Fehler (z.B. schon Punkt am selben Ort vorhanden)
      */
-    public CurvePoint addPoint( CurvePoint cp, double x, double y )
-    {
+    public CurvePoint addPoint(CurvePoint cp, double x, double y) {
         ActionEvent	parentE;
         int			index;
         Point		loc;
@@ -643,48 +578,46 @@ public class CurvePanel
     /**
      *	Punkt vom Panel entfernen
      */
-    public void removePoint( CurvePoint cp )
-    {
-        ActionEvent	parentE;
-        int			index = getComponentIndex( cp );
+    public void removePoint(CurvePoint cp) {
+        ActionEvent parentE;
+        int index = getComponentIndex(cp);
 
-        synchronized( curve ) {
-            if( index >= 0 ) {
-                remove( cp );
-                curve.removePoint( index );
+        synchronized (curve) {
+            if (index >= 0) {
+                remove(cp);
+                curve.removePoint(index);
                 repaint();
             }
         }
-        currentCurvePoint.setSelected( CP_STATE_NORMAL );
+        currentCurvePoint.setSelected(CP_STATE_NORMAL);
         currentCurvePoint = dummyPoint;
         // Listener benachrichtigen
-        parentE = new ActionEvent( this, ActionEvent.ACTION_PERFORMED,
-                                   ACTION_POINTDESELECTED );
-        actionComponent.dispatchEvent( parentE );
+        parentE = new ActionEvent(this, ActionEvent.ACTION_PERFORMED,
+                ACTION_POINTDESELECTED);
+        actionComponent.dispatchEvent(parentE);
 
-        cp.removeMouseListener( mia );
-        cp.removeMouseMotionListener( mia );
+        cp.removeMouseListener(mia);
+        cp.removeMouseMotionListener(mia);
     }
  
     /**
      *	Punkt verschieben
      */
-    public void movePoint( CurvePoint cp, double x, double y )
-    {
-        ActionEvent	parentE;
-        Point		loc;
-        int			index	= getComponentIndex( cp );
-        DoublePoint	ptThis, ptLeft, ptRight;
+    public void movePoint(CurvePoint cp, double x, double y) {
+        ActionEvent parentE;
+        Point loc;
+        int index = getComponentIndex(cp);
+        DoublePoint ptThis, ptLeft, ptRight;
 
-        synchronized( curve ) {
+        synchronized (curve) {
 
-            ptThis	= curve.getPoint( index );
-            if( ptThis == null ) return;
+            ptThis = curve.getPoint(index);
+            if (ptThis == null) return;
 
-            ptLeft	= curve.getPoint( index - 1 );
-            ptRight	= curve.getPoint( index + 1 );
-            if( (ptLeft != null) && (ptRight != null) ) {
-                if( x <= ptLeft.x ) {
+            ptLeft = curve.getPoint(index - 1);
+            ptRight = curve.getPoint(index + 1);
+            if ((ptLeft != null) && (ptRight != null)) {
+                if (x <= ptLeft.x) {
                     x = ptLeft.x + curve.hSpace.inc;
                 }
                 if( x >= ptRight.x ) {
@@ -706,34 +639,33 @@ public class CurvePanel
         actionComponent.dispatchEvent( parentE );
     }
 
-    public void paintComponent( Graphics g )
-    {
-        super.paintComponent( g );
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
 
         int			hGrid, vGrid;
         int			numPoints;
         Point		pt1, pt2;
         Graphics2D	g2	= (Graphics2D) g;
 
-        g2.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
     // -------- Grid --------
         hGrid = 1 << (int) Math.max( 0.0, Math.floor( Math.log( (float) dim.width  / 20 ) / Constants.ln2 ));
         vGrid = 1 << (int) Math.max( 0.0, Math.floor( Math.log( (float) dim.height / 16 ) / Constants.ln2 ));
 
-        g2.setColor( Color.lightGray );
-        for( int i = 0; i <= hGrid; i++ ) {
-            g2.drawLine( (dim.width-1) * i / hGrid, 0, (dim.width-1) * i / hGrid, dim.height );
+        g2.setPaint(isEnabled() ? (isDark ? pntGridDark : pntGridLight) : (isDark ? pntGridDarkD : pntGridLightD));
+        for (int i = 0; i <= hGrid; i++) {
+            g2.drawLine((dim.width - 1) * i / hGrid, 0, (dim.width - 1) * i / hGrid, dim.height);
         }
-        for( int i = 0; i <= vGrid; i++ ) {
-            g2.drawLine( 0, (dim.height-1) * i / vGrid, dim.width, (dim.height-1) * i / vGrid );
+        for (int i = 0; i <= vGrid; i++) {
+            g2.drawLine(0, (dim.height - 1) * i / vGrid, dim.width, (dim.height - 1) * i / vGrid);
         }
 
     // -------- Punkt-Verbindungen --------
         numPoints = getComponentCount();
         if( numPoints >= 2 ) {
 
-            g2.setColor( Color.black );
+            g2.setPaint(isEnabled() ? (isDark ? pntLineDark : pntLineLight) : (isDark ? pntLineDarkD : pntLineLightD));
 
             pt1 = getComponent( 0 ).getLocation();
             if( curve.type == Curve.TYPE_DIA ) {		// diagonal verbinden
@@ -763,20 +695,18 @@ public class CurvePanel
     /*
      *	Berechnet die Position der Punkt neu
      */
-    protected void recalcScreenPoints()
-    {
-        Component	c;
-        DoublePoint	pt;
-        Point		loc;
+    protected void recalcScreenPoints() {
+        Component c;
+        DoublePoint pt;
+        Point loc;
 
-        synchronized( curve ) {
+        synchronized (curve) {
+            for (int i = curve.size() - 1; i >= 0; i--) {
 
-            for( int i = curve.size() - 1; i >= 0; i-- ) {
-
-                c	= getComponent( i );
-                pt	= curve.getPoint( i );
-                loc	= paramSpaceToScreen( pt.x, pt.y );
-                c.setLocation( loc.x - (CP_WIDTH>>1), loc.y - (CP_HEIGHT>>1) );
+                c = getComponent(i);
+                pt = curve.getPoint(i);
+                loc = paramSpaceToScreen(pt.x, pt.y);
+                c.setLocation(loc.x - (CP_WIDTH >> 1), loc.y - (CP_HEIGHT >> 1));
             }
         }
     }
@@ -784,47 +714,44 @@ public class CurvePanel
     /*
      *	Uebersetzt Bildschirm-Koordinaten in Parameter-Koordinaten
      */
-    protected DoublePoint screenToParamSpace( int x, int y )
-    {
+    protected DoublePoint screenToParamSpace(int x, int y) {
         double dx, dy;
 
-        synchronized( curve ) {
+        synchronized (curve) {
 
-            dx	= curve.hSpace.min + (curve.hSpace.max - curve.hSpace.min) * x / (dim.width-1);
-            dy	= curve.vSpace.max - (curve.vSpace.max - curve.vSpace.min) * y / (dim.height-1);
+            dx = curve.hSpace.min + (curve.hSpace.max - curve.hSpace.min) * x / (dim.width - 1);
+            dy = curve.vSpace.max - (curve.vSpace.max - curve.vSpace.min) * y / (dim.height - 1);
 
-            return new DoublePoint( curve.hSpace.fitValue( dx ), curve.vSpace.fitValue( dy ));
+            return new DoublePoint(curve.hSpace.fitValue(dx), curve.vSpace.fitValue(dy));
         }
     }
 
     /*
      *	Uebersetzt Parameter-Koordinaten in Bildschirm-Koordinaten
      */
-    protected Point paramSpaceToScreen( double dx, double dy )
-    {
+    protected Point paramSpaceToScreen(double dx, double dy) {
         int x, y;
 
-        synchronized( curve ) {
+        synchronized (curve) {
 
-            x	= (int) ((double) (dim.width-1) *
-                  (dx - curve.hSpace.min) / (curve.hSpace.max - curve.hSpace.min));
-            y	= (int) ((double) (dim.height-1) *
-                  (curve.vSpace.max - dy) / (curve.vSpace.max - curve.vSpace.min));
+            x = (int) ((double) (dim.width - 1) *
+                    (dx - curve.hSpace.min) / (curve.hSpace.max - curve.hSpace.min));
+            y = (int) ((double) (dim.height - 1) *
+                    (curve.vSpace.max - dy) / (curve.vSpace.max - curve.vSpace.min));
 
-            return new Point( x, y );
+            return new Point(x, y);
         }
     }
 
     /*
      *	Index auf dem Panel, -1 bei Fehler
      */
-    protected int getComponentIndex( Component c )
-    {
+    protected int getComponentIndex(Component c) {
         Component c2;
 
-        for( int i = getComponentCount() - 1; i >= 0; i-- ) {
-            c2 = getComponent( i );
-            if( c2 == c ) {
+        for (int i = getComponentCount() - 1; i >= 0; i--) {
+            c2 = getComponent(i);
+            if (c2 == c) {
                 return i;
             }
         }
@@ -834,8 +761,7 @@ public class CurvePanel
 // -------- interne CurvePoint-Klasse --------
 
     private static class CurvePoint
-    extends JPanel
-    {
+            extends JPanel {
     // ........ private variables ........
 
         // Status wie STATE_NORMAL, selektiert etc.
@@ -843,20 +769,19 @@ public class CurvePanel
 
     // ........ public methods ........
 
-        protected CurvePoint()
-        {
-            super( null );
+        protected CurvePoint() {
+            super(null);
 
-            Dimension dim = new Dimension( CurvePanel.CP_WIDTH, CurvePanel.CP_HEIGHT );
+            Dimension dim = new Dimension(CurvePanel.CP_WIDTH, CurvePanel.CP_HEIGHT);
 
-            setSelected( CurvePanel.CP_STATE_NORMAL );
-            setSize( dim );
-            setLocation( 0, 0 );
+            setSelected(CurvePanel.CP_STATE_NORMAL);
+            setSize(dim);
+            setLocation(0, 0);
 
             // Event handling
             enableEvents(AWTEvent.MOUSE_EVENT_MASK);
 
-            setFocusable( false );
+            setFocusable(false);
         }
 
         /**
@@ -864,18 +789,17 @@ public class CurvePanel
          *
          *	@return	vorheriger Status
          */
-        protected int setSelected( int state )
-        {
-            int lastState	= this.state;
-            this.state		= state;
+        protected int setSelected(int state) {
+            int lastState = this.state;
+            this.state = state;
 
-            if( lastState != state ) {
-                if( state == CurvePanel.CP_STATE_NORMAL ) {
-                    setForeground( SystemColor.control );
-                    setBackground( SystemColor.control );
+            if (lastState != state) {
+                if (state == CurvePanel.CP_STATE_NORMAL) {
+                    setForeground(SystemColor.control);
+                    setBackground(SystemColor.control);
                 } else {
-                    setForeground( OpIcon.selectColor );
-                    setBackground( OpIcon.selectColor );
+                    setForeground(OpIcon.selectColor);
+                    setBackground(OpIcon.selectColor);
                 }
                 repaint();
             }
@@ -887,23 +811,21 @@ public class CurvePanel
 //			return state;
 //		}
 
-        public void paintComponent( Graphics g )
-        {
-            super.paintComponent( g );
+        public void paintComponent(Graphics g) {
+            super.paintComponent(g);
 
-            g.draw3DRect( 1, 1, CurvePanel.CP_WIDTH - 3, CurvePanel.CP_HEIGHT - 3, true );
-            g.setColor( Color.black );
-            g.drawRect( 0, 0, CurvePanel.CP_WIDTH - 1, CurvePanel.CP_HEIGHT - 1 );
+            g.draw3DRect(1, 1, CurvePanel.CP_WIDTH - 3, CurvePanel.CP_HEIGHT - 3, true);
+            g.setColor(Color.black);
+            g.drawRect(0, 0, CurvePanel.CP_WIDTH - 1, CurvePanel.CP_HEIGHT - 1);
         }
 
     // ........ private methods ........
 
-        protected void processMouseEvent( MouseEvent e )
-        {
-            if( e.getID() == MouseEvent.MOUSE_PRESSED ) {
+        protected void processMouseEvent(MouseEvent e) {
+            if (e.getID() == MouseEvent.MOUSE_PRESSED) {
                 requestFocus();
             }
-            super.processMouseEvent( e );
+            super.processMouseEvent(e);
         }
     }
     // class CurvePoint

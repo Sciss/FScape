@@ -56,8 +56,8 @@ public class VectorDisplay
     private Dimension			recentSize;
     private Image				image		= null;
 
-    private static final Stroke	strkLine	= new BasicStroke( 0.5f );
-    private static final Paint	pntArea		= new Color( 0x42, 0x5E, 0x9D, 0x7F );
+    private static final Stroke strkLine    = new BasicStroke(0.5f);
+    private static final Paint  pntArea     = new Color(0x42, 0x5E, 0x9D, 0x7F);
 
 //    private static final Paint	pntLine		= Color.black;
 //    private static final Paint	pntLabel	= new Color( 0x00, 0x00, 0x00, 0x3F );
@@ -111,9 +111,9 @@ public class VectorDisplay
         setVector( null, vector );
 //		addComponentListener( this );
 
-        pntBg       = dark ? Color.darkGray : Color.lightGray;
+        pntBg       = dark ? Color.darkGray  : Color.lightGray;
         pntLine     = dark ? Color.lightGray : Color.black;
-        pntLabel	= dark ? new Color( 0xFF, 0xFF, 0xFF, 0x3F ) : new Color( 0x00, 0x00, 0x00, 0x3F );
+        pntLabel    = dark ? new Color(0xFF, 0xFF, 0xFF, 0x3F) : new Color(0x00, 0x00, 0x00, 0x3F);
    }
 
     /**
@@ -305,12 +305,12 @@ public class VectorDisplay
         g2.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
         g2.setRenderingHint( RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE );
 //		g2.setRenderingHint( RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY );
-        if( fillArea ) {
-            g2.setPaint( pntArea );
-            g2.fill( pathTrns );
+        if (fillArea) {
+            g2.setPaint(pntArea);
+            g2.fill(pathTrns);
         }
-        g2.setStroke( strkLine );
-        g2.setPaint( pntLine );
+        g2.setStroke(strkLine);
+        g2.setPaint(pntLine);
         g2.draw( pathTrns );
         if( label != null ) {
             g2.setPaint( pntLabel );

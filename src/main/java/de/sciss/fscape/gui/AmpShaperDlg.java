@@ -40,8 +40,7 @@ import java.io.IOException;
  *	of a sound's amplitude envelope.
  */
 public class AmpShaperDlg
-extends ModulePanel
-{
+        extends ModulePanel {
 // -------- private variables --------
 
     // Properties (defaults)
@@ -140,7 +139,7 @@ extends ModulePanel
     }
 
     protected void buildGUI() {
-        if( static_pr == null ) {
+        if (static_pr == null) {
             static_pr			= new PropertyArray();
             static_pr.text		= prText;
             static_pr.textName	= prTextName;
@@ -153,16 +152,16 @@ extends ModulePanel
             static_pr.para[ PR_AVERAGE ]		= new Param( 1000.0, Param.ABS_MS );
             static_pr.paraName	= prParaName;
             static_pr.envl		= prEnvl;
-            static_pr.envl[ PR_ENV ]			= Envelope.createBasicEnvelope( Envelope.BASIC_UNSIGNED_TIME );
-            static_pr.envl[ PR_RIGHTCHANENV ]	= Envelope.createBasicEnvelope( Envelope.BASIC_UNSIGNED_TIME );
+            static_pr.envl[ PR_ENV ]			= Envelope.createBasicEnvelope(Envelope.BASIC_UNSIGNED_TIME);
+            static_pr.envl[ PR_RIGHTCHANENV ]	= Envelope.createBasicEnvelope(Envelope.BASIC_UNSIGNED_TIME);
             static_pr.envlName	= prEnvlName;
 //			static_pr.superPr	= DocumentFrame.static_pr;
 
-            fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
-            fillDefaultAudioDescr( static_pr.intg, PR_ENVOUTTYPE, PR_ENVOUTRES );
-            fillDefaultGain( static_pr.para, PR_GAIN );
-            fillDefaultGain( static_pr.para, PR_ENVGAIN );
-            static_presets = new Presets( getClass(), static_pr.toProperties( true ));
+            fillDefaultAudioDescr(static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES);
+            fillDefaultAudioDescr(static_pr.intg, PR_ENVOUTTYPE, PR_ENVOUTRES);
+            fillDefaultGain(static_pr.para, PR_GAIN);
+            fillDefaultGain(static_pr.para, PR_ENVGAIN);
+            static_presets = new Presets(getClass(), static_pr.toProperties(true));
         }
         presets	= static_presets;
         pr 		= (PropertyArray) static_pr.clone();
@@ -173,7 +172,7 @@ extends ModulePanel
 
         PathField			ggInputFile, ggOutputFile, ggEnvInFile, ggEnvOutFile;
         PathField[]			ggInputs;
-        JComboBox				ggEnvSource, ggMode;
+        JComboBox			ggEnvSource, ggMode;
         ParamField			ggMaxChange, ggAverage;
         JCheckBox			ggEnvOutput, ggInvert, ggRightChan;
         EnvIcon				ggEnv, ggRightChanEnv;
@@ -183,7 +182,7 @@ extends ModulePanel
 
         gui				= new GUISupport();
         con				= gui.getGridBagConstraints();
-        con.insets		= new Insets( 1, 2, 1, 2 );
+        con.insets		= new Insets(1, 2, 1, 2);
 
         ItemListener	il = new ItemListener() {
             public void itemStateChanged( ItemEvent e )
@@ -215,54 +214,54 @@ extends ModulePanel
         ggInputFile.handleTypes( GenericFile.TYPES_SOUND );
         con.gridwidth	= 1;
         con.weightx		= 0.1;
-        gui.addLabel( new JLabel( "Input file", SwingConstants.RIGHT ));
+        gui.addLabel( new JLabel( "Input file:", SwingConstants.RIGHT ));
         con.gridwidth	= GridBagConstraints.REMAINDER;
         con.weightx		= 0.9;
         gui.addPathField( ggInputFile, GG_INPUTFILE, null );
 
-        ggEnvInFile		= new PathField( PathField.TYPE_INPUTFILE + PathField.TYPE_FORMATFIELD,
-                                         "Select input envelope file" );
-        ggEnvInFile.handleTypes( GenericFile.TYPES_SOUND );
+        ggEnvInFile = new PathField(PathField.TYPE_INPUTFILE + PathField.TYPE_FORMATFIELD,
+                "Select input envelope file");
+        ggEnvInFile.handleTypes(GenericFile.TYPES_SOUND);
         con.gridwidth	= 1;
         con.weightx		= 0.1;
-        gui.addLabel( new JLabel( "Env input", SwingConstants.RIGHT ));
+        gui.addLabel(new JLabel("Env input:", SwingConstants.RIGHT));
         con.gridwidth	= GridBagConstraints.REMAINDER;
         con.weightx		= 0.9;
-        gui.addPathField( ggEnvInFile, GG_ENVINFILE, null );
+        gui.addPathField(ggEnvInFile, GG_ENVINFILE, null);
 
-        ggOutputFile	= new PathField( PathField.TYPE_OUTPUTFILE + PathField.TYPE_FORMATFIELD +
-                                         PathField.TYPE_RESFIELD, "Select output file" );
-        ggOutputFile.handleTypes( GenericFile.TYPES_SOUND );
+        ggOutputFile = new PathField(PathField.TYPE_OUTPUTFILE + PathField.TYPE_FORMATFIELD +
+                PathField.TYPE_RESFIELD, "Select output file");
+        ggOutputFile.handleTypes(GenericFile.TYPES_SOUND);
         ggInputs		= new PathField[ 1 ];
         ggInputs[ 0 ]	= ggInputFile;
-        ggOutputFile.deriveFrom( ggInputs, "$D0$F0Amp$E" );
+        ggOutputFile.deriveFrom(ggInputs, "$D0$F0Amp$E");
         con.gridwidth	= 1;
         con.weightx		= 0.1;
-        gui.addLabel( new JLabel( "Output file", SwingConstants.RIGHT ));
+        gui.addLabel(new JLabel("Output file:", SwingConstants.RIGHT));
         con.gridwidth	= GridBagConstraints.REMAINDER;
         con.weightx		= 0.9;
         gui.addPathField( ggOutputFile, GG_OUTPUTFILE, null );
         gui.registerGadget( ggOutputFile.getTypeGadget(), GG_OUTPUTTYPE );
         gui.registerGadget( ggOutputFile.getResGadget(), GG_OUTPUTRES );
 
-        ggGain			= createGadgets( GGTYPE_GAIN );
+        ggGain			= createGadgets(GGTYPE_GAIN);
         con.weightx		= 0.1;
         con.gridwidth	= 1;
-        gui.addLabel( new JLabel( "Gain", SwingConstants.RIGHT ));
+        gui.addLabel(new JLabel("Gain:", SwingConstants.RIGHT));
         con.weightx		= 0.4;
-        gui.addParamField( (ParamField) ggGain[ 0 ], GG_GAIN, null );
+        gui.addParamField((ParamField) ggGain[0], GG_GAIN, null);
         con.weightx		= 0.5;
         con.gridwidth	= GridBagConstraints.REMAINDER;
-        gui.addChoice( (JComboBox) ggGain[ 1 ], GG_GAINTYPE, il );
+        gui.addChoice((JComboBox) ggGain[1], GG_GAINTYPE, il);
 
     // -------- Env-Output-Gadgets --------
-    gui.addLabel( new GroupLabel( "Separate envelope output", GroupLabel.ORIENT_HORIZONTAL,
-                                  GroupLabel.BRACE_NONE ));
+    gui.addLabel(new GroupLabel("Separate envelope output", GroupLabel.ORIENT_HORIZONTAL,
+                GroupLabel.BRACE_NONE));
 
-        ggEnvOutFile	= new PathField( PathField.TYPE_OUTPUTFILE + PathField.TYPE_FORMATFIELD +
-                                         PathField.TYPE_RESFIELD, "Select output envelope file" );
-        ggEnvOutFile.handleTypes( GenericFile.TYPES_SOUND );
-        ggEnvOutFile.deriveFrom( ggInputs, "$D0$F0Env$E" );
+        ggEnvOutFile = new PathField(PathField.TYPE_OUTPUTFILE + PathField.TYPE_FORMATFIELD +
+                PathField.TYPE_RESFIELD, "Select output envelope file");
+        ggEnvOutFile.handleTypes(GenericFile.TYPES_SOUND);
+        ggEnvOutFile.deriveFrom(ggInputs, "$D0$F0Env$E");
         con.gridwidth	= 1;
         con.weightx		= 0.1;
         ggEnvOutput		= new JCheckBox( "Env output" );
@@ -283,7 +282,7 @@ extends ModulePanel
 
         con.weightx		= 0.1;
         con.gridwidth	= 1;
-        gui.addLabel( new JLabel( "Gain", SwingConstants.RIGHT ));
+        gui.addLabel(new JLabel("Gain:", SwingConstants.RIGHT));
         con.weightx		= 0.4;
         gui.addParamField( (ParamField) ggEnvGain[ 0 ], GG_ENVGAIN, null );
         con.weightx		= 0.5;
@@ -295,57 +294,57 @@ extends ModulePanel
                                   GroupLabel.BRACE_NONE ));
 
         ggEnvSource		= new JComboBox();
-        ggEnvSource.addItem( "Input file" );
-        ggEnvSource.addItem( "Sound file" );
-        ggEnvSource.addItem( "Envelope file" );
-        ggEnvSource.addItem( "Envelope" );
+        ggEnvSource.addItem("Input file");
+        ggEnvSource.addItem("Sound file");
+        ggEnvSource.addItem("Envelope file");
+        ggEnvSource.addItem("Envelope");
         con.gridwidth	= 1;
         con.weightx		= 0.1;
-        gui.addLabel( new JLabel( "Source", SwingConstants.RIGHT ));
+        gui.addLabel(new JLabel("Source:", SwingConstants.RIGHT));
         con.weightx		= 0.4;
         gui.addChoice( ggEnvSource, GG_ENVSOURCE, il );
 
         ggInvert		= new JCheckBox();
         con.weightx		= 0.1;
-        gui.addLabel( new JLabel( "Inversion", SwingConstants.RIGHT ));
+        gui.addLabel(new JLabel("Inversion:", SwingConstants.RIGHT));
         con.gridwidth	= GridBagConstraints.REMAINDER;
         con.weightx		= 0.4;
         gui.addCheckbox( ggInvert, GG_INVERT, il );
 
         ggMode			= new JComboBox();
-        ggMode.addItem( "Superposition" );
-        ggMode.addItem( "Replacement" );
+        ggMode.addItem("Superposition");
+        ggMode.addItem("Replacement");
         con.gridwidth	= 1;
         con.weightx		= 0.1;
-        gui.addLabel( new JLabel( "Apply mode", SwingConstants.RIGHT ));
+        gui.addLabel(new JLabel("Apply mode:", SwingConstants.RIGHT));
         con.weightx		= 0.4;
         con.gridwidth	= GridBagConstraints.REMAINDER;
         gui.addChoice( ggMode, GG_MODE, il );
 
-        ggEnv			= new EnvIcon( getComponent() );
+        ggEnv = new EnvIcon(getComponent());
         con.gridwidth	= 1;
         con.weightx		= 0.1;
-        gui.addLabel( new JLabel( "Envelope", SwingConstants.RIGHT ));
+        gui.addLabel(new JLabel("Envelope:", SwingConstants.RIGHT));
         con.weightx		= 0.4;
-        gui.addGadget( ggEnv, GG_ENV );
+        gui.addGadget(ggEnv, GG_ENV);
 
         spcMaxChange	= new ParamSpace( Constants.spaces[ Constants.decibelAmpSpace ]);
 //		spcMaxChange.min= spcMaxChange.inc;
         spcMaxChange	= new ParamSpace( spcMaxChange.inc, spcMaxChange.max, spcMaxChange.inc, spcMaxChange.unit );
         ggMaxChange		= new ParamField( spcMaxChange );
         con.weightx		= 0.1;
-        gui.addLabel( new JLabel( "Max boost", SwingConstants.RIGHT ));
+        gui.addLabel(new JLabel("Max boost:", SwingConstants.RIGHT));
         con.weightx		= 0.4;
         con.gridwidth	= GridBagConstraints.REMAINDER;
         gui.addParamField( ggMaxChange, GG_MAXCHANGE, null );
 
         ggRightChan		= new JCheckBox( "Right chan." );
-        ggRightChanEnv	= new EnvIcon( getComponent() );
+        ggRightChanEnv	= new EnvIcon(getComponent());
         con.weightx		= 0.1;
         con.gridwidth	= 1;
-        gui.addCheckbox( ggRightChan, GG_RIGHTCHAN, il );
+        gui.addCheckbox(ggRightChan, GG_RIGHTCHAN, il);
         con.weightx		= 0.4;
-        gui.addGadget( ggRightChanEnv, GG_RIGHTCHANENV );
+        gui.addGadget(ggRightChanEnv, GG_RIGHTCHANENV);
 
         spcAverage		= new ParamSpace[ 3 ];
         spcAverage[0]	= Constants.spaces[ Constants.absMsSpace ];
@@ -353,30 +352,22 @@ extends ModulePanel
         spcAverage[2]	= Constants.spaces[ Constants.ratioTimeSpace ];
         ggAverage		= new ParamField( spcAverage );
         con.weightx		= 0.1;
-        gui.addLabel( new JLabel( "Smoothing", SwingConstants.RIGHT ));
+        gui.addLabel(new JLabel("Smoothing:", SwingConstants.RIGHT));
         con.weightx		= 0.4;
         con.gridwidth	= GridBagConstraints.REMAINDER;
         gui.addParamField( ggAverage, GG_AVERAGE, null );
 
-        initGUI( this, FLAGS_PRESETS | FLAGS_PROGBAR, gui );
+        initGUI(this, FLAGS_PRESETS | FLAGS_PROGBAR, gui);
     }
 
-    /**
-     *	Transfer values from prop-array to GUI
-     */
-    public void fillGUI()
-    {
+    public void fillGUI() {
         super.fillGUI();
-        super.fillGUI( gui );
+        super.fillGUI(gui);
     }
 
-    /**
-     *	Transfer values from GUI to prop-array
-     */
-    public void fillPropertyArray()
-    {
+    public void fillPropertyArray() {
         super.fillPropertyArray();
-        super.fillPropertyArray( gui );
+        super.fillPropertyArray(gui);
     }
 
 // -------- Processor Interface --------

@@ -147,8 +147,7 @@ public class PathField
 
 // -------- public methods --------
 
-    public PathField( int type, String dlgTxt )
-    {
+    public PathField(int type, String dlgTxt) {
         super();
         this.type		= type;
 //		this.dlgTxt		= dlgTxt;
@@ -219,80 +218,69 @@ public class PathField
         con.weightx		= 0.0;
         con.weighty		= 1.0;
         lay.setConstraints(ggChoose, con);
-        add( ggChoose );
+        add(ggChoose);
 
-        deriveFrom( new PathField[0], (ggType != null) ? "$E" : "" );
-        addComponentListener( this );
+        deriveFrom(new PathField[0], (ggType != null) ? "$E" : "");
+        addComponentListener(this);
 
-        this.addPropertyChangeListener( "font", new PropertyChangeListener() {
-            public void propertyChange( PropertyChangeEvent e )
-            {
+        this.addPropertyChangeListener("font", new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent e) {
                 Font fnt = ((PathField) e.getSource()).getFont();
-                ggPath.setFont( fnt );
-                if( ggFormat != null ) ggFormat.setFont( fnt );
+                ggPath.setFont(fnt);
+                if (ggFormat != null) ggFormat.setFont(fnt);
             }
         });
     }
 
-    public static String getSoundResID( int idx )
-    {
-        return sndResID[ idx ];
+    public static String getSoundResID(int idx) {
+        return sndResID[idx];
     }
 
-    public static int getSoundResIdx( String id )
-    {
-        for( int idx = 0; idx < sndResID.length; idx++ ) {
-            if( sndResID[ idx ].equals( id )) return idx;
+    public static int getSoundResIdx(String id) {
+        for (int idx = 0; idx < sndResID.length; idx++) {
+            if (sndResID[idx].equals(id)) return idx;
         }
         return -1;
     }
 
-    public static String getSoundResDescr( int idx )
-    {
-        return sndResTxt[ idx ];
+    public static String getSoundResDescr(int idx) {
+        return sndResTxt[idx];
     }
 
-    public static String getSoundRateID( int idx )
-    {
-        return String.valueOf( sndRate[ idx ]);
+    public static String getSoundRateID(int idx) {
+        return String.valueOf(sndRate[idx]);
     }
 
-    public static int getSoundRateIdx( String id )
-    {
-        for( int idx = 0; idx < sndRate.length; idx++ ) {
-            if( String.valueOf( sndRate[ idx ]).equals( id )) return idx;
+    public static int getSoundRateIdx(String id) {
+        for (int idx = 0; idx < sndRate.length; idx++) {
+            if (String.valueOf(sndRate[idx]).equals(id)) return idx;
         }
         return -1;
     }
 
-    public static String getSoundRateDescr( int idx )
-    {
-        return sndRateTxt[ idx ];
+    public static String getSoundRateDescr(int idx) {
+        return sndRateTxt[idx];
     }
 
-    public void setPath( File path )
-    {
-        setPathIgnoreScheme( path );
-        scheme = createScheme( path.getPath() );
+    public void setPath(File path) {
+        setPathIgnoreScheme(path);
+        scheme = createScheme(path.getPath());
     }
 
-    protected void setPathIgnoreScheme( File path )
-    {
-        ggPath.setText( path.getPath() );
-        ggChoose.setPath( path );
-        synchronized( collChildren ) {
-            for( int i = 0; i < collChildren.size(); i++ ) {
-                ((PathField) collChildren.get( i )).motherSpeaks( path );
+    protected void setPathIgnoreScheme(File path) {
+        ggPath.setText(path.getPath());
+        ggChoose.setPath(path);
+        synchronized (collChildren) {
+            for (int i = 0; i < collChildren.size(); i++) {
+                collChildren.get(i).motherSpeaks(path);
             }
-        } // synchronized( collChildren )
+        }
         feedback();
     }
 
-    protected void setPathAndDispatchEvent( File path )
-    {
-        setPathIgnoreScheme( path );
-        elm.dispatchEvent( new PathEvent( this, PathEvent.CHANGED, System.currentTimeMillis(), path ));
-//		actionComponent.dispatchEvent( new ActionEvent( this, ActionEvent.ACTION_PERFORMED, "" ));
+    protected void setPathAndDispatchEvent(File path) {
+        setPathIgnoreScheme(path);
+        elm.dispatchEvent(new PathEvent(this, PathEvent.CHANGED, System.currentTimeMillis(), path));
     }
 
     public File getPath() {

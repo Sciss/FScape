@@ -172,19 +172,17 @@ public class Presets
      *	@param	strVal	null erlaubt, ergibt aber auch null als Ergebnis!
      *	@return	null bei Fehler
      */
-    public static Properties valueToProperties( String strVal )
-    {
+    public static Properties valueToProperties(String strVal) {
         final Properties val = new Properties();
 
         try {
-            if( strVal != null ) {
-                final InputStream inStream = new ByteArrayInputStream( strVal.getBytes() );
-                val.load( inStream );	// now we have the String as a Properites-Object
+            if (strVal != null) {
+                final InputStream inStream = new ByteArrayInputStream(strVal.getBytes());
+                val.load(inStream);    // now we have the String as a Properites-Object
                 inStream.close();
                 return val;
             }
-        }
-        catch( IOException e ) { /* nothing */ }
+        } catch (IOException e) { /* nothing */ }
 
         return null;
     }

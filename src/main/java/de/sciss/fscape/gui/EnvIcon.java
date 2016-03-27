@@ -21,6 +21,7 @@ import de.sciss.fscape.util.Curve;
 import de.sciss.fscape.util.DoublePoint;
 import de.sciss.fscape.util.Envelope;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -34,70 +35,58 @@ public class EnvIcon
 
 // -------- private variables --------
 
-//	private final Frame		win;
     private Envelope		env		= null;
-//	private final Image		img		= null;
 
-    private static final Color	colrNormal	= new Color( 0x00, 0x00, 0x30, 0xFF );
-    private static final Color	colrGhosted	= new Color( 0x00, 0x00, 0x00, 0x7F );
+    private static final Color colrNormalL  = new Color(0x00, 0x00, 0x30, 0xFF);
+    private static final Color colrGhostedL = new Color(0x00, 0x00, 0x00, 0x7F);
+    private static final Color colrNormalD  = new Color(0xC8, 0xC8, 0xC8, 0xFF);
+    private static final Color colrGhostedD = new Color(0xC8, 0xC8, 0xC8, 0x7F);
 
 // -------- public methods --------
 
-    public EnvIcon( final Component parent )
-    {
-        super( ToolIcon.ID_EDITENV, null );
+    private final boolean isDark = UIManager.getBoolean("dark-skin");
+
+    public EnvIcon(final Component parent) {
+        super(ToolIcon.ID_EDITENV, null);
 
 //		win = parent;
-        addMouseListener( new MouseAdapter() {
-            public void mouseReleased( MouseEvent e )
-            {
-                if( !isEnabled() || (env == null) || !contains( e.getPoint() )) return;
+        addMouseListener(new MouseAdapter() {
+            public void mouseReleased(MouseEvent e) {
+                if (!isEnabled() || (env == null) || !contains(e.getPoint())) return;
 
-                EditEnvDlg	envDlg;
-                Envelope	result;
+                EditEnvDlg envDlg;
+                Envelope result;
 
-                envDlg	= new EditEnvDlg( parent, env );
-                envDlg.setVisible( true );
+                envDlg = new EditEnvDlg(parent, env);
+                envDlg.setVisible(true);
 
-                result	= envDlg.getEnvelope();
-                if( result != null ) {		// "Ok"
-                    setEnv( result );
+                result = envDlg.getEnvelope();
+                if (result != null) {        // "Ok"
+                    setEnv(result);
                 }
 
                 envDlg.dispose();
             }
         });
-
-//		addComponentListener( new ComponentAdpater() {
-//			public void componentResized( ComponentEvent e )
-//			{
-//				calcPictogram();
-//				repaint();
-//			}
-//		});
     }
 
-    public void setEnv( Envelope env )
-    {
+    public void setEnv(Envelope env) {
         this.env = env;
-//		calcPictogram();
         repaint();
     }
-
 
     public Envelope getEnv()
     {
         return env;
     }
 
-    public void paintComponent( Graphics g )
-    {
+    public void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
-        g2.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
-        g.setColor( isEnabled() ? colrNormal : colrGhosted );
-        drawPictogram( g2 );
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setColor(isEnabled() ? (isDark ? colrNormalD : colrNormalL) : (isDark ? colrGhostedD : colrGhostedD));
+        drawPictogram(g2);
 
-        super.paintComponent( g );
+        super.paintComponent(g);
     }
 
     public Dimension getPreferredSize()
@@ -114,9 +103,8 @@ public class EnvIcon
     /*
      *	Berechnet aus der Envelope eine Pictogram-Darstellung (Polyline)
      */
-    private void drawPictogram( Graphics g )
-    {
-        if( env == null ) return;
+    private void drawPictogram(Graphics g) {
+        if (env == null) return;
 
         final int			width			= getWidth();
         final int			height			= getHeight();

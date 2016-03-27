@@ -18,7 +18,6 @@ import java.net.URL
 import javax.swing.plaf.metal.MetalLookAndFeel
 import javax.swing.{UIManager, ImageIcon, KeyStroke}
 
-import com.sun.awt.AWTUtilities
 import de.sciss.desktop.impl.{WindowHandlerImpl, LogWindowImpl, SwingApplicationImpl, WindowImpl}
 import de.sciss.desktop.{Desktop, Escape, KeyStrokes, Menu, OptionPane, Window, WindowHandler}
 import de.sciss.file._
@@ -141,33 +140,6 @@ object FScape extends SwingApplicationImpl("FScape") {
     val f = new MainWindow
     f.front()
     oscServer.init()
-
-//    new swing.Frame {
-//      title = "Hello"
-//      size = new Dimension(400, 200)
-//      peer.setUndecorated(true)
-//      peer.getRootPane.putClientProperty("styleId", "frame-decorated")
-//      location = new Point(400, 400)
-//      visible = true
-//    }
-
-//    new javax.swing.JFrame {
-//      setTitle("Hello")
-//      setSize(new Dimension(400, 200))
-//      setUndecorated(true)
-//      getRootPane.putClientProperty("styleId", "frame-decorated")
-//      setLocation(new Point(400, 400))
-//      setVisible(true)
-//    }
-
-//    val ff = new javax.swing.JFrame();
-//    ff.getRootPane().putClientProperty("styleId", "frame");
-//    ff.getRootPane().putClientProperty("styleId", "frame-decorated");
-//    ff.setTitle("Hello");
-//    ff.setSize(new Dimension(400, 200));
-////      ff.setUndecorated(true);
-//    ff.setLocation(new Point(400, 400));
-//    ff.setVisible(true);
   }
 
   private type ItemConfig   = (String, String, Option[KeyStroke])
@@ -363,13 +335,16 @@ object FScape extends SwingApplicationImpl("FScape") {
     }
     p.peer.setCaretPosition(0)
 
+    val scroll = new ScrollPane(p)
+    scroll.peer.putClientProperty("styleId", "undecorated")
+
     new WindowImpl {
       def handler: WindowHandler = App.windowHandler
       override def style = Window.Auxiliary
 
       title           = title0
       closeOperation  = Window.CloseDispose
-      contents        = new ScrollPane(p)
+      contents        = scroll
       pack()
       size = {
         val ge    = GraphicsEnvironment.getLocalGraphicsEnvironment

@@ -68,7 +68,6 @@ public class PrefsPanel
         PrefPathField					ggPath;
         PrefCheckBox ggCheckBox;
         PrefComboBox ggChoice;
-        JTabbedPane						ggTabPane;
         JLabel							lb;
         UIManager.LookAndFeelInfo[]		lafInfos;
         Box								b;
@@ -76,8 +75,6 @@ public class PrefsPanel
         Preferences						prefs;
         String							key, title;
         int								row;
-
-        // ggTabPane			= new JTabbedPane();
 
         // ---------- global pane ----------
 
@@ -184,12 +181,12 @@ public class PrefsPanel
         ggCheckBox.addActionListener(new WarnPrefsChange(ggCheckBox, ggCheckBox, haveWarned, txtWarnLookAndFeel, title));
 
         tab.makeCompactGrid();
-        tabWrap = new JPanel( new BorderLayout() );
-        tabWrap.add( tab, BorderLayout.NORTH );
-        p		= new JPanel( new FlowLayout( FlowLayout.RIGHT ));
-        tabWrap.add( p, BorderLayout.SOUTH );
+        tabWrap = new JPanel(new BorderLayout());
+        tabWrap.add(tab, BorderLayout.NORTH);
+        p = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        tabWrap.add(p, BorderLayout.SOUTH);
 
-        cp.add( tabWrap /* ggTabPane */, BorderLayout.CENTER );
+        cp.add(tabWrap, BorderLayout.CENTER);
     }
 
     private static class WarnPrefsChange

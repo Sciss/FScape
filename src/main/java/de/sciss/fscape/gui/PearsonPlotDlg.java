@@ -47,7 +47,7 @@ import java.util.Vector;
  *	sound is plotted to the output file. Never really worked.
  */
 public class PearsonPlotDlg
-		extends ModulePanel {
+        extends ModulePanel {
 
 // -------- private variables --------
 
@@ -376,11 +376,11 @@ public class PearsonPlotDlg
     gui.addLabel( new GroupLabel( "Trigger View", GroupLabel.ORIENT_HORIZONTAL,
                                   GroupLabel.BRACE_NONE ));
 
-        lbTrigs		= new JLabel( " " );
-        lbTrigs.setBackground( Color.white );
-        gui.addLabel( lbTrigs );
+        lbTrigs = new JLabel(" ");
+        // lbTrigs.setBackground(Color.white);
+        gui.addLabel(lbTrigs);
 
-        initGUI( this, FLAGS_PRESETS | FLAGS_PROGBAR, gui );
+        initGUI(this, FLAGS_PRESETS | FLAGS_PROGBAR, gui);
     }
 
     /**
@@ -517,9 +517,9 @@ topLevel: try {
             // ---- further inits ----
             g		= lbTrigs.getGraphics();
             gDim	= lbTrigs.getSize();
-            if( g != null ) {
+            if (g != null) {
                 lbTrigs.repaint();
-                g.setColor( Color.red );
+                g.setColor(Color.red);
             }
 
             trigThresh	= (float) (Param.transform( pr.para[ PR_TRIGTHRESH ], Param.ABS_AMP, ampRef, null )).value;

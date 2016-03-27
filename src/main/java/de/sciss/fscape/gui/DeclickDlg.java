@@ -297,14 +297,14 @@ public class DeclickDlg
         gui.addPathField( ggImpulseFile, GG_IMPULSEFILE, null );
 
     // -------- Click-View --------
-    gui.addLabel( new GroupLabel( "Click View", GroupLabel.ORIENT_HORIZONTAL,
-                                  GroupLabel.BRACE_NONE ));
+    gui.addLabel(new GroupLabel("Click View", GroupLabel.ORIENT_HORIZONTAL,
+                GroupLabel.BRACE_NONE));
 
-        lbClicks		= new JLabel( " " );
-        lbClicks.setBackground( Color.white );
-        gui.addLabel( lbClicks );
+        lbClicks = new JLabel(" ");
+        // lbClicks.setBackground(Color.white);
+        gui.addLabel(lbClicks);
 
-        initGUI( this, FLAGS_PRESETS | FLAGS_PROGBAR, gui );
+        initGUI(this, FLAGS_PRESETS | FLAGS_PROGBAR, gui);
     }
 
     /**
@@ -402,9 +402,9 @@ public class DeclickDlg
             }
             g		= lbClicks.getGraphics();
             gDim	= lbClicks.getSize();
-            if( g != null ) {
+            if (g != null) {
                 lbClicks.repaint();
-                g.setColor( Color.red );
+                g.setColor(Color.red);
             }
 
             switch( pr.intg[ PR_CHECKSIZE ]) {
