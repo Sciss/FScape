@@ -2,7 +2,7 @@
  *  IconicComponent.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -17,136 +17,128 @@
 
 package de.sciss.fscape.gui;
 
-import java.awt.*;
-import java.awt.datatransfer.*;
-import java.io.*;
 import javax.swing.*;
+import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.IOException;
 
 /**
  *  Created on Java 1.1 using the
  *	same name as the Swing interface,
  *	this class draws a portion of
  *	a icon collection bitmap graphic.
- *
- *  @author		Hanns Holger Rutz
- *  @version	0.71, 14-Nov-07
  */
 public class IconicComponent
-extends JComponent
-implements Dragable
-{
-// -------- public Variablen --------
+        extends JComponent
+        implements Dragable {
 
-	public static DataFlavor flavor	= null;		// DataFlavor representing this class
+// -------- public variables --------
 
-// -------- private Variablen --------
+    public static DataFlavor flavor	= null;		// DataFlavor representing this class
 
-	protected IconBitmap ib;
-	protected Dimension d;
-	protected int ID;
+// -------- private variables --------
 
-	private static DataFlavor flavors[] = null;	// alle erlaubten DataFlavors
+    protected IconBitmap ib;
+    protected Dimension d;
+    protected int ID;
 
-// -------- public Methoden --------
-	// public void setID( int ID );
-	// public int getID();
+    private static DataFlavor flavors[] = null;	// all supported DataFlavors
 
-	/**
-	 *	@param	ib	IconBitmap, die die Graphik enthaelt
-	 *	@param	ID	Icon-ID in der Bitmap-Matrix
-	 */
-	protected IconicComponent( IconBitmap ib, int ID )
-	{
-		this.ib	= ib;
-		d		= ib.getDimension();
-		setSize( getPreferredSize() );
-		setID( ID );
+// -------- public methods --------
+    // public void setID( int ID );
+    // public int getID();
 
-		// data flavor
-		if( flavor == null ) {
-			flavor			= new DataFlavor( getClass(), "Icon" );
-			flavors			= new DataFlavor[ 1 ];
-			flavors[ 0 ]	= IconicComponent.flavor;
-		}
-	}
+    /**
+     *	@param	ib	IconBitmap that contains the image
+     *	@param	ID	Icon-ID in der Bitmap-Matrix
+     */
+    protected IconicComponent(IconBitmap ib, int ID) {
+        this.ib = ib;
+        d = ib.getDimension();
+        setSize(getPreferredSize());
+        setID(ID);
 
-	/**
-	 *	@param	ib	IconBitmap, die die Graphik enthaelt
-	 */
-	protected IconicComponent( IconBitmap ib )
-	{
-		this( ib, -1 );
-	}
-	
-	/**
-	 *	ID des Icons setzen
-	 *
-	 *	@param	ID	Icon-ID in der Bitmap-Matrix
-	 */
-	public void setID( int ID )
-	{
-		this.ID = ID;
-	}
+        // data flavor
+        if (flavor == null) {
+            flavor = new DataFlavor(getClass(), "Icon");
+            flavors = new DataFlavor[1];
+            flavors[0] = IconicComponent.flavor;
+        }
+    }
 
-	/**
-	 *	ID des Icons ermitteln
-	 *
-	 *	@return	Icon-ID in der Bitmap-Matrix
-	 */
-	public int getID()
-	{
-		return ID;
-	}
-	
-	public Dimension getPreferredSize()
-	{
-		return new Dimension( d );
-	}
-	public Dimension getMinimumSize()
-	{
-		return getPreferredSize();
-	}
-	
-	public void paintComponent( Graphics g )
-	{
-		super.paintComponent( g );
-	
-		Dimension realD = getSize();
-		ib.paint( g, ID, (realD.width - d.width) >> 1, (realD.height - d.height) >> 1 );
-	}
+    /**
+     *	@param	ib	IconBitmap that contains the image
+     */
+    protected IconicComponent( IconBitmap ib )
+    {
+        this( ib, -1 );
+    }
 
-// -------- Dragable Methoden --------
+    /**
+     *	Sets the identifier of the icon
+     *
+     *	@param	ID	Icon-ID in the Bitmap-Matrix
+     */
+    public void setID( int ID )
+    {
+        this.ID = ID;
+    }
 
-	/**
-	 *	Zeichnet ein Schema des Icons
-	 */
-	public void paintScheme( Graphics g, int x, int y, boolean mode )
-	{
-		g.drawRect( x - (d.width>>1), y - (d.height>>1), d.width - 1, d.height - 1 );
-	}
+    /**
+     *	Returns the identifier of the icon
+     *
+     *	@return	Icon-ID in the Bitmap-Matrix
+     */
+    public int getID()
+    {
+        return ID;
+    }
 
-// -------- Transferable Methoden --------
+    public Dimension getPreferredSize()
+    {
+        return new Dimension( d );
+    }
+    public Dimension getMinimumSize()
+    {
+        return getPreferredSize();
+    }
 
-	public DataFlavor[] getTransferDataFlavors()
-	{
-		return flavors;
-	}
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
 
-	public boolean isDataFlavorSupported( DataFlavor fl )
-	{
-		DataFlavor flavs[] = getTransferDataFlavors();
-		for( int i = 0; i < flavs.length; i++ ) {
-			if( flavs[ i ].equals( fl )) return true;
-		}
-		return false;
-	}
-	
-	public Object getTransferData( DataFlavor fl )
-	throws UnsupportedFlavorException, IOException
-	{
-		if( fl.equals( IconicComponent.flavor )) {
-			return this;
+        Dimension realD = getSize();
+        ib.paint(g, ID, (realD.width - d.width) >> 1, (realD.height - d.height) >> 1);
+    }
 
-		} else throw new UnsupportedFlavorException( fl );
-	}
+// -------- Dragable methods --------
+
+    /**
+     *	Draws a contour of the icon
+     */
+    public void paintScheme(Graphics g, int x, int y, boolean mode) {
+        g.drawRect(x - (d.width >> 1), y - (d.height >> 1), d.width - 1, d.height - 1);
+    }
+
+// -------- Transferable methods --------
+
+    public DataFlavor[] getTransferDataFlavors() {
+        return flavors;
+    }
+
+    public boolean isDataFlavorSupported(DataFlavor fl) {
+        DataFlavor flavors[] = getTransferDataFlavors();
+        for (int i = 0; i < flavors.length; i++) {
+            if (flavors[i].equals(fl)) return true;
+        }
+        return false;
+    }
+
+    public Object getTransferData(DataFlavor fl)
+            throws UnsupportedFlavorException, IOException {
+        if (fl.equals(IconicComponent.flavor)) {
+            return this;
+
+        } else throw new UnsupportedFlavorException(fl);
+    }
 }

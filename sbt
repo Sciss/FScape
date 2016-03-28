@@ -360,7 +360,7 @@ process_args ()
           -offline) addSbt "set offline := true" && shift ;;
         -jvm-debug) require_arg port "$1" "$2" && addDebugger "$2" && shift 2 ;;
             -batch) batch=true && shift ;;
-           -prompt) require_arg "expr" "$1" "$2" && setThisBuild shellPrompt "(s => { val e = Project.extract(s) ; $2 })" && shift 2 ;;
+           -prompt) require_arg "expr" "$1" "$2" && setThisBuild shellPrompt "(s => { value e = Project.extract(s) ; $2 })" && shift 2 ;;
 
        -sbt-create) sbt_create=true && shift ;;
           -sbt-jar) require_arg path "$1" "$2" && sbt_jar="$2" && shift 2 ;;
@@ -511,7 +511,7 @@ main () {
 }
 
 # sbt inserts this string on certain lines when formatting is enabled:
-#   val OverwriteLine = "\r\u001BM\u001B[2K"
+#   value OverwriteLine = "\r\u001BM\u001B[2K"
 # ...in order not to spam the console with a million "Resolving" lines.
 # Unfortunately that makes it that much harder to work with when
 # we're not going to print those lines anyway. We strip that bit of

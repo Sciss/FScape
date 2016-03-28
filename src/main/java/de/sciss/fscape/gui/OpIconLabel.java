@@ -2,7 +2,7 @@
  *  OpIconLabel.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -28,11 +28,11 @@ import javax.swing.*;
 public class OpIconLabel
 extends JComponent
 {
-// -------- public Variablen --------
+// -------- public variables --------
 
 	public static final String OBJ_NAME = "OpIconLabel";
 
-// -------- private Variablen --------
+// -------- private variables --------
 
 	private String		labName;
 	private int			labNameWidth	= 0;
@@ -42,7 +42,7 @@ extends JComponent
 
 	private OpIcon		icon;
 
-// -------- public Methoden --------
+// -------- public methods --------
 	// public void setJLabelLocation( Point p );
 	// public getOpIcon();
 	// public String toString();
@@ -149,7 +149,7 @@ newVisualProps();
 					 loc.y + OpIcon.ICON_HEIGHT );
 	}
 
-// -------- private Methoden --------
+// -------- private methods --------
 
 	private void newVisualProps()
 	{

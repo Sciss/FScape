@@ -2,7 +2,7 @@
  *  DoublePoint.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -16,11 +16,11 @@ package de.sciss.fscape.util;
 public class DoublePoint
 implements Cloneable
 {
-// -------- public Variablen --------
+// -------- public variables --------
 	public	double	x;
 	public	double	y;
 
-// -------- public Methoden --------
+// -------- public methods --------
 
 	public DoublePoint( double x, double y )
 	{
@@ -45,7 +45,7 @@ implements Cloneable
 		return new DoublePoint( this );
 	}
 
-// -------- StringComm Methoden --------
+// -------- StringComm methods --------
 
 	public String toString()
 	{

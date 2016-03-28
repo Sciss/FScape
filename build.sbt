@@ -6,26 +6,26 @@ lazy val baseNameL    = baseName.toLowerCase
 lazy val authorName   = "Hanns Holger Rutz"
 lazy val authorEMail  = "contact@sciss.de"
 
-lazy val basicJavaOpts = Seq("-source", "1.6", "-target", "1.6")
+lazy val basicJavaOpts = Seq("-source", "1.6")
 
 lazy val commonSettings = Seq(
   name             := baseName,
-  version          := "1.2.0",
+  version          := "1.3.0",
   organization     := "de.sciss",
   description      := "A standalone audio rendering software for time domain and spectral signal processing",
   homepage         := Some(url(s"https://github.com/Sciss/${name.value}")),
   licenses         := Seq("GPL v3+" -> url("http://www.gnu.org/licenses/gpl-3.0.txt")),
-  scalaVersion     := "2.11.7",
-  javacOptions    ++= basicJavaOpts ++ Seq("-encoding", "utf8"),
-  javaOptions in (Compile, doc) := basicJavaOpts,  // doesn't eat `-encoding`
+  scalaVersion     := "2.11.8",
+  javacOptions    ++= basicJavaOpts ++ Seq("-encoding", "utf8", "-Xlint:unchecked", "-target", "1.6"),
+  javacOptions in (Compile, doc) := basicJavaOpts,  // doesn't eat `-encoding`
   mainClass in Compile := Some("de.sciss.fscape.FScape"),
   libraryDependencies ++= Seq(
-    "de.sciss"    %  "weblaf"             % "1.28",
-    "de.sciss"    %% "desktop-mac"        % "0.7.1",
+    "de.sciss"    %  "submin"             % "0.1.0",
+    "de.sciss"    %% "desktop-mac"        % "0.7.2",
     // "de.sciss" %% "audiowidgets-swing" % "1.6.2",
     "de.sciss"    %% "raphael-icons"      % "1.0.2",
     "de.sciss"    %% "fileutil"           % "1.1.1",
-    "de.sciss"    %  "scisslib"           % "1.0.0",
+    "de.sciss"    %  "scisslib"           % "1.1.0",
     "de.sciss"    %  "netutil"            % "1.0.0",
     "org.pegdown" %  "pegdown"            % "1.6.0"
   )
@@ -129,7 +129,7 @@ lazy val pkgDebianSettings: Seq[sbt.Def.Setting[_]] = Seq(
   }
 )
 
-lazy val root = Project(id = baseName, base = file("."))
+lazy val root = Project(id = baseNameL, base = file("."))
   .enablePlugins(BuildInfoPlugin)
   .enablePlugins(JavaAppPackaging, DebianPlugin)
   .settings(commonSettings)
@@ -139,5 +139,3 @@ lazy val root = Project(id = baseName, base = file("."))
   .settings(useNativeZip) // cf. https://github.com/sbt/sbt-native-packager/issues/334
   .settings(pkgDebianSettings)
   .settings(publishSettings)
-
-

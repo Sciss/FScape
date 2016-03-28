@@ -2,7 +2,7 @@
  *  EnableDummyAction.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -17,24 +17,19 @@
 
 package de.sciss.fscape.gui;
 
-import java.awt.event.ActionEvent;
-import javax.swing.Action;
-
 import de.sciss.gui.MenuAction;
 
-/**
- *  @author		Hanns Holger Rutz
- *  @version	0.56, 05-May-06
- */
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+
 public class EnableDummyAction
-extends MenuAction
-{
-	public EnableDummyAction( Action dummy )
-	{
-		super();
-		mimic( dummy );
-		setEnabled( true );
-	}
-	
-	public void actionPerformed( ActionEvent e ) {}
+        extends MenuAction {
+    public EnableDummyAction(Action dummy) {
+        super();
+        mimic(dummy);
+        setEnabled(true);
+    }
+
+    public void actionPerformed(ActionEvent e) {
+    }
 }

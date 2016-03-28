@@ -2,7 +2,7 @@
  *  Curve.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -23,7 +23,7 @@ import java.util.*;
 public class Curve
 implements Cloneable
 {
-// -------- public Variablen --------
+// -------- public variables --------
 
 	public static final int	TYPE_DIA		= 0;
 	public static final int	TYPE_ORTHO		= 1;
@@ -35,18 +35,18 @@ implements Cloneable
 	public	ParamSpace	vSpace;
 	public	int			type;
 
-// -------- private Variablen --------
+// -------- private variables --------
 
-	protected Vector	points;		// Element = DoublePoints
+	protected Vector<DoublePoint>	points;		// Element = DoublePoints
 
-// -------- public Methoden --------
+// -------- public methods --------
 
 	public Curve( ParamSpace hSpace, ParamSpace vSpace, int type )
 	{
 		this.hSpace	= hSpace;
 		this.vSpace	= vSpace;
 		this.type	= type;
-		points		= new Vector();
+		points		= new Vector<DoublePoint>();
 	}
 
 	public Curve( ParamSpace hSpace, ParamSpace vSpace )
@@ -62,7 +62,7 @@ implements Cloneable
 		this.hSpace	= src.hSpace;
 		this.vSpace	= src.vSpace;
 		this.type	= src.type;
-		points		= (Vector) src.points.clone();
+		points		= (Vector<DoublePoint>) src.points.clone();
 	}
 
 	public Object clone()
@@ -148,9 +148,9 @@ implements Cloneable
 		DoublePoint pt = null;
 	
 		try {
-			pt = (DoublePoint) points.elementAt( index );
+			pt = points.elementAt( index );
 		}
-		catch( IndexOutOfBoundsException e ) {}
+		catch( IndexOutOfBoundsException ignored) {}
 		
 		return pt;
 	}
@@ -187,8 +187,8 @@ implements Cloneable
 		int			index1, index2, index3;
 		
 		if( size == 0 ) return Double.POSITIVE_INFINITY;					// keine Punkte
-		pt1 = (DoublePoint) points.firstElement();
-		pt2 = (DoublePoint) points.lastElement();
+		pt1 = points.firstElement();
+		pt2 = points.lastElement();
 		if( pt1.x > x ) return Double.NEGATIVE_INFINITY;	// zu klein
 		if( pt2.x < x ) return Double.POSITIVE_INFINITY;	// zu gross
 		
@@ -199,7 +199,7 @@ implements Cloneable
 		// weiterverfolgen, in der das gesuchte X liegt		
 		while( index1 + 1 < index2 ) {
 			index3	= (index1 + index2) / 2;		// "floor"
-			pt3		= (DoublePoint) points.elementAt( index3 );
+			pt3		= points.elementAt( index3 );
 			if( pt3.x > x ) {
 				pt2		= pt3;
 				index2	= index3;
@@ -246,14 +246,14 @@ implements Cloneable
 		Param		newX, newY;
 
 		for( int i = 0; i < src.points.size(); i++ ) {
-			pt		= (DoublePoint) src.points.elementAt( i );
+			pt		= src.points.elementAt( i );
 			newX	= Param.transform( new Param( pt.x, src.hSpace.unit ), destHSpace.unit,
 									   hRef, stream );
 			newY	= Param.transform( new Param( pt.y, src.vSpace.unit ), destVSpace.unit,
 									   vRef, stream );
 
 			if( (newX != null) && (newY != null) ) {
-				dest.addPoint( newX.val, newY.val );
+				dest.addPoint( newX.value, newY.value);
 			}
 		}
 		
@@ -286,8 +286,8 @@ implements Cloneable
 			floor		= (int) Math.floor( startIndex );
 			ceil		= (int) Math.ceil( startIndex );
 			
-			floorPt 	= (DoublePoint) c.points.elementAt( floor );
-			ceilPt		= (DoublePoint) c.points.elementAt( ceil );
+			floorPt 	= c.points.elementAt( floor );
+			ceilPt		= c.points.elementAt( ceil );
 
 			predPt		= new DoublePoint( start, floorPt.y + (startIndex - floor) *
 										   (ceilPt.y - floorPt.y) );
@@ -297,8 +297,8 @@ implements Cloneable
 			floor		= (int) Math.floor( endIndex );
 			ceil		= (int) Math.ceil( endIndex );
 			
-			floorPt 	= (DoublePoint) c.points.elementAt( floor );
-			ceilPt		= (DoublePoint) c.points.elementAt( ceil );
+			floorPt 	= c.points.elementAt( floor );
+			ceilPt		= c.points.elementAt( ceil );
 
 			lastPt		= new DoublePoint( end, floorPt.y + (endIndex - floor) *
 										   (ceilPt.y - floorPt.y) );
@@ -308,7 +308,7 @@ implements Cloneable
 			integral = 0.0;
 			for( int i = firstIndex; i <= lastIndex; i++ ) {
 				
-				succPt		= (DoublePoint) c.points.elementAt( i );
+				succPt		= c.points.elementAt( i );
 				integral   += (succPt.x - predPt.x) * (predPt.y + (succPt.y - predPt.y) / 2);
 				predPt		= succPt;
 			}
@@ -323,15 +323,15 @@ implements Cloneable
 			floor		= (int) Math.floor( startIndex );
 			ceil		= (int) Math.ceil( startIndex );
 			
-			floorPt 	= (DoublePoint) c.points.elementAt( floor );
-			ceilPt		= (DoublePoint) c.points.elementAt( ceil );
+			floorPt 	= c.points.elementAt( floor );
+			ceilPt		= c.points.elementAt( ceil );
 			
 			//					  vvv 0...1 (quasi Gewichtung zwischen floor+ceil)
 			return( floorPt.y + (startIndex - floor) * (ceilPt.y - floorPt.y) );
 		}
 	}
 	
-// -------- StringComm Methoden --------
+// -------- StringComm methods --------
 
 	public String toString()
 	{
@@ -340,7 +340,7 @@ implements Cloneable
 		strBuf = new StringBuffer( hSpace.toString() + ';' + vSpace.toString() + ';' + type );
 		
 		for( int i = 0; i < points.size(); i++ ) {
-			strBuf.append( ";" + ((DoublePoint) points.elementAt( i )).toString() );
+			strBuf.append( ";" + points.elementAt( i ).toString() );
 		}
 		
 		return( strBuf.toString() );

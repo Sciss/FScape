@@ -2,7 +2,7 @@
  *  MindmachineOp.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -13,158 +13,165 @@
 
 package de.sciss.fscape.op;
 
-import java.io.*;
+import de.sciss.fscape.gui.GroupLabel;
+import de.sciss.fscape.gui.OpIcon;
+import de.sciss.fscape.gui.PropertyGUI;
+import de.sciss.fscape.prop.OpPrefs;
+import de.sciss.fscape.prop.Prefs;
+import de.sciss.fscape.prop.Presets;
+import de.sciss.fscape.prop.PropertyArray;
+import de.sciss.fscape.spect.Fourier;
+import de.sciss.fscape.spect.SpectFrame;
+import de.sciss.fscape.spect.SpectStream;
+import de.sciss.fscape.spect.SpectStreamSlot;
+import de.sciss.fscape.util.Constants;
+import de.sciss.fscape.util.Param;
+import de.sciss.fscape.util.Slots;
+import de.sciss.fscape.util.Util;
 
-import de.sciss.fscape.gui.*;
-import de.sciss.fscape.prop.*;
-import de.sciss.fscape.spect.*;
-import de.sciss.fscape.util.*;
+import java.io.EOFException;
+import java.io.IOException;
 
-/**
- *  @version	0.71, 14-Nov-07
- */
 public class MindmachineOp
-extends Operator
-{
-// -------- public Variablen --------
+        extends Operator {
 
-// -------- private Variablen --------
+// -------- private variables --------
 
-	protected static final String defaultName = "Mindmachine";
+    protected static final String defaultName = "Mindmachine";
 
-	protected static Presets		static_presets	= null;
-	protected static Prefs			static_prefs	= null;
-	protected static PropertyArray	static_pr		= null;
+    protected static Presets		static_presets	= null;
+    protected static Prefs			static_prefs	= null;
+    protected static PropertyArray	static_pr		= null;
 
-	// Properties (defaults)
-	private static final int PR_ANGLE			= 0;		// pr.para
+    // Properties (defaults)
+    private static final int PR_ANGLE			= 0;		// pr.para
 
-	private static final String PRN_ANGLE		= "Angle";
+    private static final String PRN_ANGLE		= "Angle";
 
-	// Slots
-	protected static final int SLOT_INPUT1		= 0;
-	protected static final int SLOT_INPUT2		= 1;
-	protected static final int SLOT_OUTPUT		= 2;
+    // Slots
+    protected static final int SLOT_INPUT1		= 0;
+    protected static final int SLOT_INPUT2		= 1;
+    protected static final int SLOT_OUTPUT		= 2;
 
-	// Properties (defaults)
+    // Properties (defaults)
 
-	private static final Param	prPara[]		= { null };
-	private static final String	prParaName[]	= { PRN_ANGLE };
+    private static final Param	prPara[]		= { null };
+    private static final String	prParaName[]	= { PRN_ANGLE };
 
-// -------- public Methoden --------
-	// public Container createGUI( int type );
+// -------- public methods --------
+    // public Container createGUI( int type );
 
-	public MindmachineOp()
-	{
-		super();
-		
-		// initialize only in the first instance
-		// preferences laden
-		if( static_prefs == null ) {
-			static_prefs = new OpPrefs( getClass(), getDefaultPrefs() );
-		}
-		// propertyarray defaults
-		if( static_pr == null ) {
-			static_pr = new PropertyArray();
+    public MindmachineOp()
+    {
+        super();
+
+        // initialize only in the first instance
+        // preferences laden
+        if( static_prefs == null ) {
+            static_prefs = new OpPrefs( getClass(), getDefaultPrefs() );
+        }
+        // propertyarray defaults
+        if( static_pr == null ) {
+            static_pr = new PropertyArray();
 
 //			static_pr.intg		= prIntg;
 //			static_pr.intgName	= prIntgName;
-			static_pr.para		= prPara;
-			static_pr.para[ PR_ANGLE ]		= new Param(  25.0, Param.NONE );
-			static_pr.paraName	= prParaName;
+            static_pr.para		= prPara;
+            static_pr.para[ PR_ANGLE ]		= new Param(  25.0, Param.NONE );
+            static_pr.paraName	= prParaName;
 
-			static_pr.superPr	= Operator.op_static_pr;
-		}
-		// default preset
-		if( static_presets == null ) {
-			static_presets = new Presets( getClass(), static_pr.toProperties( true ));
-		}
-				
-		// superclass-Felder �bertragen
-		opName		= "MindmachineOp";
-		prefs		= static_prefs;
-		presets		= static_presets;
-		pr			= (PropertyArray) static_pr.clone();
+            static_pr.superPr	= Operator.op_static_pr;
+        }
+        // default preset
+        if( static_presets == null ) {
+            static_presets = new Presets( getClass(), static_pr.toProperties( true ));
+        }
 
-		// slots
-		slots.addElement( new SpectStreamSlot( this, Slots.SLOTS_READER, "in1" ));		// SLOT_INPUT1
-		slots.addElement( new SpectStreamSlot( this, Slots.SLOTS_READER, "in2" ));		// SLOT_INPUT2
-		slots.addElement( new SpectStreamSlot( this, Slots.SLOTS_WRITER ));		// SLOT_OUTPUT
+        // superclass-Felder uebertragen
+        opName		= "MindmachineOp";
+        prefs		= static_prefs;
+        presets		= static_presets;
+        pr			= (PropertyArray) static_pr.clone();
 
-		// icon						// XXX
-		icon = new OpIcon( this, OpIcon.ID_FLIPFREQ, defaultName );
-	}
+        // slots
+        slots.addElement( new SpectStreamSlot( this, Slots.SLOTS_READER, "in1" ));		// SLOT_INPUT1
+        slots.addElement( new SpectStreamSlot( this, Slots.SLOTS_READER, "in2" ));		// SLOT_INPUT2
+        slots.addElement( new SpectStreamSlot( this, Slots.SLOTS_WRITER ));		// SLOT_OUTPUT
 
-// -------- Runnable Methoden --------
+        // icon						// XXX
+        icon = new OpIcon( this, OpIcon.ID_FLIPFREQ, defaultName );
+    }
 
-	public void run()
-	{
-		runInit();		// superclass
+// -------- Runnable methods --------
 
-		// Haupt-Variablen fuer den Prozess
-		int				ch, i, j, k, m;
-		double			d1, d2;
+    public void run()
+    {
+        runInit();		// superclass
 
-		SpectStreamSlot[]	runInSlot	= new SpectStreamSlot[ 2 ];
-		SpectStreamSlot	runOutSlot;
-		SpectStream[]	runInStream		= new SpectStream[ 2 ];
-		SpectStream		runOutStream	= null;
+        // Haupt-Variablen fuer den Prozess
+        int				ch, i, j, k, m;
+        double			d1, d2;
 
-		SpectFrame[]	runInFr			= new SpectFrame[ 2 ];
-		SpectFrame		runOutFr		= null;
-	
-		// Ziel-Frame Berechnung
-		int[]			srcBands	= new int[ 2 ];
-		int				fftSize, fullFFTsize, complexFFTsize;
-		float[]			convBuf1, convBuf2;
-		float[][]		fftBuf;
-		float[]			win;
-		int				readDone, oldReadDone;
-		int[]			phase			= new int[2];
-		
-topLevel:
-		try {
-			// ------------------------------ Input-Slot ------------------------------
-			for( i = 0; i < 2; i++ ) {
-				runInSlot[i] = (SpectStreamSlot) slots.elementAt( SLOT_INPUT1 + i );
-				if( runInSlot[i].getLinked() == null ) {
-					runStop();	// threadDead = true -> folgendes for() wird �bersprungen
-				}
-				// diese while Schleife ist n�tig, da beim initReader ein Pause eingelegt werden kann
-				// und die InterruptException ausgel�st wird; danach versuchen wir es erneut
-				for( boolean initDone = false; !initDone && !threadDead; ) {
-					try {
-						runInStream[i]	= runInSlot[i].getDescr();	// throws InterruptedException
-						initDone		= true;
-						srcBands[i]		= runInStream[i].bands;
-					}
-					catch( InterruptedException e ) {}
-					runCheckPause();
-				}
-			}
-			if( threadDead ) break topLevel;
+        SpectStreamSlot[]	runInSlot	= new SpectStreamSlot[ 2 ];
+        SpectStreamSlot	runOutSlot;
+        SpectStream[]	runInStream		= new SpectStream[ 2 ];
+        SpectStream		runOutStream;
 
-			// ------------------------------ Output-Slot ------------------------------
-			runOutSlot					= (SpectStreamSlot) slots.elementAt( SLOT_OUTPUT );
-			runOutStream				= new SpectStream( runInStream[0] );
-			runOutSlot.initWriter( runOutStream );
+        SpectFrame[]	runInFr			= new SpectFrame[ 2 ];
+        SpectFrame		runOutFr;
 
-			// ------------------------------ Vorberechnungen ------------------------------
+        // Ziel-Frame Berechnung
+        int[]			srcBands	= new int[ 2 ];
+        int				fftSize, fullFFTsize, complexFFTsize;
+        float[]			convBuf1, convBuf2;
+        float[][]		fftBuf;
+        float[]			win;
+        int				readDone, oldReadDone;
+        int[]			phase			= new int[2];
 
-			fftSize		= srcBands[0] - 1;
-			fullFFTsize	= fftSize << 1;
-			complexFFTsize = fullFFTsize << 1;
-			fftBuf		= new float[2][ complexFFTsize ];
-			win			= new float[ fullFFTsize ];
-			
-			d1 = 1.0 / (double) fullFFTsize * Math.PI;
-			for( i = 0; i < fullFFTsize; i++ ) {
-				d2		 = Math.cos( i * d1 );
-				win[ i ] = (float) (d2 * d2);
-			}
+    topLevel:
+        try {
+            // ------------------------------ Input-Slot ------------------------------
+            for( i = 0; i < 2; i++ ) {
+                runInSlot[i] = slots.elementAt( SLOT_INPUT1 + i );
+                if( runInSlot[i].getLinked() == null ) {
+                    runStop();	// threadDead = true -> folgendes for() wird uebersprungen
+                }
+                // diese while Schleife ist noetig, da beim initReader ein Pause eingelegt werden kann
+                // und die InterruptException ausgeloest wird; danach versuchen wir es erneut
+                for( boolean initDone = false; !initDone && !threadDead; ) {
+                    try {
+                        runInStream[i]	= runInSlot[i].getDescr();	// throws InterruptedException
+                        initDone		= true;
+                        srcBands[i]		= runInStream[i].bands;
+                    }
+                    catch( InterruptedException ignored) {}
+                    runCheckPause();
+                }
+            }
+            if( threadDead ) break topLevel;
 
-			phase[0] = (int) (pr.para[ PR_ANGLE ].val / 100.0 * fullFFTsize + 0.5) % fullFFTsize;
-			phase[1] = (phase[0] + fftSize) % fullFFTsize;
+            // ------------------------------ Output-Slot ------------------------------
+            runOutSlot					= slots.elementAt( SLOT_OUTPUT );
+            runOutStream				= new SpectStream( runInStream[0] );
+            runOutSlot.initWriter( runOutStream );
+
+            // ------------------------------ Vorberechnungen ------------------------------
+
+            fftSize		= srcBands[0] - 1;
+            fullFFTsize	= fftSize << 1;
+            complexFFTsize = fullFFTsize << 1;
+            fftBuf		= new float[2][ complexFFTsize ];
+            win			= new float[ fullFFTsize ];
+
+            d1 = 1.0 / (double) fullFFTsize * Math.PI;
+            for( i = 0; i < fullFFTsize; i++ ) {
+                d2		 = Math.cos( i * d1 );
+                win[ i ] = (float) (d2 * d2);
+            }
+
+            phase[0] = (int) (pr.para[ PR_ANGLE ].value / 100.0 * fullFFTsize + 0.5) % fullFFTsize;
+            phase[1] = (phase[0] + fftSize) % fullFFTsize;
 
 //convBuf2 = fftBuf[0];
 //Util.clear( convBuf2 );
@@ -181,151 +188,148 @@ topLevel:
 //}
 //Debug.view( convBuf2, "win overlap" );
 
-			// ------------------------------ Hauptschleife ------------------------------
-			runSlotsReady();
+            // ------------------------------ Hauptschleife ------------------------------
+            runSlotsReady();
 mainLoop:	while( !threadDead ) {
-			// ---------- Frame einlesen ----------
-				for( readDone = 0; (readDone < 2) && !threadDead; ) {
-					oldReadDone = readDone;
-					for( i = 0; i < 2; i++ ) {
-						try {
-							if( runInStream[ i ].framesReadable() > 0 ) {
-								runInFr[ i ] = runInSlot[ i ].readFrame();
-								readDone++;
-							}
-						}
-						catch( InterruptedException e ) {}
-						catch( EOFException e ) {
-							break mainLoop;
-						}
-						runCheckPause();
-					}
+            // ---------- Frame einlesen ----------
+                for( readDone = 0; (readDone < 2) && !threadDead; ) {
+                    oldReadDone = readDone;
+                    for( i = 0; i < 2; i++ ) {
+                        try {
+                            if( runInStream[ i ].framesReadable() > 0 ) {
+                                runInFr[ i ] = runInSlot[ i ].readFrame();
+                                readDone++;
+                            }
+                        }
+                        catch( InterruptedException ignored) {}
+                        catch( EOFException e ) {
+                            break mainLoop;
+                        }
+                        runCheckPause();
+                    }
 
-					if( oldReadDone == readDone ) {		// konnte nix gelesen werden
-						try {
-							 Thread.sleep( 500 );	// ...deshalb kurze Pause
-						}
-						catch( InterruptedException e ) {}	// mainLoop wird gleich automatisch verlassen
-						runCheckPause();
-					}
-				}
-				if( threadDead ) break mainLoop;
+                    if (oldReadDone == readDone) {        // konnte nix gelesen werden
+                        try {
+                            Thread.sleep(500);    // ...deshalb kurze Pause
+                        } catch (InterruptedException ignored) {}    // mainLoop wird gleich automatisch verlassen
+                        runCheckPause();
+                    }
+                }
+                if( threadDead ) break mainLoop;
 
-				runOutFr	= runOutStream.allocFrame();
+                runOutFr	= runOutStream.allocFrame();
 
-			// ---------- Process: Ziel-Frame berechnen ----------
+            // ---------- Process: Ziel-Frame berechnen ----------
 
-				for( ch = 0; ch < runOutStream.chanNum; ch++ ) {
-					for( k = 0; k < 2; k++ ) {
-						convBuf1	= runInFr[k].data[ ch ];
-						convBuf2	= fftBuf[k];
+                for( ch = 0; ch < runOutStream.chanNum; ch++ ) {
+                    for( k = 0; k < 2; k++ ) {
+                        convBuf1	= runInFr[k].data[ ch ];
+                        convBuf2	= fftBuf[k];
 
-						// calculate complex log spectrum :
-						// Re( target ) = Log( Mag( source ))
-						// Im( target ) = Phase( source )
-						// convBuf1 is already in polar style
-						// -> fftBuf will be in rect style
-						
-						for( i = 0; i <= fullFFTsize; ) {
-							convBuf2[ i ] = (float) Math.log( Math.max( 1.0e-24, convBuf1[ i ]));		// Re( target )
-							i++;
-							convBuf2[ i ] = convBuf1[ i ];		// Im( target )
-							i++;
-						}
-					
-						// make full spectrum (negative frequencies = conjugate positive frequencies)
-						for( i = fullFFTsize + 2, j = fullFFTsize - 2; i < complexFFTsize; j -= 2 ) {
-												// bug but nice?  - 1
-							convBuf2[ i++ ] = convBuf2[ j ];
-							convBuf2[ i++ ] = -convBuf2[ j+1 ];
-						}
-						// cepstrum domain
-						Fourier.complexTransform( convBuf2, fullFFTsize, Fourier.INVERSE );
-						
-						// window
-						m = phase[k];
-						for( i = 0; m < fullFFTsize; ) {
-							convBuf2[ i++ ] *= win[ m ];
-							convBuf2[ i++ ] *= win[ m++ ];
-						}
-						for( m = 0; i < complexFFTsize; ) {
-							convBuf2[ i++ ] *= win[ m ];
-							convBuf2[ i++ ] *= win[ m++ ];
-						}
-					}
-					
-					// mix cepstra
-					convBuf1	= fftBuf[0];
-					convBuf2	= runOutFr.data[ ch ];
-					Util.add( fftBuf[1], 0, convBuf1, 0, complexFFTsize );
-					
-					// back to frequency domain
-					Fourier.complexTransform( convBuf1, fullFFTsize, Fourier.FORWARD );
+                        // calculate complex log spectrum :
+                        // Re( target ) = Log( Mag( source ))
+                        // Im( target ) = Phase( source )
+                        // convBuf1 is already in polar style
+                        // -> fftBuf will be in rect style
 
-					// calculate real exponential spectrum :
-					// Mag( target ) = Exp( Re( source ))
-					// Phase( target ) = Im( source )
-					// ->convBuf2 shall be polar style, that makes things easy
+                        for( i = 0; i <= fullFFTsize; ) {
+                            convBuf2[ i ] = (float) Math.log( Math.max( 1.0e-24, convBuf1[ i ]));		// Re( target )
+                            i++;
+                            convBuf2[ i ] = convBuf1[ i ];		// Im( target )
+                            i++;
+                        }
 
-					for( i = 0; i <= fullFFTsize; ) {
-						convBuf2[ i ] = (float) Math.exp( convBuf1[ i ]);
-						i++;
-						convBuf2[ i ] = convBuf1[ i ];
-						i++;
-					}
-				}
-				// Berechnung fertich
+                        // make full spectrum (negative frequencies = conjugate positive frequencies)
+                        for( i = fullFFTsize + 2, j = fullFFTsize - 2; i < complexFFTsize; j -= 2 ) {
+                                                // bug but nice?  - 1
+                            convBuf2[ i++ ] = convBuf2[ j ];
+                            convBuf2[ i++ ] = -convBuf2[ j+1 ];
+                        }
+                        // cepstrum domain
+                        Fourier.complexTransform( convBuf2, fullFFTsize, Fourier.INVERSE );
 
-				runInSlot[0].freeFrame( runInFr[0] );
-				runInSlot[1].freeFrame( runInFr[1] );
+                        // window
+                        m = phase[k];
+                        for( i = 0; m < fullFFTsize; ) {
+                            convBuf2[ i++ ] *= win[ m ];
+                            convBuf2[ i++ ] *= win[ m++ ];
+                        }
+                        for( m = 0; i < complexFFTsize; ) {
+                            convBuf2[ i++ ] *= win[ m ];
+                            convBuf2[ i++ ] *= win[ m++ ];
+                        }
+                    }
 
-				for( boolean writeDone = false; (writeDone == false) && !threadDead; ) {
-					try {	// Unterbrechung
-						runOutSlot.writeFrame( runOutFr );	// throws InterruptedException
-						writeDone = true;
-						runFrameDone( runOutSlot, runOutFr  );
-						runOutStream.freeFrame( runOutFr );
-					}
-					catch( InterruptedException e ) {}	// mainLoop wird eh gleich verlassen
-					runCheckPause();
-				}
-			} // Ende Hauptschleife
+                    // mix cepstra
+                    convBuf1	= fftBuf[0];
+                    convBuf2	= runOutFr.data[ ch ];
+                    Util.add( fftBuf[1], 0, convBuf1, 0, complexFFTsize );
 
-			runInStream[0].closeReader();
-			runInStream[1].closeReader();
-			runOutStream.closeWriter();
+                    // back to frequency domain
+                    Fourier.complexTransform( convBuf1, fullFFTsize, Fourier.FORWARD );
 
-		} // break topLevel
+                    // calculate real exponential spectrum :
+                    // Mag( target ) = Exp( Re( source ))
+                    // Phase( target ) = Im( source )
+                    // ->convBuf2 shall be polar style, that makes things easy
 
-		catch( IOException e ) {
-			runQuit( e );
-			return;
-		}
-		catch( SlotAlreadyConnectedException e ) {
-			runQuit( e );
-			return;
-		}
+                    for( i = 0; i <= fullFFTsize; ) {
+                        convBuf2[ i ] = (float) Math.exp( convBuf1[ i ]);
+                        i++;
+                        convBuf2[ i ] = convBuf1[ i ];
+                        i++;
+                    }
+                }
+                // calculation done
+
+                runInSlot[0].freeFrame( runInFr[0] );
+                runInSlot[1].freeFrame( runInFr[1] );
+
+                for( boolean writeDone = false; (!writeDone) && !threadDead; ) {
+                    try {	// Unterbrechung
+                        runOutSlot.writeFrame( runOutFr );	// throws InterruptedException
+                        writeDone = true;
+                        runFrameDone( runOutSlot, runOutFr  );
+                        runOutStream.freeFrame( runOutFr );
+                    }
+                    catch( InterruptedException ignored) {}	// mainLoop wird eh gleich verlassen
+                    runCheckPause();
+                }
+            } // end of main loop
+
+            runInStream[0].closeReader();
+            runInStream[1].closeReader();
+            runOutStream.closeWriter();
+
+        } // break topLevel
+
+        catch( IOException e ) {
+            runQuit( e );
+            return;
+        }
+        catch( SlotAlreadyConnectedException e ) {
+            runQuit( e );
+            return;
+        }
 //		catch( OutOfMemoryError e ) {
 //			abort( e );
 //			return;
 //		}
 
-		runQuit( null );
-	}
+        runQuit( null );
+    }
 
-// -------- GUI Methoden --------
+// -------- GUI methods --------
 
-	public PropertyGUI createGUI( int type )
-	{
-		PropertyGUI		gui;
+    public PropertyGUI createGUI(int type) {
+        PropertyGUI gui;
 
-		if( type != GUI_PREFS ) return null;
+        if (type != GUI_PREFS) return null;
 
-		gui = new PropertyGUI(
-			"gl"+GroupLabel.NAME_GENERAL+"\n" +
-			"lbShift;pf"+Constants.unsignedModSpace+",pr"+PRN_ANGLE+"\n" );
+        gui = new PropertyGUI(
+                "gl" + GroupLabel.NAME_GENERAL + "\n" +
+                        "lbShift;pf" + Constants.unsignedModSpace + ",pr" + PRN_ANGLE + "\n");
 
-		return gui;
-	}
+        return gui;
+    }
 }
-// class MindmachineOp

@@ -2,7 +2,7 @@
  *  Filter.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -18,7 +18,7 @@ package de.sciss.fscape.util;
  */
 public class Filter
 {
-// -------- public Variablen --------
+// -------- public variables --------
 
 	public static final int	FLTSMPPERCROSSING	= 256;
 
@@ -34,7 +34,7 @@ public class Filter
 	
 	public static final int WIN_MAX				= 8;
 
-// -------- private Variablen --------
+// -------- private variables --------
 
 	protected static final String[] windowNames = {
 		"Hamming", "Blackman", "Kaiser \u03B2=4", "Kaiser \u03B2=5", "Kaiser \u03B2=6", "Kaiser \u03B2=8", "Rectangle",
@@ -61,7 +61,7 @@ public class Filter
 	};
 	
 		
-// -------- public Methoden --------
+// -------- public methods --------
 
 	/**
 	 *	Fuellt Array mit dB(A)-Gewichtungs-Faktoren
@@ -531,7 +531,7 @@ public class Filter
 		return energy;
 	}
 
-// -------- private Methoden --------
+// -------- private methods --------
 
 	protected static double calcBesselZero( double x )
 	{

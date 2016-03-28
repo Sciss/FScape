@@ -2,7 +2,7 @@
  *  Constants.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -92,11 +92,11 @@ public class Constants
 		spaces[ lfoHzSpace ]		= new ParamSpace(	      0.0,     1000.0, 0.01,   Param.ABS_HZ );
 	}
 
-// -------- private Variablen --------
+// -------- private variables --------
 
 	private static int uniqueID	= 0;
 
-// -------- public Methoden --------
+// -------- public methods --------
 
 
 	/**

@@ -2,7 +2,7 @@
  *  FlipFreqOp.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -13,24 +13,32 @@
 
 package de.sciss.fscape.op;
 
-import java.io.*;
+import de.sciss.fscape.gui.GroupLabel;
+import de.sciss.fscape.gui.OpIcon;
+import de.sciss.fscape.gui.PropertyGUI;
+import de.sciss.fscape.prop.OpPrefs;
+import de.sciss.fscape.prop.Prefs;
+import de.sciss.fscape.prop.Presets;
+import de.sciss.fscape.prop.PropertyArray;
+import de.sciss.fscape.spect.SpectFrame;
+import de.sciss.fscape.spect.SpectStream;
+import de.sciss.fscape.spect.SpectStreamSlot;
+import de.sciss.fscape.util.Constants;
+import de.sciss.fscape.util.Envelope;
+import de.sciss.fscape.util.Modulator;
+import de.sciss.fscape.util.Param;
+import de.sciss.fscape.util.Slots;
 
-import de.sciss.fscape.gui.*;
-import de.sciss.fscape.prop.*;
-import de.sciss.fscape.spect.*;
-import de.sciss.fscape.util.*;
+import java.io.EOFException;
+import java.io.IOException;
 
 /**
  *	Operator zum Umkehren der Frequenzverteilung
- *
- *  @version	0.71, 14-Nov-07
  */
 public class FlipFreqOp
-extends Operator
-{
-// -------- public Variablen --------
+		extends Operator {
 
-// -------- private Variablen --------
+// -------- private variables --------
 
 	protected static final String defaultName = "Flip freq";
 
@@ -94,7 +102,7 @@ extends Operator
 	private static final Envelope	prEnvl[]		= { null, null, null, null };
 	private static final String	prEnvlName[]	= { PRN_MIDMODENV, PRN_SHIFTMODENV, PRN_HIMODENV, PRN_LOMODENV };
 	
-// -------- public Methoden --------
+// -------- public methods --------
 	// public Container createGUI( int type );
 
 	public FlipFreqOp()
@@ -140,7 +148,7 @@ extends Operator
 			static_presets = new Presets( getClass(), static_pr.toProperties( true ));
 		}
 				
-		// superclass-Felder �bertragen		
+		// superclass-Felder uebertragen
 		opName		= "FlipFreqOp";
 		prefs		= static_prefs;
 		presets		= static_presets;
@@ -154,7 +162,7 @@ extends Operator
 		icon = new OpIcon( this, OpIcon.ID_FLIPFREQ, defaultName );
 	}
 
-// -------- Runnable Methoden --------
+// -------- Runnable methods --------
 
 	public void run()
 	{
@@ -164,14 +172,14 @@ extends Operator
 		SpectStreamSlot	runInSlot;
 		SpectStreamSlot	runOutSlot;
 		SpectStream		runInStream		= null;
-		SpectStream		runOutStream	= null;
+		SpectStream		runOutStream;
 
 		SpectFrame		runInFr			= null;
 		SpectFrame		runOutFr		= null;
 	
 		// Berechnungs-Grundlagen; in Hz
 		Param			midBase, shiftBase, hiBase, loBase;
-		int				phaseFactor;		// beim Flipping mu� die Phase gedreht werden!
+		int				phaseFactor;		// beim Flipping muss die Phase gedreht werden!
 
 		// Modulations-Variablen
 		boolean			recalc			= true;		// false, wenn sich die Werte nicht geaendert haben
@@ -206,34 +214,34 @@ extends Operator
 		float	srcAmp, srcPhase;
 		double	destReal, destImg;
 
-topLevel:
+	topLevel:
 		try {
 			// ------------------------------ Input-Slot ------------------------------
-			runInSlot = (SpectStreamSlot) slots.elementAt( SLOT_INPUT );
+			runInSlot = slots.elementAt( SLOT_INPUT );
 			if( runInSlot.getLinked() == null ) {
-				runStop();	// threadDead = true -> folgendes for() wird �bersprungen
+				runStop();	// threadDead = true -> folgendes for() wird uebersprungen
 			}
-			// diese while Schleife ist n�tig, da beim initReader ein Pause eingelegt werden kann
-			// und die InterruptException ausgel�st wird; danach versuchen wir es erneut
+			// diese while Schleife ist noetig, da beim initReader ein Pause eingelegt werden kann
+			// und die InterruptException ausgeloest wird; danach versuchen wir es erneut
 			for( boolean initDone = false; !initDone && !threadDead; ) {
 				try {
 					runInStream	= runInSlot.getDescr();	// throws InterruptedException
 					initDone = true;
 				}
-				catch( InterruptedException e ) {}
+				catch( InterruptedException ignored) {}
 				runCheckPause();
 			}
 			if( threadDead ) break topLevel;
 
-			// srcBand[ x ] ist das Band, da� f�r das x-te destBand ausgelesen werden mu�
+			// srcBand[ x ] ist das Band, das fuer das x-te destBand ausgelesen werden muss
 			srcBands	= new int[ runInStream.bands + 1 ];		// ein Overhead-Band!
-			// dazugeh�rige Gewichtung 0...100%; zur Interpolation wird addiert
+			// dazugehoerige Gewichtung 0...100%; zur Interpolation wird addiert
 			srcWeights	= new float[ runInStream.bands + 1 ];
 			// Frequency spacing (linear!)
 			freqSpacing	= (runInStream.hiFreq - runInStream.loFreq) / runInStream.bands;
 
 			// ------------------------------ Output-Slot ------------------------------
-			runOutSlot	= (SpectStreamSlot) slots.elementAt( SLOT_OUTPUT );
+			runOutSlot	= slots.elementAt( SLOT_OUTPUT );
 			runOutStream = new SpectStream( runInStream );
 			runOutSlot.initWriter( runOutStream );
 
@@ -245,7 +253,7 @@ topLevel:
 				phaseFactor = +1;
 			}
 
-			// Konstanten
+			// constants
 			midBase		= Param.transform( pr.para[ PR_MIDFREQ ],   Param.ABS_HZ, null,    runInStream );
 			shiftBase	= Param.transform( pr.para[ PR_SHIFTFREQ ], Param.ABS_HZ, midBase, runInStream );
 			hiBase		= Param.transform( pr.para[ PR_HIFREQ ],    Param.ABS_HZ, midBase, runInStream );
@@ -280,41 +288,41 @@ mainLoop:	while( !threadDead ) {
 			// ---------- Process: (modulierte) Variablen ----------
 				if( pr.bool[ PR_MIDMOD ]) {
 					foo	= midMod.calc();
-					if( Math.abs( foo.val - midFreq.val ) >= 0.1 ) {		// 0.1 Hz treshhold improves speed
+					if( Math.abs( foo.value - midFreq.value) >= 0.1 ) {		// 0.1 Hz treshhold improves speed
 						midFreq		= foo;
 						recalc		= true;
 					}
 				}
 				if( pr.bool[ PR_SHIFTMOD ]) {
 					foo	= shiftMod.calc();
-					if( Math.abs( foo.val - shiftFreq.val ) >= 0.1 ) {
+					if( Math.abs( foo.value - shiftFreq.value) >= 0.1 ) {
 						shiftFreq	= foo;
 						recalc		= true;
 					}
 				}
 				if( pr.bool[ PR_HIMOD ]) {
 					foo	= hiMod.calc();
-					if( Math.abs( foo.val - hiFreq.val ) >= 0.1 ) {
+					if( Math.abs( foo.value - hiFreq.value) >= 0.1 ) {
 						hiFreq		= foo;
 						recalc		= true;
 					}
 				}
 				if( pr.bool[ PR_LOMOD ]) {
 					foo = loMod.calc();
-					if( Math.abs( foo.val - loFreq.val ) >= 0.1 ) {
+					if( Math.abs( foo.value - loFreq.value) >= 0.1 ) {
 						loFreq		= foo;
 						recalc		= true;
 					}
 				}
 				
 			// ---------- Frame einlesen ----------
-	 			for( boolean readDone = false; (readDone == false) && !threadDead; ) {
+	 			for( boolean readDone = false; (!readDone) && !threadDead; ) {
 					try {
 						runInFr		= runInSlot.readFrame();	// throws InterruptedException
 						readDone	= true;
 						runOutFr	= runOutStream.allocFrame();
 					}
-					catch( InterruptedException e ) {}
+					catch( InterruptedException ignored) {}
 					catch( EOFException e ) {
 						break mainLoop;
 					}
@@ -326,8 +334,8 @@ mainLoop:	while( !threadDead ) {
 				if( recalc ) {									// something's changed...
 
 					// Scalierungen
-					loRange		= Math.max( 1, midFreq.val - loFreq.val );
-					hiRange		= Math.max( 1, hiFreq.val - midFreq.val );
+					loRange		= Math.max( 1, midFreq.value - loFreq.value);
+					hiRange		= Math.max( 1, hiFreq.value - midFreq.value);
 					hiScaling	= loRange / hiRange;
 					loScaling	= hiRange / loRange;
 							
@@ -336,11 +344,11 @@ mainLoop:	while( !threadDead ) {
 			
 						for( int band = 0; band <= runInStream.bands; band++ ) {	// ein Overhead-Band!
 				
-							destFreq = band * freqSpacing + runOutStream.loFreq - shiftFreq.val;
-							if( destFreq >= midFreq.val ) {
-								srcFreq = midFreq.val - (destFreq - midFreq.val) * hiScaling;
+							destFreq = band * freqSpacing + runOutStream.loFreq - shiftFreq.value;
+							if( destFreq >= midFreq.value) {
+								srcFreq = midFreq.value - (destFreq - midFreq.value) * hiScaling;
 							} else {
-								srcFreq = (midFreq.val - destFreq) * loScaling + midFreq.val;
+								srcFreq = (midFreq.value - destFreq) * loScaling + midFreq.value;
 							}
 			
 							srcBand				= (float) ((srcFreq - runInStream.loFreq) / freqSpacing);
@@ -352,11 +360,11 @@ mainLoop:	while( !threadDead ) {
 					} else {			// not flipped
 						for( int band = 0; band <= runInStream.bands; band++ ) {
 				
-							destFreq = band * freqSpacing + runOutStream.loFreq + shiftFreq.val;
-							if( destFreq >= midFreq.val ) {
-								srcFreq = (destFreq - midFreq.val) * loScaling + midFreq.val;
+							destFreq = band * freqSpacing + runOutStream.loFreq + shiftFreq.value;
+							if( destFreq >= midFreq.value) {
+								srcFreq = (destFreq - midFreq.value) * loScaling + midFreq.value;
 							} else {
-								srcFreq = midFreq.val - (midFreq.val - destFreq) * hiScaling;
+								srcFreq = midFreq.value - (midFreq.value - destFreq) * hiScaling;
 							}
 			
 							srcBand				= (float) ((srcFreq - runInStream.loFreq) / freqSpacing);
@@ -442,21 +450,21 @@ bandLp:			for( int band = 0; band < runInStream.bands; band++ ) {
 						runOutFr.data[ ch ][ (band << 1) + SpectFrame.PHASE ] = phaseFactor *
 							(float) Math.atan2( destImg, destReal );
 					}
-				} // Berechnung fertich
+				} // calculation done
 
 				runInSlot.freeFrame( runInFr );
 
-				for( boolean writeDone = false; (writeDone == false) && !threadDead; ) {
+				for( boolean writeDone = false; (!writeDone) && !threadDead; ) {
 					try {	// Unterbrechung
 						runOutSlot.writeFrame( runOutFr );	// throws InterruptedException
 						writeDone = true;
 						runFrameDone( runOutSlot, runOutFr  );
 						runOutStream.freeFrame( runOutFr );
 					}
-					catch( InterruptedException e ) {}	// mainLoop wird eh gleich verlassen
+					catch( InterruptedException ignored) {}	// mainLoop wird eh gleich verlassen
 					runCheckPause();
 				}
-			} // Ende Hauptschleife
+			} // end of main loop
 
 			runInStream.closeReader();
 			runOutStream.closeWriter();
@@ -479,7 +487,7 @@ bandLp:			for( int band = 0; band < runInStream.bands; band++ ) {
 		runQuit( null );
 	}
 
-// -------- GUI Methoden --------
+// -------- GUI methods --------
 
 	public PropertyGUI createGUI( int type )
 	{
@@ -518,4 +526,3 @@ bandLp:			for( int band = 0; band < runInStream.bands; band++ ) {
 		return gui;
 	}
 }
-// class FlipFreqOp

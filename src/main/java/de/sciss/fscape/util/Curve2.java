@@ -2,7 +2,7 @@
  *  Curve2.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -18,7 +18,7 @@ package de.sciss.fscape.util;
  */
 public class Curve2
 {
-// -------- public Variablen --------
+// -------- public variables --------
 
 	public static final int	INT_LINEAR		= 0x000;
 	public static final int	INT_SPLINE		= 0x001;
@@ -29,21 +29,21 @@ public class Curve2
 	public static final int	TYPE_UNIPOLAR	= 0x010;
 
 	public	int			flags;
-	public	int			size;		// in x, y ; arrays d�rfen aber l�nger sein; mind. 2!
-	public	float[]		xs;			// nur im Bereich 0...1 ; Randpunkte nicht l�schen! Keine doppelten x
+	public	int			size;		// in x, y ; arrays duerfen aber laenger sein; mind. 2!
+	public	float[]		xs;			// nur im Bereich 0...1 ; Randpunkte nicht loeschen! Keine doppelten x
 	public	float[]		ys;
 	public	boolean		looped		= false;
 	public	float		loopStart	= 0.0f;
 	public	float		loopEnd		= 1.0f;
 	public	int			loopCount	= 1;
 
-// -------- private Variablen --------
+// -------- private variables --------
 
 	private boolean		valid		= false;
 //	private int			clcLpStart, clcLpEnd;
-	private float[]		yDrv		= null;		// zweite Ableitung f�r Spline-Interpolation
+	private float[]		yDrv		= null;		// zweite Ableitung fuer Spline-Interpolation
 
-// -------- public Methoden --------
+// -------- public methods --------
 
 	public Curve2( int flags )
 	{
@@ -209,7 +209,7 @@ public class Curve2
 		a[ off+len ]	= calc( stopX, idx );		// last value outside loop
 	}
 
-// -------- private Methoden --------
+// -------- private methods --------
 
 	private void validate()
 	{
@@ -295,7 +295,7 @@ public class Curve2
 				((a*a*a - a) * yDrv[ idxLo ] + (b*b*b - b) * yDrv[ idxHi ]) * (h*h) / 6.0f );
 	}
 
-// -------- StringComm Methoden --------
+// -------- StringComm methods --------
 /*
 	public String toString()
 	{

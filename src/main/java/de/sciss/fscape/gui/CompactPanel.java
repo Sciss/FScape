@@ -2,7 +2,7 @@
  *  CompactPanel.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -17,10 +17,10 @@
 
 package de.sciss.fscape.gui;
 
-import java.awt.*;
-import javax.swing.*;
-
 import de.sciss.gui.GUIUtil;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  *  A subclass of JPanel that automatically
@@ -32,83 +32,77 @@ import de.sciss.gui.GUIUtil;
  *	with blanks. When all elements have been added to the
  *	panel, you should call compact() once, and the springs
  *	are installed as in GUIUtil.makeCompactSpringGrid().
- *
- *  @author		Hanns Holger Rutz
- *  @version	0.71, 14-Nov-07
  */
 public class CompactPanel
-extends JPanel
-{
-	private int numColumns = 0, rowIdx = 0, columnIdx = 0;
+        extends JPanel {
 
-	public CompactPanel()
-	{
-		super( new SpringLayout() );
-	}
-	
-	public void addGadget( Component comp )
-	{
-		super.add( comp );
-		
-//		System.err.print( "adding "+comp.getClass().getName()+" at row "+rowIdx+" ; col "+columnIdx );
-		increaseColumnIndex();
-//		System.err.println( " ; now columnIdx = "+columnIdx+" ; numColumns = "+numColumns );
-	}
-	
-	/**
-	 *	Throws an AWTError to because you have to use addGadget()
-	 */
-	public Component add( Component comp )
-	{
-		throw new AWTError("CompactPanel.add");
-	}
+    private int numColumns = 0, rowIdx = 0, columnIdx = 0;
 
-	/**
-	 *	Throws an AWTError to because you have to use addGadget()
-	 */
-	public Component add( Component comp, int index )
-	{
-		throw new AWTError("CompactPanel.add");
-	}
-	
-	public void addEmptyColumn()
-	{
-		super.add( new JLabel() );
-		increaseColumnIndex();
-	}
+    public CompactPanel() {
+        super(new SpringLayout());
+    }
 
-	private void addEmptyColumns()
-	{
-		while( columnIdx < numColumns ) addEmptyColumn();
-	}
+    public void addGadget(Component comp) {
+        super.add(comp);
 
-	private void increaseColumnIndex()
-	{
-		columnIdx++;
-		if( columnIdx > numColumns ) {
-			for( int row = rowIdx - 1; row >= 0; row-- ) {
-				for( int col = numColumns, index = (row + 1) * numColumns; col < columnIdx; col++ ) {
-					super.add( new JLabel(), index );
-				}
-			}
-			numColumns = columnIdx;
-		}
-	}
-	
-	public void newLine()
-	{
-		if( rowIdx == 0 ) {
-			numColumns = columnIdx;
-		} else {
-			addEmptyColumns();
-		}
-		columnIdx = 0;
-		rowIdx++;
-	}
-	
-	public void compact()
-	{
-		addEmptyColumns();
-		GUIUtil.makeCompactSpringGrid( this, rowIdx + 1, numColumns, 0, 0, 4, 2 );
-	}
+        increaseColumnIndex();
+    }
+
+    /**
+     * Throws an AWTError to because you have to use addGadget()
+     */
+    public Component add(Component comp) {
+        throw new AWTError("CompactPanel.add");
+    }
+
+    /**
+     * Throws an AWTError to because you have to use addGadget()
+     */
+    public Component add(Component comp, int index) {
+        throw new AWTError("CompactPanel.add");
+    }
+
+    public void addEmptyColumn() {
+        super.add(new JLabel());
+        increaseColumnIndex();
+    }
+
+    private void addEmptyColumns() {
+        while (columnIdx < numColumns) addEmptyColumn();
+    }
+
+    private void increaseColumnIndex() {
+        columnIdx++;
+        if (columnIdx > numColumns) {
+            for (int row = rowIdx - 1; row >= 0; row--) {
+                for (int col = numColumns, index = (row + 1) * numColumns; col < columnIdx; col++) {
+                    super.add(new JLabel(), index);
+                }
+            }
+            numColumns = columnIdx;
+        }
+    }
+
+    public void newLine() {
+        if (rowIdx == 0) {
+            numColumns = columnIdx;
+        } else {
+            addEmptyColumns();
+        }
+        columnIdx = 0;
+        rowIdx++;
+    }
+
+    public void compact() {
+        compact(0, 0);
+    }
+
+    public void compact(int left, int top) {
+        compact(left, top, 4, 2);
+    }
+
+    public void compact(int left, int top, int padx, int pady) {
+        addEmptyColumns();
+        GUIUtil.makeCompactSpringGrid(this, rowIdx + 1, numColumns, left, top, padx, pady);
+    }
 }

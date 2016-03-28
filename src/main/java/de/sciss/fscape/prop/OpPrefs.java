@@ -2,7 +2,7 @@
  *  OpPrefs.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -13,31 +13,24 @@
 
 package de.sciss.fscape.prop;
 
-import java.util.*;
+import java.util.Properties;
 
 /**
  *	Klasse fuer die Operator-Preferences
- *
- *  @version	0.71, 15-Nov-07
  */
-// public synchronized class OpPrefs
 public class OpPrefs
-extends Prefs
-{
-// -------- public Klassenvariablen --------
+        extends Prefs {
+// -------- public static variables --------
 
-	public static final String PR_EDITDIM	= "OpEditDimensions";
+    public static final String PR_EDITDIM	= "OpEditDimensions";
 
-// -------- public Methoden --------
+// -------- public methods --------
 
-	/**
-	 *	Legt das Preferences Objekt an mit entsprechenden Default-Eintraegen
-	 *
-	 *	@param opName	Name des Operators, dient auch zur Filename-Kreierung
-	 */
-	public OpPrefs( Class owner, Properties defPrefs )
-	{
-		super( owner, defPrefs );
-	}
+    /**
+     *	Legt das Preferences Objekt an mit entsprechenden Default-Eintraegen
+     */
+    public OpPrefs( Class owner, Properties defPrefs )
+    {
+        super( owner, defPrefs );
+    }
 }
-// class OpPrefs

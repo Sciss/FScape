@@ -2,7 +2,7 @@
  *  ParamSpace.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -22,7 +22,7 @@ public class ParamSpace
 //implements Cloneable
 extends NumberSpace
 {
-// -------- public Variablen --------
+// -------- public variables --------
 
 //	/**
 //	 *	alle folgenden READ ONLY!
@@ -35,7 +35,7 @@ extends NumberSpace
 	public	double	inc;
 	public	int		unit;
 
-// -------- public Methoden --------
+// -------- public methods --------
 
 	public ParamSpace()
 	{
@@ -114,7 +114,7 @@ extends NumberSpace
 		return val;
 	}
 
-// -------- StringComm Methoden --------
+// -------- StringComm methods --------
 
 	public String toString()
 	{

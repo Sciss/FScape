@@ -2,7 +2,7 @@
  *  ProgressPanel.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -19,25 +19,21 @@
 
 package de.sciss.fscape.gui;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.GeneralPath;
-import java.awt.geom.Path2D;
-import javax.swing.*;
-
 import de.sciss.gui.GUIUtil;
 import de.sciss.gui.ProgressComponent;
 import de.sciss.icons.raphael.Shapes;
 
-/**
- *  @author		Hanns Holger Rutz
- *  @version	0.71, 30-Dec-06
- */
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.Path2D;
+
 public class ProgressPanel
-extends JPanel
-implements ProgressComponent
-{
+        extends JPanel
+        implements ProgressComponent {
+
     private final ProgressBar	pb;
     private final JLabel		lb;
     private final JButton	    ggCancel;
@@ -56,11 +52,14 @@ implements ProgressComponent
         // Shapes.Picker(p);
         final Shape icnShp = p.createTransformedShape(AffineTransform.getScaleInstance(0.5, 0.5));
 
+        final Color colrNormal      = getForeground ();
+        final Color colrDisabled    = new Color(colrNormal.getRGB () & 0xFFFFFF | 0x60000000, true);
+
         Icon icnCancel = new Icon() {
             @Override
             public void paintIcon(Component c, Graphics g, int x, int y) {
                 Graphics2D g2 = (Graphics2D) g;
-                g2.setColor(ggCancel.isEnabled() ? Color.black : Color.gray);
+                g2.setColor(ggCancel.isEnabled() ? colrNormal : colrDisabled);
                 g2.translate(x, y);
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 g2.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);

@@ -2,7 +2,7 @@
  *  OpPanel.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -46,13 +46,11 @@ import de.sciss.gui.GUIUtil;
  *  GUI panel hosting the spectral
  *	operators and allowing the user
  *	to drag them around and wire them together.
- *
- *  @author		Hanns Holger Rutz
- *  @version	0.72, 04-Jan-09
  */
 public class OpPanel
         extends JPanel
         implements ClipboardOwner, ActionListener, MouseListener, MouseMotionListener {
+
 // -------- public --------
 
     public static final String OBJ_NAME = "OpPanel";
@@ -67,7 +65,7 @@ public class OpPanel
     protected	int	preferredWidth	= 250;
     protected	int	preferredHeight	= 150;
 
-    // Popup-Men�s, die �ber dem Panel bzw. einem Op aufspringen
+    // Popup-Menus, die ueber dem Panel bzw. einem Op aufspringen
     private PopupStrip popPanel;
     private PopupStrip popIcon;
     private PopupStrip popCon;
@@ -458,6 +456,8 @@ public class OpPanel
         OpConnector con;
 
         Graphics2D g2 = (Graphics2D) g;
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING  , RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE );
 
         synchronized (hCon) {
             cons = hCon.elements();
@@ -504,7 +504,7 @@ public class OpPanel
         return new Dimension( preferredWidth, preferredHeight );
     }
 
-// -------- ClipboardOwner Methoden --------
+// -------- ClipboardOwner methods --------
 
     public void lostOwnership( Clipboard clipBoard, Transferable contents )
     {
@@ -519,7 +519,7 @@ public class OpPanel
         }
     }
                           
-// -------- Action Listener Methoden (only Popup-Menus!) --------
+// -------- Action Listener methods (only Popup-Menus!) --------
 
     public void actionPerformed( ActionEvent e )
     {
@@ -738,7 +738,7 @@ public class OpPanel
         }
     }
 
-// -------- Mouse Listener Methoden --------
+// -------- Mouse Listener methods --------
 
     public void mouseClicked(MouseEvent e) {
         if (!isEnabled() || !e.isPopupTrigger()) return;
@@ -796,7 +796,7 @@ public class OpPanel
     public void mouseEntered( MouseEvent e ) {}
     public void mouseExited( MouseEvent e ) {}
 
-// -------- MouseMotion Listener Methoden --------
+// -------- MouseMotion Listener methods --------
 
     public void mouseDragged( MouseEvent e )
     {
@@ -833,7 +833,7 @@ public class OpPanel
         } else {
             requestFocus();
 
-            if( e.isPopupTrigger() ) {	// PopUp-Men�
+            if( e.isPopupTrigger() ) {	// PopUp-Menu
                 panelContextMenu(e);
             }
         }
@@ -858,7 +858,7 @@ public class OpPanel
         if( (e.getClickCount() == 2) && !e.isAltDown() ) {
             slot = getLinkAround( e.getX(), e.getY(), true );
 
-            if( slot == null ) {		// kein Link; dann Popup-Men�
+            if( slot == null ) {		// kein Link; dann Popup-Menu
                 popSource	= this;
                 popX		= e.getX();
                 popY		= e.getY();
@@ -907,7 +907,7 @@ public class OpPanel
     }
 
     public void iconPressed(MouseEvent e) {
-        if( e.isPopupTrigger() ) {	// PopUp-Men�
+        if( e.isPopupTrigger() ) {	// PopUp-Menu
             iconContextMenu(e);
 
         } else if (e.isAltDown()) {
@@ -1130,7 +1130,7 @@ public class OpPanel
         }
     }
 
-// -------- private Methoden --------
+// -------- private methods --------
 
     /*
      *	Vergroessert die Panelflaeche, wenn eine Componente

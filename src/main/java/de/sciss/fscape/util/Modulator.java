@@ -2,7 +2,7 @@
  *  Modulator.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -20,9 +20,9 @@ import de.sciss.fscape.spect.*;
  */
 public class Modulator
 {
-// -------- public Variablen --------
+// -------- public variables --------
 
-// -------- private Variablen --------
+// -------- private variables --------
 
 	protected	Curve		curve[];		// atk/rls/sus in ABS_UNIT transformiert!
 
@@ -41,7 +41,7 @@ public class Modulator
 	protected	Envelope	env;
 	protected	SpectStream	stream;
 
-// -------- public Methoden --------
+// -------- public methods --------
 
 	/**
 	 *	@param	base		in ABS_UNIT
@@ -103,7 +103,7 @@ public class Modulator
 									   hRef, stream );
 			if( (min != null) && (max != null) ) {
 			
-				hSpace		= new ParamSpace( min.val, max.val, 0.0001, env.hUnit );
+				hSpace		= new ParamSpace( min.value, max.value, 0.0001, env.hUnit );
 				curve[ i ]	= Curve.transform( c, hSpace, c.vSpace, hRef, null, stream );
 				
 				switch( i ) {
@@ -156,7 +156,7 @@ public class Modulator
 		
 			// dub it. rub it. right on!!!
 			modDepth	= Curve.average( c, x, x + width ) / 100;	// % ==> 0...1
-			mod			= Param.transform( new Param( depth.val * modDepth, depth.unit ), env.hUnit,
+			mod			= Param.transform( new Param( depth.value * modDepth, depth.unit ), env.hUnit,
 										   base, stream );
 			if( mod != null ) {
 				return mod;

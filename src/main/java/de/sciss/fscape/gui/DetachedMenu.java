@@ -2,7 +2,7 @@
  *  DetachedMenu.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -17,56 +17,48 @@
 
 package de.sciss.fscape.gui;
 
-import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.border.*;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 /**
  *  Combination of a JLabel and a JPopupMenu which
  *	provides a window based menu on MacOS.
- *
- *  @author		Hanns Holger Rutz
- *  @version	0.71, 14-Nov-07
  */
 public class DetachedMenu
-extends JLabel
-{
-// -------- public Variablen --------
+        extends JLabel {
 
-// -------- private Variablen --------
+// -------- private variables --------
 
-	private final JPopupMenu	pop;
+    private final JPopupMenu	pop;
 
-// -------- public Methoden --------
+// -------- public methods --------
 
-	public DetachedMenu( String name, final JPopupMenu pop )
-	{
-		super( name, CENTER );
-		setBorder( new CompoundBorder( new EtchedBorder(), new EmptyBorder( 0, 16, 1, 16 )));
-		
-		this.pop = pop;
-				
-		addMouseListener( new MouseAdapter() {
-			public void mousePressed( MouseEvent e )
-			{
-				pop.show( e.getComponent(), 1, e.getComponent().getHeight() - 1 );
-			}
-		});
-	}
+    public DetachedMenu(String name, final JPopupMenu pop) {
+        super(name, CENTER);
+        setBorder(new CompoundBorder(new EtchedBorder(), new EmptyBorder(0, 16, 1, 16)));
 
-	public void setName( String labName )
-	{
-		setText( labName );
-	}
+        this.pop = pop;
 
-	public JPopupMenu getStrip()
-	{
-		return pop;
-	}
-	
-	public String getName()
-	{
-		return getText();
-	}
+        addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                pop.show(e.getComponent(), 1, e.getComponent().getHeight() - 1);
+            }
+        });
+    }
+
+    public void setName(String labName) {
+        setText(labName);
+    }
+
+    public JPopupMenu getStrip() {
+        return pop;
+    }
+
+    public String getName() {
+        return getText();
+    }
 }
-// class DetachedMenu

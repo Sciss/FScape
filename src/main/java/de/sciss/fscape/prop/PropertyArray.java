@@ -2,7 +2,7 @@
  *  PropertyArray.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -13,22 +13,21 @@
 
 package de.sciss.fscape.prop;
 
-import java.util.*;
+import de.sciss.fscape.util.Envelope;
+import de.sciss.fscape.util.Param;
 
-import de.sciss.fscape.util.*;
+import java.util.Properties;
 
 /**
  *	All fields must be initialized by the object
  *	that creates an instance of this class,
  *	it must ensure that fields in use are
  *	valid arrays of the valid size!
- *
- *  @version	0.71, 14-Nov-07
  */
 public class PropertyArray
-implements Cloneable
-{
-// -------- public Variablen --------
+		implements Cloneable {
+
+// -------- public variables --------
 
 	public PropertyArray superPr = null;	// allows hierarchical properties
 
@@ -52,7 +51,7 @@ implements Cloneable
 //	public String	fontName[];
 //	public String	colrName[];
 
-// -------- public Methoden --------
+// -------- public methods --------
 	// public Properties toProperties( boolean invokeSuper, Properties dest );
 	// public Properties toProperties( boolean invokeSuper );
 	// public void fromProperties( boolean invokeSuper, Properties src );
@@ -187,7 +186,7 @@ implements Cloneable
 //		PropertyArray.fromProperties( colr, colrName, src );
 	}
 
-// -------- protected Methoden --------
+// -------- protected methods --------
 
 	protected static Properties toProperties( Object[] val, String[] name, Properties dest )
 	{	
@@ -263,7 +262,7 @@ implements Cloneable
 		}
 	}
 
-//	protected static void fromProperties( FontSC[] val, String[] name, Properties src )
+//	protected static void fromProperties( FontSC[] value, String[] name, Properties src )
 //	{	
 //		String prop;
 //	
@@ -271,13 +270,13 @@ implements Cloneable
 //			if( name[ i ] != null ) {
 //				prop = src.getProperty( name[ i ]);
 //				if( prop != null ) {
-//					val[ i ] = FontSC.valueOf( prop );
+//					value[ i ] = FontSC.valueOf( prop );
 //				}
 //			}
 //		}
 //	}
 
-//	protected static void fromProperties( ColorSC[] val, String[] name, Properties src )
+//	protected static void fromProperties( ColorSC[] value, String[] name, Properties src )
 //	{	
 //		String prop;
 //	
@@ -285,7 +284,7 @@ implements Cloneable
 //			if( name[ i ] != null ) {
 //				prop = src.getProperty( name[ i ]);
 //				if( prop != null ) {
-//					val[ i ] = ColorSC.valueOf( prop );
+//					value[ i ] = ColorSC.valueOf( prop );
 //				}
 //			}
 //		}
@@ -319,4 +318,3 @@ implements Cloneable
 		}
 	}
 }
-// class PropertyArray

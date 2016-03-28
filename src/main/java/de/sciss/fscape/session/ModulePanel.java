@@ -2,7 +2,7 @@
  *  ModulePanel.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -21,26 +21,13 @@
 
 package de.sciss.fscape.session;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Properties;
-import java.util.prefs.Preferences;
-
-import javax.swing.*;
-
 import de.sciss.app.BasicEvent;
 import de.sciss.app.EventManager;
 import de.sciss.common.ProcessingThread;
 import de.sciss.fscape.Application;
 import de.sciss.fscape.gui.EnvIcon;
 import de.sciss.fscape.gui.GUISupport;
+import de.sciss.fscape.gui.MarginBorderLayout;
 import de.sciss.fscape.gui.ParamField;
 import de.sciss.fscape.gui.PathField;
 import de.sciss.fscape.gui.ProcessPanel;
@@ -66,24 +53,33 @@ import de.sciss.io.AudioFileDescr;
 import de.sciss.io.IOUtil;
 import de.sciss.util.Flag;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Properties;
+import java.util.prefs.Preferences;
+
 /**
  *	Superclass of all processing windows. This handles thread and progress bar
  *	management and has some utility methods such as sound file normalization.
- *
- *  @author		Hanns Holger Rutz
- *  @version	0.73, 09-Aug-09
  */
 public abstract class ModulePanel
-    extends JPanel
-// extends AppWindow
-implements Processor, EventManager.Processor, ProgressComponent
-{
-// -------- public Variablen --------
+        extends JPanel
+        implements Processor, EventManager.Processor, ProgressComponent {
+
+// -------- public variables --------
 
     public static final String	PACKAGE			= "de.sciss.fscape.gui";
     public static final String	PROP_CLASS		= "Class";
 
-// -------- private Variablen --------
+// -------- private variables --------
 
     protected static final int FLAGS_TOOLBAR		= 0x01;
     protected static final int FLAGS_PRESETS		= 0x02; // 0x03;		// (0x02 + FLAGS_TOOLBAR)
@@ -110,7 +106,6 @@ implements Processor, EventManager.Processor, ProgressComponent
     protected static final int GG_OFF_ENVICON	= 0x000700;
     protected static final int GG_OFF_OTHER		= 0x000800;
 
-    private	JPanel			toolBar				= null;
     private ProcessPanel	pp					= null;
     private ProgressPanel	pProgress			= null;
     protected GUISupport	gui;
@@ -156,7 +151,7 @@ implements Processor, EventManager.Processor, ProgressComponent
 
     private final ModulePanel enc_this	= this;
 
-    private final List collTempFiles	= new ArrayList();	// Elements = AudioFile instances
+    private final List<AudioFile> collTempFiles	= new ArrayList<AudioFile>();	// Elements = AudioFile instances
 
     //	private final ActionClose			actionClose;
     //	private final ActionSave			actionSave;
@@ -182,15 +177,18 @@ implements Processor, EventManager.Processor, ProgressComponent
 // -------- public --------
 
     public ModulePanel(String procTitle) {
-        super(new BorderLayout(0, 6));
-        setBorder(BorderFactory.createEmptyBorder(0, 4, 4, 4));
+        // super(new BorderLayout(0, 6));
+        super(new MarginBorderLayout(0, 6, new Insets(0, 4, 4, 4)));
+        // this has no effect??
+        // setBorder(BorderFactory.createEmptyBorder(0, 4, 4, 4)); // top left bottom right
+        // setBorder(BorderFactory.createMatteBorder(20, 24, 24, 24, Color.red)); // top left bottom right
 
-        this.procTitle		= procTitle;
-        this.doc			= new Session();
+        this.procTitle  = procTitle;
+        this.doc        = new Session();
 
-        doc.setFrame( this );
+        doc.setFrame(this);
 
-        final MenuRoot					mr;
+        final MenuRoot mr;
 
     // -------- Basic Listeners --------
 
@@ -392,7 +390,7 @@ implements Processor, EventManager.Processor, ProgressComponent
     }
 
     /**
-     *	GUI bauen
+     *	build GUI
      *	- call once before setVisible() !
      *	- invokes loading of default preset !
      *
@@ -400,16 +398,15 @@ implements Processor, EventManager.Processor, ProgressComponent
      *	@param	flags		FLAGS_...
      *	@param	c			die "Innereien" (i.d.R. ein GUISupport Panel)
      */
-    protected void initGUI( ModulePanel concrete, int flags, Component c )
-    {
+    protected void initGUI(ModulePanel concrete, int flags, Component c) {
         //		final Container					cp	= getContentPane();
         //
         //		cp.setLayout( new BorderLayout( 0, 2 ));
-        final Container cp = this;
+        final JPanel cp = this;
 
     // -------- Toolbar --------
-        if( (flags & FLAGS_TOOLBAR) != 0 ) {
-            toolBar		= new JPanel( new FlowLayout( FlowLayout.LEFT, 2, 2 ));
+        if ((flags & FLAGS_TOOLBAR) != 0) {
+            JPanel toolBar = new JPanel(new FlowLayout(FlowLayout.LEFT, 2, 2));
 
             //			if( (flags & FLAGS_PRESETS) != 0 ) {
             //                actionDeletePreset = new ActionDeletePreset("Delete Preset", null);
@@ -425,37 +422,37 @@ implements Processor, EventManager.Processor, ProgressComponent
             //				presetNames.remove( Presets.DEFAULT );
             //				actionDeletePreset.setEnabled( !presetNames.isEmpty() );
             //			}
-            cp.add( toolBar, BorderLayout.NORTH );
+            cp.add(toolBar, BorderLayout.NORTH );
         }
 
-    // -------- Die Innereien --------
-        cp.add( c, BorderLayout.CENTER );
-        if( (flags & FLAGS_NOPRESETLOAD) == 0 ) {
-            loadPreset( Presets.DEFAULT );
+    // -------- internals --------
+        cp.add(c, BorderLayout.CENTER);
+        if ((flags & FLAGS_NOPRESETLOAD) == 0) {
+            loadPreset(Presets.DEFAULT);
         }
 
     // -------- Close/Process Gadgets --------
-        if( (flags & FLAGS_PROGBAR) != 0 ) {
-            pProgress		= new ProgressPanel();
-            pp				= new ProcessPanel( ((flags & FLAGS_PROGBARASYNC) == FLAGS_PROGBARASYNC ?
-                                                   ProcessPanel.TYPE_ASYNC : 0), pProgress, this );
-            pp.addProcessorListener( new ProcessorAdapter() {
-                public void processorStopped( ProcessorEvent e )
-                {
-                    if( isVisible() ) {
+        if ((flags & FLAGS_PROGBAR) != 0) {
+            pProgress = new ProgressPanel();
+            pp = new ProcessPanel(((flags & FLAGS_PROGBARASYNC) == FLAGS_PROGBARASYNC ?
+                    ProcessPanel.TYPE_ASYNC : 0), pProgress, this);
+            pp.addProcessorListener(new ProcessorAdapter() {
+                public void processorStopped(ProcessorEvent e) {
+                    if (isVisible()) {
                         Exception procErr = getError();
-                        if( procErr != null ) {
-                            displayError( procErr, getTitle() );
+                        if (procErr != null) {
+                            displayError(procErr, getTitle());
                         }
-                        if( clipping ) {
+                        if (clipping) {
                             clippingDlg();
                         }
                     }
                 }
             });
 
-            cp.add( pp, BorderLayout.SOUTH );
+            cp.add(pp, BorderLayout.SOUTH);
         }
+        // cp.setBorder(BorderFactory.createEmptyBorder(10, 14, 14, 14)); // top left bottom right
     }
 
     public ProcessingThread closeDocument(boolean force, Flag wasClosed) {
@@ -835,7 +832,7 @@ implements Processor, EventManager.Processor, ProgressComponent
     }
 
     /**
-     *	Werte aus Prop-Array in GUI uebertragen
+     *	Transfer values from prop-array to GUI
      *	subclasses must override and invoke super.fillGUI() !
      */
     public void fillGUI()
@@ -879,7 +876,7 @@ implements Processor, EventManager.Processor, ProgressComponent
     }
 
     /**
-     *	Werte aus Prop-Array in GUI uebertragen
+     *	Transfer values from prop-array to GUI
      *	subclasses can use this to make things easy
      *	VORAUSSETZUNG:	Gadget-IDs in GUI stimmen mit denen in PropertyArray plus GG_OFF_...
      *					ueberein
@@ -935,7 +932,7 @@ implements Processor, EventManager.Processor, ProgressComponent
     }
 
     /**
-     *	Werte aus GUI in Prop-Array uebertragen
+     *	Transfer values from GUI to prop-array
      *	subclasses must override and invoke super.fillPropertyArray() !
      */
 //	protected void fillPropertyArray()
@@ -945,7 +942,7 @@ implements Processor, EventManager.Processor, ProgressComponent
     }
 
     /**
-     *	Werte aus Prop-Array in GUI uebertragen
+     *	Transfer values from prop-array to GUI
      *	subclasses can use this to make things easy
      *	VORAUSSETZUNG:	Gadget-IDs in GUI stimmen mit denen in PropertyArray plus GG_OFF_...
      *					ueberein
@@ -1006,38 +1003,36 @@ implements Processor, EventManager.Processor, ProgressComponent
      *	@param	type	GGTYPE_...
      *	@return	Array mit den Gadgets. GGTYPE_GAIN: c[0]=ParamField,c[1]=JComboBox( GAIN_...)
      */
-    protected Component[] createGadgets( int type )
-    {
+    protected Component[] createGadgets(int type) {
         final Component c[];
 
-        switch( type ) {
-        case GGTYPE_GAIN:
-            final ParamField gg1 = new ParamField( Constants.spaces[ Constants.decibelAmpSpace ]);
-            final JComboBox  gg2 = new JComboBox();
-            gg2.addItem( "normalized" );
-            gg2.addItem( "immediate" );
-            ggGain		= gg1;
-            ggGainType	= gg2;
-            c = new Component[] { gg1, gg2 };
-            gg2.addActionListener( new ActionListener() {
-                public void actionPerformed( ActionEvent e )
-                {
-                    switch( gg2.getSelectedIndex() ) {
-                    case GAIN_ABSOLUTE:
-                        gg1.setParam( new Param( 0.0, Param.DECIBEL_AMP ));
-                        break;
-                    case GAIN_UNITY:
-                        gg1.setParam( getDefaultGain() );
-                        break;
-                    default:
-                        break;
+        switch (type) {
+            case GGTYPE_GAIN:
+                final ParamField gg1 = new ParamField(Constants.spaces[Constants.decibelAmpSpace]);
+                final JComboBox gg2 = new JComboBox();
+                gg2.addItem("normalized");
+                gg2.addItem("immediate");
+                ggGain = gg1;
+                ggGainType = gg2;
+                c = new Component[]{gg1, gg2};
+                gg2.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        switch (gg2.getSelectedIndex()) {
+                            case GAIN_ABSOLUTE:
+                                gg1.setParam(new Param(0.0, Param.DECIBEL_AMP));
+                                break;
+                            case GAIN_UNITY:
+                                gg1.setParam(getDefaultGain());
+                                break;
+                            default:
+                                break;
+                        }
                     }
-                }
-            });
-            break;
+                });
+                break;
 
-        default:
-            throw new IllegalArgumentException( String.valueOf( type ));
+            default:
+                throw new IllegalArgumentException(String.valueOf(type));
         }
         return c;
     }
@@ -1068,8 +1063,8 @@ implements Processor, EventManager.Processor, ProgressComponent
 //		ConfirmDlg		confirm;
         Double			ampCorrect	= new Double( 20 * Math.log( newAmp ) / Constants.ln10 );
         Object[]		msgArgs		= { ampCorrect };
-        String			msgPtrn		= new String( "The output {0,choice,-1#is clipped|0#volume is suboptimal}!"+
-                                                  "\nShall the gain be adjusted by {0,number,#,##0.0} dB?" );
+        String			msgPtrn		= "The output {0,choice,-1#is clipped|0#volume is suboptimal}!" +
+                "\nShall the gain be adjusted by {0,number,#,##0.0} dB?";
         MessageFormat	msgForm		= new MessageFormat( msgPtrn );
         int				i;
 
@@ -1082,7 +1077,7 @@ implements Processor, EventManager.Processor, ProgressComponent
                 p	= ggGain.getParam();
                 ref	= new Param( 1.0, Param.ABS_AMP );
                 pa	= Param.transform( p, Param.ABS_AMP, ref, null );
-                p	= Param.transform( new Param( pa.val * newAmp, pa.unit ), p.unit, ref, null );
+                p	= Param.transform( new Param( pa.value * newAmp, pa.unit ), p.unit, ref, null );
                 ggGain.setParam( p );
             }
 
@@ -1221,35 +1216,32 @@ implements Processor, EventManager.Processor, ProgressComponent
         return createTempFile( template.channels, template.rate );
     }
 
-    protected AudioFile createTempFile( int numChannels, double rate )
-    throws IOException
-    {
-            final AudioFileDescr afd = new AudioFileDescr();
-            AudioFile af;
+    protected AudioFile createTempFile(int numChannels, double rate)
+            throws IOException {
+        final AudioFileDescr afd = new AudioFileDescr();
+        AudioFile af;
 
-            afd.type			= AudioFileDescr.TYPE_AIFF;
-            afd.channels		= numChannels;
-            afd.rate			= rate;
-            afd.bitsPerSample	= 32;
-            afd.sampleFormat	= AudioFileDescr.FORMAT_FLOAT;
-            afd.file			= IOUtil.createTempFile( "fsc", ".aif" );
-            af					= AudioFile.openAsWrite( afd );
+        afd.type            = AudioFileDescr.TYPE_AIFF;
+        afd.channels        = numChannels;
+        afd.rate            = rate;
+        afd.bitsPerSample   = 32;
+        afd.sampleFormat    = AudioFileDescr.FORMAT_FLOAT;
+        afd.file            = IOUtil.createTempFile("fsc", ".aif");
+        af                  = AudioFile.openAsWrite(afd);
 
-            collTempFiles.add( af );
-            return af;
+        collTempFiles.add(af);
+        return af;
     }
 
-    protected void deleteTempFile( AudioFile af )
-    {
-        collTempFiles.remove( af );
+    protected void deleteTempFile(AudioFile af) {
+        collTempFiles.remove(af);
         af.cleanUp();
         af.getDescr().file.delete();
     }
 
-    private void deleteAllTempFiles()
-    {
-        while( !collTempFiles.isEmpty() ) {
-            deleteTempFile( (AudioFile) collTempFiles.get( 0 ));
+    private void deleteAllTempFiles() {
+        while (!collTempFiles.isEmpty()) {
+            deleteTempFile(collTempFiles.get(0));
         }
     }
 
@@ -1429,7 +1421,7 @@ implements Processor, EventManager.Processor, ProgressComponent
                         System.currentTimeMillis(), this ));
                     this.wait();
                 }
-            } catch( InterruptedException e1 ) {}
+            } catch( InterruptedException ignored) {}
 
             elm.dispatchEvent( new ProcessorEvent( this, ProcessorEvent.RESUMED,
                 System.currentTimeMillis(), this ));

@@ -2,7 +2,7 @@
  *  Envelope.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -26,7 +26,7 @@ import java.util.*;
 public class Envelope
 implements Cloneable
 {
-// -------- public Variablen --------
+// -------- public variables --------
 
 	/**
 	 *	Fuer getBasicEnvelope
@@ -48,9 +48,9 @@ implements Cloneable
 	public	Curve		susCurve;
 	public	Curve		rlsCurve;
 
-// -------- private Variablen --------
+// -------- private variables --------
 
-// -------- public Methoden --------
+// -------- public methods --------
 
 	/**
 	 *	Alle drei Kurventeile sind defaultmaessig aktiv
@@ -147,7 +147,7 @@ implements Cloneable
 		return basic;
 	}
 
-// -------- StringComm Methoden --------
+// -------- StringComm methods --------
 
 	public String toString()
 	{

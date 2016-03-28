@@ -2,7 +2,7 @@
  *  ProgressBar.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -14,22 +14,17 @@
  *  Changelog:
  *		14-Apr-06	created
  *		24-Jun-06	copied from de.sciss.eisenkraut.gui.ProgressPanel
- *		03-Oct-06	added methods reqiured by ProcessPanel
+ *		03-Oct-06	added methods required by ProcessPanel
  */
 
 package de.sciss.fscape.gui;
 
 import de.sciss.gui.ProgressComponent;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Paint;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import javax.swing.JProgressBar;
-import javax.swing.SwingConstants;
 
 /**
  *  A bit more sophisticated progression bar
@@ -39,19 +34,15 @@ import javax.swing.SwingConstants;
  *  the bar's colour and text. If no text is
  *  set, the bar will try to estimate the
  *  remaining progression time.
- *
- *  @author		Hanns Holger Rutz
- *  @version	0.17, 12-Oct-06
  */
 public class ProgressBar
-        extends JProgressBar
-{
-// -------- private Variablen --------
+        extends JProgressBar {
+
+// -------- private variables --------
 
     protected float		p			= 0.0f;
-//	private Color		progColor;
 
-    private long		startTime;				// Zeitpunkt, an dem reset() aufgerufen wurde
+    private long		startTime;				// time at which reset() was called
     private long		pauseTime;
     private int			remain;
     private byte		timeStr[];
@@ -94,7 +85,7 @@ public class ProgressBar
 
     /**
      *  Sets or clears the text that is displayed on top
-     *  of thes bar.
+     *  of the bar.
      *
      *  @param  altString   the text to display on the
      *						bar or <code>null</code> to clear
@@ -110,18 +101,18 @@ public class ProgressBar
     /**
      *	Sets the progression amount in percent.
      *
-     *	@param	p	progression, between 0 and 1 (i.e. 0 and 100%)
-     *  @warning	use only this method to change the progression,
+     *  Warning:	use only this method to change the progression,
      *				don't use the superclass's setValue method
+     *
+     *	@param	p	progression, between 0 and 1 (i.e. 0 and 100%)
      */
-    public synchronized void setProgression( float p )
-    {
+    public synchronized void setProgression(float p) {
         int			oldProgWidth	= (int) (this.p * maximum);
         this.p						= Math.max( 0.0f, Math.min( 1.0f, p ));
         int			progWidth		= (int) (this.p * maximum);
 
         int	lastRemain				= remain;
-        int	elapsed, hours, mins, secs;
+        int	elapsed, hours, minutes, secs;
 
         if( progWidth != oldProgWidth ) {
 
@@ -138,9 +129,9 @@ public class ProgressBar
                         secs	= remain % 60;
                         timeStr[ 6 ] = (byte) ((secs / 10) + 48);
                         timeStr[ 7 ] = (byte) ((secs % 10) + 48);
-                        mins	= (remain / 60) % 60;
-                        timeStr[ 3 ] = (byte) ((mins / 10) + 48);
-                        timeStr[ 4 ] = (byte) ((mins % 10) + 48);
+                        minutes	= (remain / 60) % 60;
+                        timeStr[ 3 ] = (byte) ((minutes / 10) + 48);
+                        timeStr[ 4 ] = (byte) ((minutes % 10) + 48);
                         hours	= (remain / 3600) % 100;
                         timeStr[ 0 ] = (byte) ((hours / 10) + 48);
                         timeStr[ 1 ] = (byte) ((hours % 10) + 48);
@@ -157,7 +148,7 @@ public class ProgressBar
     }
 
     /**
-     *	Queries the progresion
+     *	Queries the progression
      *
      *	@return	the progression value between 0 and 1 (i.e. 0 and 100%)
      */
@@ -226,25 +217,23 @@ public class ProgressBar
     }
 
     /**
-     *  Sets a custom bar colour
+     * Sets a custom bar color
      *
-     *  @param  pnt the new colour or null
-     *			to remove custom colour.
+     * @param pnt the new color or <code>null</code>
+     *            to remove custom color.
      */
-    public void setPaint( Paint pnt )
-    {
+    public void setPaint(Paint pnt) {
         this.pnt = pnt;
         repaint();
     }
 
     /**
-     *  Queries the custom bar colour.
+     * Queries the custom bar color.
      *
-     *  @return the bar colour or null if
-     *			no custom colour was set
+     * @return the bar color or <code>null</code> if
+     * no custom color was set
      */
-    public Paint getPaint()
-    {
+    public Paint getPaint() {
         return pnt;
     }
 
@@ -252,14 +241,19 @@ public class ProgressBar
         super.paintComponent(g);
         if (pnt == null) return;
 
-        Dimension   d   = getSize();
-        Graphics2D  g2  = (Graphics2D) g;
-        Paint		op  = g2.getPaint();
+        final Dimension     d   = getSize();
+        final Graphics2D    g2  = (Graphics2D) g;
+        final Paint		    op  = g2.getPaint();
 
-        g2.setPaint( pnt );
-//		g2.fillRect( 0, 0, d.width, d.height );
-//		g2.fillRect( 2, 4, d.width - 4, d.height - 12 );		// XXX MacOS X aqua, font dependant ;-(
-        g2.fillRect( 2, 1, d.width - 4, d.height - 4 );		// XXX MacOS X aqua, font dependant ;-(
-        g2.setPaint( op );
+        final String    lafName     = UIManager.getLookAndFeel().getName();
+        final boolean   isWebLaF    = lafName.equals("WebLaF");
+        final int       top         = isWebLaF ? 3 : 1;
+        final int       left        = isWebLaF ? 3 : 2;
+        final int       bottom      = isWebLaF ? 3 : 2;
+        final int       right       = isWebLaF ? 3 : 2;
+
+        g2.setPaint(pnt);
+        g2.fillRect(left, top, d.width - (left + right), d.height - (top + bottom));
+        g2.setPaint(op);
     }
 }

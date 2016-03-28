@@ -2,7 +2,7 @@
  *  SlotAlreadyConnectedException.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -14,8 +14,11 @@
 package de.sciss.fscape.op;
 
 public class SlotAlreadyConnectedException
-extends IllegalStateException
-{
-	public SlotAlreadyConnectedException() {}
-	public SlotAlreadyConnectedException( String s ) { super( s );}
+        extends IllegalStateException {
+
+    public SlotAlreadyConnectedException() {}
+
+    public SlotAlreadyConnectedException(String s) {
+        super(s);
+    }
 }

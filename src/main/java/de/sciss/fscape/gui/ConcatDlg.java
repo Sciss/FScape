@@ -2,7 +2,7 @@
  *  ConcatDlg.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -17,34 +17,38 @@
 
 package de.sciss.fscape.gui;
 
-import java.awt.*;
-import java.io.*;
-import java.text.*;
-import java.util.*;
-import javax.swing.*;
-
-import de.sciss.fscape.io.*;
-import de.sciss.fscape.prop.*;
-import de.sciss.fscape.session.*;
-import de.sciss.fscape.util.*;
-
+import de.sciss.fscape.io.FloatFile;
+import de.sciss.fscape.io.GenericFile;
+import de.sciss.fscape.prop.Presets;
+import de.sciss.fscape.prop.PropertyArray;
+import de.sciss.fscape.session.ModulePanel;
+import de.sciss.fscape.util.Constants;
+import de.sciss.fscape.util.Param;
+import de.sciss.fscape.util.ParamSpace;
+import de.sciss.fscape.util.Util;
 import de.sciss.gui.PathEvent;
 import de.sciss.gui.PathListener;
 import de.sciss.io.AudioFile;
 import de.sciss.io.AudioFileDescr;
 import de.sciss.io.IOUtil;
 
+import javax.swing.*;
+import java.awt.*;
+import java.io.EOFException;
+import java.io.File;
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.Vector;
+
 /**
  *  Processing module for concatening
  *	a bunch of sound files with optional
  *	overlap and cross-fade.
- *
- *  @author		Hanns Holger Rutz
- *  @version	0.71, 14-Nov-07
  */
 public class ConcatDlg
         extends ModulePanel {
-// -------- private Variablen --------
+
+// -------- private variables --------
 
     // Properties (defaults)
     private static final int PR_INPUTFILE1	= 0;		// pr.text
@@ -119,20 +123,14 @@ public class ConcatDlg
     private					boolean			usePad;
     private					boolean			reverse;
 
-// -------- public Methoden --------
+// -------- public methods --------
 
-    /**
-     *	!! setVisible() bleibt dem Aufrufer ueberlassen
-     */
-    public ConcatDlg()
-    {
-        super( "Concat" );
+    public ConcatDlg() {
+        super("Concat");
         init2();
     }
 
-    protected void buildGUI()
-    {
-        // einmalig PropertyArray initialisieren
+    protected void buildGUI() {
         if( static_pr == null ) {
             static_pr			= new PropertyArray();
             static_pr.text		= prText;
@@ -161,7 +159,7 @@ public class ConcatDlg
 //		fileNameForm.setLocale( Locale.US );
 //		fileNameForm.applyPattern( FILENAMEPTRN );
 
-    // -------- GUI bauen --------
+    // -------- build GUI --------
 
         GridBagConstraints	con;
 
@@ -341,28 +339,19 @@ ggFadeShape.setEnabled( false );
         initGUI( this, FLAGS_PRESETS | FLAGS_PROGBAR, gui );
     }
 
-    /**
-     *	Werte aus Prop-Array in GUI uebertragen
-     */
-    public void fillGUI()
-    {
+    public void fillGUI() {
         super.fillGUI();
-        super.fillGUI( gui );
+        super.fillGUI(gui);
     }
 
-    /**
-     *	Werte aus GUI in Prop-Array uebertragen
-     */
-    public void fillPropertyArray()
-    {
+    public void fillPropertyArray() {
         super.fillPropertyArray();
-        super.fillPropertyArray( gui );
+        super.fillPropertyArray(gui);
     }
 
 // -------- Processor Interface --------
 
-    protected void process()
-    {
+    protected void process() {
         int					i, j, k, m, n, p;
         int					ch;
         long				progOff, progLen;
@@ -393,9 +382,10 @@ ggFadeShape.setEnabled( false );
 
         PathField			ggOutput;
 
-        Vector				activeChunks	= new Vector();
+        Vector<SoundChunk> activeChunks	= new Vector<SoundChunk>();
 
-topLevel: try {
+    topLevel:
+        try {
         // ---- open input, output; init ----
 
             numChunks		= analyseFileNames();
@@ -419,16 +409,16 @@ topLevel: try {
 
                 ref					= new Param( AudioFileDescr.samplesToMillis( sndChunks[i].stream, sndChunks[i].stream.length ), Param.ABS_MS );
                 sndChunks[i].off	= (int) Math.max( 0, Math.min( sndChunks[i].stream.length, (int) (AudioFileDescr.millisToSamples( sndChunks[i].stream,
-                                                                   (Param.transform( pr.para[ PR_OFFSET ], Param.ABS_MS, ref, null )).val ) + 0.5) ));
+                                                                   (Param.transform( pr.para[ PR_OFFSET ], Param.ABS_MS, ref, null )).value) + 0.5) ));
 
                 sndChunks[i].len	= (int) Math.max( 0, Math.min( sndChunks[i].stream.length - sndChunks[i].off, (int) (AudioFileDescr.millisToSamples( sndChunks[i].stream,
-                                                                   (Param.transform( pr.para[ PR_LENGTH ], Param.ABS_MS, ref, null )).val ) + 0.5) ));
+                                                                   (Param.transform( pr.para[ PR_LENGTH ], Param.ABS_MS, ref, null )).value) + 0.5) ));
                 ref					= new Param( AudioFileDescr.samplesToMillis( sndChunks[i].stream, sndChunks[i].len ), Param.ABS_MS );
                 sndChunks[i].over	= Math.max( 0, Math.min( sndChunks[i].len, (int) (AudioFileDescr.millisToSamples( sndChunks[i].stream,
-                                                                   (Param.transform( pr.para[ PR_OVERLAP ], Param.ABS_MS, ref, null )).val ) + 0.5) ));
+                                                                   (Param.transform( pr.para[ PR_OVERLAP ], Param.ABS_MS, ref, null )).value) + 0.5) ));
                 ref					= new Param( AudioFileDescr.samplesToMillis( sndChunks[i].stream, sndChunks[i].over ), Param.ABS_MS );
                 j					= Math.max( 0, Math.min( sndChunks[i].over, (int) (AudioFileDescr.millisToSamples( sndChunks[i].stream,
-                                                                   (Param.transform( pr.para[ PR_FADE ], Param.ABS_MS, ref, null )).val ) + 0.5) ));
+                                                                   (Param.transform( pr.para[ PR_FADE ], Param.ABS_MS, ref, null )).value) + 0.5) ));
                 if( i > 0 ) {
                     sndChunks[i].fadeIn		= Math.min( j, sndChunks[i-1].fadeOut );
                     sndChunks[i-1].fadeOut	= sndChunks[i].fadeIn;
@@ -492,7 +482,7 @@ System.out.println( "outLen   "+ outLength );
                     floatF[ ch ]	= new FloatFile( tempFile[ ch ], GenericFile.MODE_OUTPUT );
                 }
             } else {
-                gain		= (float) (Param.transform( pr.para[ PR_GAIN ], Param.ABS_AMP, ampRef, null )).val;
+                gain		= (float) (Param.transform( pr.para[ PR_GAIN ], Param.ABS_AMP, ampRef, null )).value;
             }
         // .... check running ....
             if( !threadRunning ) break topLevel;
@@ -652,7 +642,7 @@ System.out.println( "outLen   "+ outLength );
 
             if( pr.intg[ PR_GAINTYPE ] == GAIN_UNITY ) {
                 gain	 = (float) (Param.transform( pr.para[ PR_GAIN ], Param.ABS_AMP,
-                                    new Param( 1.0 / maxAmp, Param.ABS_AMP ), null )).val;
+                                    new Param( 1.0 / maxAmp, Param.ABS_AMP ), null )).value;
                 normalizeAudioFile( floatF, outF, outBuf, gain, 1.0f );
                 for( ch = 0; ch < outChanNum; ch++ ) {
                     floatF[ ch ].cleanUp();
@@ -680,7 +670,7 @@ System.out.println( "outLen   "+ outLength );
             convBuf1	= null;
             System.gc();
 
-            setError( new Exception( ERR_MEMORY ));;
+            setError( new Exception( ERR_MEMORY ));
         }
 
     // ---- cleanup (topLevel) ----
@@ -702,10 +692,10 @@ System.out.println( "outLen   "+ outLength );
         }
     } // process()
 
-// -------- private Methoden --------
+// -------- private methods --------
 
     /**
-     *	Neues Inputfile setzen
+     *	Set new input file
      */
     protected void setInput( String fname )
     {
@@ -730,7 +720,7 @@ System.out.println( "outLen   "+ outLength );
             if( ggSlave != null ) {
                 ggSlave.setReference( ref );
             }
-        } catch( IOException e1 ) {}
+        } catch( IOException ignored) {}
     }
 
     /**
@@ -821,7 +811,7 @@ System.out.println( "outLen   "+ outLength );
 // class ConcatDlg
 
 /**
- *	Interne Klasse fuer die Synthese
+ *	internal class fuer die Synthese
  */
 class SoundChunk
 {

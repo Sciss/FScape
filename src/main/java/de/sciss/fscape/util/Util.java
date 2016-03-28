@@ -2,7 +2,7 @@
  *  Util.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -29,7 +29,7 @@ public class Util
 	 *
 	 *	@param	val		value to seek for in array
 	 *	@param	array	may be any size, may not be null
-	 *	@return	true, if val is an element of array
+	 *	@return	true, if value is an element of array
 	 */
 	public static boolean isValueInArray( int val, int[] array )
 	{
@@ -45,7 +45,7 @@ public class Util
 	 *
 	 *	@param	val		value to seek for in array
 	 *	@param	array	may be any size, may not be null
-	 *	@return	true, if val is an element of array
+	 *	@return	true, if value is an element of array
 	 */
 	public static boolean isValueInArray( String val, String[] array )
 	{

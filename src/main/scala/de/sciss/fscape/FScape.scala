@@ -2,7 +2,7 @@
  *  FScape.scala
  *  (FScape)
  *
- *  Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -15,23 +15,24 @@ package de.sciss.fscape
 
 import java.awt.{Color, GraphicsEnvironment, Toolkit}
 import java.net.URL
-import javax.swing.{ImageIcon, KeyStroke, UIManager}
+import javax.swing.plaf.metal.MetalLookAndFeel
+import javax.swing.{UIManager, ImageIcon, KeyStroke}
 
-import com.alee.laf.checkbox.WebCheckBoxStyle
-import com.alee.laf.progressbar.WebProgressBarStyle
-import de.sciss.desktop.{WindowHandler, OptionPane, Desktop, KeyStrokes, Escape, DialogSource, Menu, Window}
-import de.sciss.desktop.impl.{LogWindowImpl, SwingApplicationImpl, WindowImpl}
+import de.sciss.desktop.impl.{WindowHandlerImpl, LogWindowImpl, SwingApplicationImpl, WindowImpl}
+import de.sciss.desktop.{Desktop, Escape, KeyStrokes, Menu, OptionPane, Window, WindowHandler}
 import de.sciss.file._
 import de.sciss.fscape.gui.PrefsPanel
 import de.sciss.fscape.impl.DocumentHandlerImpl
 import de.sciss.fscape.net.{OSCRoot, OSCRouter, OSCRouterWrapper, RoutedOSCMessage}
 import de.sciss.fscape.session.{ModulePanel, Session}
+import de.sciss.fscape.util.PrefsUtil
+import de.sciss.submin.Submin
 import org.pegdown.PegDownProcessor
 
 import scala.collection.breakOut
-import scala.swing.{EditorPane, Swing, ScrollPane, Action, BoxPanel, Orientation, Alignment, Label}
 import scala.swing.Swing._
 import scala.swing.event.{Key, MouseClicked}
+import scala.swing._
 import scala.util.Try
 import scala.util.control.NonFatal
 
@@ -40,9 +41,31 @@ object FScape extends SwingApplicationImpl("FScape") {
 
   type Document = Session
 
-  private var osc = null: OSCRouterWrapper
+  private var osc       = null: OSCRouterWrapper
+  private var oscServer = null: OSCRoot
 
   lazy val version: String = buildInfoString("version")
+
+  override lazy val windowHandler: WindowHandler = new WindowHandlerImpl(this, menuFactory) {
+    override def usesNativeDecoration: Boolean = {
+      val res = userPrefs[Boolean](PrefsUtil.KEY_LAF_WINDOWS).getOrElse(false)
+      // println(s"deco = $res")
+      !res
+    }
+
+    override def addWindow(w: Window): Unit = {
+      if (!usesNativeDecoration) {
+        // AWTUtilities.setWindowOpaque(w.component.peer.asInstanceOf[java.awt.Window], false)
+        w.component.peer.getRootPane.putClientProperty("styleId", "frame-decorated")
+      }
+      super.addWindow(w)
+    }
+
+    // bug in WebLaF
+    if (UIManager.getLookAndFeel.getName.startsWith("Web") && !usesNativeDecoration) {
+      javax.swing.JFrame.setDefaultLookAndFeelDecorated(false)
+    }
+  }
 
   /** Base directory of FScape installation.
     * I.e. parent directory of `help`, `sounds` etc.
@@ -66,21 +89,23 @@ object FScape extends SwingApplicationImpl("FScape") {
     case NonFatal(e) => "?"
   }
 
+  private[this] def setLookAndFeel(className: String): Unit =
+    UIManager.setLookAndFeel(className)
+
   override protected def init(): Unit = {
     try {
-      val web = "com.alee.laf.WebLookAndFeel"
-      UIManager.installLookAndFeel("Web Look And Feel", web)
-      UIManager.setLookAndFeel(web) // Prefs.lookAndFeel.getOrElse(Prefs.defaultLookAndFeel).getClassName)
+      userPrefs.getOrElse[String](PrefsUtil.KEY_LAF_TYPE, "") match {
+        case PrefsUtil.VALUE_LAF_TYPE_NATIVE  => setLookAndFeel(UIManager.getSystemLookAndFeelClassName)
+        case PrefsUtil.VALUE_LAF_TYPE_METAL   => setLookAndFeel(classOf[MetalLookAndFeel].getName)
+        case other =>
+          val isDark = other == PrefsUtil.VALUE_LAF_TYPE_SUBMIN_DARK
+          Submin.install(isDark)
+        // case _ => // do not explicitly set look-and-feel
+      }
     } catch {
-      case NonFatal(_) =>
+      case NonFatal(e) =>
+        Console.err.println(s"Could not set look-and-feel: ${e.getClass.getSimpleName} - ${e.getMessage}")
     }
-    WebCheckBoxStyle   .animated            = false
-    WebProgressBarStyle.progressTopColor    = Color.lightGray
-    WebProgressBarStyle.progressBottomColor = Color.gray
-    // XXX TODO: how to really turn of animation?
-    WebProgressBarStyle.highlightWhite      = new Color(255, 255, 255, 0) // 48)
-    WebProgressBarStyle.highlightDarkWhite  = new Color(255, 255, 255, 0)
-    // StyleConstants.animate = false
 
     // set some default preferences
     if (userPrefs.get[String]("headroom").isEmpty) {
@@ -93,23 +118,23 @@ object FScape extends SwingApplicationImpl("FScape") {
       userPrefs.put("audioFileRate", "44100.0")
     }
 
-    /* val logWin: LogWindowImpl = */ new LogWindowImpl {
+    /* value logWin: LogWindowImpl = */ new LogWindowImpl {
       def handler: WindowHandler = App.windowHandler
       GUI.placeWindow(this, 0f, 1f, 0)
     }
     System.setErr(Console.err)  // por que?
 
     // ---- bridge to Java world ----
-    Application.userPrefs = de.sciss.desktop.Escape.prefsPeer(userPrefs)
-    Application.name      = App.name
-    Application.version   = App.version
-    Application.clipboard = Toolkit.getDefaultToolkit.getSystemClipboard
+    Application.userPrefs   = de.sciss.desktop.Escape.prefsPeer(userPrefs)
+    Application.name        = App.name
+    Application.version     = App.version
+    Application.clipboard   = Toolkit.getDefaultToolkit.getSystemClipboard
     Application.installDir  = FScape.installDir
 
     // --- osc ----
     // warning : sequence is crucial
-    val oscServer = new OSCRoot(Escape.prefsPeer(userPrefs / OSCRoot.DEFAULT_NODE), 0x4653)
-    osc           = new OSCRouterWrapper(oscServer, OSCRouterImpl)
+    oscServer = new OSCRoot(Escape.prefsPeer(userPrefs / OSCRoot.DEFAULT_NODE), 0x4653)
+    osc       = new OSCRouterWrapper(oscServer, OSCRouterImpl)
     Application.documentHandler = new DocumentHandlerImpl(oscServer)
 
     val f = new MainWindow
@@ -243,7 +268,7 @@ object FScape extends SwingApplicationImpl("FScape") {
       .add(Item("redo", proxy("Redo" -> keyRedo)))
     if (itPrefs.visible /* && Desktop.isLinux */) gEdit.addLine().add(itPrefs)
 
-    // val gWindow = Group("window", "Window")
+    // value gWindow = Group("window", "Window")
 
     val itAbout = Item.About(App) {
       val addr    = "www.sciss.de/fscape"
@@ -259,7 +284,7 @@ object FScape extends SwingApplicationImpl("FScape") {
            |<font size=+1><b>About ${App.name}</b></font><p>
            |Version $version<p>
            |<p>
-           |Copyright (c) 2001&ndash;2015 Hanns Holger Rutz.<p>
+           |Copyright (c) 2001&ndash;2016 Hanns Holger Rutz.<p>
            |This software is published under the GNU General Public License v3+<p>
            |<p>
            |Winner of the 2014 LoMus award (ex aequo).
@@ -310,13 +335,16 @@ object FScape extends SwingApplicationImpl("FScape") {
     }
     p.peer.setCaretPosition(0)
 
+    val scroll = new ScrollPane(p)
+    scroll.peer.putClientProperty("styleId", "undecorated")
+
     new WindowImpl {
       def handler: WindowHandler = App.windowHandler
       override def style = Window.Auxiliary
 
       title           = title0
       closeOperation  = Window.CloseDispose
-      contents        = new ScrollPane(p)
+      contents        = scroll
       pack()
       size = {
         val ge    = GraphicsEnvironment.getLocalGraphicsEnvironment
@@ -369,7 +397,7 @@ object FScape extends SwingApplicationImpl("FScape") {
   def closeAll(title: String = "Close All"): Boolean = documentViewHandler.windows.forall(_.tryClose(title))
 
   def newDocument(key: String, visible: Boolean): Try[ModulePanel] = {
-    // val text = moduleName(key)
+    // value text = moduleName(key)
     Try {
       val clz       = Class.forName(s"de.sciss.fscape.gui.${key}Dlg")
       val modPanel	= clz.newInstance().asInstanceOf[ModulePanel]
@@ -380,7 +408,7 @@ object FScape extends SwingApplicationImpl("FScape") {
     }
 //    catch {
 //      case NonFatal(e) =>
-//        val dlg = DialogSource.Exception(e -> s"New $text")
+//        value dlg = DialogSource.Exception(e -> s"New $text")
 //        dlg.show(None)
 //        None
 //        // GUIUtil.displayError(null, e1, getResourceString("menuNew"));
@@ -396,10 +424,27 @@ object FScape extends SwingApplicationImpl("FScape") {
 
   def tryQuit(): Unit = if (Desktop.mayQuit()) quit()
 
+  override def quit(): Unit = {
+    try {
+      oscServer.quit()
+    } catch {
+      case NonFatal(e) => // ignore
+    }
+    super.quit()
+  }
+
   private class ActionModule(key: String, text: String, stroke: Option[KeyStroke]) extends Action(text) {
     accelerator = stroke
 
-    def apply(): Unit = newDocument(key, visible = true)
+    def apply(): Unit =
+      newDocument(key, visible = true)
+        .failed.foreach { ex =>
+          Dialog.showMessage(
+            message     = GUI.formatException(ex),
+            title       = text,
+            messageType = Dialog.Message.Error
+          )
+      }
   }
 
   private object ActionHelpIndex extends Action("Index") {
