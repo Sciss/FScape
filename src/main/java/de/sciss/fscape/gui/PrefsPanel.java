@@ -9,11 +9,6 @@
  *
  *	For further information, please contact Hanns Holger Rutz at
  *	contact@sciss.de
- *
- *
- *  Change log:
- *		20-May-05	created from de.sciss.meloncillo.gui.PrefsFrame (replaces
- *					former PrefsDlg)
  */
 
 package de.sciss.fscape.gui;
@@ -69,7 +64,7 @@ public class PrefsPanel
         PrefCheckBox ggCheckBox;
         PrefComboBox ggChoice;
         JLabel							lb;
-        UIManager.LookAndFeelInfo[]		lafInfos;
+        UIManager.LookAndFeelInfo[]		lafInfo;
         Box								b;
 
         Preferences						prefs;

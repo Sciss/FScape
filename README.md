@@ -62,3 +62,5 @@ The [sbt build script](https://github.com/paulp/sbt-extras) by Paul Phillips is 
 A basic quick start guide starts from `help/index.html`. This help is also accessible from the help menu within the application. For each of the processing modules, help is available via Help &gt; Module Documentation.
 
 A short screencast is available on [Vimeo](https://vimeo.com/26509124).
+
+For help, visit the Gitter channel.

@@ -1,5 +1,11 @@
 # change history
 
+## v1.3.0 (mar 2016)
+
+ - bundles new Submin look-and-feel based on WebLaF. Preferences has option to switch to dark skin
+ - fixes bug in spectral gain op
+ - cleans up source code
+
 ## v1.2.0 (nov 2015)
 
  - added Limiter module
