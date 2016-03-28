@@ -211,8 +211,10 @@ public class PrefsPanel
 
         public void actionPerformed(ActionEvent e) {
             final String newValue = pes.getPreferenceNode().get(pes.getPreferenceKey(), initialValue);
+            final boolean different = (newValue != null || initialValue != null) &&
+                    (newValue == null || !newValue.equals(initialValue));
 
-            if (!newValue.equals(initialValue) && !haveWarned.isSet()) {
+            if (different && !haveWarned.isSet()) {
                 EventQueue.invokeLater ( new Runnable() {
                     public void run ()
                     {

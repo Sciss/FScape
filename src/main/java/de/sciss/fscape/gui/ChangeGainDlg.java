@@ -164,15 +164,15 @@ public class ChangeGainDlg
         con.fill		= GridBagConstraints.BOTH;
         con.gridwidth	= GridBagConstraints.REMAINDER;
 
-    gui.addLabel( new GroupLabel( "Waveform Input", GroupLabel.ORIENT_HORIZONTAL,
-                                  GroupLabel.BRACE_NONE ));
+    gui.addLabel(new GroupLabel("Waveform Input", GroupLabel.ORIENT_HORIZONTAL,
+                GroupLabel.BRACE_NONE));
 
-        ggInputFile		= new PathField( PathField.TYPE_INPUTFILE + PathField.TYPE_FORMATFIELD,
-                                         "Select input file" );
-        ggInputFile.handleTypes( GenericFile.TYPES_SOUND );
+        ggInputFile = new PathField(PathField.TYPE_INPUTFILE + PathField.TYPE_FORMATFIELD,
+                "Select input file");
+        ggInputFile.handleTypes(GenericFile.TYPES_SOUND);
         con.gridwidth	= 1;
         con.weightx		= 0.1;
-        gui.addLabel( new JLabel( "File:", SwingConstants.RIGHT ));
+        gui.addLabel(new JLabel("File:", SwingConstants.RIGHT));
         con.gridwidth	= GridBagConstraints.REMAINDER;
         con.weightx		= 0.9;
         gui.addPathField( ggInputFile, GG_INPUTFILE, pathL );
@@ -197,30 +197,30 @@ public class ChangeGainDlg
     gui.addLabel( new GroupLabel( "Output", GroupLabel.ORIENT_HORIZONTAL,
                                   GroupLabel.BRACE_NONE ));
 
-        ggOutputFile	= new PathField( PathField.TYPE_OUTPUTFILE + PathField.TYPE_FORMATFIELD +
-                                         PathField.TYPE_RESFIELD, "Select output file" );
-        ggOutputFile.handleTypes( GenericFile.TYPES_SOUND );
+        ggOutputFile = new PathField(PathField.TYPE_OUTPUTFILE + PathField.TYPE_FORMATFIELD +
+                PathField.TYPE_RESFIELD, "Select output file");
+        ggOutputFile.handleTypes(GenericFile.TYPES_SOUND);
         ggInputs		= new PathField[ 1 ];
         ggInputs[ 0 ]	= ggInputFile;
         ggOutputFile.deriveFrom( ggInputs, "$D0$F0Gain$E" );
         con.gridwidth	= 1;
         con.weightx		= 0.1;
-        gui.addLabel( new JLabel( "File:", SwingConstants.RIGHT ));
+        gui.addLabel(new JLabel("File:", SwingConstants.RIGHT));
         con.gridwidth	= GridBagConstraints.REMAINDER;
         con.weightx		= 0.9;
-        gui.addPathField( ggOutputFile, GG_OUTPUTFILE, pathL );
-        gui.registerGadget( ggOutputFile.getTypeGadget(), GG_OUTPUTTYPE );
-        gui.registerGadget( ggOutputFile.getResGadget(), GG_OUTPUTRES );
+        gui.addPathField(ggOutputFile, GG_OUTPUTFILE, pathL);
+        gui.registerGadget(ggOutputFile.getTypeGadget(), GG_OUTPUTTYPE);
+        gui.registerGadget(ggOutputFile.getResGadget (), GG_OUTPUTRES);
 
         ggGain			= createGadgets( GGTYPE_GAIN );
         con.weightx		= 0.1;
         con.gridwidth	= 1;
-        gui.addLabel( new JLabel( "Gain:", SwingConstants.RIGHT ));
+        gui.addLabel(new JLabel("Gain:", SwingConstants.RIGHT));
         con.weightx		= 0.4;
-        gui.addParamField( (ParamField) ggGain[ 0 ], GG_GAIN, null );
+        gui.addParamField((ParamField) ggGain[0], GG_GAIN, null);
         con.weightx		= 0.5;
         con.gridwidth	= GridBagConstraints.REMAINDER;
-        gui.addChoice( (JComboBox) ggGain[ 1 ], GG_GAINTYPE, null );
+        gui.addChoice((JComboBox) ggGain[1], GG_GAINTYPE, null);
 
         initGUI(this, FLAGS_PRESETS | FLAGS_PROGBAR, gui);
     }

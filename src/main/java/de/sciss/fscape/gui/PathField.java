@@ -143,7 +143,7 @@ public class PathField
     // constants for abbreviate
     protected static final int ABBR_LENGTH = 12;
 
-    private final EventManager elm = new EventManager( this );
+    private final EventManager elm = new EventManager(this);
 
 // -------- public methods --------
 
@@ -152,8 +152,8 @@ public class PathField
         this.type		= type;
 //		this.dlgTxt		= dlgTxt;
 
-        GridBagLayout lay = new GridBagLayout();
-        GridBagConstraints con = new GridBagConstraints();
+        final GridBagLayout       lay = new GridBagLayout();
+        final GridBagConstraints  con = new GridBagConstraints();
         ggPath			= new IOTextField();
         ggChoose        = new SelectPathButton(type, dlgTxt);
         ggChoose.addPathListener( this );
@@ -169,9 +169,9 @@ public class PathField
         con.weighty		= 0.0;
         lay.setConstraints(ggPath, con);
         ggPath.addActionListener( this );		// High-Level Events: Return-Hit weiterleiten
-        add( ggPath );
+        add(ggPath);
 
-        if( (type & TYPE_FORMATFIELD) != 0 ) {
+        if ((type & TYPE_FORMATFIELD) != 0) {
             con.gridx		= 0;
             con.gridy		= 2;
             con.gridwidth	= 1;
@@ -183,26 +183,26 @@ public class PathField
 //				ggFormat.setPaint( null );
 //				con.gridheight	= 1;
                 lay.setConstraints(ggFormat, con);
-                add( ggFormat );
+                add(ggFormat);
             } else {
                 ggType			= new VirtualChoice();
                 con.weightx		= 0.3;
                 lay.setConstraints(ggType, con);
-                add( ggType );
+                add(ggType);
 //				ggType.addItemListener( this );
-                ggType.addSpecialItemListener( this );
-                if( (type & TYPE_RESFIELD) != 0 ) {
-                    ggRes		= new VirtualChoice();
+                ggType.addSpecialItemListener(this);
+                if ((type & TYPE_RESFIELD) != 0) {
+                    ggRes = new VirtualChoice();
                     con.gridx++;
                     lay.setConstraints(ggRes, con);
-                    add( ggRes );
+                    add(ggRes);
 //					ggRes.addItemListener( this );
                 }
-                if( (type & TYPE_RATEFIELD) != 0 ) {
-                    ggRate		= new VirtualChoice();
+                if ((type & TYPE_RATEFIELD) != 0) {
+                    ggRate = new VirtualChoice();
                     con.gridx++;
                     lay.setConstraints(ggRate, con);
-                    add( ggRate );
+                    add(ggRate);
 //					ggRate.addItemListener( this );
                 }
             }
@@ -219,6 +219,10 @@ public class PathField
         con.weighty		= 1.0;
         lay.setConstraints(ggChoose, con);
         add(ggChoose);
+//        final JButton ggTest = new JButton(">");
+//        con.gridx++;
+//        lay.setConstraints(ggChoose, con);
+//        add(ggTest);
 
         deriveFrom(new PathField[0], (ggType != null) ? "$E" : "");
         addComponentListener(this);
@@ -373,24 +377,6 @@ public class PathField
         }
     }
 
-// XXX QUICKTIME
-/*
-    public void fillStream( MovieStream stream )
-    {
-        int ID;
-
-        if( ggRes != null ) {
-            stream.codec = ggRes.getSelectedIndex();
-        }
-        if( ggRate != null ) {
-            ID = ggRate.getSelectedIndex();
-            if( (ID >= 0) && (ID < movRate.length) ) {
-                stream.frameRate = movRate[ ID ];
-            }
-        }
-    }
-*/
-
     public int getType() {
         if (ggType != null) {
             return GenericFile.getType(ggType.getSelectedItem().toString());
@@ -465,28 +451,25 @@ public class PathField
         }
     }
 
-    public void addPathListener( PathListener list )
-    {
-        elm.addListener( list );
+    public void addPathListener(PathListener list) {
+        elm.addListener(list);
     }
 
-    public void removePathListener( PathListener list )
-    {
-        elm.removeListener( list );
+    public void removePathListener(PathListener list) {
+        elm.removeListener(list);
     }
 
-    public void processEvent( BasicEvent e )
-    {
+    public void processEvent(BasicEvent e) {
         PathListener listener;
 
-        for( int i = 0; i < elm.countListeners(); i++ ) {
-            listener = (PathListener) elm.getListener( i );
-            switch( e.getID() ) {
-            case PathEvent.CHANGED:
-                listener.pathChanged( (PathEvent) e );
-                break;
-            default:
-                assert false : e.getID();
+        for (int i = 0; i < elm.countListeners(); i++) {
+            listener = (PathListener) elm.getListener(i);
+            switch (e.getID()) {
+                case PathEvent.CHANGED:
+                    listener.pathChanged((PathEvent) e);
+                    break;
+                default:
+                    assert false : e.getID();
             }
         } // for( i = 0; i < elm.countListeners(); i++ )
     }

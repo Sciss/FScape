@@ -133,8 +133,7 @@ public class PrefsUtil
 
     public static final String KEY_LAF_WINDOWS		= "lafdecoration";
 
-    public static java.util.List createDefaults( Preferences mainPrefs, double lastVersion )
-    {
+    public static java.util.List createDefaults(Preferences mainPrefs, double lastVersion) {
         File f;
 //		String					value;
 //		Preferences				childPrefs, childPrefs2;
@@ -149,14 +148,14 @@ public class PrefsUtil
 //		putDontOverwrite( GUIUtil.getUserPrefs(), HelpGlassPane.KEY_KEYSTROKE_HELP, strokeToPrefs(
 //			KeyStroke.getKeyStroke( KeyEvent.VK_H, MenuFactory.MENU_SHORTCUT + KeyEvent.SHIFT_MASK )));
 
-        putDontOverwrite( mainPrefs, KEY_LOOKANDFEEL, UIManager.getSystemLookAndFeelClassName() );
-        putBooleanDontOverwrite( mainPrefs, KEY_INTRUDINGSIZE, isMacOS );
+        // putDontOverwrite( mainPrefs, KEY_LOOKANDFEEL, UIManager.getSystemLookAndFeelClassName() );
+        // putBooleanDontOverwrite( mainPrefs, KEY_INTRUDINGSIZE, isMacOS );
 
         putBooleanDontOverwrite( mainPrefs, KEY_BACKUP, true );
 
-        if( mainPrefs.get( KEY_BAKDIR, null ) == null ) {
-            f = new File( new File( System.getProperty( "user.home" ), Application.name ), "bak" );
-            if( !f.isDirectory() ) {
+        if (mainPrefs.get(KEY_BAKDIR, null) == null) {
+            f = new File(new File(System.getProperty("user.home"), Application.name), "bak");
+            if (!f.isDirectory()) {
                 try {
                     IOUtil.createEmptyDirectory( f );
                 }
@@ -170,9 +169,9 @@ public class PrefsUtil
         // save current version
         mainPrefs.put(KEY_VERSION, Application.version);
 
-        putDontOverwrite( mainPrefs, "audioFileRes", PathField.getSoundResID( 1 ));
-        putDontOverwrite( mainPrefs, "audioFileRate", PathField.getSoundRateID( 2 ));
-        putDontOverwrite( mainPrefs, "headroom", new de.sciss.util.Param( -0.2, de.sciss.util.ParamSpace.spcAmpDecibels.unit ).toString() );
+        putDontOverwrite(mainPrefs, "audioFileRes" , PathField.getSoundResID(1));
+        putDontOverwrite(mainPrefs, "audioFileRate", PathField.getSoundRateID(2));
+        putDontOverwrite(mainPrefs, "headroom", new de.sciss.util.Param(-0.2, de.sciss.util.ParamSpace.spcAmpDecibels.unit).toString());
 
         return warnings;
     }
@@ -191,80 +190,53 @@ public class PrefsUtil
 */
     // --- custom put/get methods ---
 
-    private static boolean putDontOverwrite( Preferences prefs, String key, String value )
-    {
-        boolean overwrite = prefs.get( key, null ) == null;
+    private static boolean putDontOverwrite(Preferences prefs, String key, String value) {
+        boolean overwrite = prefs.get(key, null) == null;
 
-        if( overwrite ) {
-            prefs.put( key, value );
-        }
-
-        return overwrite;
-    }
-/*
-    private static boolean putIntDontOverwrite( Preferences prefs, String key, int value )
-    {
-        boolean overwrite = prefs.get( key, null ) == null;
-
-        if( overwrite ) {
-            prefs.putInt( key, value );
-        }
-
-        return overwrite;
-    }
-*/
-    private static boolean putBooleanDontOverwrite( Preferences prefs, String key, boolean value )
-    {
-        boolean overwrite = prefs.get( key, null ) == null;
-
-        if( overwrite ) {
-            prefs.putBoolean( key, value );
+        if (overwrite) {
+            prefs.put(key, value);
         }
 
         return overwrite;
     }
 
-/*
-    private static boolean putDoubleDontOverwrite( Preferences prefs, String key, double value )
-    {
-        boolean overwrite = prefs.get( key, null ) == null;
+    private static boolean putBooleanDontOverwrite(Preferences prefs, String key, boolean value) {
+        boolean overwrite = prefs.get(key, null) == null;
 
-        if( overwrite ) {
-            prefs.putDouble( key, value );
+        if (overwrite) {
+            prefs.putBoolean(key, value);
         }
 
         return overwrite;
     }
-*/
-    public static Rectangle stringToRectangle( String value )
-    {
-        Rectangle rect	= null;
+
+    public static Rectangle stringToRectangle(String value) {
+        Rectangle rect = null;
         StringTokenizer tok;
 
-        if( value != null ) {
+        if (value != null) {
             try {
-                tok		= new StringTokenizer( value );
-                rect	= new Rectangle( Integer.parseInt( tok.nextToken() ), Integer.parseInt( tok.nextToken() ),
-                                         Integer.parseInt( tok.nextToken() ), Integer.parseInt( tok.nextToken() ));
+                tok = new StringTokenizer(value);
+                rect = new Rectangle(Integer.parseInt(tok.nextToken()), Integer.parseInt(tok.nextToken()),
+                        Integer.parseInt(tok.nextToken()), Integer.parseInt(tok.nextToken()));
+            } catch (NoSuchElementException ignored) {
+            } catch (NumberFormatException ignored) {
             }
-            catch (NoSuchElementException ignored) {}
-            catch (NumberFormatException  ignored) {}
         }
         return rect;
     }
 
-    public static Point stringToPoint( String value )
-    {
-        Point			pt	= null;
+    public static Point stringToPoint(String value) {
+        Point pt = null;
         StringTokenizer tok;
 
-        if( value != null ) {
+        if (value != null) {
             try {
-                tok		= new StringTokenizer( value );
-                pt		= new Point( Integer.parseInt( tok.nextToken() ), Integer.parseInt( tok.nextToken() ));
+                tok = new StringTokenizer(value);
+                pt = new Point(Integer.parseInt(tok.nextToken()), Integer.parseInt(tok.nextToken()));
+            } catch (NoSuchElementException ignored) {
+            } catch (NumberFormatException ignored) {
             }
-            catch (NoSuchElementException ignored) {}
-            catch (NumberFormatException  ignored) {}
         }
         return pt;
     }
@@ -277,9 +249,9 @@ public class PrefsUtil
             try {
                 tok = new StringTokenizer(value);
                 dim = new Dimension(Integer.parseInt(tok.nextToken()), Integer.parseInt(tok.nextToken()));
+            } catch (NoSuchElementException ignored) {
+            } catch (NumberFormatException ignored) {
             }
-            catch (NoSuchElementException ignored) {}
-            catch (NumberFormatException  ignored) {}
         }
         return dim;
     }
@@ -294,20 +266,13 @@ public class PrefsUtil
         return (value != null ? (value.x + " " + value.y + " " + value.width + " " + value.height) : null);
     }
 
-    public static String pointToString( Point value )
-    {
-        return( value != null ? (value.x + " " + value.y) : null );
+    public static String pointToString(Point value) {
+        return (value != null ? (value.x + " " + value.y) : null);
     }
 
-    public static String dimensionToString( Dimension value )
-    {
-        return( value != null ? (value.width + " " + value.height) : null );
+    public static String dimensionToString(Dimension value) {
+        return (value != null ? (value.width + " " + value.height) : null);
     }
-
-//	public static String classToNodeName( Class c )
-//	{
-//		return( "/" + c.getName().replace( '.', '/' ));
-//	}
 
     /**
      *  Converts a a key stroke's string representation as
@@ -327,8 +292,8 @@ public class PrefsUtil
             prefsStroke = KeyStroke.getKeyStroke(
                     Integer.parseInt(prefsValue.substring(i + 1)),
                     Integer.parseInt(prefsValue.substring(0, i)));
+        } catch (NumberFormatException ignored) {
         }
-        catch (NumberFormatException ignored) {}
 
         return prefsStroke;
     }
