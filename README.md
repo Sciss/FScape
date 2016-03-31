@@ -24,6 +24,8 @@ FScape is winner of the 2014 [LoMus award](http://concours.afim-asso.org/) (ex-a
 
 A binary version of FScape for all platforms is provided through [GitHub Releases](https://github.com/Sciss/FScape/releases/latest).
 
+<img src="screenshot.png" alt="screenshot" width="648" height="363"/>
+
 ## running
 
 In the binary distribution, you should use the shell scripts `bin/fscape` (Linux, OS X) or `bin/fscape.bat` (Windows) to start the application. If you have installed the Debian package, `fscape` should be on your path and available as a desktop icon in your desktop environment.
