@@ -329,9 +329,6 @@ public class FourierDlg
 
 // -------- Processor Interface --------
 
-    /**
-     *	Translation durchfuehren
-     */
     public void process()
     {
 //		int					i, j, k;
@@ -388,23 +385,23 @@ public class FourierDlg
 
         // ---- first pass: copy input to two float files ----
 
-            reInF		= AudioFile.openAsRead( new File( pr.text[ PR_REINPUTFILE ]));
-            reInStream	= reInF.getDescr();
-            inChanNum	= reInStream.channels;
-            inLength	= (int) reInStream.length;
-            if( pr.bool[ PR_HASIMINPUT ]) {
-                imInF		= AudioFile.openAsRead( new File( pr.text[ PR_IMINPUTFILE ]));
-                imInStream	= imInF.getDescr();
-                if( imInStream.channels != inChanNum ) throw new IOException( ERR_COMPLEX );
-                inLength	= (int) Math.min( inLength, imInStream.length );
+            reInF       = AudioFile.openAsRead(new File(pr.text[PR_REINPUTFILE]));
+            reInStream  = reInF.getDescr();
+            inChanNum   = reInStream.channels;
+            inLength    = (int) reInStream.length;
+            if (pr.bool[PR_HASIMINPUT]) {
+                imInF       = AudioFile.openAsRead(new File(pr.text[PR_IMINPUTFILE]));
+                imInStream  = imInF.getDescr();
+                if (imInStream.channels != inChanNum) throw new IOException(ERR_COMPLEX);
+                inLength    = (int) Math.min(inLength, imInStream.length);
             }
-            totalInSamples= inLength * inChanNum;
+            totalInSamples = inLength * inChanNum;
             // this helps to prevent errors from empty files!
-            if( totalInSamples < 1 ) throw new EOFException( ERR_EMPTY );
+            if (totalInSamples < 1) throw new EOFException(ERR_EMPTY);
 
             // ---- FFT Length ----
 //			i			= Marker.find( reInStream.markers, MARK_PIHALF, 0 );	// use this marker if available
-n1 = -1;
+            n1 = -1;
 /*
             if( i >= 0 ) {
                 mark	= (Marker) reInStream.markers.elementAt( i );
@@ -421,235 +418,235 @@ n1 = -1;
                 if( dataLen != n2 ) n1 = -1;	// calc the normal way below
             }
 */
-            if( n1 < 0 ) {	// otherwise expand/trunc input length to power of 2
-                for( dataLen = 2, scaleNum = 1; dataLen < inLength; dataLen<<=1, scaleNum++ ) ;
-                if( (pr.intg[ PR_LENGTH ] == LENGTH_TRUNC) && (dataLen > inLength) ) {
-                    dataLen		  >>= 1;
+            if (n1 < 0) {    // otherwise expand/trunc input length to power of 2
+                for (dataLen = 2, scaleNum = 1; dataLen < inLength; dataLen <<= 1, scaleNum++) ;
+                if ((pr.intg[PR_LENGTH] == LENGTH_TRUNC) && (dataLen > inLength)) {
+                    dataLen >>= 1;
                     scaleNum--;
-                    inLength		= dataLen;
-                    totalInSamples	= inLength * inChanNum;
+                    inLength        = dataLen;
+                    totalInSamples  = inLength * inChanNum;
                 }
             }
             halfLen = dataLen >> 1;
-            if( pr.intg[ PR_DIRECTION ] == DIR_FORWARD ) {
+            if (pr.intg[PR_DIRECTION] == DIR_FORWARD) {
                 // will be carried forward to output files
-                markers = (List<Marker>) reInStream.getProperty( AudioFileDescr.KEY_MARKERS );
-                if( markers == null ) markers = new ArrayList<Marker>( 1 );
-                markers.add( new Marker( halfLen, MARK_PIHALF ));
-                reInStream.setProperty( AudioFileDescr.KEY_MARKERS, markers );
+                markers = (List<Marker>) reInStream.getProperty(AudioFileDescr.KEY_MARKERS);
+                if (markers == null) markers = new ArrayList<Marker>(1);
+                markers.add(new Marker(halfLen, MARK_PIHALF));
+                reInStream.setProperty(AudioFileDescr.KEY_MARKERS, markers);
             }
 
             // ---- open files ----
-            ggOutput	= (PathField) gui.getItemObj( GG_REOUTPUTFILE );
-            if( ggOutput == null ) throw new IOException( ERR_MISSINGPROP );
-            reOutStream	= new AudioFileDescr( reInStream );
-            ggOutput.fillStream( reOutStream );
-            reOutF		= AudioFile.openAsWrite( reOutStream );
+            ggOutput    = (PathField) gui.getItemObj(GG_REOUTPUTFILE);
+            if (ggOutput == null) throw new IOException(ERR_MISSINGPROP);
+            reOutStream = new AudioFileDescr(reInStream);
+            ggOutput.fillStream(reOutStream);
+            reOutF      = AudioFile.openAsWrite(reOutStream);
 
-            if( pr.bool[ PR_HASIMOUTPUT ]) {
-                imOutStream			= new AudioFileDescr( reInStream );
-                ggOutput.fillStream( imOutStream );
-                imOutStream.file	= new File( pr.text[ PR_IMOUTPUTFILE ]);
-                imOutF				= AudioFile.openAsWrite( imOutStream );
+            if (pr.bool[PR_HASIMOUTPUT]) {
+                imOutStream         = new AudioFileDescr(reInStream);
+                ggOutput.fillStream(imOutStream);
+                imOutStream.file    = new File(pr.text[PR_IMOUTPUTFILE]);
+                imOutF              = AudioFile.openAsWrite(imOutStream);
             }
         // .... check running ....
-            if( !threadRunning ) break topLevel;
+            if (!threadRunning) break topLevel;
 
 
             // ---- Other init ----
-//			freqShift	= (float) Param.transform( pr.para[ PR_FREQSHIFT ], Param.FACTOR_FREQ,
-//									new Param( 1.0, Param.ABS_HZ ), null ).value /
-//						  ((pr.intg[ PR_DIRECTION ] == DIR_FORWARD) ? 100 : -100);
-freqShift = (pr.intg[ PR_DIRECTION ] == DIR_FORWARD) ? 1 : -1;
-// System.out.println( "freqShift "+freqShift );
+            //			freqShift	= (float) Param.transform( pr.para[ PR_FREQSHIFT ], Param.FACTOR_FREQ,
+            //									new Param( 1.0, Param.ABS_HZ ), null ).value /
+            //						  ((pr.intg[ PR_DIRECTION ] == DIR_FORWARD) ? 100 : -100);
+            freqShift = (pr.intg[PR_DIRECTION] == DIR_FORWARD) ? 1 : -1;
+            // System.out.println( "freqShift "+freqShift );
 
             // ---- Progress Length ----
-            progOff		= 0;			// write floats, write output, transform, read input
-            progLen		= dataLen * (3 + scaleNum * inChanNum) + inLength;
-            if( pr.bool[ PR_HASIMINPUT ]) {
-                progLen	 += inLength;
+            progOff = 0;            // write floats, write output, transform, read input
+            progLen = dataLen * (3 + scaleNum * inChanNum) + inLength;
+            if (pr.bool[PR_HASIMINPUT]) {
+                progLen += inLength;
             }
-            if( pr.bool[ PR_HASIMOUTPUT ]) {
-                progLen	 += dataLen;
+            if (pr.bool[PR_HASIMOUTPUT]) {
+                progLen += dataLen;
             }
-            if( pr.intg[ PR_GAINTYPE ] == GAIN_UNITY ) {
-                progLen	 += dataLen * inChanNum;
+            if (pr.intg[PR_GAINTYPE] == GAIN_UNITY) {
+                progLen += dataLen * inChanNum;
             }
 
             // ---- create four temp files per channel ----
-            floatF		= new FloatFile[ inChanNum ][ 4 ];
-            tempFile	= new File[ inChanNum ][ 4 ];
-            for( int ch = 0; ch < inChanNum; ch++ ) {
-                for( int i = 0; i < 4; i++ ) {
-                    tempFile[ ch ][ i ]	= null;
-                    floatF[ ch ][ i ]	= null;
+            floatF      = new FloatFile[inChanNum][4];
+            tempFile    = new File[inChanNum][4];
+            for (int ch = 0; ch < inChanNum; ch++) {
+                for (int i = 0; i < 4; i++) {
+                    tempFile[ch][i] = null;
+                    floatF[ch][i] = null;
                 }
             }
-            for( int ch = 0; ch < inChanNum; ch++ ) {
-                for( int i = 0; i < 4; i++ ) {
-                    tempFile[ ch ][ i ]	= IOUtil.createTempFile();	// for detail data
-                    floatF[ ch ][ i ]	= new FloatFile( tempFile[ ch ][ i ], GenericFile.MODE_OUTPUT );
+            for (int ch = 0; ch < inChanNum; ch++) {
+                for (int i = 0; i < 4; i++) {
+                    tempFile[ch][i] = IOUtil.createTempFile();    // for detail data
+                    floatF[ch][i] = new FloatFile(tempFile[ch][i], GenericFile.MODE_OUTPUT);
                 }
             }
 
 
             // take 75% of free memory, divide by sizeof( float ), divide by 3 (storageFFT needs 3 buffers)
-//			i	= Math.min( dataLen, (int) (Runtime.getRuntime().freeMemory() >> 4) );
-i1 = (int) Math.min( 0x40000000, Math.min( dataLen, ((long) pr.para[ PR_MEMORY ].value << 20) / 12 ));	// +/- (?) 3x float (=12 bytes)
+            // i	= Math.min( dataLen, (int) (Runtime.getRuntime().freeMemory() >> 4) );
+            i1 = (int) Math.min(0x40000000, Math.min(dataLen, ((long) pr.para[PR_MEMORY].value << 20) / 12));    // +/- (?) 3x float (=12 bytes)
             // power of 2
-            for( memAmount = 4; memAmount <= i1; memAmount <<= 1 ) ;
+            for (memAmount = 4; memAmount <= i1; memAmount <<= 1) ;
             memAmount >>= 1;
-// memAmount = Math.min( dataLen, 65536 );	// 32768 );
+            // memAmount = Math.min( dataLen, 65536 );	// 32768 );
 
             // ---- write initial float files 1 + 2 ----
-            b1 = (pr.intg[ PR_DIRECTION ] == DIR_BACKWARD) && (pr.intg[ PR_FORMAT ] == FORMAT_POLAR);
+            b1 = (pr.intg[PR_DIRECTION] == DIR_BACKWARD) && (pr.intg[PR_FORMAT] == FORMAT_POLAR);
 
-            buf1		= new float[ inChanNum ][ 8192 ];
-            if( pr.bool[ PR_HASIMINPUT ] || pr.bool[ PR_HASIMOUTPUT ]) {
-                buf2	= new float[ inChanNum ][ 8192 ];
+            buf1 = new float[inChanNum][8192];
+            if (pr.bool[PR_HASIMINPUT] || pr.bool[PR_HASIMOUTPUT]) {
+                buf2 = new float[inChanNum][8192];
             } else {
-                buf2	= buf1;
+                buf2 = buf1;
             }
-            buf3		= new float[ 16384 ];
+            buf3 = new float[16384];
 
-            for( framesRead = 0; threadRunning && (framesRead < inLength); ) {
-                chunkLen = (int) Math.min( 8192, inLength - framesRead );
-                if( (framesRead < halfLen) && ((framesRead + chunkLen) > halfLen) ) {
+            for (framesRead = 0; threadRunning && (framesRead < inLength); ) {
+                chunkLen = (int) Math.min(8192, inLength - framesRead);
+                if ((framesRead < halfLen) && ((framesRead + chunkLen) > halfLen)) {
                     chunkLen = (int) (halfLen - framesRead);
                 }
-                reInF.readFrames( buf1, 0, chunkLen );
+                reInF.readFrames(buf1, 0, chunkLen);
             // .... progress ....
                 progOff += chunkLen;
-                setProgression( (float) progOff / (float) progLen );
+                setProgression((float) progOff / (float) progLen);
 
-                if( imInF != null ) {
-                    imInF.readFrames( buf2, 0, chunkLen );
+                if (imInF != null) {
+                    imInF.readFrames(buf2, 0, chunkLen);
                 // .... progress ....
                     progOff += chunkLen;
-                    setProgression( (float) progOff / (float) progLen );
+                    setProgression((float) progOff / (float) progLen);
                 }
                 framesRead += chunkLen;
                 // interleave real/img
-                for( int ch = 0; threadRunning && (ch < inChanNum); ch++ ) {
-                    convBuf1	= buf1[ ch ];
-                    convBuf2	= buf2[ ch ];
+                for (int ch = 0; threadRunning && (ch < inChanNum); ch++) {
+                    convBuf1 = buf1[ch];
+                    convBuf2 = buf2[ch];
                     // ---- real + img ----
-                    if( pr.bool[ PR_HASIMINPUT ]) {
-                        for( int j = 0, k = 0; j < chunkLen; j++ ) {
-                            buf3[ k++ ] = convBuf1[ j ];
-                            buf3[ k++ ] = convBuf2[ j ];
+                    if (pr.bool[PR_HASIMINPUT]) {
+                        for (int j = 0, k = 0; j < chunkLen; j++) {
+                            buf3[k++] = convBuf1[j];
+                            buf3[k++] = convBuf2[j];
                         }
                         // ---- rect => polar ----
-                        if( b1 ) {
-                            Fourier.polar2Rect( buf3, 0, buf3, 0, chunkLen << 1 );
+                        if (b1) {
+                            Fourier.polar2Rect(buf3, 0, buf3, 0, chunkLen << 1);
                         }
                     // ---- only real ---- NOTE: rect+polar is identical (amp = real; phase = 0)
                     } else {
-                        for( int j = 0, k = 0; j < chunkLen; j++ ) {
-                            buf3[ k++ ] = convBuf1[ j ];
-                            buf3[ k++ ] = 0.0f;			// zero imaginary part
+                        for (int j = 0, k = 0; j < chunkLen; j++) {
+                            buf3[k++] = convBuf1[j];
+                            buf3[k++] = 0.0f;            // zero imaginary part
                         }
                     }
-                    if( framesRead <= halfLen ) {
-                        floatF[ ch ][ 0 ].writeFloats( buf3, 0, chunkLen << 1 );
+                    if (framesRead <= halfLen) {
+                        floatF[ch][0].writeFloats(buf3, 0, chunkLen << 1);
                     } else {
-                        floatF[ ch ][ 1 ].writeFloats( buf3, 0, chunkLen << 1 );
+                        floatF[ch][1].writeFloats(buf3, 0, chunkLen << 1);
                     }
                 }
             // .... progress ....
                 progOff += chunkLen;
-                setProgression( (float) progOff / (float) progLen );
+                setProgression((float) progOff / (float) progLen);
             }
         // .... check running ....
-            if( !threadRunning ) break topLevel;
+            if (!threadRunning) break topLevel;
 
             // zero pad to power of 2
-            for( int i = 0; i < buf3.length; i++ ) {
-                buf3[ i ] = 0.0f;
+            for (int i = 0; i < buf3.length; i++) {
+                buf3[i] = 0.0f;
             }
-            while( threadRunning && (framesRead < dataLen) ) {
-                chunkLen = (int) Math.min( 8192, dataLen - framesRead );
-                if( (framesRead < halfLen) && ((framesRead + chunkLen) > halfLen) ) {
+            while (threadRunning && (framesRead < dataLen)) {
+                chunkLen = (int) Math.min(8192, dataLen - framesRead);
+                if ((framesRead < halfLen) && ((framesRead + chunkLen) > halfLen)) {
                     chunkLen = (int) (halfLen - framesRead);
                 }
                 framesRead += chunkLen;
                 // interleave real/img
-                for( int ch = 0; threadRunning && (ch < inChanNum); ch++ ) {
-                    if( framesRead <= halfLen ) {
-                        floatF[ ch ][ 0 ].writeFloats( buf3, 0, chunkLen << 1 );
+                for (int ch = 0; threadRunning && (ch < inChanNum); ch++) {
+                    if (framesRead <= halfLen) {
+                        floatF[ch][0].writeFloats(buf3, 0, chunkLen << 1);
                     } else {
-                        floatF[ ch ][ 1 ].writeFloats( buf3, 0, chunkLen << 1 );
+                        floatF[ch][1].writeFloats(buf3, 0, chunkLen << 1);
                     }
                 }
             // .... progress ....
                 progOff += chunkLen;
-                setProgression( (float) progOff / (float) progLen );
+                setProgression((float) progOff / (float) progLen);
             }
         // .... check running ....
-            if( !threadRunning ) break topLevel;
+            if (!threadRunning) break topLevel;
 
             reInF.close();
             reInF = null;
-            if( imInF != null ) {
+            if (imInF != null) {
                 imInF.close();
                 imInF = null;
             }
 
         // ---- transform ----
 
-            fftBuf = new float[ 3 ][ memAmount ];
+            fftBuf = new float[3][memAmount];
 
-            for( int ch = 0; threadRunning && (ch < inChanNum); ch++ ) {
-                progOff += dataLen * scaleNum;		// = progEnd
-                storageFFT( floatF[ ch ], tempFile[ ch ], dataLen, freqShift, fftBuf, (float) progOff / (float) progLen );
+            for (int ch = 0; threadRunning && (ch < inChanNum); ch++) {
+                progOff += dataLen * scaleNum;        // = progEnd
+                storageFFT(floatF[ch], tempFile[ch], dataLen, freqShift, fftBuf, (float) progOff / (float) progLen);
             }
         // .... check running ....
-            if( !threadRunning ) break topLevel;
+            if (!threadRunning) break topLevel;
 
         // ---- calc unity gain ----
 
-            b1 = (pr.intg[ PR_DIRECTION ] == DIR_FORWARD) && (pr.intg[ PR_FORMAT ] == FORMAT_POLAR);
+            b1 = (pr.intg[PR_DIRECTION] == DIR_FORWARD) && (pr.intg[PR_FORMAT] == FORMAT_POLAR);
 
-            if( pr.intg[ PR_GAINTYPE ] == GAIN_UNITY ) {
-                for( int ch = 0; ch < inChanNum; ch++ ) {
-                    for( int i = 2; i < 4; i++ ) {
-                        floatF[ ch ][ i ].seekFloat( 0 );
-                        for( framesRead = 0; threadRunning && (framesRead < dataLen); ) {
-                            chunkLen = (int) Math.min( 8192, dataLen - framesRead );
-                            floatF[ ch ][ i ].readFloats( buf3, 0, chunkLen );
+            if (pr.intg[PR_GAINTYPE] == GAIN_UNITY) {
+                for (int ch = 0; ch < inChanNum; ch++) {
+                    for (int i = 2; i < 4; i++) {
+                        floatF[ch][i].seekFloat(0);
+                        for (framesRead = 0; threadRunning && (framesRead < dataLen); ) {
+                            chunkLen = (int) Math.min(8192, dataLen - framesRead);
+                            floatF[ch][i].readFloats(buf3, 0, chunkLen);
                             framesRead += chunkLen;
 
                             // ---- rect => polar ----
-                            if( b1 ) {
-                                for( int k = 0; k < chunkLen; ) {
-                                    d1 = buf3[ k++ ];
-                                    d2 = buf3[ k++ ];
-                                    f1 = (float) Math.sqrt( d1*d1 + d2*d2 );
-                                    if( f1 > maxAmp ) {
+                            if (b1) {
+                                for (int k = 0; k < chunkLen; ) {
+                                    d1 = buf3[k++];
+                                    d2 = buf3[k++];
+                                    f1 = (float) Math.sqrt(d1 * d1 + d2 * d2);
+                                    if (f1 > maxAmp) {
                                         maxAmp = f1;
                                     }
                                 }
                             // ---- normal ----
                             } else {
                                 // ---- real + img ----
-                                if( pr.bool[ PR_HASIMOUTPUT ]) {
-                                    for( int k = 0; k < chunkLen; k++ ) {
-                                        if( Math.abs( buf3[ k ]) > maxAmp ) {
-                                            maxAmp = Math.abs( buf3[ k ]);
+                                if (pr.bool[PR_HASIMOUTPUT]) {
+                                    for (int k = 0; k < chunkLen; k++) {
+                                        if (Math.abs(buf3[k]) > maxAmp) {
+                                            maxAmp = Math.abs(buf3[k]);
                                         }
                                     }
-                                // ---- only real ----
+                                    // ---- only real ----
                                 } else {
-                                    for( int k = 0; k < chunkLen; k += 2 ) {
-                                        if( Math.abs( buf3[ k ]) > maxAmp ) {
-                                            maxAmp = Math.abs( buf3[ k ]);
+                                    for (int k = 0; k < chunkLen; k += 2) {
+                                        if (Math.abs(buf3[k]) > maxAmp) {
+                                            maxAmp = Math.abs(buf3[k]);
                                         }
                                     }
                                 }
                             }
                         // .... progress ....
                             progOff += chunkLen >> 1;
-                            setProgression( (float) progOff / (float) progLen );
+                            setProgression((float) progOff / (float) progLen);
                         }
                     }
                 }
@@ -665,118 +662,117 @@ i1 = (int) Math.min( 0x40000000, Math.min( dataLen, ((long) pr.para[ PR_MEMORY ]
         // ---- write output ----
 
             // delete unused + rewind
-            for( int ch = 0; ch < inChanNum; ch++ ) {
+            for (int ch = 0; ch < inChanNum; ch++) {
                 int i = 0;
-                for( ; i < 2; i++ ) {
-                    floatF[ ch ][ i ].cleanUp();
-                    floatF[ ch ][ i ] = null;
-//System.out.println( "deleting : " + tempFile[ch][i].getName() );
-                    tempFile[ ch ][ i ].delete();
-                    tempFile[ ch ][ i ] = null;
+                for (; i < 2; i++) {
+                    floatF[ch][i].cleanUp();
+                    floatF[ch][i] = null;
+                    tempFile[ch][i].delete();
+                    tempFile[ch][i] = null;
                 }
-                for( ; i < 4; i++ ) {
-                    floatF[ ch ][ i ].seekFloat( 0 );
+                for (; i < 4; i++) {
+                    floatF[ch][i].seekFloat(0);
                 }
             }
 
             indicateOutputWrite();
 
             // ---- write data ----
-            for( framesWritten = 0; threadRunning && (framesWritten < dataLen); ) {
-                chunkLen = (int) Math.min( 8192, dataLen - framesWritten );
-                if( (framesWritten < halfLen) && ((framesWritten + chunkLen) > halfLen) ) {
+            for (framesWritten = 0; threadRunning && (framesWritten < dataLen); ) {
+                chunkLen = (int) Math.min(8192, dataLen - framesWritten);
+                if ((framesWritten < halfLen) && ((framesWritten + chunkLen) > halfLen)) {
                     chunkLen = (int) (halfLen - framesWritten);
                 }
                 // de-interleave real/img
-                for( int ch = 0; threadRunning && (ch < inChanNum); ch++ ) {
-                    if( framesWritten < halfLen ) {
-                        floatF[ ch ][ 2 ].readFloats( buf3, 0, chunkLen << 1 );	// floatF[ ch ][ 2 ]
+                for (int ch = 0; threadRunning && (ch < inChanNum); ch++) {
+                    if (framesWritten < halfLen) {
+                        floatF[ch][2].readFloats(buf3, 0, chunkLen << 1);    // floatF[ ch ][ 2 ]
                     } else {
-                        floatF[ ch ][ 3 ].readFloats( buf3, 0, chunkLen << 1 );	// floatF[ ch ][ 3 ]
+                        floatF[ch][3].readFloats(buf3, 0, chunkLen << 1);    // floatF[ ch ][ 3 ]
                     }
-                    convBuf1	= buf1[ ch ];
-                    convBuf2	= buf2[ ch ];
+                    convBuf1 = buf1[ch];
+                    convBuf2 = buf2[ch];
                     // ---- rect => polar ----
-                    if( b1 ) {
+                    if (b1) {
                         // ---- real + img ----
-                        if( pr.bool[ PR_HASIMOUTPUT ]) {
-                            Fourier.rect2Polar( buf3, 0, buf3, 0, chunkLen << 1 );
+                        if (pr.bool[PR_HASIMOUTPUT]) {
+                            Fourier.rect2Polar(buf3, 0, buf3, 0, chunkLen << 1);
                             // ---- needs gain measurement ----
-                            if( pr.intg[ PR_GAINTYPE ] == GAIN_ABSOLUTE ) {
-                                for( int j = 0, k = 0; j < chunkLen; j++ ) {
-                                    if( Math.abs( buf3[ k ]) > maxAmp ) {
-                                        maxAmp = Math.abs( buf3[ k ]);
+                            if (pr.intg[PR_GAINTYPE] == GAIN_ABSOLUTE) {
+                                for (int j = 0, k = 0; j < chunkLen; j++) {
+                                    if (Math.abs(buf3[k]) > maxAmp) {
+                                        maxAmp = Math.abs(buf3[k]);
                                     }
-                                    convBuf1[ j ] = gain * buf3[ k++ ];
-                                    convBuf2[ j ] = (float) (buf3[ k++ ] / Math.PI);	// -pi <= Phi <= +pi ===> map to -1...+1
+                                    convBuf1[j] = gain * buf3[k++];
+                                    convBuf2[j] = (float) (buf3[k++] / Math.PI);    // -pi <= Phi <= +pi ===> map to -1...+1
                                 }
                             // ---- gain already known ----
                             } else {
-                                for( int j = 0, k = 0; j < chunkLen; j++ ) {
-                                    convBuf1[ j ] = gain * buf3[ k++ ];
-                                    convBuf2[ j ] = (float) (buf3[ k++ ] / Math.PI);	// -pi <= Phi <= +pi ===> map to -1...+1
+                                for (int j = 0, k = 0; j < chunkLen; j++) {
+                                    convBuf1[j] = gain * buf3[k++];
+                                    convBuf2[j] = (float) (buf3[k++] / Math.PI);    // -pi <= Phi <= +pi ===> map to -1...+1
                                 }
                             }
                         // ---- only real ----
                         } else {
                             // ---- needs gain measurement ----
-                            if( pr.intg[ PR_GAINTYPE ] == GAIN_ABSOLUTE ) {
-                                for( int j = 0, k = 0; j < chunkLen; j++ ) {
-                                    d1 = buf3[ k++ ];
-                                    d2 = buf3[ k++ ];
-                                    f1 = (float) Math.sqrt( d1*d1 + d2*d2 );
-                                    if( f1 > maxAmp ) {
+                            if (pr.intg[PR_GAINTYPE] == GAIN_ABSOLUTE) {
+                                for (int j = 0, k = 0; j < chunkLen; j++) {
+                                    d1 = buf3[k++];
+                                    d2 = buf3[k++];
+                                    f1 = (float) Math.sqrt(d1 * d1 + d2 * d2);
+                                    if (f1 > maxAmp) {
                                         maxAmp = f1;
                                     }
-                                    convBuf1[ j ] = gain * f1;
+                                    convBuf1[j] = gain * f1;
                                 }
                             // ---- gain already known ----
                             } else {
-                                for( int j = 0, k = 0; j < chunkLen; j++ ) {
-                                    d1 = buf3[ k++ ];
-                                    d2 = buf3[ k++ ];
-                                    f1 = (float) Math.sqrt( d1*d1 + d2*d2 );
-                                    convBuf1[ j ] = gain * f1;
+                                for (int j = 0, k = 0; j < chunkLen; j++) {
+                                    d1 = buf3[k++];
+                                    d2 = buf3[k++];
+                                    f1 = (float) Math.sqrt(d1 * d1 + d2 * d2);
+                                    convBuf1[j] = gain * f1;
                                 }
                             }
                         }
                     // ---- normal ----
                     } else {
                         // ---- real + img ----
-                        if( pr.bool[ PR_HASIMOUTPUT ]) {
+                        if (pr.bool[PR_HASIMOUTPUT]) {
                             // ---- needs gain measurement ----
-                            if( pr.intg[ PR_GAINTYPE ] == GAIN_ABSOLUTE ) {
-                                for( int j = 0, k = 0; j < chunkLen; j++ ) {
-                                    if( Math.abs( buf3[ k ]) > maxAmp ) {
-                                        maxAmp = Math.abs( buf3[ k ]);
+                            if (pr.intg[PR_GAINTYPE] == GAIN_ABSOLUTE) {
+                                for (int j = 0, k = 0; j < chunkLen; j++) {
+                                    if (Math.abs(buf3[k]) > maxAmp) {
+                                        maxAmp = Math.abs(buf3[k]);
                                     }
-                                    convBuf1[ j ] = gain * buf3[ k++ ];
-                                    if( Math.abs( buf3[ k ]) > maxAmp ) {
-                                        maxAmp = Math.abs( buf3[ k ]);
+                                    convBuf1[j] = gain * buf3[k++];
+                                    if (Math.abs(buf3[k]) > maxAmp) {
+                                        maxAmp = Math.abs(buf3[k]);
                                     }
-                                    convBuf2[ j ] = gain * buf3[ k++ ];
+                                    convBuf2[j] = gain * buf3[k++];
                                 }
                             // ---- gain already known ----
                             } else {
-                                for( int j = 0, k = 0; j < chunkLen; j++ ) {
-                                    convBuf1[ j ] = gain * buf3[ k++ ];
-                                    convBuf2[ j ] = gain * buf3[ k++ ];
+                                for (int j = 0, k = 0; j < chunkLen; j++) {
+                                    convBuf1[j] = gain * buf3[k++];
+                                    convBuf2[j] = gain * buf3[k++];
                                 }
                             }
                         // ---- only real ----
                         } else {
                             // ---- needs gain measurement ----
-                            if( pr.intg[ PR_GAINTYPE ] == GAIN_ABSOLUTE ) {
-                                for( int j = 0, k = 0; j < chunkLen; j++, k += 2 ) {
-                                    if( Math.abs( buf3[ k ]) > maxAmp ) {
-                                        maxAmp = Math.abs( buf3[ k ]);
+                            if (pr.intg[PR_GAINTYPE] == GAIN_ABSOLUTE) {
+                                for (int j = 0, k = 0; j < chunkLen; j++, k += 2) {
+                                    if (Math.abs(buf3[k]) > maxAmp) {
+                                        maxAmp = Math.abs(buf3[k]);
                                     }
-                                    convBuf1[ j ] = gain * buf3[ k ];
+                                    convBuf1[j] = gain * buf3[k];
                                 }
                             // ---- gain already known ----
                             } else {
-                                for( int j = 0, k = 0; j < chunkLen; j++, k += 2 ) {
-                                    convBuf1[ j ] = gain * buf3[ k ];
+                                for (int j = 0, k = 0; j < chunkLen; j++, k += 2) {
+                                    convBuf1[j] = gain * buf3[k];
                                 }
                             }
                         }
@@ -784,27 +780,27 @@ i1 = (int) Math.min( 0x40000000, Math.min( dataLen, ((long) pr.para[ PR_MEMORY ]
                 }
             // .... progress ....
                 progOff += chunkLen;
-                setProgression( (float) progOff / (float) progLen );
+                setProgression((float) progOff / (float) progLen);
 
-                reOutF.writeFrames( buf1, 0, chunkLen );
+                reOutF.writeFrames(buf1, 0, chunkLen);
             // .... progress ....
                 progOff += chunkLen;
-                setProgression( (float) progOff / (float) progLen );
+                setProgression((float) progOff / (float) progLen);
 
-                if( imOutF != null ) {
-                    imOutF.writeFrames( buf2, 0, chunkLen );
+                if (imOutF != null) {
+                    imOutF.writeFrames(buf2, 0, chunkLen);
                 // .... progress ....
                     progOff += chunkLen;
-                    setProgression( (float) progOff / (float) progLen );
+                    setProgression((float) progOff / (float) progLen);
                 }
                 framesWritten += chunkLen;
             }
         // .... check running ....
-            if( !threadRunning ) break topLevel;
+            if (!threadRunning) break topLevel;
 
             reOutF.close();
             reOutF = null;
-            if( imOutF != null ) {
+            if (imOutF != null) {
                 imOutF.close();
                 imOutF = null;
             }
@@ -813,52 +809,51 @@ i1 = (int) Math.min( 0x40000000, Math.min( dataLen, ((long) pr.para[ PR_MEMORY ]
 
             // inform about clipping/ low level
             maxAmp *= gain;
-            handleClipping( maxAmp );
+            handleClipping(maxAmp);
         }
-        catch( IOException e1 ) {
-            setError( e1 );
+        catch (IOException e1) {
+            setError(e1);
         }
-        catch( OutOfMemoryError e2 ) {
-            buf1	= null;
-            buf2	= null;
-            buf3	= null;
+        catch (OutOfMemoryError e2) {
+            buf1 = null;
+            buf2 = null;
+            buf3 = null;
             System.gc();
 
-            setError( new Exception( ERR_MEMORY ));
+            setError(new Exception(ERR_MEMORY));
         }
 
     // ---- cleanup (topLevel) ----
-        buf1	= null;
-        buf2	= null;
-        buf3	= null;
+        buf1 = null;
+        buf2 = null;
+        buf3 = null;
 
-        if( reInF != null ) {
+        if (reInF != null) {
             reInF.cleanUp();
             reInF = null;
         }
-        if( imInF != null ) {
+        if (imInF != null) {
             imInF.cleanUp();
             imInF = null;
         }
-        if( reOutF != null ) {
+        if (reOutF != null) {
             reOutF.cleanUp();
             reOutF = null;
         }
-        if( imOutF != null ) {
+        if (imOutF != null) {
             imOutF.cleanUp();
             imOutF = null;
         }
-        if( floatF != null ) {
-            for( int ch = 0; ch < floatF.length; ch++ ) {
-                for( int i = 0; i < 4; i++ ) {
-                    if( floatF[ ch ][ i ] != null ) {
-                        floatF[ ch ][ i ].cleanUp();
-                        floatF[ ch ][ i ] = null;
+        if (floatF != null) {
+            for (int ch = 0; ch < floatF.length; ch++) {
+                for (int i = 0; i < 4; i++) {
+                    if (floatF[ch][i] != null) {
+                        floatF[ch][i].cleanUp();
+                        floatF[ch][i] = null;
                     }
-                    if( tempFile[ ch ][ i ] != null ) {
-//System.out.println( "deleting : " + tempFile[ch][i].getName() );
-                        tempFile[ ch ][ i ].delete();
-                        tempFile[ ch ][ i ] = null;
+                    if (tempFile[ch][i] != null) {
+                        tempFile[ch][i].delete();
+                        tempFile[ch][i] = null;
                     }
                 }
             }
@@ -867,26 +862,26 @@ i1 = (int) Math.min( 0x40000000, Math.min( dataLen, ((long) pr.para[ PR_MEMORY ]
 
 // -------- private methods --------
 
-/**
- *	One-dimensional Fourier transform of a large data set stored on external media.
- *	len must be a power of 2. file[ 0...3 ] contains the stream pointers to 4 temporary files,
- *	each large enough to hold half of the data. The input data must have its first half stored
- *	in file file[ 0 ], its second half in file[ 1 ], in native floating point form.
- *	memAmount real numbers are processed per buffered read or write.
- *	Output: the  first half of the result is stored in file[ 2 ], the second half in file[ 3 ].
- *
- *	@param	file		0 = first half input,  1 = second half input
- *						2 = first half output, 3 = second half output
- *	@param	len			complex fft length (power of 2!)
- *	@param	dir			1 = forward, -1 = inverse transform (multiply by freqShift for special effect!)
- *	@param	buf			3 gleichgrosse float-puffer
- *	@param	progEnd		(progress-indicator)
- *
- *	Adaption von Numerical Recipes
- */
-    protected void storageFFT( FloatFile[] file, File[] tempFile, long len, float dir, float[][] buf, float progEnd )
-    throws IOException
-    {
+    /**
+     *	One-dimensional Fourier transform of a large data set stored on external media.
+     *	len must be a power of 2. file[ 0...3 ] contains the stream pointers to 4 temporary files,
+     *	each large enough to hold half of the data. The input data must have its first half stored
+     *	in file file[ 0 ], its second half in file[ 1 ], in native floating point form.
+     *	memAmount real numbers are processed per buffered read or write.
+     *	Output: the  first half of the result is stored in file[ 2 ], the second half in file[ 3 ].
+     *
+     *	@param	file		0 = first half input,  1 = second half input
+     *						2 = first half output, 3 = second half output
+     *	@param	len			complex fft length (power of 2!)
+     *	@param	dir			1 = forward, -1 = inverse transform (multiply by freqShift for special effect!)
+     *	@param	buf			3 equal sized float-buffers
+     *	@param	progEnd		(progress-indicator)
+     *
+     *	Adaption von Numerical Recipes
+     */
+    protected void storageFFT(FloatFile[] file, File[] tempFile, long len, float dir, float[][] buf, float progEnd)
+            throws IOException {
+
         int		g, h, i, j, k, kk, ks, kd;
         float	tempRe, tempIm;
         float[]	buf1, buf2, buf3;
@@ -908,12 +903,12 @@ i1 = (int) Math.min( 0x40000000, Math.min( dataLen, ((long) pr.para[ PR_MEMORY ]
         buf2		= buf[ 1 ];
         buf3		= buf[ 2 ];
 
-        kc		= 0;
-        mMax	= len;
-        numSteps= len/memAmount;
-        halfSteps= numSteps >> 1;
-        thetaBase= dir * Math.PI;
-// System.out.println( "memAmount" +memAmount+"; len "+len+"; numSteps "+numSteps+"; halfSteps "+halfSteps );
+        kc		    = 0;
+        mMax	    = len;
+        numSteps    = len/memAmount;
+        halfSteps   = numSteps >> 1;
+        thetaBase   = dir * Math.PI;
+        // System.out.println( "memAmount" +memAmount+"; len "+len+"; numSteps "+numSteps+"; halfSteps "+halfSteps );
 
         // calc prog len by simulation (can't figure it out in abstract ;)
         prog		= 0;
@@ -922,91 +917,87 @@ i1 = (int) Math.min( 0x40000000, Math.min( dataLen, ((long) pr.para[ PR_MEMORY ]
         kd			= memAmount >> 1;
         jk			= len;
         do {
-            progLen	+= Math.max( 1, halfSteps ) * (memAmount << 2) * (halfSteps == 0 ? 1 : 2);
+            progLen += Math.max(1, halfSteps) * (memAmount << 2) * (halfSteps == 0 ? 1 : 2);
             jk >>= 1;
             n2 >>= 1;
-            if( n2 > memAmount ) {
-                n1		 = 2 * ((numSteps + (n2/memAmount) - 1) / (n2/memAmount)) * ((n2 + memAmount - 1) / memAmount);
-                progLen	+= n1 * (memAmount << 1);
+            if (n2 > memAmount) {
+                n1 = 2 * ((numSteps + (n2 / memAmount) - 1) / (n2 / memAmount)) * ((n2 + memAmount - 1) / memAmount);
+                progLen += n1 * (memAmount << 1);
             }
-        } while( n2 >= memAmount );
+        } while (n2 >= memAmount);
         j = 0;
         do {
             progLen += 2 * numSteps * memAmount;
-            ks		 = kd;
-            kd	   >>= 1;
-            for( i = 0; i < 2; i++ ) {
-                for( step = 0; step < numSteps; step++ ) {
-                    kk	= 0;
-                    k	= ks;
+            ks = kd;
+            kd >>= 1;
+            for (i = 0; i < 2; i++) {
+                for (step = 0; step < numSteps; step++) {
+                    kk = 0;
+                    k = ks;
                     do {
-                        h	= (k - kk + 1) & ~1;
+                        h   = (k - kk + 1) & ~1;
                         j  += h;
                         kk += h;
                         kk += ks;
-                        k	= kk + ks;
-                    } while( kk < memAmount );
-                    if( j >= memAmount ) {
+                        k   = kk + ks;
+                    } while (kk < memAmount);
+                    if (j >= memAmount) {
                         progLen += memAmount << 1;
                         j = 0;
                     }
                 }
             }
             jk >>= 1;
-        } while( jk > 1 );
+        } while (jk > 1);
         progWeight /= progLen;
 
         n2		= len;
         kd		= memAmount >> 1;
         jk		= len;
-        rewind( file, tempFile, fileIndex );
-//		file	= rewind( file, fileIndex );
+        rewind(file, tempFile, fileIndex);
 
         // The first phase of the transform starts here.
         do {		// Start of the computing pass.
             theta	= thetaBase / (len/mMax);
-            tempW	= Math.sin( theta/2 );
+            tempW   = Math.sin(theta / 2);
             wpRe	= -2.0 * tempW * tempW;
-            wpIm	= Math.sin( theta );
+            wpIm    = Math.sin(theta);
             wRe		= 1.0;
             wIm		= 0.0;
             wReF	= 1.0f;
             wImF	= 0.0f;
             mMax  >>= 1;
 
-            for( i = 0; threadRunning && (i < 2); i++ ) {
+            for (i = 0; threadRunning && (i < 2); i++) {
                 step = 0;
                 do {
-                    for( framesRead = 0; threadRunning && (framesRead < memAmount); ) {
-                        g = Math.min( 32768, memAmount - framesRead );
-                        file[ fileIndex[ 0 ]].readFloats( buf1, framesRead, g );
+                    for (framesRead = 0; threadRunning && (framesRead < memAmount); ) {
+                        g = Math.min(32768, memAmount - framesRead);
+                        file[fileIndex[0]].readFloats(buf1, framesRead, g);
                         framesRead	+= g;
                         prog		+= g;
                     // .... progress ....
-                        setProgression( (float) prog * progWeight + progOff );
+                        setProgression((float) prog * progWeight + progOff);
                     }
-                    for( framesRead = 0; threadRunning && (framesRead < memAmount); ) {
-                        g = Math.min( 32768, memAmount - framesRead );
-                        file[ fileIndex[ 1 ]].readFloats( buf2, framesRead, g );
-                        framesRead	+= g;
-                        prog		+= g;
+                    for (framesRead = 0; threadRunning && (framesRead < memAmount); ) {
+                        g = Math.min(32768, memAmount - framesRead);
+                        file[fileIndex[1]].readFloats(buf2, framesRead, g);
+                        framesRead += g;
+                        prog       += g;
                     // .... progress ....
                         setProgression( (float) prog * progWeight + progOff );
                     }
                 // .... check running ....
                     if( !threadRunning ) return;
 
-                    for( j = 0; j < memAmount; j += 2 ) {
-                        h			= j + 1;
-                        // double operations more accurate but probably slower ;(
-                        tempRe		= wReF * buf2[ j ] - wImF * buf2[ h ];
-                        tempIm		= wImF * buf2[ j ] + wReF * buf2[ h ];
-//						tempRe		= (float) (wRe * buf2[ j ] - wIm * buf2[ h ]);
-//						tempIm		= (float) (wIm * buf2[ j ] + wRe * buf2[ h ]);
-                        buf2[ j ]	= buf1[ j ] - tempRe;
-                        buf1[ j ]  += tempRe;
-                        buf2[ h ]	= buf1[ h ] - tempIm;
-                        buf1[ h ]  += tempIm;
+                    for (j = 0; j < memAmount; j += 2) {
+                        h        = j + 1;
+                        tempRe   = wReF * buf2[j] - wImF * buf2[h];
+                        tempIm   = wImF * buf2[j] + wReF * buf2[h];
+                        buf2[j]  = buf1[j] - tempRe;
+                        buf1[j] += tempRe;
+                        buf2[h]  = buf1[h] - tempIm;
+                        buf1[h] += tempIm;
                     }
 
                     kc += kd;
@@ -1019,86 +1010,84 @@ i1 = (int) Math.min( 0x40000000, Math.min( dataLen, ((long) pr.para[ PR_MEMORY ]
                         wImF	= (float) wIm;
                     }
 
-                    for( framesWritten = 0; threadRunning && (framesWritten < memAmount); ) {
-                        g = Math.min( 32768, memAmount - framesWritten );
-                        file[ fileIndex[ 2 ]].writeFloats( buf1, framesWritten, g );
-                        framesWritten	+= g;
-                        prog			+= g;
+                    for (framesWritten = 0; threadRunning && (framesWritten < memAmount); ) {
+                        g = Math.min(32768, memAmount - framesWritten);
+                        file[fileIndex[2]].writeFloats(buf1, framesWritten, g);
+                        framesWritten   += g;
+                        prog            += g;
                     // .... progress ....
-                        setProgression( (float) prog * progWeight + progOff );
+                        setProgression((float) prog * progWeight + progOff);
                     }
-                    for( framesWritten = 0; threadRunning && (framesWritten < memAmount); ) {
-                        g = Math.min( 32768, memAmount - framesWritten );
-                        file[ fileIndex[ 3 ]].writeFloats( buf2, framesWritten, g );
-                        framesWritten	+= g;
-                        prog			+= g;
+                    for (framesWritten = 0; threadRunning && (framesWritten < memAmount); ) {
+                        g = Math.min(32768, memAmount - framesWritten);
+                        file[fileIndex[3]].writeFloats(buf2, framesWritten, g);
+                        framesWritten   += g;
+                        prog            += g;
                     // .... progress ....
-                        setProgression( (float) prog * progWeight + progOff );
+                        setProgression((float) prog * progWeight + progOff);
                     }
 
-                } while( threadRunning && (++step < halfSteps) );
+                } while (threadRunning && (++step < halfSteps));
             // .... check running ....
-                if( !threadRunning ) return;
+                if (!threadRunning) return;
 
-                if( (i == 0) && (n2 != len) && (n2 == memAmount) ) {
-                    fileIndex[ 0 ] = indexMap[ fileIndex[ 0 ]];
-                    fileIndex[ 1 ] = fileIndex[ 0 ];
+                if ((i == 0) && (n2 != len) && (n2 == memAmount)) {
+                    fileIndex[0] = indexMap[fileIndex[0]];
+                    fileIndex[1] = fileIndex[0];
                 }
 
-                if( halfSteps == 0 ) break;
+                if (halfSteps == 0) break;
             }
         // .... check running ....
             if( !threadRunning ) return;
 
-            rewind( file, tempFile, fileIndex );		// Start of the permutation pass.
-//			file	= rewind( file, fileIndex );		// Start of the permutation pass.
+            rewind(file, tempFile, fileIndex);        // Start of the permutation pass.
             jk >>= 1;
-            if( jk == 1 ) {
-                mMax	= len;
-                jk		= len;
-System.out.println( "We never get here?!!" );
+            if (jk == 1) {
+                mMax    = len;
+                jk      = len;
+                System.out.println("We never get here?!!");
             }
 
             n2 >>= 1;
-            if( n2 > memAmount ) {
-                for( i = 0; i < 2; i++ ) {
-                    for( step = 0; step < numSteps; step += n2/memAmount ) {
-                        for( n1 = 0; n1 < n2; n1 += memAmount ) {
-                            for( framesRead = 0; threadRunning && (framesRead < memAmount); ) {
-                                g = Math.min( 32768, memAmount - framesRead );
-                                file[ fileIndex[ 0 ]].readFloats( buf1, framesRead, g );
-                                framesRead		+= g;
-                                prog			+= g;
+            if (n2 > memAmount) {
+                for (i = 0; i < 2; i++) {
+                    for (step = 0; step < numSteps; step += n2 / memAmount) {
+                        for (n1 = 0; n1 < n2; n1 += memAmount) {
+                            for (framesRead = 0; threadRunning && (framesRead < memAmount); ) {
+                                g = Math.min(32768, memAmount - framesRead);
+                                file[fileIndex[0]].readFloats(buf1, framesRead, g);
+                                framesRead  += g;
+                                prog        += g;
                             // .... progress ....
-                                setProgression( (float) prog * progWeight + progOff );
+                                setProgression((float) prog * progWeight + progOff);
                             }
-                            for( framesWritten = 0; threadRunning && (framesWritten < memAmount); ) {
-                                g = Math.min( 32768, memAmount - framesWritten );
-                                file[ fileIndex[ 2 ]].writeFloats( buf1, framesWritten, g );
-                                framesWritten	+= g;
-                                prog			+= g;
+                            for (framesWritten = 0; threadRunning && (framesWritten < memAmount); ) {
+                                g = Math.min(32768, memAmount - framesWritten);
+                                file[fileIndex[2]].writeFloats(buf1, framesWritten, g);
+                                framesWritten   += g;
+                                prog            += g;
                             // .... progress ....
-                                setProgression( (float) prog * progWeight + progOff );
+                                setProgression((float) prog * progWeight + progOff);
                             }
                         // .... check running ....
-                            if( !threadRunning ) return;
+                            if (!threadRunning) return;
                         }
-                        fileIndex[ 2 ] = indexMap[ fileIndex[ 2 ]];
+                        fileIndex[2] = indexMap[fileIndex[2]];
                     }
-                    fileIndex[ 0 ] = indexMap[ fileIndex[ 0 ]];
+                    fileIndex[0] = indexMap[fileIndex[0]];
                 }
-                rewind( file, tempFile, fileIndex );
-//				file	= rewind( file, fileIndex );
+                rewind(file, tempFile, fileIndex);
 
-            } else if( n2 == memAmount) {
-                fileIndex[ 1 ] = fileIndex[ 0 ];
+            } else if (n2 == memAmount) {
+                fileIndex[1] = fileIndex[0];
             }
 
-        } while( threadRunning && (n2 >= memAmount) );
+        } while (threadRunning && (n2 >= memAmount));
     // .... check running ....
-        if( !threadRunning ) return;
+        if (!threadRunning) return;
 
-// System.out.println( "part 2" );
+        // System.out.println( "part 2" );
         j = 0;
         // The second phase of the transform starts here. Now, the remaining permutations
         // are sufficiently local to be done in place.
@@ -1116,42 +1105,40 @@ System.out.println( "We never get here?!!" );
             ks		= kd;
             kd	  >>= 1;
 
-            for( i = 0; threadRunning && (i < 2); i++ ) {
-                for( step = 0; threadRunning && (step < numSteps); step++ ) {
-                    for( framesRead = 0; threadRunning && (framesRead < memAmount); ) {
-                        g = Math.min( 32768, memAmount - framesRead );
-                        file[ fileIndex[ 0 ]].readFloats( buf3, framesRead, g );
-                        framesRead	+= g;
-                        prog		+= g;
+            for (i = 0; threadRunning && (i < 2); i++) {
+                for (step = 0; threadRunning && (step < numSteps); step++) {
+                    for (framesRead = 0; threadRunning && (framesRead < memAmount); ) {
+                        g = Math.min(32768, memAmount - framesRead);
+                        file[fileIndex[0]].readFloats(buf3, framesRead, g);
+                        framesRead  += g;
+                        prog        += g;
                     // .... progress ....
-                        setProgression( (float) prog * progWeight + progOff );
+                        setProgression((float) prog * progWeight + progOff);
                     }
                 // .... check running ....
-                    if( !threadRunning ) return;
+                    if (!threadRunning) return;
 
                     kk	= 0;
                     k	= ks;
 
                     do {
-                        h			= kk + ks + 1;
-                        tempRe		= wReF * buf3[ kk + ks ] - wImF * buf3[ h ];
-                        tempIm		= wImF * buf3[ kk + ks ] + wReF * buf3[ h ];
-//						tempRe		= (float) (wRe * buf3[ kk + ks ] - wIm * buf3[ h ]);
-//						tempIm		= (float) (wIm * buf3[ kk + ks ] + wRe * buf3[ h ]);
-                        buf1[ j ]	= buf3[ kk ]	+ tempRe;
-                        buf2[ j ]	= buf3[ kk ]	- tempRe;
-                        buf1[ ++j ]	= buf3[ ++kk ]	+ tempIm;
-                        buf2[ j++ ]	= buf3[ kk++ ]	- tempIm;
+                        h           = kk + ks + 1;
+                        tempRe      = wReF * buf3[kk + ks] - wImF * buf3[h];
+                        tempIm      = wImF * buf3[kk + ks] + wReF * buf3[h];
+                        buf1[  j  ] = buf3[  kk  ] + tempRe;
+                        buf2[  j  ] = buf3[  kk  ] - tempRe;
+                        buf1[++j  ] = buf3[++kk  ] + tempIm;
+                        buf2[  j++] = buf3[  kk++] - tempIm;
 
-                        if( kk < k ) continue;
+                        if (kk < k) continue;
                         kc += kd;
-                        if( kc == mMax ) {
-                            kc		= 0;
-                            tempW	= wRe;
-                            wRe	   += tempW * wpRe - wIm * wpIm;
-                            wIm	   += tempW * wpIm + wIm * wpRe;
-                            wReF	= (float) wRe;
-                            wImF	= (float) wIm;
+                        if (kc == mMax) {
+                            kc      = 0;
+                            tempW   = wRe;
+                            wRe    += tempW * wpRe - wIm * wpIm;
+                            wIm    += tempW * wpIm + wIm * wpRe;
+                            wReF    = (float) wRe;
+                            wImF    = (float) wIm;
                         }
 
                         kk += ks;
@@ -1162,89 +1149,85 @@ System.out.println( "We never get here?!!" );
                     } while( true );
 
                     // flush
-                    if( j >= memAmount ) {
-                        for( framesWritten = 0; threadRunning && (framesWritten < memAmount); ) {
-                            g = Math.min( 32768, memAmount - framesWritten );
-                            file[ fileIndex[ 2 ]].writeFloats( buf1, framesWritten, g );
-                            framesWritten	+= g;
-                            prog			+= g;
-                        // .... progress ....
-                            setProgression( (float) prog * progWeight + progOff );
+                    if (j >= memAmount) {
+                        for (framesWritten = 0; threadRunning && (framesWritten < memAmount); ) {
+                            g = Math.min(32768, memAmount - framesWritten);
+                            file[fileIndex[2]].writeFloats(buf1, framesWritten, g);
+                            framesWritten += g;
+                            prog += g;
+                            // .... progress ....
+                            setProgression((float) prog * progWeight + progOff);
                         }
-                        for( framesWritten = 0; threadRunning && (framesWritten < memAmount); ) {
-                            g = Math.min( 32768, memAmount - framesWritten );
-                            file[ fileIndex[ 3 ]].writeFloats( buf2, framesWritten, g );
-                            framesWritten	+= g;
-                            prog			+= g;
-                        // .... progress ....
-                            setProgression( (float) prog * progWeight + progOff );
+                        for (framesWritten = 0; threadRunning && (framesWritten < memAmount); ) {
+                            g = Math.min(32768, memAmount - framesWritten);
+                            file[fileIndex[3]].writeFloats(buf2, framesWritten, g);
+                            framesWritten += g;
+                            prog += g;
+                            // .... progress ....
+                            setProgression((float) prog * progWeight + progOff);
                         }
-                    // .... check running ....
-                        if( !threadRunning ) return;
+                        // .... check running ....
+                        if (!threadRunning) return;
                         j = 0;
                     }
                 } // for steps
-                fileIndex[ 0 ] = indexMap[ fileIndex[ 0 ]];
+                fileIndex[0] = indexMap[fileIndex[0]];
             } // for( 1 ... 2 )
         // .... check running ....
 //			if( !threadRunning ) return;
 
-            rewind( file, tempFile, fileIndex );
-//			file	= rewind( file, fileIndex );
+            rewind(file, tempFile, fileIndex);
             jk >>= 1;
-        } while( threadRunning && (jk > 1) );
+        } while (threadRunning && (jk > 1));
 
-        buf1	= null;
-        buf2	= null;
-        buf3	= null;
-//		file	= null;
+        buf1 = null;
+        buf2 = null;
+        buf3 = null;
     }
 
     // Utility used by storageFFT. Rewinds and renumbers the four files.
-    protected void rewind( FloatFile[] file, File[] tempFile, int[] fileIndex )
-    throws IOException
-    {
+    protected void rewind(FloatFile[] file, File[] tempFile, int[] fileIndex)
+            throws IOException {
+
         int			i;
         FloatFile	tempF;
         File		tempF2;
 
-        for( i = 0; i < 4; i++ )
-        {
-            file[ i ].seekFloat( 0 );
+        for (i = 0; i < 4; i++) {
+            file[i].seekFloat(0);
         }
-        tempF			= file[ 1 ];
-        file[ 1 ]		= file[ 3 ];
-        file[ 3 ]		= tempF;
-        tempF			= file[ 0 ];
-        file[ 0 ]		= file[ 2 ];
-        file[ 2 ]		= tempF;
+        tempF       = file[1];
+        file[1]     = file[3];
+        file[3]     = tempF;
+        tempF       = file[0];
+        file[0]     = file[2];
+        file[2]     = tempF;
 
-        tempF2			= tempFile[ 1 ];
-        tempFile[ 1 ]	= tempFile[ 3 ];
-        tempFile[ 3 ]	= tempF2;
-        tempF2			= tempFile[ 0 ];
-        tempFile[ 0 ]	= tempFile[ 2 ];
-        tempFile[ 2 ]	= tempF2;
+        tempF2      = tempFile[1];
+        tempFile[1] = tempFile[3];
+        tempFile[3] = tempF2;
+        tempF2      = tempFile[0];
+        tempFile[0] = tempFile[2];
+        tempFile[2] = tempF2;
 
-        fileIndex[ 0 ]	= 2;
-        fileIndex[ 1 ]	= 3;
-        fileIndex[ 2 ]	= 0;
-        fileIndex[ 3 ]	= 1;
+        fileIndex[0] = 2;
+        fileIndex[1] = 3;
+        fileIndex[2] = 0;
+        fileIndex[3] = 1;
     }
 
-    protected void reflectPropertyChanges()
-    {
+    protected void reflectPropertyChanges() {
         super.reflectPropertyChanges();
 
         Component c;
 
-        c = gui.getItemObj( GG_IMINPUTFILE );
-        if( c != null ) {
-            c.setEnabled( pr.bool[ PR_HASIMINPUT ]);
+        c = gui.getItemObj(GG_IMINPUTFILE);
+        if (c != null) {
+            c.setEnabled(pr.bool[PR_HASIMINPUT]);
         }
-        c = gui.getItemObj( GG_IMOUTPUTFILE );
-        if( c != null ) {
-            c.setEnabled( pr.bool[ PR_HASIMOUTPUT ]);
+        c = gui.getItemObj(GG_IMOUTPUTFILE);
+        if (c != null) {
+            c.setEnabled(pr.bool[PR_HASIMOUTPUT]);
         }
     }
 }
