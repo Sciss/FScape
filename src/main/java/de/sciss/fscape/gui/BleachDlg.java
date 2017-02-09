@@ -319,6 +319,7 @@ public class BleachDlg
 //		final int				iterations		= (int) pr.para[ PR_ITERATIONS ].value;
         final Param				ampRef			= new Param( 1.0, Param.ABS_AMP );			// transform-Referenz
         final double			feedbackGain	= (Param.transform( pr.para[ PR_FEEDBACKGAIN ], Param.ABS_AMP, ampRef, null )).value;
+//        final double feedbackGain = 0.01;
         final double[][]		fltKernel;
         final float[][]			anaBuf, outBuf, fltBuf;
         final boolean			absGain			= pr.intg[ PR_GAINTYPE ] == GAIN_ABSOLUTE;
@@ -412,6 +413,10 @@ public class BleachDlg
 
             boolean isSecondPass    = false;
 
+//            final long START_FRAME = 0L;
+//            final long STOP_FRAME  = START_FRAME + 16;
+//            long FRAMES_DONE = 0L;
+
             while (threadRunning && (framesWritten < numFrames)) {
                 chunkLen = (int) Math.min(8192, numFrames - framesRead);
 
@@ -456,6 +461,24 @@ public class BleachDlg
                         }
                         // err = d1 - anaChanBuf[ k ];
                         errNeg = anaChanBuf[k] - d1;
+
+//                        if (FRAMES_DONE >= START_FRAME && FRAMES_DONE < STOP_FRAME) {
+//                            float x0 = anaChanBuf[fltLength + i];
+//                            System.out.println("---- frame " + FRAMES_DONE);
+//                            for (int ii = 0; ii < 8; ii++) {
+//                                System.out.print(ii == 0 ? "buf " : ", ");
+//                                System.out.print(anaChanBuf[ii + i]);
+//                            }
+//                            System.out.println();
+//                            for (int ii = 0; ii < 8; ii++) {
+//                                System.out.print(ii == 0 ? "flt " : ", ");
+//                                System.out.print(fltChanKernel[ii]);
+//                            }
+//                            System.out.println();
+//                            System.out.println("in " + x0);
+//                            System.out.println("out " + (float) d1);
+//                        }
+
                         if (useAnaAsFilter) {
                             // use straight as output...
                             outChanBuf[i] = inverse ? (float) d1 : (float) errNeg;
@@ -475,6 +498,17 @@ public class BleachDlg
                             fltChanKernel[ j ] = Math.max( filterMin, Math.min( filterMax,
                                 fltChanKernel[ j ] + d1 * anaChanBuf[ k ]));
                         }
+
+//                        if (FRAMES_DONE >= START_FRAME && FRAMES_DONE < STOP_FRAME) {
+//                            System.out.println("w " + d1);
+//                            for (int ii = 0; ii < 8; ii++) {
+//                                System.out.print(ii == 0 ? "upd " : ", ");
+//                                System.out.print(fltChanKernel[ii]);
+//                            }
+//                            System.out.println();
+//                        }
+//
+//                        FRAMES_DONE += 1;
                     }
                 }
                 progOff += chunkLen;
