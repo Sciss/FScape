@@ -1,0 +1,328 @@
+Version 0.2
+
+20-May-00
+	- Input Operator: von ms verschiedene Maßeinheiten werden korrekt interpretiert
+	- Spectrogram: frequency + time is displayed
+	- FlipFreq Op: freq were calculated wrong when lowest freq. was not 0 Hz
+	- Aliase möglich
+	- Clipboard Operationen möglich
+	- Open Recent didn't ask to save changes
+	- Save As adds entry to Open Recent menu
+
+21-May-00
+	- added Mac flavor: icons including filetype+creator,
+	  apple event response (if Finder requests Quit, Open-Doc),
+	  about-menuitem placed in apple menu
+
+29-May-00
+	- Analysis-Dialogs
+	- minor bugs
+
+14-Jun-00
+	- Minor bugs
+	- Load/Save berücksichtigt Aliase und Connectors
+	
+17-Jun-00
+	- ConvertDlg replaces AnalyseDlg
+	
+02-Jul-00
+	- Sample Synthesis Dialog scratch
+
+28-Jul-00
+	- workaround für SoundHack bug bei stereodateien
+	- Mono2Stereo Operator
+	- fixed bug in SpectStream.allocFrame()
+
+02-Aug-00
+	- SmearOp
+
+11-Aug-00
+	- continued Sample Synthesis
+	- DataWheel: Alt+Click resets value; Click/Shift-Click increases/decreases value
+	- ParamField: tiny bug fix
+	- ProgressBar displays remaining time
+
+02-Sep-00
+	- Bugfix: AbsAmp => Decibel did wrong calculation!
+	- SoundFile: writing supported now
+
+11-Sep-00
+	- Sample Chaining Synthesis
+
+17-Sep-00
+	- SmpSynDlg: "bandlimited interpolation"; logarithmic freq. scale
+	- ChangeGainDlg
+
+09-Oct-00
+	- ConvertDlg: DFT; gain adjustment works
+
+07-Jan-01
+	- Wavelet Translation Dialog
+	- fixed bug in SoundFile (initWriter)
+	- fixed minor bug in ChangeGainDlg
+
+09-Jan-01
+	- fixed bug in SoundFile (close())
+24-Jan-01
+	- yet another bug in SoundFile, -sigh-
+
+28-Jan-01
+	- new class "GenericFile"
+	- yet another bug in SoundFile, -sigh-
+	- new class "IOSupport"
+	- TranslationDlg: handles files that cannot be processed inplace
+
+04-Feb-01
+	- minor changes to SoundFile, GenericFile, ...
+	- SndImgConvDlg
+	- ProcessWindow
+	- improvement of PathField, GUISupport, Wavelet, Filter
+	
+08-Mar-01
+	- spect.Fourier
+	- ConvolutionDlg
+
+10-Mar-01
+	- FIRDesignerDlg
+
+27-Mar-01
+	- ParamSettingsDlg
+	- FileInfoDlg
+
+29-Mar-01
+	- Fourier.realTransform serious bug fix
+	- Filter.resample()
+	- StatisticsDlg
+	
+02-Apr-01
+	- ChangeGainDlg: extends ProcessWindow; calcs power
+
+05-Apr-01
+	- DeclickDlg declicks ;) and reads/writes markers
+	- SoundFile: Markers
+
+06-Apr-01
+	- TranslationDlg: handle multichannel files; gain per scale
+
+08-Apr-01
+	- ResampleDlg
+	- ProcessWindow minor improvements
+	- SoundFile hat endlich frame basierte Routinen
+
+14-Apr-01
+	- MovieFile, MovieStream
+	- Rework of SndImgConvDlg
+
+28-Apr-01
+	- BasicFrame, BasicDialog, PropertyChanges, PrefsDlg extends ProcessWindow
+	- minor GUI improvements
+
+03-May-01
+	- minor improvements; bug fix in FloatFile.class
+
+04-May-01
+	- new sound file format IRCAM; io.Region
+
+13-May-01
+	- Bugfix in SoundFile.readHeader() (IRCAM)
+
+20-May-01
+	- Statistics: Phase spectrum; overlaps; user selectable window
+	- PathField: buxfix
+
+23-May-01
+	- Bugfix in 32-bit int soundfile read
+
+27-May-01
+	- FourierDlg
+
+02-Jun-01
+	- ConvolutionDlg: deconv.bug fix
+
+16-Jun-01
+	- Seek+Destroy
+	- FourierDlg: Bug fix; SoundFile+FloatFile improvements
+
+29-Jun-01
+	- AmpShaperDlg
+
+11-Jul-01
+	- Bug fix in Prefs/BasicProperties/Document
+	- ZoomOp
+
+16-Jul-01
+	- Analysis/SynthesisOp
+
+03-Aug-01
+	- Bugfix in 32-bit int soundfile read
+	- SchizophreniaDlg
+
+20-Aug-01
+	- BinaryOpDlg
+	- Bugfix in ProcessWindow/Presets
+
+22-Aug-01
+	- ProcessWindow: Alt+Click auf AddPreset => keine "Overwrite"-Abfrage
+
+27-Aug-01
+	- BatchDlg
+
+03-Sep-01
+	- HilbertDlg
+
+08-Sep-01
+	- Resample: Filter-Parameter korrigiert; Filter.resample : optional
+	  ohne lineare Interpolation (wesentlich schneller)
+
+13-Sep-01
+	- ComplexConvDlg
+	- BatchDlg slight improvement
+	- Hoffentlich letzter Bugfix in SoundFile/FloatFile buffer handling
+	
+14-Sep-01
+	- AnalysisOp, SynthesisOp funktionieren!! ShrinkOp geändert
+
+20-Sep-01
+	- neuer Envelope-Editor; noch nicht eingebunden
+	
+24-Sep-01
+	- EnvOp
+	
+05-Oct-01
+	- AnalysisOp: Chirp-Z
+	- CombFilterDlg
+
+15-Oct-01
+	- Pearson Plotter rewritten
+
+30-Oct-01
+	- CepstralOp
+
+06-Nov-01
+	- FreqModDlg
+	
+11-Nov-01
+	- v0.3; MainWindow, SpectPatchDlg;
+	- improvements in ChangeGainDlg, StatisticsDlg, OpPanel
+
+03-Dec-01
+	- ComplexConv: faster for input1=input2
+	- ConvOp
+
+25-Jan-02
+	- StepBackDlg
+
+28-Jan-02
+	- PrefsDlg:I/O Buffer Size (GenericFile, SoundFile, ImageFile, FloatFile)
+	- ProgressBar+PathField popup menues
+
+03-Feb-02
+	- BandSplitDlg
+	
+23-Feb-02
+	- Exciter, Online-Help, PathIcon (Drag+Drop)
+	- Stalker
+
+14-Mar-02
+	- Bug fixes: Hilbert
+	- input MovieFile works
+
+05-May-02
+	- ParamField: support for F2…F8
+	- SoundFile: support for floating point AIFF (AIFC)
+	- PathField: support for 32-bit int sound
+	- MainWindow: Open-File-Handling
+
+25-May-02
+	- LaguerreDlg
+
+16-Jun-02
+	- ConstrastOp
+
+28-Jul-02
+	- ChebychevDlg
+	
+03-Aug-02
+	- enhanced quit handling
+	
+14-Aug-02
+	- UnaryOp; bug fixes
+
+17-Aug-02
+	- ResampleDlg: immediate gain fix
+
+18-Aug-02
+	- MovieFile works; fixed 32-bit bug with huge sound files
+
+25-Sep-02
+	- RecycleDlg
+	- Bug fixes: SoundFile + FloatFile (sucky buffering once again)
+	
+16-Oct-02
+	- ProgBar turns yellow on Normalization
+	- AIFF/.snd Files: regular length update allows preliminary access
+
+09-Mar-03
+	- TrajectoryDlg
+
+21-Mar-03
+	- VoocooderDlg
+	- FourierDlg : bug fix (all temp files now correctly deleted)
+
+07-Apr-03
+	- SerialKilla weiter
+	
+25-Mai-03
+	- Concat
+	
+08-Jun-03
+	- Seek + Enjoy
+	
+15-Jun-03
+	- Kriechstrom
+
+05-Jul-03
+	- TarnishOp
+
+19-Jul-03
+	- Tarnish: Minimum Phase
+
+26-Aug-03
+	- Recovery from HD crash ; Graph2Snd reinstalled
+
+17-Oct-03
+	- PercussionOp
+	- MindmachineOp
+	- TarnishOp : bugfix
+
+23-Oct-03
+	- PathField : setText( txt, loop )
+	_ ChannelMgrDlg
+
+Dec-03
+	- Recreated on XCode MacOS 10.3
+	- using Swing instead of Java
+	- known bugs:
+	    Freq.Mod -> Array errors when switching to %
+	    IRCAM sound file read with markers
+	    QT sound!!
+	    System.out funktioniert nicht (es wird kein Console Fenster geoeffnet!!)
+	    SpectralPatcher
+	    F-Tasten funktionieren nicht mehr
+	    ConfirmDlg
+	    java.awt.List , .Panel : Channel Manager, Statistics, Stalker, FIR Designer, Sample Chaining
+	    
+29-Feb-04
+	- Bug in FreqModDlg behoben
+	- IchneumonDlg
+
+12-Apr-04
+	- NeedleholeDlg
+	- Bug in SND sound file behoben
+	- wieder Farben in der ProgressBar
+	- wieder einstellbarer Font
+	- PathField z.T. neu programmiert,
+	  neue Shortcuts : Apfel + Left/Right ; Apfel + (Shift) + Numpad 1-9
+
+27-Mai-04
+	- Bug in ChannelManager (normalize don't work) needs to be fixed!
