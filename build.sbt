@@ -20,12 +20,12 @@ lazy val commonSettings = Seq(
   javacOptions in (Compile, doc) := basicJavaOpts,  // doesn't eat `-encoding`
   mainClass in Compile := Some("de.sciss.fscape.FScape"),
   libraryDependencies ++= Seq(
-    "de.sciss"    %  "submin"             % "0.1.0",
-    "de.sciss"    %% "desktop-mac"        % "0.7.2",
+    "de.sciss"    %  "submin"             % "0.2.1",
+    "de.sciss"    %% "desktop-mac"        % "0.7.3",
     // "de.sciss" %% "audiowidgets-swing" % "1.6.2",
-    "de.sciss"    %% "raphael-icons"      % "1.0.2",
-    "de.sciss"    %% "fileutil"           % "1.1.1",
-    "de.sciss"    %  "scisslib"           % "1.1.0",
+    "de.sciss"    %% "raphael-icons"      % "1.0.4",
+    "de.sciss"    %% "fileutil"           % "1.1.2",
+    "de.sciss"    %  "scisslib"           % "1.1.1",
     "de.sciss"    %  "netutil"            % "1.0.0",
     "org.pegdown" %  "pegdown"            % "1.6.0"
   )
