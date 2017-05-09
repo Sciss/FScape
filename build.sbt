@@ -10,7 +10,7 @@ lazy val basicJavaOpts = Seq("-source", "1.6")
 
 lazy val commonSettings = Seq(
   name             := baseName,
-  version          := "1.3.1-SNAPSHOT",
+  version          := "1.3.1",
   organization     := "de.sciss",
   description      := "A standalone audio rendering software for time domain and spectral signal processing",
   homepage         := Some(url(s"https://github.com/Sciss/${name.value}")),
@@ -22,7 +22,6 @@ lazy val commonSettings = Seq(
   libraryDependencies ++= Seq(
     "de.sciss"    %  "submin"             % "0.2.1",
     "de.sciss"    %% "desktop-mac"        % "0.7.3",
-    // "de.sciss" %% "audiowidgets-swing" % "1.6.2",
     "de.sciss"    %% "raphael-icons"      % "1.0.4",
     "de.sciss"    %% "fileutil"           % "1.1.2",
     "de.sciss"    %  "scisslib"           % "1.1.1",
