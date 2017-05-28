@@ -10,17 +10,18 @@ lazy val basicJavaOpts = Seq("-source", "1.6")
 
 lazy val commonSettings = Seq(
   name             := baseName,
-  version          := "1.3.1",
+  version          := "1.3.2",
   organization     := "de.sciss",
   description      := "A standalone audio rendering software for time domain and spectral signal processing",
   homepage         := Some(url(s"https://github.com/Sciss/${name.value}")),
   licenses         := Seq("GPL v3+" -> url("http://www.gnu.org/licenses/gpl-3.0.txt")),
-  scalaVersion     := "2.11.8",
+  scalaVersion     := "2.11.11",
   javacOptions    ++= basicJavaOpts ++ Seq("-encoding", "utf8", "-Xlint:unchecked", "-target", "1.6"),
   javacOptions in (Compile, doc) := basicJavaOpts,  // doesn't eat `-encoding`
   mainClass in Compile := Some("de.sciss.fscape.FScape"),
   libraryDependencies ++= Seq(
     "de.sciss"    %  "submin"             % "0.2.1",
+    "de.sciss"    %  "weblaf"             % "2.1.3",
     "de.sciss"    %% "desktop-mac"        % "0.7.3",
     "de.sciss"    %% "raphael-icons"      % "1.0.4",
     "de.sciss"    %% "fileutil"           % "1.1.2",
