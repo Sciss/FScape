@@ -1,12 +1,12 @@
 ![logo](http://sciss.de/fscape/application.png)
 
-# FScape
+# FScape
 
 [![Flattr this](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=sciss&url=https%3A%2F%2Fgithub.com%2FSciss%2FFScape&title=FScape%20Music%20Application&language=Java&tags=github&category=software)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Sciss/FScape?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://travis-ci.org/Sciss/FScape.svg?branch=master)](https://travis-ci.org/Sciss/FScape)
 
-## statement
+## statement
 
 FScape is a standalone, cross-platform audio rendering software.
 
@@ -59,7 +59,7 @@ The libraries [Desktop](https://github.com/Sciss/Desktop), [FileUtil](https://gi
 
 The [sbt build script](https://github.com/paulp/sbt-extras) by Paul Phillips is included which is licensed under the BSD license.
 
-## documentation
+## documentation
 
 A basic quick start guide starts from `help/index.html`. This help is also accessible from the help menu within the application. For each of the processing modules, help is available via Help &gt; Module Documentation.
 
