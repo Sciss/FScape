@@ -2,7 +2,7 @@
  *  DocumentHandlerImpl.scala
  *  (FScape)
  *
- *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2018 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -15,9 +15,8 @@ package de.sciss.fscape
 package impl
 
 import de.sciss.file.file
-import de.sciss.fscape.FScape.Document
 import de.sciss.fscape.net.{OSCRoot, OSCRouter, OSCRouterWrapper, RoutedOSCMessage}
-import de.sciss.fscape.session.Session
+import de.sciss.fscape.session.{Session => Document}
 
 import scala.util.{Success, Failure}
 
@@ -40,12 +39,12 @@ final class DocumentHandlerImpl(root: OSCRoot) extends Application.DocumentHandl
 
   def getDocuments: Array[Document] = FScape.documentHandler.documents.toArray
 
-  def setActive(doc: Session): Unit = {
+  def setActive(doc: Document): Unit = {
     FScape.documentHandler.activeDocument = Some(doc)
     FScape.documentViewHandler.getWindow(doc).foreach(_.front())
   }
 
-  def close(doc: Session): Unit = {
+  def close(doc: Document): Unit = {
     FScape.documentViewHandler.getWindow(doc).fold {
       doc.dispose()
     } { win =>

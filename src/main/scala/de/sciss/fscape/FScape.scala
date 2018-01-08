@@ -2,7 +2,7 @@
  *  FScape.scala
  *  (FScape)
  *
- *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2018 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -16,9 +16,9 @@ package de.sciss.fscape
 import java.awt.{Color, GraphicsEnvironment, Toolkit}
 import java.net.URL
 import javax.swing.plaf.metal.MetalLookAndFeel
-import javax.swing.{UIManager, ImageIcon, KeyStroke}
+import javax.swing.{ImageIcon, KeyStroke, UIManager}
 
-import de.sciss.desktop.impl.{WindowHandlerImpl, LogWindowImpl, SwingApplicationImpl, WindowImpl}
+import de.sciss.desktop.impl.{LogWindowImpl, SwingApplicationImpl, WindowHandlerImpl, WindowImpl}
 import de.sciss.desktop.{Desktop, Escape, KeyStrokes, Menu, OptionPane, Window, WindowHandler}
 import de.sciss.file._
 import de.sciss.fscape.gui.PrefsPanel
@@ -30,16 +30,15 @@ import de.sciss.submin.Submin
 import org.pegdown.PegDownProcessor
 
 import scala.collection.breakOut
+import scala.concurrent.Future
 import scala.swing.Swing._
 import scala.swing.event.{Key, MouseClicked}
 import scala.swing._
 import scala.util.Try
 import scala.util.control.NonFatal
 
-object FScape extends SwingApplicationImpl("FScape") {
+object FScape extends SwingApplicationImpl[Session]("FScape") {
   App =>
-
-  type Document = Session
 
   private var osc       = null: OSCRouterWrapper
   private var oscServer = null: OSCRoot
@@ -86,7 +85,7 @@ object FScape extends SwingApplicationImpl("FScape") {
     val m     = clazz.getMethod(key)
     m.invoke(null).toString
   } catch {
-    case NonFatal(e) => "?"
+    case NonFatal(_) => "?"
   }
 
   private[this] def setLookAndFeel(className: String): Unit =
@@ -234,7 +233,10 @@ object FScape extends SwingApplicationImpl("FScape") {
     val itPrefs = Item.Preferences(App)(ActionPreferences())
     val itQuit  = Item.Quit(App)
 
-    Desktop.addQuitAcceptor(closeAll("Quit"))
+    Desktop.addQuitAcceptor {
+      val ok = closeAll("Quit")
+      if (ok) Future.successful(()) else Future.failed(new Exception("Aborted"))
+    }
 
     val gFile   = Group("file"  , "File")
       .add(Item("open", ActionOpen))
@@ -284,7 +286,7 @@ object FScape extends SwingApplicationImpl("FScape") {
            |<font size=+1><b>About ${App.name}</b></font><p>
            |Version $version<p>
            |<p>
-           |Copyright (c) 2001&ndash;2016 Hanns Holger Rutz.<p>
+           |Copyright (c) 2001&ndash;2018 Hanns Holger Rutz.<p>
            |This software is published under the GNU General Public License v3+<p>
            |<p>
            |Winner of the 2014 LoMus award (ex aequo).
@@ -340,7 +342,7 @@ object FScape extends SwingApplicationImpl("FScape") {
 
     new WindowImpl {
       def handler: WindowHandler = App.windowHandler
-      override def style = Window.Auxiliary
+      override def style: Window.Style = Window.Auxiliary
 
       title           = title0
       closeOperation  = Window.CloseDispose
@@ -401,7 +403,7 @@ object FScape extends SwingApplicationImpl("FScape") {
     Try {
       val clz       = Class.forName(s"de.sciss.fscape.gui.${key}Dlg")
       val modPanel	= clz.newInstance().asInstanceOf[ModulePanel]
-      documentHandler.addDocument(modPanel.getDocument())
+      documentHandler.addDocument(modPanel.getDocument)
       val modWin    = new DocumentWindow(modPanel)
       if (visible) modWin.front()
       modPanel
@@ -422,13 +424,16 @@ object FScape extends SwingApplicationImpl("FScape") {
     quit()
   }
 
-  def tryQuit(): Unit = if (Desktop.mayQuit()) quit()
+  def tryQuit(): Unit = {
+    import scala.concurrent.ExecutionContext.Implicits.global
+    Desktop.mayQuit().foreach(_ => quit())
+  }
 
   override def quit(): Unit = {
     try {
       oscServer.quit()
     } catch {
-      case NonFatal(e) => // ignore
+      case NonFatal(_) => // ignore
     }
     super.quit()
   }
@@ -478,7 +483,7 @@ object FScape extends SwingApplicationImpl("FScape") {
           }
     			tryQuit()
     		} catch {
-          case e1: ClassCastException => OSCRoot.failedArgType(rom, 1)
+          case _: ClassCastException => OSCRoot.failedArgType(rom, 1)
     		}
     	}
 

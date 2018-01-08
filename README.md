@@ -9,7 +9,7 @@
 
 FScape is a standalone, cross-platform audio rendering software.
 
-FScape is (C)opyright 2001&ndash;2017 by Hanns Holger Rutz. All rights reserved.
+FScape is (C)opyright 2001&ndash;2018 by Hanns Holger Rutz. All rights reserved.
 
 This program is free software; you can redistribute it and/or modify it under the terms of the [GNU General Public License](http://github.com/Sciss/FScape/blob/master/LICENSE) v3+.
 
@@ -31,7 +31,7 @@ In the binary distribution, you should use the shell scripts `bin/fscape` (Linux
 
 ## compiling
 
-FScape now builds with [sbt](http://www.scala-sbt.org/) 0.13. You can use the provided `sbt` shell script if you do not want to install sbt on your system.
+FScape now builds with [sbt](http://www.scala-sbt.org/). You can use the provided `sbt` shell script if you do not want to install sbt on your system.
 
  - to compile: `sbt compile`
  - to package: `sbt package`

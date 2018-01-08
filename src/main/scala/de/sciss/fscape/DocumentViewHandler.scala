@@ -2,7 +2,7 @@
  *  DocumentViewHandler.scala
  *  (FScape)
  *
- *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2018 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -13,14 +13,15 @@
 
 package de.sciss.fscape
 
+import de.sciss.fscape.session.{Session => Document}
 import de.sciss.fscape.{FScape => App}
 
 class DocumentViewHandler {
   private val DEBUG = false
 
-  private var map = Map.empty[App.Document, DocumentWindow]
+  private var map = Map.empty[Document, DocumentWindow]
 
-  def getWindow(doc: App.Document): Option[DocumentWindow] = map.get(doc)
+  def getWindow(doc: Document): Option[DocumentWindow] = map.get(doc)
 
   def windows: Iterator[DocumentWindow] = map.values.iterator
 

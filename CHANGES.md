@@ -1,5 +1,9 @@
 # change history
 
+## v1.4.0 (jan 2018)
+
+ - fixes a bug where Apple extensions are not present on Mac
+
 ## v1.3.0 (mar 2016)
 
  - bundles new Submin look-and-feel based on WebLaF. Preferences has option to switch to dark skin

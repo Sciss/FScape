@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=FScape
-Version=1.3.2
+Version=1.4.0
 GenericName=FScape
 Comment=FScape Audio Rendering Application
 Exec=/usr/share/fscape/bin/fscape

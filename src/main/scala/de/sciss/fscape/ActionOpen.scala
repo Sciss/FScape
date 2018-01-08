@@ -2,7 +2,7 @@
  *  ActionOpen.scala
  *  (FScape)
  *
- *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2018 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -15,16 +15,14 @@ package de.sciss.fscape
 
 import de.sciss.desktop.{FileDialog, KeyStrokes, Menu, RecentFiles}
 import de.sciss.file._
-import de.sciss.fscape.FScape.Document
 import de.sciss.fscape.prop.BasicProperties
-import de.sciss.fscape.session.ModulePanel
+import de.sciss.fscape.session.{ModulePanel, Session => Document}
 import de.sciss.fscape.{FScape => App}
 
 import scala.language.existentials
 import scala.swing.event.Key
 import scala.swing.{Action, Dialog}
-import scala.util.{Success, Failure, Try}
-import scala.util.control.NonFatal
+import scala.util.{Failure, Success, Try}
 
 object ActionOpen extends Action("Open...") {
   import KeyStrokes._

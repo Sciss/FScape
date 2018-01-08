@@ -2,7 +2,7 @@
  *  DocumentWindow.scala
  *  (FScape)
  *
- *  Copyright (c) 2001-2016 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2018 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -19,7 +19,7 @@ import de.sciss.desktop.{Menu, Window, _}
 import de.sciss.desktop.impl.WindowImpl
 import de.sciss.file._
 import de.sciss.fscape.proc.{ProcessorAdapter, ProcessorEvent}
-import de.sciss.fscape.session.ModulePanel
+import de.sciss.fscape.session.{ModulePanel, Session => Document}
 import de.sciss.fscape.{FScape => App}
 import de.sciss.io.IOUtil
 import de.sciss.swingplus.OverlayPanel
@@ -174,7 +174,7 @@ final class DocumentWindow(val module: ModulePanel) extends WindowImpl {
     ok
   }
 
-  def document: App.Document = module.getDocument
+  def document: Document = module.getDocument
 
   private def saveFile(f: File): Unit =
     if (module.saveFile(f)) {
