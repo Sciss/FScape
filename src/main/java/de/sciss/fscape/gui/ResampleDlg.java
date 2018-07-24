@@ -126,40 +126,38 @@ public class ResampleDlg
 // -------- public methods --------
 
     /**
-     *	!! setVisible() bleibt dem Aufrufer ueberlassen
+     *	caller has to add `setVisible()`
      */
-    public ResampleDlg()
-    {
-        super( "Resample" );
+    public ResampleDlg() {
+        super("Resample");
         init2();
     }
 
-    protected void buildGUI()
-    {
-        // einmalig PropertyArray initialisieren
-        if( static_pr == null ) {
+    protected void buildGUI() {
+        // initialize PropertyArray once
+        if (static_pr == null) {
             static_pr			= new PropertyArray();
             static_pr.text		= prText;
             static_pr.textName	= prTextName;
             static_pr.intg		= prIntg;
             static_pr.intgName	= prIntgName;
             static_pr.para		= prPara;
-            static_pr.para[ PR_LENGTH ]				= new Param(  0.0, Param.OFFSET_TIME );
-            static_pr.para[ PR_RATE ]				= new Param(  0.0, Param.OFFSET_SEMITONES );
-            static_pr.para[ PR_RATEMODDEPTH ]		= new Param(  1.0, Param.OFFSET_SEMITONES );
-            static_pr.para[ PR_RIGHTCHANMODDEPTH ]	= new Param(  1.0, Param.OFFSET_SEMITONES );
+            static_pr.para[PR_LENGTH            ] = new Param(0.0, Param.OFFSET_TIME);
+            static_pr.para[PR_RATE              ] = new Param(0.0, Param.OFFSET_SEMITONES);
+            static_pr.para[PR_RATEMODDEPTH      ] = new Param(1.0, Param.OFFSET_SEMITONES);
+            static_pr.para[PR_RIGHTCHANMODDEPTH ] = new Param(1.0, Param.OFFSET_SEMITONES);
             static_pr.paraName	= prParaName;
             static_pr.bool		= prBool;
             static_pr.boolName	= prBoolName;
             static_pr.envl		= prEnvl;
-            static_pr.envl[ PR_RATEMODENV ]		= Envelope.createBasicEnvelope( Envelope.BASIC_TIME );
-            static_pr.envl[ PR_RIGHTCHANMODENV ]= Envelope.createBasicEnvelope( Envelope.BASIC_TIME );
+            static_pr.envl[PR_RATEMODENV        ] = Envelope.createBasicEnvelope(Envelope.BASIC_TIME);
+            static_pr.envl[PR_RIGHTCHANMODENV   ] = Envelope.createBasicEnvelope(Envelope.BASIC_TIME);
             static_pr.envlName	= prEnvlName;
 //			static_pr.superPr	= DocumentFrame.static_pr;
 
-            fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES );
-            fillDefaultGain( static_pr.para, PR_GAIN );
-            static_presets = new Presets( getClass(), static_pr.toProperties( true ));
+            fillDefaultAudioDescr(static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES);
+            fillDefaultGain(static_pr.para, PR_GAIN);
+            static_presets = new Presets(getClass(), static_pr.toProperties(true));
         }
         presets	= static_presets;
         pr 		= (PropertyArray) static_pr.clone();
@@ -179,23 +177,23 @@ public class ResampleDlg
 
         gui				= new GUISupport();
         con				= gui.getGridBagConstraints();
-        con.insets		= new Insets( 1, 2, 1, 2 );
+        con.insets		= new Insets(1, 2, 1, 2);
 
         ParamListener paramL = new ParamListener() {
             public void paramChanged( ParamEvent e )
             {
-                int	ID = gui.getItemID( e );
+                int ID = gui.getItemID(e);
 
-                switch( ID ) {
-                case GG_RATE:
-                    pr.bool[ PR_USELENGTH ] = false;
-                    rateLenInterference();
-                    break;
+                switch (ID) {
+                    case GG_RATE:
+                        pr.bool[PR_USELENGTH] = false;
+                        rateLenInterference();
+                        break;
 
-                case GG_LENGTH:
-                    pr.bool[ PR_USELENGTH ] = true;
-                    rateLenInterference();
-                    break;
+                    case GG_LENGTH:
+                        pr.bool[PR_USELENGTH] = true;
+                        rateLenInterference();
+                        break;
                 }
             }
         };
@@ -205,13 +203,13 @@ public class ResampleDlg
             {
                 int			ID			= gui.getItemID( e );
 
-                switch( ID ) {
-                case GG_RATEMOD:
-                case GG_RIGHTCHAN:
-                case GG_KEEPHEADER:
-                    pr.bool[ ID - GG_OFF_CHECKBOX ] = ((JCheckBox) e.getSource()).isSelected();
-                    reflectPropertyChanges();
-                    break;
+                switch (ID) {
+                    case GG_RATEMOD:
+                    case GG_RIGHTCHAN:
+                    case GG_KEEPHEADER:
+                        pr.bool[ID - GG_OFF_CHECKBOX] = ((JCheckBox) e.getSource()).isSelected();
+                        reflectPropertyChanges();
+                        break;
                 }
             }
         };
@@ -219,12 +217,12 @@ public class ResampleDlg
         PathListener pathL = new PathListener() {
             public void pathChanged( PathEvent e )
             {
-                int	ID = gui.getItemID( e );
+                int ID = gui.getItemID(e);
 
-                switch( ID ) {
-                case GG_INPUTFILE:
-                    setInput( ((PathField) e.getSource()).getPath().getPath() );
-                    break;
+                switch (ID) {
+                    case GG_INPUTFILE:
+                        setInput(((PathField) e.getSource()).getPath().getPath());
+                        break;
                 }
             }
         };
@@ -232,153 +230,150 @@ public class ResampleDlg
     // -------- Input-Gadgets --------
         con.fill		= GridBagConstraints.BOTH;
         con.gridwidth	= GridBagConstraints.REMAINDER;
-    gui.addLabel( new GroupLabel( "Waveform I/O", GroupLabel.ORIENT_HORIZONTAL,
-                                  GroupLabel.BRACE_NONE ));
+    gui.addLabel(new GroupLabel("Waveform I/O", GroupLabel.ORIENT_HORIZONTAL,
+            GroupLabel.BRACE_NONE));
 
-        ggInputFile		= new PathField( PathField.TYPE_INPUTFILE + PathField.TYPE_FORMATFIELD,
-                                         "Select input file" );
+        ggInputFile		= new PathField(PathField.TYPE_INPUTFILE + PathField.TYPE_FORMATFIELD,
+                "Select input file");
         ggInputFile.handleTypes( GenericFile.TYPES_SOUND );
         con.gridwidth	= 1;
         con.weightx		= 0.1;
-        gui.addLabel( new JLabel( "Input file", SwingConstants.RIGHT ));
+        gui.addLabel(new JLabel("Input file", SwingConstants.RIGHT));
         con.gridwidth	= GridBagConstraints.REMAINDER;
         con.weightx		= 0.9;
-        gui.addPathField( ggInputFile, GG_INPUTFILE, pathL );
+        gui.addPathField(ggInputFile, GG_INPUTFILE, pathL);
 
-        ggOutputFile	= new PathField( PathField.TYPE_OUTPUTFILE + PathField.TYPE_FORMATFIELD +
-                                         PathField.TYPE_RESFIELD, "Select output file" );
-        ggOutputFile.handleTypes( GenericFile.TYPES_SOUND );
-        ggInputs		= new PathField[ 1 ];
-        ggInputs[ 0 ]	= ggInputFile;
-        ggOutputFile.deriveFrom( ggInputs, "$D0$F0Rsmp$E" );
+        ggOutputFile	= new PathField(PathField.TYPE_OUTPUTFILE + PathField.TYPE_FORMATFIELD +
+                                        PathField.TYPE_RESFIELD, "Select output file");
+        ggOutputFile.handleTypes(GenericFile.TYPES_SOUND);
+        ggInputs		= new PathField[1];
+        ggInputs[0]	    = ggInputFile;
+        ggOutputFile.deriveFrom(ggInputs, "$D0$F0Rsmp$E");
         con.gridwidth	= 1;
         con.weightx		= 0.1;
-        gui.addLabel( new JLabel( "Output file", SwingConstants.RIGHT ));
+        gui.addLabel(new JLabel("Output file", SwingConstants.RIGHT));
         con.gridwidth	= GridBagConstraints.REMAINDER;
         con.weightx		= 0.9;
-        gui.addPathField( ggOutputFile, GG_OUTPUTFILE, pathL );
-        gui.registerGadget( ggOutputFile.getTypeGadget(), GG_OUTPUTTYPE );
-        gui.registerGadget( ggOutputFile.getResGadget(), GG_OUTPUTRES );
+        gui.addPathField(ggOutputFile, GG_OUTPUTFILE, pathL);
+        gui.registerGadget(ggOutputFile.getTypeGadget   (), GG_OUTPUTTYPE);
+        gui.registerGadget(ggOutputFile.getResGadget    (), GG_OUTPUTRES);
 
-        ggGain			= createGadgets( GGTYPE_GAIN );
+        ggGain			= createGadgets(GGTYPE_GAIN);
         con.weightx		= 0.1;
         con.gridwidth	= 1;
-        gui.addLabel( new JLabel( "Gain", SwingConstants.RIGHT ));
+        gui.addLabel(new JLabel("Gain", SwingConstants.RIGHT));
         con.weightx		= 0.4;
-        gui.addParamField( (ParamField) ggGain[ 0 ], GG_GAIN, paramL );
+        gui.addParamField((ParamField) ggGain[0], GG_GAIN, paramL);
         con.weightx		= 0.5;
         con.gridwidth	= GridBagConstraints.REMAINDER;
-        gui.addChoice( (JComboBox) ggGain[ 1 ], GG_GAINTYPE, il );
+        gui.addChoice((JComboBox) ggGain[1], GG_GAINTYPE, il);
 
     // -------- Settings --------
-    gui.addLabel( new GroupLabel( "Sample Rate Conversion", GroupLabel.ORIENT_HORIZONTAL,
-                                  GroupLabel.BRACE_NONE ));
+    gui.addLabel(new GroupLabel("Sample Rate Conversion", GroupLabel.ORIENT_HORIZONTAL,
+            GroupLabel.BRACE_NONE));
 
-        spcRate				= new ParamSpace[ 4 ];
-        spcRate[0]			= new ParamSpace(    689.1,   768000.0, 0.1,   Param.ABS_HZ );
-        spcRate[1]			= Constants.spaces[ Constants.offsetSemitonesSpace ];
-        spcRate[2]			= Constants.spaces[ Constants.offsetFreqSpace ];
-        spcRate[3]			= new ParamSpace( -96000.0,    96000.0, 0.1,   Param.OFFSET_HZ );
-        spcLength			= new ParamSpace[ 5 ];
-        spcLength[0]		= Constants.spaces[ Constants.absMsSpace ];
-        spcLength[1]		= Constants.spaces[ Constants.absBeatsSpace ];
-        spcLength[2]		= Constants.spaces[ Constants.offsetMsSpace ];
-        spcLength[3]		= Constants.spaces[ Constants.offsetBeatsSpace ];
-        spcLength[4]		= Constants.spaces[ Constants.offsetTimeSpace ];
-        spcRateModDepth		= new ParamSpace[ 3 ];
-        spcRateModDepth[0]	= Constants.spaces[ Constants.offsetSemitonesSpace ];
-        spcRateModDepth[1]	= Constants.spaces[ Constants.offsetFreqSpace ];
-        spcRateModDepth[2]	= spcRate[ 3 ];
+        spcRate				= new ParamSpace[4];
+        spcRate[0]			= new ParamSpace(689.1, 768000.0, 0.1, Param.ABS_HZ);
+        spcRate[1]			= Constants.spaces[Constants.offsetSemitonesSpace   ];
+        spcRate[2]			= Constants.spaces[Constants.offsetFreqSpace        ];
+        spcRate[3]			= new ParamSpace(-96000.0, 96000.0, 0.1, Param.OFFSET_HZ);
+        spcLength			= new ParamSpace[5];
+        spcLength[0]		= Constants.spaces[Constants.absMsSpace             ];
+        spcLength[1]		= Constants.spaces[Constants.absBeatsSpace          ];
+        spcLength[2]		= Constants.spaces[Constants.offsetMsSpace          ];
+        spcLength[3]		= Constants.spaces[Constants.offsetBeatsSpace       ];
+        spcLength[4]		= Constants.spaces[Constants.offsetTimeSpace        ];
+        spcRateModDepth		= new ParamSpace[3];
+        spcRateModDepth[0]	= Constants.spaces[Constants.offsetSemitonesSpace   ];
+        spcRateModDepth[1]	= Constants.spaces[Constants.offsetFreqSpace        ];
+        spcRateModDepth[2]	= spcRate[3];
 
-        ggRate			= new ParamField( spcRate );
+        ggRate          = new ParamField(spcRate);
         con.weightx		= 0.1;
         con.gridwidth	= 1;
-        gui.addLabel( new JLabel( "New rate", SwingConstants.RIGHT ));
+        gui.addLabel(new JLabel("New rate", SwingConstants.RIGHT));
         con.weightx		= 0.4;
-        gui.addParamField( ggRate, GG_RATE, paramL );
+        gui.addParamField(ggRate, GG_RATE, paramL);
         ggRateMod		= new JCheckBox();
         con.weightx		= 0.0;
-        gui.addCheckbox( ggRateMod, GG_RATEMOD, il );
-        ggRateModDepth	= new ParamField( spcRateModDepth );
-        ggRateModDepth.setReference( ggRate );
+        gui.addCheckbox(ggRateMod, GG_RATEMOD, il);
+        ggRateModDepth = new ParamField(spcRateModDepth);
+        ggRateModDepth.setReference(ggRate);
         con.weightx		= 0.5;
         con.gridwidth	= 2;
-        gui.addParamField( ggRateModDepth, GG_RATEMODDEPTH, paramL );
-        ggRateModEnv	= new EnvIcon( getComponent() );
+        gui.addParamField(ggRateModDepth, GG_RATEMODDEPTH, paramL);
+        ggRateModEnv	= new EnvIcon(getComponent());
         con.weightx		= 0.0;
         con.gridwidth	= GridBagConstraints.REMAINDER;
-        gui.addGadget( ggRateModEnv, GG_RATEMODENV );
+        gui.addGadget(ggRateModEnv, GG_RATEMODENV);
 
         ggRightChan		= new JCheckBox();
         con.gridwidth	= 2;
         con.weightx		= 0.5;
-        gui.addLabel( new JLabel( "Distinct right channel mod.", SwingConstants.RIGHT ));
+        gui.addLabel(new JLabel("Distinct right channel mod.", SwingConstants.RIGHT));
         con.weightx		= 0.0;
         con.gridwidth	= 1;
-        gui.addCheckbox( ggRightChan, GG_RIGHTCHAN, il );
-        ggRightChanModDepth	= new ParamField( spcRateModDepth );
-        ggRightChanModDepth.setReference( ggRate );
+        gui.addCheckbox(ggRightChan, GG_RIGHTCHAN, il);
+        ggRightChanModDepth = new ParamField(spcRateModDepth);
+        ggRightChanModDepth.setReference(ggRate);
         con.weightx		= 0.5;
         con.gridwidth	= 2;
-        gui.addParamField( ggRightChanModDepth, GG_RIGHTCHANMODDEPTH, paramL );
-        ggRightChanModEnv= new EnvIcon( getComponent() );
+        gui.addParamField(ggRightChanModDepth, GG_RIGHTCHANMODDEPTH, paramL);
+        ggRightChanModEnv = new EnvIcon(getComponent());
         con.weightx		= 0.0;
         con.gridwidth	= GridBagConstraints.REMAINDER;
-        gui.addGadget( ggRightChanModEnv, GG_RIGHTCHANMODENV );
+        gui.addGadget(ggRightChanModEnv, GG_RIGHTCHANMODENV);
 
-        ggLength		= new ParamField( spcLength );
+        ggLength		= new ParamField(spcLength);
         con.weightx		= 0.1;
         con.gridwidth	= 1;
-        gui.addLabel( new JLabel( "Desired length", SwingConstants.RIGHT ));
+        gui.addLabel(new JLabel("Desired length", SwingConstants.RIGHT));
         con.weightx		= 0.4;
-        gui.addParamField( ggLength, GG_LENGTH, paramL );
+        gui.addParamField(ggLength, GG_LENGTH, paramL);
         con.gridwidth	= GridBagConstraints.REMAINDER;
-        gui.addLabel( new JLabel() );
+        gui.addLabel(new JLabel());
 
-        ggKeepHeader = new JCheckBox("Change Pitch/Speed");
+        ggKeepHeader    = new JCheckBox("Change Pitch/Speed");
         con.weightx		= 0.0;
         con.gridwidth	= 1;
-        gui.addLabel( new JLabel() );
+        gui.addLabel(new JLabel());
         con.weightx		= 0.5;
-        gui.addCheckbox( ggKeepHeader, GG_KEEPHEADER, il );
+        gui.addCheckbox(ggKeepHeader, GG_KEEPHEADER, il);
         ggQuality		= new JComboBox();
-        ggQuality.addItem( "Short" );
-        ggQuality.addItem( "Medium" );
-        ggQuality.addItem( "Long" );
+        ggQuality.addItem("Short");
+        ggQuality.addItem("Medium");
+        ggQuality.addItem("Long");
         con.weightx		= 0.1;
         con.gridwidth	= 2;
-        gui.addLabel( new JLabel( "FIR length", SwingConstants.RIGHT ));
+        gui.addLabel(new JLabel("FIR length", SwingConstants.RIGHT));
         con.weightx		= 0.2;
-        gui.addChoice( ggQuality, GG_QUALITY, il );
-        ggInterpole		= new JCheckBox( "Interpolate" );
+        gui.addChoice(ggQuality, GG_QUALITY, il);
+        ggInterpole		= new JCheckBox("Interpolate");
         con.gridwidth	= GridBagConstraints.REMAINDER;
-        gui.addCheckbox( ggInterpole, GG_INTERPOLE, il );
+        gui.addCheckbox(ggInterpole, GG_INTERPOLE, il);
 
-        initGUI( this, FLAGS_PRESETS | FLAGS_PROGBAR, gui );
+        initGUI(this, FLAGS_PRESETS | FLAGS_PROGBAR, gui);
     }
 
     /**
      *	Transfer values from prop-array to GUI
      */
-    public void fillGUI()
-    {
+    public void fillGUI() {
         super.fillGUI();
-        super.fillGUI( gui );
+        super.fillGUI(gui);
     }
 
     /**
      *	Transfer values from GUI to prop-array
      */
-    public void fillPropertyArray()
-    {
+    public void fillPropertyArray() {
         super.fillPropertyArray();
-        super.fillPropertyArray( gui );
+        super.fillPropertyArray(gui);
     }
 
 // -------- Processor Interface --------
 
-    protected void process()
-    {
+    protected void process() {
         int					i, j;
         int					len, chunkLength;
         long				progOff, progLen;
@@ -387,8 +382,8 @@ public class ResampleDlg
         // io
         AudioFile			inF				= null;
         AudioFile			outF			= null;
-        AudioFileDescr			inStream		= null;
-        AudioFileDescr			outStream		= null;
+        AudioFileDescr		inStream		= null;
+        AudioFileDescr		outStream		= null;
         FloatFile			floatF[]		= null;
         File				tempFile[]		= null;
         int					inChanNum;
@@ -821,32 +816,32 @@ public class ResampleDlg
 
             // inform about clipping/ low level
             maxAmp *= gain;
-            handleClipping( maxAmp );
-        }
-        catch( IOException e1 ) {
-            setError( e1 );
-        }
-        catch( OutOfMemoryError e2 ) {
+            handleClipping(maxAmp);
+
+        } catch (IOException e1) {
+            setError(e1);
+
+        } catch (OutOfMemoryError e2) {
             inStream	= null;
             outStream	= null;
             inBuf		= null;
             outBuf		= null;
             System.gc();
 
-            setError( new Exception( ERR_MEMORY ));
+            setError(new Exception(ERR_MEMORY));
         }
 
     // ---- cleanup (topLevel) ----
-        if( inF != null ) {
+        if (inF != null) {
             inF.cleanUp();
         }
-        if( outF != null ) {
+        if (outF != null) {
             outF.cleanUp();
         }
-        if( floatF != null ) {
-            for( ch = 0; ch < floatF.length; ch++ ) {
-                if( floatF[ ch ] != null ) floatF[ ch ].cleanUp();
-                if( tempFile[ ch ] != null ) tempFile[ ch ].delete();
+        if (floatF != null) {
+            for (ch = 0; ch < floatF.length; ch++) {
+                if (floatF  [ch] != null) floatF    [ch].cleanUp();
+                if (tempFile[ch] != null) tempFile  [ch].delete();
             }
         }
     } // process()
@@ -856,8 +851,7 @@ public class ResampleDlg
     /**
      *	Set new input file
      */
-    protected void setInput( String fname )
-    {
+    protected void setInput(String fName) {
         AudioFile		f;
         AudioFileDescr	stream;
 
@@ -866,92 +860,90 @@ public class ResampleDlg
 
     // ---- Header lesen ----
         try {
-            f		= AudioFile.openAsRead( new File( fname ));
-            stream	= f.getDescr();
+            f = AudioFile.openAsRead(new File(fName));
+            stream = f.getDescr();
             f.close();
 
-            refInp	= stream;
-            ref		= new Param( AudioFileDescr.samplesToMillis( stream, stream.length ), Param.ABS_MS );
-            ggSlave = (ParamField) gui.getItemObj( GG_LENGTH );
-            if( ggSlave != null ) {
-                ggSlave.setReference( ref );
+            refInp = stream;
+            ref = new Param(AudioFileDescr.samplesToMillis(stream, stream.length), Param.ABS_MS);
+            ggSlave = (ParamField) gui.getItemObj(GG_LENGTH);
+            if (ggSlave != null) {
+                ggSlave.setReference(ref);
             }
-            ref = new Param( stream.rate, Param.ABS_HZ );
-            ggSlave = (ParamField) gui.getItemObj( GG_RATE );
-            if( ggSlave != null ) {
-                ggSlave.setReference( ref );
+            ref = new Param(stream.rate, Param.ABS_HZ);
+            ggSlave = (ParamField) gui.getItemObj(GG_RATE);
+            if (ggSlave != null) {
+                ggSlave.setReference(ref);
             }
             rateLenInterference();
 
-        } catch( IOException e1 ) {
-            refInp	= null;
+        } catch (IOException e1) {
+            refInp = null;
         }
     }
 
-    protected void rateLenInterference()
-    {
-        ParamField	ggLength	= (ParamField) gui.getItemObj( GG_LENGTH );
-        ParamField	ggRate		= (ParamField) gui.getItemObj( GG_RATE );
-        JCheckBox	ggKeepHeader= (JCheckBox) gui.getItemObj( GG_KEEPHEADER );
+    protected void rateLenInterference() {
+        ParamField	ggLength	= (ParamField)  gui.getItemObj(GG_LENGTH);
+        ParamField	ggRate		= (ParamField)  gui.getItemObj(GG_RATE);
+        JCheckBox	ggKeepHeader= (JCheckBox)   gui.getItemObj(GG_KEEPHEADER);
         boolean		keepHeader;
         Param		ref1, ref2;
         Param		p1, pa1, p2, pa2;
 
-        if( (ggLength == null) || (ggRate == null) || (ggKeepHeader == null) || (refInp == null) ) return;
+        if ((ggLength == null) || (ggRate == null) || (ggKeepHeader == null) || (refInp == null)) return;
 
         keepHeader	= ggKeepHeader.isSelected();
-        ref1		= new Param( refInp.rate, Param.ABS_HZ );
-        ref2		= new Param( AudioFileDescr.samplesToMillis( refInp, refInp.length ), Param.ABS_MS );
-        p1			= ggRate.getParam();
-        p2			= ggLength.getParam();
-        pa1			= Param.transform( p1, Param.ABS_HZ, ref1, null );
-        pa2			= Param.transform( p2, Param.ABS_MS, ref2, null );
+        ref1		= new Param(refInp.rate, Param.ABS_HZ);
+        ref2		= new Param(AudioFileDescr.samplesToMillis(refInp, refInp.length), Param.ABS_MS);
+        p1			= ggRate    .getParam();
+        p2			= ggLength  .getParam();
+        pa1			= Param.transform(p1, Param.ABS_HZ, ref1, null);
+        pa2			= Param.transform(p2, Param.ABS_MS, ref2, null);
 
-        if( pr.bool[ PR_USELENGTH ]) {
-            pa1 = new Param( (pa2.value / ref2.value) * ref1.value, Param.ABS_HZ );
-            p1	= Param.transform( pa1, p1.unit, ref1, null );
-            ggRate.setParam( p1 );
+        if (pr.bool[PR_USELENGTH]) {
+            pa1 = new Param((pa2.value / ref2.value) * ref1.value, Param.ABS_HZ);
+            p1 = Param.transform(pa1, p1.unit, ref1, null);
+            ggRate.setParam(p1);
 
         } else {
-            if( !keepHeader ) {
+            if (!keepHeader) {
                 pa2 = ref2;
             } else {
-                pa2	= new Param( (pa1.value / ref1.value) * ref2.value, Param.ABS_MS );
+                pa2 = new Param((pa1.value / ref1.value) * ref2.value, Param.ABS_MS);
             }
-            p2	= Param.transform( pa2, p2.unit, ref2, null );
-            ggLength.setParam( p2 );
+            p2 = Param.transform(pa2, p2.unit, ref2, null);
+            ggLength.setParam(p2);
         }
     }
 
-    protected void reflectPropertyChanges()
-    {
+    protected void reflectPropertyChanges() {
         super.reflectPropertyChanges();
 
         Component c;
 
-        c = gui.getItemObj( GG_RATEMODDEPTH );
-        if( c != null ) {
-            c.setEnabled( pr.bool[ PR_RATEMOD ]);
+        c = gui.getItemObj(GG_RATEMODDEPTH);
+        if (c != null) {
+            c.setEnabled(pr.bool[PR_RATEMOD]);
         }
-        c = gui.getItemObj( GG_RATEMODENV );
-        if( c != null ) {
-            c.setEnabled( pr.bool[ PR_RATEMOD ]);
+        c = gui.getItemObj(GG_RATEMODENV);
+        if (c != null) {
+            c.setEnabled(pr.bool[PR_RATEMOD]);
         }
-        c = gui.getItemObj( GG_RIGHTCHAN );
-        if( c != null ) {
-            c.setEnabled( pr.bool[ PR_RATEMOD ]);
+        c = gui.getItemObj(GG_RIGHTCHAN);
+        if (c != null) {
+            c.setEnabled(pr.bool[PR_RATEMOD]);
         }
-        c = gui.getItemObj( GG_RIGHTCHANMODDEPTH );
-        if( c != null ) {
-            c.setEnabled( pr.bool[ PR_RATEMOD ] && pr.bool[ PR_RIGHTCHAN ]);
+        c = gui.getItemObj(GG_RIGHTCHANMODDEPTH);
+        if (c != null) {
+            c.setEnabled(pr.bool[PR_RATEMOD] && pr.bool[PR_RIGHTCHAN]);
         }
-        c = gui.getItemObj( GG_RIGHTCHANMODENV );
-        if( c != null ) {
-            c.setEnabled( pr.bool[ PR_RATEMOD ] && pr.bool[ PR_RIGHTCHAN ]);
+        c = gui.getItemObj(GG_RIGHTCHANMODENV);
+        if (c != null) {
+            c.setEnabled(pr.bool[PR_RATEMOD] && pr.bool[PR_RIGHTCHAN]);
         }
-        c = gui.getItemObj( GG_LENGTH );
-        if( c != null ) {
-            c.setEnabled( !pr.bool[ PR_RATEMOD ] && pr.bool[ PR_KEEPHEADER ]);
+        c = gui.getItemObj(GG_LENGTH);
+        if (c != null) {
+            c.setEnabled(!pr.bool[PR_RATEMOD] && pr.bool[PR_KEEPHEADER]);
         }
     }
 }
