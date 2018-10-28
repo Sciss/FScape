@@ -760,7 +760,7 @@ public class CurvePanel
 
 // -------- interne CurvePoint-Klasse --------
 
-    private static class CurvePoint
+    public static class CurvePoint
             extends JPanel {
     // ........ private variables ........
 

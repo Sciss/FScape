@@ -236,15 +236,15 @@ public class BinaryOpDlg
         ItemListener il = new ItemListener() {
             public void itemStateChanged( ItemEvent e )
             {
-                int			ID			= gui.getItemID( e );
+                int ID = gui.getItemID(e);
 
-                switch( ID ) {
-                case GG_HASIMINPUT1:
-                case GG_HASIMINPUT2:
-                case GG_HASIMOUTPUT:
-                    pr.bool[ ID - GG_OFF_CHECKBOX ] = ((JCheckBox) e.getSource()).isSelected();
-                    reflectPropertyChanges();
-                    break;
+                switch (ID) {
+                    case GG_HASIMINPUT1:
+                    case GG_HASIMINPUT2:
+                    case GG_HASIMOUTPUT:
+                        pr.bool[ID - GG_OFF_CHECKBOX] = ((JCheckBox) e.getSource()).isSelected();
+                        reflectPropertyChanges();
+                        break;
                 }
             }
         };

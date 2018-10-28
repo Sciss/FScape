@@ -606,27 +606,20 @@ public abstract class ModulePanel
         }
     }
 
-    /**
-     *	Besorgt die Parameter des Dialogs in Form eines PropertyArray Objekts
-     */
+    /** Retrieves the parameters of the dialog in the form of a PropertyArray object. */
     public PropertyArray getPropertyArray()
     {
         return pr;
     }
 
-    /**
-     *	Liefert die Presets
-     */
+    /** Retrieves the presets. */
     protected Presets getPresets()
     {
         return presets;
     }
 
-    /*
-     *	laedt Werte eines Presets ins GUI u. PropertyArray
-     */
-    protected boolean loadPreset( String name )
-    {
+    /** Loads values of a preset into the GUI and PropertyArray. */
+    protected boolean loadPreset(String name) {
         PropertyArray	pa;
         Properties		preset;
         boolean			visible		= isVisible();
@@ -640,12 +633,12 @@ public abstract class ModulePanel
             success = true;
 
         } catch (Exception e99) {
-            if( visible ) {
-                displayError( e99, getTitle() );
+            if (visible) {
+                displayError(e99, getTitle());
             }
         }
 
-        if( success ) {
+        if (success) {
             presetsChanged();
         }
         return success;
@@ -845,87 +838,81 @@ public abstract class ModulePanel
         return threadRunning;
     }
 
-    private void setCheckBoxQuiet( JCheckBox cb, boolean selected )
-    {
+    private void setCheckBoxQuiet(JCheckBox cb, boolean selected) {
         final ActionListener[] al = cb.getActionListeners();
-        for( int i = 0; i < al.length; i++ ) {
-            cb.removeActionListener( al[ i ]);
+        for (int i = 0; i < al.length; i++) {
+            cb.removeActionListener(al[i]);
         }
         try {
-            cb.setSelected( selected );
+            cb.setSelected(selected);
         } finally {
-            for( int i = 0; i < al.length; i++ ) {
-                cb.addActionListener( al[ i ]);
+            for (int i = 0; i < al.length; i++) {
+                cb.addActionListener(al[i]);
             }
         }
     }
 
-    private void setComboBoxQuiet( JComboBox cb, int idx )
-    {
+    private void setComboBoxQuiet(JComboBox cb, int idx) {
         final ActionListener[] al = cb.getActionListeners();
-        for( int i = 0; i < al.length; i++ ) {
-            cb.removeActionListener( al[ i ]);
+        for (int i = 0; i < al.length; i++) {
+            cb.removeActionListener(al[i]);
         }
         try {
-            cb.setSelectedIndex( idx );
+            cb.setSelectedIndex(idx);
         } finally {
-            for( int i = 0; i < al.length; i++ ) {
-                cb.addActionListener( al[ i ]);
+            for (int i = 0; i < al.length; i++) {
+                cb.addActionListener(al[i]);
             }
         }
     }
 
-    /**
-     *	Transfer values from prop-array to GUI
-     *	subclasses can use this to make things easy
-     *	VORAUSSETZUNG:	Gadget-IDs in GUI stimmen mit denen in PropertyArray plus GG_OFF_...
-     *					ueberein
+    /** Transfers values from prop-array to GUI
+     * subclasses can use this to make things easy
+     * precondition: Gadget-IDs in GUI match those in PropertyArray plus GG_OFF_...
      */
-    public void fillGUI( GUISupport g )
-    {
-        PropertyArray	pa	= getPropertyArray();
-        int				i;
-        Component		c;
+    public void fillGUI(GUISupport g) {
+        PropertyArray pa = getPropertyArray();
+        int i;
+        Component c;
 
         try {
-            for( i = 0; i < pa.bool.length; i++ ) {
-                c = g.getItemObj( i + GG_OFF_CHECKBOX );
-                if( c != null ) {
-                    this.setCheckBoxQuiet( (JCheckBox) c, pa.bool[ i ]);
+            for (i = 0; i < pa.bool.length; i++) {
+                c = g.getItemObj(i + GG_OFF_CHECKBOX);
+                if (c != null) {
+                    this.setCheckBoxQuiet((JCheckBox) c, pa.bool[i]);
                 }
             }
-            for( i = 0; i < pa.intg.length; i++ ) {
-                c = g.getItemObj( i + GG_OFF_CHOICE );
-                if( (c != null) && (((JComboBox) c).getItemCount() > pa.intg[ i ]) ) {
-                    this.setComboBoxQuiet( (JComboBox) c, pa.intg[ i ]);
+            for (i = 0; i < pa.intg.length; i++) {
+                c = g.getItemObj(i + GG_OFF_CHOICE);
+                if ((c != null) && (((JComboBox) c).getItemCount() > pa.intg[i])) {
+                    this.setComboBoxQuiet((JComboBox) c, pa.intg[i]);
                 }
             }
-            for( i = 0; i < pa.para.length; i++ ) {
-                c = g.getItemObj( i + GG_OFF_PARAMFIELD );
-                if( c != null ) {
-                    ((ParamField) c).setParam( pa.para[ i ]);
+            for (i = 0; i < pa.para.length; i++) {
+                c = g.getItemObj(i + GG_OFF_PARAMFIELD);
+                if (c != null) {
+                    ((ParamField) c).setParam(pa.para[i]);
                 }
             }
-            for( i = 0; i < pa.text.length; i++ ) {
-                c = g.getItemObj( i + GG_OFF_TEXTFIELD );
-                if( c != null ) {
-                    ((JTextField) c).setText( pa.text[ i ]);
+            for (i = 0; i < pa.text.length; i++) {
+                c = g.getItemObj(i + GG_OFF_TEXTFIELD);
+                if (c != null) {
+                    ((JTextField) c).setText(pa.text[i]);
                 } else {
-                    c = g.getItemObj( i + GG_OFF_PATHFIELD );
-                    if( c != null ) {
-                        ((PathField) c).setPath( new File( pa.text[ i ]));
+                    c = g.getItemObj(i + GG_OFF_PATHFIELD);
+                    if (c != null) {
+                        ((PathField) c).setPath(new File(pa.text[i]));
                     }
                 }
             }
-            for( i = 0; i < pa.envl.length; i++ ) {
-                c = g.getItemObj( i + GG_OFF_ENVICON );
-                if( c != null ) {
-                    ((EnvIcon) c).setEnv( pa.envl[ i ]);
+            for (i = 0; i < pa.envl.length; i++) {
+                c = g.getItemObj(i + GG_OFF_ENVICON);
+                if (c != null) {
+                    ((EnvIcon) c).setEnv(pa.envl[i]);
                 }
             }
-        }
-        catch( ClassCastException e1 ) {
-            displayError( e1, getTitle() );
+        } catch (ClassCastException e1) {
+            displayError(e1, getTitle());
         }
 
         reflectPropertyChanges();

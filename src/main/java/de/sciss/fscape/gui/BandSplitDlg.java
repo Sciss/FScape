@@ -178,13 +178,13 @@ public class BandSplitDlg
         ItemListener il = new ItemListener() {
             public void itemStateChanged( ItemEvent e )
             {
-                int	ID = gui.getItemID( e );
+                int ID = gui.getItemID(e);
 
-                switch( ID ) {
-                case GG_NUMBANDS:
-                    pr.intg[ ID - GG_OFF_CHOICE ] = ((JComboBox) e.getSource()).getSelectedIndex();
-                    reflectPropertyChanges();
-                    break;
+                switch (ID) {
+                    case GG_NUMBANDS:
+                        pr.intg[ID - GG_OFF_CHOICE] = ((JComboBox) e.getSource()).getSelectedIndex();
+                        reflectPropertyChanges();
+                        break;
                 }
             }
         };

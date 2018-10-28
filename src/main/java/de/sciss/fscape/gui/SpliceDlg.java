@@ -30,8 +30,12 @@ import de.sciss.gui.PathListener;
 import de.sciss.io.AudioFile;
 import de.sciss.io.AudioFileDescr;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.EOFException;
@@ -153,26 +157,35 @@ public class SpliceDlg
         con.insets		= new Insets( 1, 2, 1, 2 );
 
         ItemListener il = new ItemListener() {
-            public void itemStateChanged( ItemEvent e )
-            {
-                final boolean b = ((JCheckBox) e.getSource()).isSelected();
-                pr.bool[ PR_AUTOSCALE ] = b;
-                gui.getItemObj( GG_AUTONUM ).setEnabled( b );
-                gui.getItemObj( GG_FINALSKIP ).setEnabled( b );
+            public void itemStateChanged(ItemEvent e) {
+                int ID = gui.getItemID(e);
+
+                switch (ID) {
+                    case GG_SEPARATEFILES:
+                        final boolean b0 = ((JCheckBox) e.getSource()).isSelected();
+                        pr.bool[ID - GG_OFF_CHECKBOX] = b0;
+                        break;
+                    case GG_AUTOSCALE:
+                        final boolean b1 = ((JCheckBox) e.getSource()).isSelected();
+                        pr.bool[ID - GG_OFF_CHECKBOX] = b1;
+                        gui.getItemObj(GG_AUTONUM   ).setEnabled(b1);
+                        gui.getItemObj(GG_FINALSKIP ).setEnabled(b1);
+                        break;
+                }
             }
         };
 
         PathListener pathL = new PathListener() {
             public void pathChanged( PathEvent e )
             {
-                int	ID = gui.getItemID( e );
+                int ID = gui.getItemID(e);
 
-                switch( ID ) {
-                case GG_INPUTFILE:
-                    pr.text[ ID - GG_OFF_PATHFIELD ] = ((PathField) e.getSource()).getPath().getPath();
-                    setInput( pr.text[ ID - GG_OFF_PATHFIELD ]);
+                switch (ID) {
+                    case GG_INPUTFILE:
+                        pr.text[ID - GG_OFF_PATHFIELD] = ((PathField) e.getSource()).getPath().getPath();
+                        setInput(pr.text[ID - GG_OFF_PATHFIELD]);
 //					analyseFileNames();
-                    break;
+                        break;
                 }
             }
         };
@@ -221,10 +234,10 @@ public class SpliceDlg
         ggCheck			= new JCheckBox();
         con.weightx		= 0.1;
         con.gridwidth	= 1;
-        gui.addLabel( new JLabel( "Separate files", SwingConstants.RIGHT ));
+        gui.addLabel(new JLabel("Separate files", SwingConstants.RIGHT));
         con.weightx		= 0.4;
         con.gridwidth	= GridBagConstraints.REMAINDER;
-        gui.addCheckbox( ggCheck, GG_SEPARATEFILES, il );
+        gui.addCheckbox(ggCheck, GG_SEPARATEFILES, il);
 
     // -------- Settings-Gadgets --------
     gui.addLabel( new GroupLabel( "Slice Settings", GroupLabel.ORIENT_HORIZONTAL,
@@ -253,19 +266,19 @@ public class SpliceDlg
         con.fill		= GridBagConstraints.BOTH;
         con.gridwidth	= GridBagConstraints.REMAINDER;
 
-        ggParam			= new ParamField( spcLength );
+        ggParam			= new ParamField(spcLength);
         con.weightx		= 0.1;
         con.gridwidth	= 1;
-        gui.addLabel( new JLabel( "Slice Length", SwingConstants.RIGHT ));
+        gui.addLabel(new JLabel("Slice Length", SwingConstants.RIGHT));
         con.weightx		= 0.4;
-        gui.addParamField( ggParam, GG_SPLICELENGTH, null );
+        gui.addParamField(ggParam, GG_SPLICELENGTH, null);
 
-        ggSpliceLength	= new ParamField( spcLength );
+        ggSpliceLength	= new ParamField(spcLength);
         con.weightx		= 0.1;
-        gui.addLabel( new JLabel( "Initial Skip", SwingConstants.RIGHT ));
+        gui.addLabel(new JLabel("Initial Skip", SwingConstants.RIGHT));
         con.weightx		= 0.4;
         con.gridwidth	= GridBagConstraints.REMAINDER;
-        gui.addParamField( ggSpliceLength, GG_INITIALSKIP, null );
+        gui.addParamField(ggSpliceLength, GG_INITIALSKIP, null);
 
         ggParam		= new ParamField( spcOffset );
 //		ggParam.setReference( ggSpliceLength );
@@ -281,42 +294,50 @@ public class SpliceDlg
         con.weightx		= 0.4;
         con.gridwidth	= GridBagConstraints.REMAINDER;
         gui.addParamField( ggParam, GG_FINALSKIP, null );
-        ggParam.setEnabled( false );	// XXX funzt niet???
 
         ggCheck			= new JCheckBox();
         con.weightx		= 0.1;
         con.gridwidth	= 1;
         gui.addLabel( new JLabel( "Automatic rescale", SwingConstants.RIGHT ));
         con.weightx		= 0.4;
-        gui.addCheckbox( ggCheck, GG_AUTOSCALE, il );
+        gui.addCheckbox(ggCheck, GG_AUTOSCALE, il);
 
         ggParam			= new ParamField( new ParamSpace( 1, Double.POSITIVE_INFINITY, 1, Param.NONE ));
         con.weightx		= 0.1;
         gui.addLabel( new JLabel( "# of Slices", SwingConstants.RIGHT ));
         con.weightx		= 0.4;
         con.gridwidth	= GridBagConstraints.REMAINDER;
-        gui.addParamField( ggParam, GG_AUTONUM, null );
-        ggParam.setEnabled( false );	// XXX funzt niet???
+        gui.addParamField(ggParam, GG_AUTONUM, null);
 
-        initGUI( this, FLAGS_PRESETS | FLAGS_PROGBAR, gui );
+        initGUI(this, FLAGS_PRESETS | FLAGS_PROGBAR, gui);
     }
 
-    /**
-     *	Transfer values from prop-array to GUI
-     */
-    public void fillGUI()
-    {
+    @Override
+    protected void reflectPropertyChanges() {
+        super.reflectPropertyChanges();
+
+        Component c;
+
+        c = gui.getItemObj(GG_FINALSKIP);
+        if (c != null) {
+            c.setEnabled(pr.bool[PR_AUTOSCALE]);
+        }
+        c = gui.getItemObj(GG_AUTONUM);
+        if (c != null) {
+            c.setEnabled(pr.bool[PR_AUTOSCALE]);
+        }
+    }
+
+    /** Transfers values from prop-array to GUI. */
+    public void fillGUI() {
         super.fillGUI();
-        super.fillGUI( gui );
+        super.fillGUI(gui);
     }
 
-    /**
-     *	Transfer values from GUI to prop-array
-     */
-    public void fillPropertyArray()
-    {
+    /** Transfers values from GUI to prop-array. */
+    public void fillPropertyArray() {
         super.fillPropertyArray();
-        super.fillPropertyArray( gui );
+        super.fillPropertyArray(gui);
     }
 
 // -------- Processor Interface --------

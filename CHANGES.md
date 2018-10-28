@@ -1,5 +1,10 @@
 # change history
 
+## v1.5.0 (oct 2018)
+
+ - fixes Java 6 compatibility
+ - tiny GUI fixes
+
 ## v1.4.0 (jan 2018)
 
  - fixes a bug where Apple extensions are not present on Mac

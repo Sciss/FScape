@@ -187,18 +187,18 @@ public class AmpShaperDlg
         ItemListener	il = new ItemListener() {
             public void itemStateChanged( ItemEvent e )
             {
-                int	ID = gui.getItemID( e );
+                int ID = gui.getItemID(e);
 
-                switch( ID ) {
-                case GG_ENVSOURCE:
-                    pr.intg[ ID - GG_OFF_CHOICE ] = ((JComboBox) e.getSource()).getSelectedIndex();
-                    reflectPropertyChanges();
-                    break;
-                case GG_ENVOUTPUT:
-                case GG_RIGHTCHAN:
-                    pr.bool[ ID - GG_OFF_CHECKBOX ] = ((JCheckBox) e.getSource()).isSelected();
-                    reflectPropertyChanges();
-                    break;
+                switch (ID) {
+                    case GG_ENVSOURCE:
+                        pr.intg[ID - GG_OFF_CHOICE] = ((JComboBox) e.getSource()).getSelectedIndex();
+                        reflectPropertyChanges();
+                        break;
+                    case GG_ENVOUTPUT:
+                    case GG_RIGHTCHAN:
+                        pr.bool[ID - GG_OFF_CHECKBOX] = ((JCheckBox) e.getSource()).isSelected();
+                        reflectPropertyChanges();
+                        break;
                 }
             }
         };

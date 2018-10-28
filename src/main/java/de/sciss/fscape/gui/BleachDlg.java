@@ -148,15 +148,14 @@ public class BleachDlg
         con.insets		= new Insets( 1, 2, 1, 2 );
 
         final ItemListener il = new ItemListener() {
-            public void itemStateChanged( ItemEvent e )
-            {
-                final int id = gui.getItemID( e );
+            public void itemStateChanged(ItemEvent e) {
+                final int id = gui.getItemID(e);
 
-                switch( id ) {
-                case GG_USEANAASFLT:
-                    pr.bool[ id - GG_OFF_CHECKBOX ] = ((JCheckBox) e.getSource()).isSelected();
-                    reflectPropertyChanges();
-                    break;
+                switch (id) {
+                    case GG_USEANAASFLT:
+                        pr.bool[id - GG_OFF_CHECKBOX] = ((JCheckBox) e.getSource()).isSelected();
+                        reflectPropertyChanges();
+                        break;
                 }
             }
         };
@@ -186,8 +185,8 @@ public class BleachDlg
         gui.addLabel( new JLabel( "Filter Input:", SwingConstants.RIGHT ));
         con.gridwidth	= GridBagConstraints.REMAINDER;
         con.weightx		= 0.9;
-        ggUseAnaAsFlt	= new JCheckBox( "Use Analysis File" );
-        gui.addCheckbox( ggUseAnaAsFlt, GG_USEANAASFLT, il );
+        ggUseAnaAsFlt   = new JCheckBox("Use Analysis File");
+        gui.addCheckbox(ggUseAnaAsFlt, GG_USEANAASFLT, il);
         con.weightx		= 0.1;
         con.gridwidth	= 1;
         gui.addLabel( new JLabel() );

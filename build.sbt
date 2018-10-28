@@ -10,23 +10,23 @@ lazy val basicJavaOpts = Seq("-source", "1.6")
 
 lazy val commonSettings = Seq(
   name             := baseName,
-  version          := "1.4.0",
+  version          := "1.5.0",
   organization     := "de.sciss",
   description      := "A standalone audio rendering software for time domain and spectral signal processing",
-  homepage         := Some(url(s"https://github.com/Sciss/${name.value}")),
+  homepage         := Some(url(s"https://git.iem.at/sciss/${name.value}")),
   licenses         := Seq("GPL v3+" -> url("http://www.gnu.org/licenses/gpl-3.0.txt")),
-  scalaVersion     := "2.11.12",
+  scalaVersion     := "2.11.12",  // note: we want to preserve Java 6 compatibility
   javacOptions    ++= basicJavaOpts ++ Seq("-encoding", "utf8", "-Xlint:unchecked", "-target", "1.6"),
-  javacOptions in (Compile, doc) := basicJavaOpts,  // doesn't eat `-encoding`
+  javacOptions in (Compile, doc) := basicJavaOpts,  // does not accept `-encoding` or `target`
   mainClass in Compile := Some("de.sciss.fscape.FScape"),
   libraryDependencies ++= Seq(
     "de.sciss"    %  "submin"             % "0.2.2",
     "de.sciss"    %  "weblaf"             % "2.1.3",
-    "de.sciss"    %% "desktop-mac"        % "0.8.1",
+    "de.sciss"    %% "desktop-mac"        % "0.9.2",
     "de.sciss"    %% "raphael-icons"      % "1.0.4",
     "de.sciss"    %% "fileutil"           % "1.1.3",
     "de.sciss"    %  "scisslib"           % "1.1.1",
-    "de.sciss"    %  "netutil"            % "1.0.1",
+    "de.sciss"    %  "netutil"            % "1.0.3",
     "org.pegdown" %  "pegdown"            % "1.6.0"
   )
 )
@@ -34,7 +34,7 @@ lazy val commonSettings = Seq(
 // ---- bundling ----
 
 lazy val assemblySettings = Seq(
-  test            in assembly    := (),
+  test            in assembly    := {},
   target          in assembly    := baseDirectory.value,
   assemblyJarName in assembly    := s"${name.value}.jar"
 )
@@ -64,8 +64,8 @@ lazy val publishSettings = Seq(
   pomIncludeRepository := { _ => false },
   pomExtra := { val n = name.value
 <scm>
-  <url>git@github.com:Sciss/{n}.git</url>
-  <connection>scm:git:git@github.com:Sciss/{n}.git</connection>
+  <url>git@git.iem.at:sciss/{n}.git</url>
+  <connection>scm:git:git@git.iem.at:sciss/{n}.git</connection>
 </scm>
 <developers>
   <developer>
