@@ -25,7 +25,8 @@ Française d’Informatique Musicale (AFIM).
 
 ## downloading
 
-A binary version of FScape for all platforms is provided through [GitHub Releases](https://github.com/Sciss/FScape/releases/latest).
+A binary version of FScape for all platforms is provided through 
+[archive.org](https://archive.org/details/FScape) or [GitHub Releases](https://github.com/Sciss/FScape/releases/latest).
 
 <img src="screenshot.png" alt="screenshot" width="648" height="363"/>
 
@@ -42,7 +43,7 @@ location of FScape (the directory you put it in, or its parent directories) cont
 
 ## compiling
 
-FScape now builds with [sbt](http://www.scala-sbt.org/). You can use the provided `sbt` shell script if you do not want
+FScape builds with [sbt](http://www.scala-sbt.org/). You can use the provided `sbt` shell script if you do not want
 to install sbt on your system.
 
  - to compile: `sbt compile`

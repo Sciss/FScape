@@ -10,7 +10,7 @@ lazy val basicJavaOpts = Seq("-source", "1.6")
 
 lazy val commonSettings = Seq(
   name             := baseName,
-  version          := "1.5.0",
+  version          := "1.5.1",
   organization     := "de.sciss",
   description      := "A standalone audio rendering software for time domain and spectral signal processing",
   homepage         := Some(url(s"https://git.iem.at/sciss/${name.value}")),
@@ -20,8 +20,8 @@ lazy val commonSettings = Seq(
   javacOptions in (Compile, doc) := basicJavaOpts,  // does not accept `-encoding` or `target`
   mainClass in Compile := Some("de.sciss.fscape.FScape"),
   libraryDependencies ++= Seq(
-    "de.sciss"    %  "submin"             % "0.2.2",
-    "de.sciss"    %  "weblaf"             % "2.1.3",
+    "de.sciss"    %  "submin"             % "0.2.3",
+    "de.sciss"    %  "weblaf"             % "2.1.4",
     "de.sciss"    %% "desktop-mac"        % "0.9.2",
     "de.sciss"    %% "raphael-icons"      % "1.0.4",
     "de.sciss"    %% "fileutil"           % "1.1.3",
