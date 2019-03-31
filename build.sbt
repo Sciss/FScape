@@ -10,7 +10,7 @@ lazy val basicJavaOpts = Seq("-source", "1.6")
 
 lazy val commonSettings = Seq(
   name             := baseName,
-  version          := "1.5.1",
+  version          := "1.5.2-SNAPSHOT",
   organization     := "de.sciss",
   description      := "A standalone audio rendering software for time domain and spectral signal processing",
   homepage         := Some(url(s"https://git.iem.at/sciss/${name.value}")),

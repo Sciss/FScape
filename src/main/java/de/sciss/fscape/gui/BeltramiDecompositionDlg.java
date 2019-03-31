@@ -135,8 +135,6 @@ public class BeltramiDecompositionDlg
     private static	PropertyArray	static_pr		= null;
     private static	Presets			static_presets	= null;
 
-//	private static final String	ERR_MONO		= "Audio file must be monophonic";
-
 // -------- public methods --------
 
     public BeltramiDecompositionDlg() {
@@ -145,7 +143,7 @@ public class BeltramiDecompositionDlg
     }
 
     protected void buildGUI() {
-        if( static_pr == null ) {
+        if (static_pr == null) {
             static_pr			= new PropertyArray();
             static_pr.text		= prText;
             static_pr.textName	= prTextName;
@@ -159,7 +157,6 @@ public class BeltramiDecompositionDlg
             static_pr.para[ PR_TIMEOVERLAP ]	= new Param(    12.5, Param.FACTOR_TIME );
             static_pr.para[ PR_TIMEJITTER ]		= new Param(     0.0, Param.FACTOR_TIME );
             static_pr.paraName	= prParaName;
-//			static_pr.superPr	= DocumentFrame.static_pr;
 
             fillDefaultAudioDescr( static_pr.intg, PR_OUTPUTTYPE, PR_OUTPUTRES, PR_OUTPUTRATE );
             fillDefaultGain( static_pr.para, PR_GAIN );
@@ -181,20 +178,10 @@ public class BeltramiDecompositionDlg
 
         gui				= new GUISupport();
         con				= gui.getGridBagConstraints();
-        con.insets		= new Insets( 1, 2, 1, 2 );
+        con.insets		= new Insets(1, 2, 1, 2);
 
         final ItemListener il = new ItemListener() {
-            public void itemStateChanged( ItemEvent e )
-            {
-//				int	ID = gui.getItemID( e );
-//
-//				switch( ID ) {
-//				case GG_READMARKERS:
-//					pr.bool[ ID - GG_OFF_CHECKBOX ] = ((JCheckBox) e.getSource()).isSelected();
-//					reflectPropertyChanges();
-//					break;
-//				}
-            }
+            public void itemStateChanged(ItemEvent e) {}
         };
 
     // -------- Input-Gadgets --------
@@ -206,7 +193,6 @@ public class BeltramiDecompositionDlg
 
         ggInImgFile		= new PathField( PathField.TYPE_INPUTFILE /* + PathField.TYPE_FORMATFIELD */,
                                          "Select input image file" );
-//		ggInImgFile.handleTypes( GenericFile.TYPES_IMAGE );
         con.gridwidth	= 1;
         con.weightx		= 0.1;
         gui.addLabel( new JLabel( "Image input", SwingConstants.RIGHT ));
@@ -298,65 +284,48 @@ public class BeltramiDecompositionDlg
         con.weightx		= 0.4;
         gui.addCheckbox( ggHighPass, GG_HIGHPASS, null );
 
-        initGUI( this, FLAGS_PRESETS | FLAGS_PROGBAR, gui );
-
-//		test();
+        initGUI(this, FLAGS_PRESETS | FLAGS_PROGBAR, gui);
     }
 
-//	protected void test()
-//	{
-//		final int m = testMatrix.length;
-//		final int n = testMatrix[ 0 ].length;
-//		final float[][] u = new float[ m ][ n ];
-//		final float[][] v = new float[ n ][ n ];
-//		final float[] s = new float[ n ];
-//		svd( testMatrix, s, u, v, 1f, true );
-//		printVector( s, "s" );
-//		printMatrix( u, "u" );
-//	}
-
-    protected void printVector( float[] v, String name )
-    {
+    protected void printVector(float[] v, String name) {
         final DecimalFormat fmt = getDecimalFormat();
-        System.out.println( "Vector '" + name + "':" );
-        System.out.print( "   " );
-        for( int j = 0; j < v.length; j++ ) {
-            System.out.print( "          [," + j + "]" );
+        System.out.println("Vector '" + name + "':");
+        System.out.print("   ");
+        for (int j = 0; j < v.length; j++) {
+            System.out.print("          [," + j + "]");
         }
         System.out.println();
-        System.out.print( " [1]" );
-        for( int j = 0; j < v.length; j++ ) {
-            System.out.print( " " + fmt.format( v[ j ]));
+        System.out.print(" [1]");
+        for (int j = 0; j < v.length; j++) {
+            System.out.print(" " + fmt.format(v[j]));
         }
-        System.out.println( "\n" );
+        System.out.println("\n");
     }
 
-    private static DecimalFormat getDecimalFormat()
-    {
-        final DecimalFormatSymbols dfs = new DecimalFormatSymbols( Locale.US );
-        final DecimalFormat fmt = new DecimalFormat( " 0.000000E00;-0.000000E00", dfs );
+    private static DecimalFormat getDecimalFormat() {
+        final DecimalFormatSymbols dfs = new DecimalFormatSymbols(Locale.US);
+        final DecimalFormat fmt = new DecimalFormat(" 0.000000E00;-0.000000E00", dfs);
         return fmt;
     }
 
-    protected void printMatrix( float[][] m, String name )
-    {
+    protected void printMatrix(float[][] m, String name) {
         final DecimalFormat fmt = getDecimalFormat();
-        System.out.println( "Matrix '" + name + "':" );
-        for( int i = 0; i < m.length; i++ ) {
-            if( i == 0) {
-                System.out.print( "     " );
-                for( int j = 0; j < m[i].length; j++ ) {
-                    System.out.print( "          [," + j + "]" );
+        System.out.println("Matrix '" + name + "':");
+        for (int i = 0; i < m.length; i++) {
+            if (i == 0) {
+                System.out.print("     ");
+                for (int j = 0; j < m[i].length; j++) {
+                    System.out.print("          [," + j + "]");
                 }
                 System.out.println();
             }
-            System.out.print( " [" + (i+1) + ",]" );
-            for( int j = 0; j < m[i].length; j++ ) {
-                System.out.print( " " + fmt.format( m[ i ][ j ]));
+            System.out.print(" [" + (i + 1) + ",]");
+            for (int j = 0; j < m[i].length; j++) {
+                System.out.print(" " + fmt.format(m[i][j]));
             }
             System.out.println();
         }
-        System.out.println( "\n" );
+        System.out.println("\n");
     }
 
     public void fillGUI() {
@@ -372,9 +341,6 @@ public class BeltramiDecompositionDlg
 // -------- Processor Interface --------
 
     protected void process() {
-//		long					progOff;
-//		final long				progLen;
-
         BufferedImage			img				= null;
         AudioFile				outF			= null;
         AudioFile				tmpF			= null;
@@ -385,307 +351,236 @@ public class BeltramiDecompositionDlg
         float					maxAmp			= 0.0f;
 
         final PathField			ggOutput;
-        final int				scanDir			= pr.intg[ PR_SCANDIR ];
-        final int				clpseDir		= pr.intg[ PR_CLPSEDIR ];
-//		int						numChunks		= (int) pr.para[ PR_NUMCHUNKS ].value;
-        int						chunkSize		= (int) pr.para[ PR_CHUNKSIZE ].value;
-        final double			spaceOverlap	= pr.para[ PR_SPACEOVERLAP ].value / 100;
-        final double			timeOverlap		= pr.para[ PR_TIMEOVERLAP ].value / 100;
-        final double			timeJitter		= pr.para[ PR_TIMEJITTER ].value / 100;
-        final boolean			highpass		= pr.bool[ PR_HIGHPASS ];
+        final int				scanDir			= pr.intg[PR_SCANDIR];
+        final int				clpseDir		= pr.intg[PR_CLPSEDIR];
+        int						chunkSize		= (int) pr.para[PR_CHUNKSIZE].value;
+        final double			spaceOverlap	= pr.para[PR_SPACEOVERLAP].value / 100;
+        final double			timeOverlap		= pr.para[PR_TIMEOVERLAP ].value / 100;
+        final double			timeJitter		= 100 / pr.para[PR_TIMEJITTER].value;
+        final boolean			highpass		= pr.bool[PR_HIGHPASS];
         final int				numChunks, winSize, winSizeH, overLen, timeStep;
         final int				timeJitMin, timeJitMax, timeJitRange;
         final int				width, height, ns, m, n, procNum;
         final int				cellWidth, cellHeight, cellStepX, cellStepY;
-        final float[]			hsb	= new float[ 3 ];
+        final float[]			hsb	= new float[3];
         final float[][]			outBuf;
         final float[]			s, win, overBuf;
         final float[][]			mat, u;
-//		final float[][] 		v;
         final Random			rnd;
 
         float[]					chunkBuf;
-//		float[]					convBuf1;
         int						rgb, xOff, yOff, writeLen, realStep;
         float					gain2;
-        double					d1, d2, dcMem0 = 0.0, dcMem1 = 0.0;
+        double d1, d2, dcMem0 = 0.0, dcMem1 = 0.0;
 
-//		final int dimStart = 0; // 1;
-//		final int dimStop  = 1; // 2;
-
-//		final float[][]			waveletCoeffs;
-//		final int				waveletLen;
-//final boolean wavelet = true;
-
-topLevel: try {
+    topLevel:
+        try {
 
         // ---- open input, output; init ----
             // input
-            img			= ImageIO.read( new File( pr.text[ PR_INIMGFILE ]));
-            if( img == null ) throw new IOException( "No matching image decoder found" );
+            img = ImageIO.read(new File(pr.text[PR_INIMGFILE]));
+            if (img == null) throw new IOException("No matching image decoder found");
         // .... check running ....
-            if( !threadRunning ) break topLevel;
+            if (!threadRunning) break topLevel;
 
             // output
-            ggOutput	= (PathField) gui.getItemObj( GG_OUTPUTFILE );
-            if( ggOutput == null ) throw new IOException( ERR_MISSINGPROP );
-            outStream	= new AudioFileDescr();
+            ggOutput = (PathField) gui.getItemObj(GG_OUTPUTFILE);
+            if (ggOutput == null) throw new IOException(ERR_MISSINGPROP);
+            outStream = new AudioFileDescr();
             outStream.channels = 1;
-//			outStream.rate     = 44100;
-            ggOutput.fillStream( outStream );
-            outF		= AudioFile.openAsWrite( outStream );
+            ggOutput.fillStream(outStream);
+            outF = AudioFile.openAsWrite(outStream);
         // .... check running ....
-            if( !threadRunning ) break topLevel;
+            if (!threadRunning) break topLevel;
 
             // ---- further inits ----
 
-            width				= img.getWidth() - (highpass ? 1 : 0);
+            width				= img.getWidth()  - (highpass ? 1 : 0);
             height				= img.getHeight() - (highpass ? 1 : 0);
-            switch( scanDir ) {
-            case DIR_VERT:
-                cellWidth		= width;
-//				cellHeight		= Math.max( 1, height / numChunks );
-                cellHeight		= Math.min( height, chunkSize );
-                cellStepX		= 0;
-                cellStepY		= Math.max( 1, (int) (cellHeight * (1.0 - spaceOverlap) + 0.5) );
-                numChunks 		= (height - cellHeight) / cellStepY + 1;
-                break;
-
-            case DIR_HORIZ:
-//				cellWidth		= Math.max( 1, width / numChunks );
-                cellWidth		= Math.min( width, chunkSize );
-                cellHeight		= height;
-                cellStepX		= Math.max( 1, (int) (cellWidth * (1.0 - spaceOverlap) + 0.5) );
-                cellStepY		= 0;
-                numChunks		= (width - cellWidth) / cellStepX + 1;
-                break;
-
-            default:
-                throw new IllegalArgumentException( String.valueOf( scanDir ));
-            }
-
-            switch( clpseDir ) {
-            case DIR_VERT:
-                m		= cellWidth;
-                n		= cellHeight;
-                break;
-
-            case DIR_HORIZ:
-                m		= cellHeight;
-                n		= cellWidth;
-                break;
-
-            default:
-                throw new IllegalArgumentException( String.valueOf( clpseDir ));
-            }
-
-            overLen  = Math.min( m - 1, (int) (m * timeOverlap + 0.5) );
-            timeStep = m - overLen;
-            winSizeH = Math.min( m >> 1, overLen ) & ~1;
-            winSize  = winSizeH << 1;
-            win		 = Filter.createFullWindow( winSize, Filter.WIN_HANNING );
-            timeJitMin = -Math.min( timeStep - 1, (int) (timeStep * timeJitter + 0.5) );
-            timeJitMax = Math.min( overLen - 1, (int) (overLen * timeJitter + 0.5) );
-            timeJitRange = timeJitMax - timeJitMin + 1;
-            rnd		= new Random();
-            overBuf  = new float[ m ]; // overLen + max jitter
-
-//			if( wavelet ) {
-//				waveletCoeffs	= Wavelet.getCoeffs( Wavelet.COEFFS_DAUB4 );
-//				waveletLen		= MathUtil.nextPowerOfTwo( n );
-//				mat				= new float[ m ][ waveletLen ];
-//			} else {
-//				waveletCoeffs	= null;
-//				waveletLen		= 0;
-//				mat				= new float[ m ][ n ];
-//			}
-
-            // normalization requires temp files
-            if( pr.intg[ PR_GAINTYPE ] == GAIN_UNITY ) {
-                tmpF		= createTempFile( outStream );
-//				progLen	   += (long) inLength;	// (outLength unknown)
-                procNum		= numChunks + 1;
-            } else {
-                gain		= (float) (Param.transform( pr.para[ PR_GAIN ], Param.ABS_AMP, ampRef, null )).value;
-                procNum		= numChunks;
-            }
-        // .... check running ....
-            if( !threadRunning ) break topLevel;
-
-            mat					= new float[ m ][ n ];
-            ns					= Math.min( m + 1, n );
-            s					= new float[ ns ];
-            u					= new float[ m ][ Math.min( m, n )];
-//			v					= new float[ n ][ n ];
-            xOff				= 0;
-            yOff				= 0;
-//			chunkBuf			= new float[ m ];
-            outBuf				= new float[ 1 ][ Math.max( 8192, m )];
-//			convBuf1 			= outBuf[ 0 ];
-            chunkBuf 			= outBuf[ 0 ];
-
-            for( int chunkIdx = 0; chunkIdx < numChunks; chunkIdx++ ) {
-                switch( clpseDir ) {
+            switch (scanDir) {
                 case DIR_VERT:
-                    for( int row = 0, x = xOff; row < m; x++, row++ ) {
-                        for( int col = 0, y = yOff; col < n; y++, col++ ) {
-                            rgb = img.getRGB( x, y );
-                            Color.RGBtoHSB( (rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF, hsb );
-                            mat[ row ][ col ]= hsb[ 2 ];
-                            if( highpass ) {
-                                rgb = img.getRGB( x + 1, y );
-                                Color.RGBtoHSB( (rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF, hsb );
-                                mat[ row ][ col ] -= hsb[ 2 ];
-                                rgb = img.getRGB( x, y + 1 );
-                                Color.RGBtoHSB( (rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF, hsb );
-                                mat[ row ][ col ] -= hsb[ 2 ];
-                                rgb = img.getRGB( x + 1, y + 1 );
-                                Color.RGBtoHSB( (rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF, hsb );
-                                mat[ row ][ col ] += hsb[ 2 ];
-                            }
-                        }
-                    }
+                    cellWidth = width;
+                    cellHeight = Math.min(height, chunkSize);
+                    cellStepX = 0;
+                    cellStepY = Math.max(1, (int) (cellHeight * (1.0 - spaceOverlap) + 0.5));
+                    numChunks = (height - cellHeight) / cellStepY + 1;
                     break;
 
                 case DIR_HORIZ:
-                    for( int col = 0, x = xOff; col < n; x++, col++ ) {
-                        for( int row = 0, y = yOff; row < m; y++, row++ ) {
-                            rgb = img.getRGB( x, y );
-                            Color.RGBtoHSB( (rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF, hsb );
-                            mat[ row ][ col ]= hsb[ 2 ];
-                            if( highpass ) {
-                                rgb = img.getRGB( x + 1, y );
-                                Color.RGBtoHSB( (rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF, hsb );
-                                mat[ row ][ col ] -= hsb[ 2 ];
-                                rgb = img.getRGB( x, y + 1 );
-                                Color.RGBtoHSB( (rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF, hsb );
-                                mat[ row ][ col ] -= hsb[ 2 ];
-                                rgb = img.getRGB( x + 1, y + 1 );
-                                Color.RGBtoHSB( (rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF, hsb );
-                                mat[ row ][ col ] += hsb[ 2 ];
-                            }
-                        }
-                    }
+                    cellWidth = Math.min(width, chunkSize);
+                    cellHeight = height;
+                    cellStepX = Math.max(1, (int) (cellWidth * (1.0 - spaceOverlap) + 0.5));
+                    cellStepY = 0;
+                    numChunks = (width - cellWidth) / cellStepX + 1;
                     break;
 
                 default:
-                    assert false : clpseDir;
+                    throw new IllegalArgumentException(String.valueOf(scanDir));
+            }
+
+            switch (clpseDir) {
+                case DIR_VERT:
+                    m = cellWidth;
+                    n = cellHeight;
+                    break;
+
+                case DIR_HORIZ:
+                    m = cellHeight;
+                    n = cellWidth;
+                    break;
+
+                default:
+                    throw new IllegalArgumentException(String.valueOf(clpseDir));
+            }
+
+            overLen         = Math.min(m - 1, (int) (m * timeOverlap + 0.5));
+            timeStep        = m - overLen;
+            winSizeH        = Math.min(m >> 1, overLen) & ~1;
+            winSize         = winSizeH << 1;
+            win             = Filter.createFullWindow(winSize, Filter.WIN_HANNING);
+            timeJitMin      = -Math.min(timeStep - 1, (int) (timeStep * timeJitter + 0.5));
+            timeJitMax      = Math.min(overLen - 1, (int) (overLen * timeJitter + 0.5));
+            timeJitRange    = timeJitMax - timeJitMin + 1;
+            rnd             = new Random();
+            overBuf         = new float[m]; // overLen + max jitter
+
+            // normalization requires temp files
+            if (pr.intg[PR_GAINTYPE] == GAIN_UNITY) {
+                tmpF = createTempFile(outStream);
+                procNum = numChunks + 1;
+            } else {
+                gain = (float) (Param.transform(pr.para[PR_GAIN], Param.ABS_AMP, ampRef, null)).value;
+                procNum = numChunks;
+            }
+            // .... check running ....
+            if (!threadRunning) break topLevel;
+
+            mat         = new float[m][n];
+            ns          = Math.min(m + 1, n);
+            s           = new float[ns];
+            u           = new float[m][Math.min(m, n)];
+            xOff        = 0;
+            yOff        = 0;
+            outBuf      = new float[1][Math.max(8192, m)];
+            chunkBuf    = outBuf[0];
+
+            for (int chunkIdx = 0; chunkIdx < numChunks; chunkIdx++) {
+                switch (clpseDir) {
+                    case DIR_VERT:
+                        for (int row = 0, x = xOff; row < m; x++, row++) {
+                            for (int col = 0, y = yOff; col < n; y++, col++) {
+                                rgb = img.getRGB(x, y);
+                                Color.RGBtoHSB((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF, hsb);
+                                mat[row][col] = hsb[2];
+                                if (highpass) {
+                                    rgb = img.getRGB(x + 1, y);
+                                    Color.RGBtoHSB((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF, hsb);
+                                    mat[row][col] -= hsb[2];
+                                    rgb = img.getRGB(x, y + 1);
+                                    Color.RGBtoHSB((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF, hsb);
+                                    mat[row][col] -= hsb[2];
+                                    rgb = img.getRGB(x + 1, y + 1);
+                                    Color.RGBtoHSB((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF, hsb);
+                                    mat[row][col] += hsb[2];
+                                }
+                            }
+                        }
+                        break;
+
+                    case DIR_HORIZ:
+                        for (int col = 0, x = xOff; col < n; x++, col++) {
+                            for (int row = 0, y = yOff; row < m; y++, row++) {
+                                rgb = img.getRGB(x, y);
+                                Color.RGBtoHSB((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF, hsb);
+                                mat[row][col] = hsb[2];
+                                if (highpass) {
+                                    rgb = img.getRGB(x + 1, y);
+                                    Color.RGBtoHSB((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF, hsb);
+                                    mat[row][col] -= hsb[2];
+                                    rgb = img.getRGB(x, y + 1);
+                                    Color.RGBtoHSB((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF, hsb);
+                                    mat[row][col] -= hsb[2];
+                                    rgb = img.getRGB(x + 1, y + 1);
+                                    Color.RGBtoHSB((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF, hsb);
+                                    mat[row][col] += hsb[2];
+                                }
+                            }
+                        }
+                        break;
+
+                    default:
+                        assert false : clpseDir;
                 }
 
-                Util.clear( s );
-                for( int i = 0; i < u.length; i++ ) Util.clear( u[ i ]);
-//				for( int i = 0; i < v.length; i++ ) Util.clear( v[ i ]);
+                Util.clear(s);
+                for (int i = 0; i < u.length; i++) Util.clear(u[i]);
 
-//if( chunkIdx == 0 ) {
-//	printMatrix( mat, "mat" );
-//}
-//				if( wavelet ) {
-//					for( int i = 0; i < m; i++ ) {
-//						Wavelet.fwdTransform( mat[ i ], waveletLen, waveletCoeffs );
-//					}
-//				}
+                svd(mat, s, u, null, (float) (chunkIdx + 1) / procNum, false);
+                if (!threadRunning) break topLevel;
 
-                svd( mat, s, u, null, (float) (chunkIdx + 1) / procNum, false );
-                if( !threadRunning ) break topLevel;
+                // ---- remove DC ----
+                gain2 = gain * s[0];
+                dcMem0 = u[0][0] * gain2;
+                for (int i = 0; i < m; i++) {
+                    d1 = u[i][0] * gain2;
+                    d2 = d1 - dcMem0 + 0.99 * dcMem1;
+                    chunkBuf[i] = (float) d2;
+                    dcMem0 = d1;
+                    dcMem1 = d2;
+                }
 
-//				if( wavelet ) {
-//					Wavelet.invTransform( u[ 0 ], waveletLen, waveletCoeffs );
-//				}
+                // overlapping
+                Util.mult(win, 0, chunkBuf, 0, winSizeH);
+                Util.mult(win, winSizeH, chunkBuf, m - winSizeH, winSizeH);
+                Util.add(overBuf, 0, chunkBuf, 0, m);
+                if (timeJitter > 0) {
+                    realStep = timeStep + rnd.nextInt(timeJitRange) + timeJitMin;
+                } else {
+                    realStep = timeStep;
+                }
+                System.arraycopy(chunkBuf, realStep, overBuf, 0, m - realStep);
+                Util.clear(overBuf, m - realStep, realStep);
 
-//if( chunkIdx == 0 ) {
-//	printVector( s, "s" );
-//	printMatrix( u, "u" );
-//}
-//				for( len = m; len > 0; len-- ) {
-//					if( u[ len - 1 ][ 0 ] != 0f ) break;
-//				}
+                writeLen = (chunkIdx < numChunks - 1) ? realStep : m;
 
-//				for( int dim = dimStart; dim < dimStop; dim++ ) {
-
-                    // ---- remove DC ----
-                    gain2 = gain * s[ 0 ];
-//					for( int i = 0; i < m; i++ ) {
-//						chunkBuf[ i ]	= (float) u[ i ][ 0 ] * gain2;
-//					}
-                    dcMem0 = u[ 0 ][ 0 ] * gain2;
-                    for( int i = 0; i < m; i++ ) {
-                        d1				= u[ i ][ 0 ] * gain2;
-                        d2				= d1 - dcMem0 + 0.99 * dcMem1;
-                        chunkBuf[ i ]	= (float) d2;
-                        dcMem0			= d1;
-                        dcMem1			= d2;
-                    }
-
-                    // overlapping
-                    Util.mult( win, 0, chunkBuf, 0, winSizeH );
-                    Util.mult( win, winSizeH, chunkBuf, m - winSizeH, winSizeH );
-                    Util.add( overBuf, 0, chunkBuf, 0, m );
-    //				System.arraycopy( overBuf, timeStep, overBuf, 0, overLen );
-    //				Util.clear( overBuf, overLen, timeStep );
-    //				Util.add( convBuf1, timeStep, overBuf, 0, overLen );
-                    if( timeJitter > 0 ) {
-                        realStep = timeStep + rnd.nextInt( timeJitRange ) + timeJitMin;
-                    } else {
-                        realStep = timeStep;
-                    }
-                    System.arraycopy( chunkBuf, realStep, overBuf, 0, m - realStep );
-                    Util.clear( overBuf, m - realStep, realStep );
-
-                    writeLen = (chunkIdx < numChunks - 1) ? realStep : m;
-
-    //				if( chunkIdx == 0 ) {
-    //					dcMem0 = u[ 0 ][ 0 ] * gain2;
-    //				}
-    //				for( int i = 0; i < writeLen; i++ ) {
-    //					d1				= chunkBuf[ i ];
-    //					d2				= d1 - dcMem0 + 0.99 * dcMem1;
-    //					convBuf1[ i ]	= (float) d2;
-    //					dcMem0			= d1;
-    //					dcMem1			= d2;
-    //				}
-
-                    if( tmpF == null ) {
-                        outF.writeFrames( outBuf, 0, writeLen );
-                    } else {
-                        tmpF.writeFrames( outBuf, 0, writeLen );
-                    }
-                    maxAmp = Math.max( maxAmp, Util.maxAbs( chunkBuf, 0, m ));
-//				} // for numDims
+                if (tmpF == null) {
+                    outF.writeFrames(outBuf, 0, writeLen);
+                } else {
+                    tmpF.writeFrames(outBuf, 0, writeLen);
+                }
+                maxAmp = Math.max(maxAmp, Util.maxAbs(chunkBuf, 0, m));
                 xOff += cellStepX;
                 yOff += cellStepY;
             }
         // .... check running ....
-            if( !threadRunning ) break topLevel;
+            if (!threadRunning) break topLevel;
 
-            if( pr.intg[ PR_GAINTYPE ] == GAIN_UNITY ) {
-                gain	 = (float) (Param.transform( pr.para[ PR_GAIN ], Param.ABS_AMP,
-                                    new Param( 1.0 / maxAmp, Param.ABS_AMP ), null )).value;
-                normalizeAudioFile( tmpF, outF, outBuf, gain, 1.0f );
-//				deleteTempFile( tmpF );
-                maxAmp		*= gain;
+            if (pr.intg[PR_GAINTYPE] == GAIN_UNITY) {
+                gain = (float) (Param.transform(pr.para[PR_GAIN], Param.ABS_AMP,
+                        new Param(1.0 / maxAmp, Param.ABS_AMP), null)).value;
+                normalizeAudioFile(tmpF, outF, outBuf, gain, 1.0f);
+                maxAmp *= gain;
             }
 
         // .... check running ....
-            if( !threadRunning ) break topLevel;
+            if (!threadRunning) break topLevel;
 
         // ---- Finish ----
 
             outF.close();
-            outF		= null;
+            outF = null;
 
             // inform about clipping/ low level
-            handleClipping( maxAmp );
+            handleClipping(maxAmp);
 
-        }
-        catch( IOException e1 ) {
-            setError( e1 );
-        }
-        catch( OutOfMemoryError e2 ) {
-            setError( new Exception( ERR_MEMORY ));
+        } catch (IOException e1) {
+            setError(e1);
+        } catch (OutOfMemoryError e2) {
+            setError(new Exception(ERR_MEMORY));
         }
 
     // ---- cleanup (topLevel) ----
-        if( outF != null ) outF.cleanUp();
+        if (outF != null) outF.cleanUp();
     } // process()
 
 // -------- private methods --------
@@ -698,16 +593,16 @@ topLevel: try {
         // Derived from LINPACK code.
         // Initialize.
         final int m		= mat.length;
-        final int n		= mat[ 0 ].length;
-        final int nu	= Math.min( m, n );
-        final int ns	= Math.min( m + 1, n );
+        final int n		= mat[0].length;
+        final int nu	= Math.min(m, n);
+        final int ns	= Math.min(m + 1, n);
 
-        final boolean wantu = u != null;
-        final boolean wantv = v != null;
+        final boolean wantU = u != null;
+        final boolean wantV = v != null;
 
         if( (s.length != ns) ||
-            (wantu && ((u.length != m) || (u[ 0 ].length != nu))) ||
-            (wantv && ((v.length != n) || (v[ 0 ].length != n))) ) throw new IllegalArgumentException();
+            (wantU && ((u.length != m) || (u[0].length != nu))) ||
+            (wantV && ((v.length != n) || (v[0].length != n)))) throw new IllegalArgumentException();
 
         // Apparently the failing cases are only a proper subset of (m<n),
         // so let's not throw error.  Correct fix to come later?
@@ -718,18 +613,18 @@ topLevel: try {
         // final float[][] u = new float [m][nu];
         // final float[][] v = new float [n][n];
 
-        final float[]	e		= new float[ n ];
-        final float[]	work	= new float[ m ];
-        final float	eps		= (float) Math.pow( 2.0, -48.0 );	// -52
-        final float	tiny	= (float) Math.pow( 2.0, -120.0 );	// -966
+        final float[]	e		= new float[n];
+        final float[]	work	= new float[m];
+        final float eps         = (float) Math.pow(2.0,  -48.0);    // -52
+        final float tiny        = (float) Math.pow(2.0, -120.0);    // -966
 
-        // Reduce A to bidiagonal form, storing the diagonal elements
+        // Reduce A to bi-diagonal form, storing the diagonal elements
         // in s and the super-diagonal elements in e.
 
-        final int nct = Math.min( m - 1, n );
-        final int nrt = Math.max( 0, Math.min( n - 2, m ));
-        final int nk  = Math.max( nct, nrt );
-        final int np  = Math.min( n, m + 1 );
+        final int nct   = Math.min(m - 1, n);
+        final int nrt   = Math.max(0, Math.min(n - 2, m));
+        final int nk    = Math.max(nct, nrt);
+        final int np    = Math.min(n, m + 1);
 
         final float progOff		= getProgression();
 //		final float progW		= (progStop - progOff) / ((long) nk * n + np);
@@ -738,400 +633,390 @@ topLevel: try {
         // this basically works, although the middle part
         // (wantu and wantv should have less weight)
         final float progW		= (progStop - progOff) /
-            (((long) nk * (nk + 1) / 2) + ((long) np * (np + 1) / 2)
-            + (wantu ? ((long) nct * (nct + 1) / 2) : 0) + (wantv ? n : 0) );
+                      (((long) nk  * (nk  + 1) / 2) + ((long) np * (np + 1) / 2)
+            + (wantU ? ((long) nct * (nct + 1) / 2) : 0) + (wantV ? n : 0) );
         long progC				= 0;
 
-//System.out.println( "---1" );
-
-        for( int k = 0; (k < nk) && (noProg || threadRunning); k++ ) {
-            if( k < nct ) {
+        for (int k = 0; (k < nk) && (noProg || threadRunning); k++) {
+            if (k < nct) {
                 // Compute the transformation for the k-th column and
                 // place the k-th diagonal in s[k].
                 // Compute 2-norm of k-th column without under/overflow.
-                s[ k ] = 0;
-                for( int i = k; i < m; i++ ) {
-                    s[ k ] = hypot( s[ k ], mat[ i ][ k ]);
+                s[k] = 0;
+                for (int i = k; i < m; i++) {
+                    s[k] = hypot(s[k], mat[i][k]);
                 }
-                if( s[ k ] != 0.0f ) {
-                    if( mat[ k ][ k ] < 0.0f ) {
-                        s[ k ] = -s[ k ];
+                if (s[k] != 0.0f) {
+                    if (mat[k][k] < 0.0f) {
+                        s[k] = -s[k];
                     }
-                    for( int i = k; i < m; i++ ) {
-                        mat[ i ][ k ] /= s[ k ];
+                    for (int i = k; i < m; i++) {
+                        mat[i][k] /= s[k];
                     }
-                    mat[ k ][ k ] += 1.0f;
+                    mat[k][k] += 1.0f;
                 }
-                s[ k ] = -s[ k ];
+                s[k] = -s[k];
             }
 
-            for( int j = k + 1; j < n; j++ ) {
-                if( (k < nct) && (s[ k ] != 0.0f) ) {
+            for (int j = k + 1; j < n; j++) {
+                if ((k < nct) && (s[k] != 0.0f)) {
                     // Apply the transformation.
                     float t = 0;
-                    for( int i = k; i < m; i++ ) {
-                        t += mat[ i ][ k ] * mat[ i ][ j ];
+                    for (int i = k; i < m; i++) {
+                        t += mat[i][k] * mat[i][j];
                     }
-                    t = -t / mat[ k ][ k ];
-                    for( int i = k; i < m; i++ ) {
-                        mat[ i ][ j ] += t * mat[ i ][ k ];
+                    t = -t / mat[k][k];
+                    for (int i = k; i < m; i++) {
+                        mat[i][j] += t * mat[i][k];
                     }
                 }
                 // Place the k-th row of A into e for the
                 // subsequent calculation of the row transformation.
-                e[ j ] = mat[ k ][ j ];
+                e[j] = mat[k][j];
             }
 
-            if( wantu && (k < nct) ) {
+            if (wantU && (k < nct)) {
                 // Place the transformation in U for subsequent back
                 // multiplication.
-                for( int i = k; i < m; i++ ) {
-                    u[ i ][ k ] = mat[ i ][ k ];
+                for (int i = k; i < m; i++) {
+                    u[i][k] = mat[i][k];
                 }
             }
 
-            if( k < nrt ) {
+            if (k < nrt) {
                 // Compute the k-th row transformation and place the
                 // k-th super-diagonal in e[k].
                 // Compute 2-norm without under/overflow.
-                e[ k ] = 0;
-                for( int i = k + 1; i < n; i++ ) {
-                    e[ k ] = hypot( e[ k ], e[ i ]);
+                e[k] = 0;
+                for (int i = k + 1; i < n; i++) {
+                    e[k] = hypot(e[k], e[i]);
                 }
-                if( e[ k ] != 0.0f ) {
-                    if( e[ k + 1 ] < 0.0f ) {
-                        e[ k ] = -e[ k ];
+                if (e[k] != 0.0f) {
+                    if (e[k + 1] < 0.0f) {
+                        e[k] = -e[k];
                     }
-                    for( int i = k + 1; i < n; i++ ) {
-                        e[ i ] /= e[ k ];
+                    for (int i = k + 1; i < n; i++) {
+                        e[i] /= e[k];
                     }
-                    e[ k + 1 ] += 1.0f;
+                    e[k + 1] += 1.0f;
                 }
-                e[ k ] = -e[ k ];
-                if( ((k + 1) < m) && (e[ k ] != 0.0f) ) {
+                e[k] = -e[k];
+                if (((k + 1) < m) && (e[k] != 0.0f)) {
                     // Apply the transformation.
-                    for( int i = k + 1; i < m; i++ ) {
-                        work[ i ] = 0.0f;
+                    for (int i = k + 1; i < m; i++) {
+                        work[i] = 0.0f;
                     }
-                    for( int j = k + 1; j < n; j++ ) {
-                        for( int i = k + 1; i < m; i++ ) {
-                            work[ i ] += e[ j ] * mat[ i ][ j ];
+                    for (int j = k + 1; j < n; j++) {
+                        for (int i = k + 1; i < m; i++) {
+                            work[i] += e[j] * mat[i][j];
                         }
                     }
-                    for( int j = k + 1; j < n; j++ ) {
-                        final float t = -e[ j ] / e[ k + 1 ];
-                        for( int i = k + 1; i < m; i++ ) {
-                            mat[ i ][ j ] += t * work[ i ];
+                    for (int j = k + 1; j < n; j++) {
+                        final float t = -e[j] / e[k + 1];
+                        for (int i = k + 1; i < m; i++) {
+                            mat[i][j] += t * work[i];
                         }
                     }
                 }
-                if( wantv ) {
+                if (wantV) {
                     // Place the transformation in V for subsequent
                     // back multiplication.
-                    for( int i = k + 1; i < n; i++ ) {
-                        v[ i ][ k ] = e[ i ];
+                    for (int i = k + 1; i < n; i++) {
+                        v[i][k] = e[i];
                     }
                 }
             }
 
-//			progC++;
-//			progC += n;
             progC += (nk - k);
-            setProgression( progC * progW + progOff );
+            setProgression(progC * progW + progOff);
         }
-        if( !(noProg || threadRunning) ) return;
+        if (!(noProg || threadRunning)) return;
 
-//System.out.println( "---2" );
-
-        // Set up the final bidiagonal matrix or order p.
+        // Set up the final bi-diagonal matrix or order p.
         int p = np;
-        if( nct < n ) {
-            s[ nct ] = mat[ nct ][ nct ];
+        if (nct < n) {
+            s[nct] = mat[nct][nct];
         }
-        if( m < p ) {
-            s[ p - 1 ] = 0.0f;
+        if (m < p) {
+            s[p - 1] = 0.0f;
         }
-        if( (nrt + 1) < p ) {
-            e[ nrt ] = mat[ nrt ][ p - 1 ];
+        if ((nrt + 1) < p) {
+            e[nrt] = mat[nrt][p - 1];
         }
-        e[ p - 1 ] = 0.0f;
+        e[p - 1] = 0.0f;
 
         // If required, generate U.
-        if( wantu ) {
-            for( int j = nct; j < nu; j++ ) {
-                for( int i = 0; i < m; i++ ) {
-                    u[ i ][ j ] = 0.0f;
+        if (wantU) {
+            for (int j = nct; j < nu; j++) {
+                for (int i = 0; i < m; i++) {
+                    u[i][j] = 0.0f;
                 }
-                u[ j ][ j ] = 1.0f;
+                u[j][j] = 1.0f;
             }
-            for( int k = nct - 1; k >= 0; k-- ) {
-                if( s[ k ] != 0.0f ) {
-                    for( int j = k + 1; j < nu; j++ ) {
+            for (int k = nct - 1; k >= 0; k--) {
+                if (s[k] != 0.0f) {
+                    for (int j = k + 1; j < nu; j++) {
                         float t = 0;
-                        for( int i = k; i < m; i++ ) {
-                            t += u[ i ][ k ] * u[ i ][ j ];
+                        for (int i = k; i < m; i++) {
+                            t += u[i][k] * u[i][j];
                         }
-                        t = -t / u[ k ][ k ];
-                        for( int i = k; i < m; i++ ) {
-                            u[ i ][ j ] += t * u[ i ][ k ];
+                        t = -t / u[k][k];
+                        for (int i = k; i < m; i++) {
+                            u[i][j] += t * u[i][k];
                         }
                     }
-                    for( int i = k; i < m; i++ ) {
-                        u[ i ][ k ] = -u[ i ][ k ];
+                    for (int i = k; i < m; i++) {
+                        u[i][k] = -u[i][k];
                     }
-                    u[ k ][ k ] = 1.0f + u[ k ][ k ];
-                    for( int i = 0; i < k - 1; i++ ) {
-                        u[ i ][ k ] = 0.0f;
+                    u[k][k] = 1.0f + u[k][k];
+                    for (int i = 0; i < k - 1; i++) {
+                        u[i][k] = 0.0f;
                     }
                 } else {
-                    for( int i = 0; i < m; i++)  {
-                        u[ i ][ k ] = 0.0f;
+                    for (int i = 0; i < m; i++) {
+                        u[i][k] = 0.0f;
                     }
-                    u[ k ][ k ] = 1.0f;
+                    u[k][k] = 1.0f;
                 }
-//				progC++;
                 progC += (nct - k);
-                setProgression( progC * progW + progOff );
+                setProgression(progC * progW + progOff);
             }
         }
 
         // If required, generate V.
-        if( wantv ) {
-            for( int k = n - 1; k >= 0; k-- ) {
-                if( (k < nrt) && (e[ k ] != 0.0f) ) {
-                    for( int j = k + 1; j < nu; j++ ) {
+        if (wantV) {
+            for (int k = n - 1; k >= 0; k--) {
+                if ((k < nrt) && (e[k] != 0.0f)) {
+                    for (int j = k + 1; j < nu; j++) {
                         float t = 0;
-                        for( int i = k + 1; i < n; i++ ) {
-                            t += v[ i ][ k ] * v[ i ][ j ];
+                        for (int i = k + 1; i < n; i++) {
+                            t += v[i][k] * v[i][j];
                         }
-                        t = -t / v[ k + 1 ][ k ];
-                        for( int i = k + 1; i < n; i++ ) {
-                            v[ i ][ j ] += t * v[ i ][ k ];
+                        t = -t / v[k + 1][k];
+                        for (int i = k + 1; i < n; i++) {
+                            v[i][j] += t * v[i][k];
                         }
                     }
                 }
-                for( int i = 0; i < n; i++ ) {
-                    v[ i ][ k ] = 0.0f;
+                for (int i = 0; i < n; i++) {
+                    v[i][k] = 0.0f;
                 }
-                v[ k ][ k ] = 1.0f;
+                v[k][k] = 1.0f;
 
                 progC++;
-//				progC += n;
                 setProgression( progC * progW + progOff );
             }
         }
 
-//System.out.println( "---3" );
-
         // Main iteration loop for the singular values.
         final int	pp		= p - 1;
         int			iter	= 0;
-        while( (p > 0) && (noProg || threadRunning) ) {
-            int k, kase;
+        while ((p > 0) && (noProg || threadRunning)) {
+            int k, _case;
 
             // Here is where a test for too many iterations would go.
 
             // This section of the program inspects for
             // negligible elements in the s and e arrays.  On
-            // completion the variables kase and k are set as follows.
+            // completion the variables _case and k are set as follows.
 
-            // kase = 1     if s(p) and e[k-1] are negligible and k<p
-            // kase = 2     if s(k) is negligible and k<p
-            // kase = 3     if e[k-1] is negligible, k<p, and
-            //              s(k), ..., s(p) are not negligible (qr step).
-            // kase = 4     if e(p-1) is negligible (convergence).
+            // _case = 1     if s(p) and e[k-1] are negligible and k<p
+            // _case = 2     if s(k) is negligible and k<p
+            // _case = 3     if e[k-1] is negligible, k<p, and
+            //               s(k), ..., s(p) are not negligible (qr step).
+            // _case = 4     if e(p-1) is negligible (convergence).
 
-            for( k = p - 2; k >= -1; k-- ) {
-                if( k == -1 ) break;
-                if( Math.abs( e[ k ]) <=
-                    tiny + eps * (Math.abs( s[ k ]) + Math.abs( s[ k + 1 ]))) {
+            for (k = p - 2; k >= -1; k--) {
+                if (k == -1) break;
+                if (Math.abs(e[k]) <=
+                        tiny + eps * (Math.abs(s[k]) + Math.abs(s[k + 1]))) {
 
-                    e[ k ] = 0.0f;
+                    e[k] = 0.0f;
                     break;
                 }
             }
-            if( k == p - 2 ) {
-                kase = 4;
+            if (k == p - 2) {
+                _case = 4;
             } else {
                 int ks;
-                for( ks = p - 1; ks >= k; ks-- ) {
-                    if( ks == k ) break;
-                    final float t = (ks != p ? Math.abs( e[ ks ]) : 0.0f) +
-                                     (ks != k + 1 ? Math.abs( e[ ks - 1 ]) : 0.0f);
-                    if( Math.abs( s[ ks ]) <= tiny + eps * t)  {
-                        s[ ks ] = 0.0f;
+                for (ks = p - 1; ks >= k; ks--) {
+                    if (ks == k) break;
+                    final float t = (ks != p ? Math.abs(e[ks]) : 0.0f) +
+                            (ks != k + 1 ? Math.abs(e[ks - 1]) : 0.0f);
+                    if (Math.abs(s[ks]) <= tiny + eps * t) {
+                        s[ks] = 0.0f;
                         break;
                     }
                 }
-                if( ks == k ) {
-                    kase = 3;
-                } else if( ks == p - 1 ) {
-                    kase = 1;
+                if (ks == k) {
+                    _case = 3;
+                } else if (ks == p - 1) {
+                    _case = 1;
                 } else {
-                    kase = 2;
+                    _case = 2;
                     k = ks;
                 }
             }
             k++;
 
             // Perform the task indicated by kase.
-            switch( kase ) {
+            switch (_case) {
 
-            // Deflate negligible s(p).
-            case 1: {
-                float f = e[ p - 2 ];
-                e[ p - 2 ] = 0.0f;
-                for( int j = p - 2; j >= k; j-- ) {
-                    final float t = hypot( s[ j ], f );
-                    final float cs = s[ j ] / t;
-                    final float sn = f / t;
-                    s[ j ] = t;
-                    if( j != k ) {
-                        f			= -sn * e[ j - 1 ];
-                        e[ j - 1 ]	=  cs * e[ j - 1 ];
-                    }
-                    if( wantv ) {
-                        for( int i = 0; i < n; i++ ) {
-                            final float tt = cs * v[ i ][ j ] + sn * v[ i ][ p - 1 ];
-                            v[ i ][ p - 1 ] = -sn * v[ i ][ j ] + cs * v[ i ][ p - 1 ];
-                            v[ i ][ j ]     = tt;
+                // Deflate negligible s(p).
+                case 1: {
+                    float f = e[p - 2];
+                    e[p - 2] = 0.0f;
+                    for (int j = p - 2; j >= k; j--) {
+                        final float t = hypot(s[j], f);
+                        final float cs = s[j] / t;
+                        final float sn = f / t;
+                        s[j] = t;
+                        if (j != k) {
+                            f = -sn * e[j - 1];
+                            e[j - 1] = cs * e[j - 1];
+                        }
+                        if (wantV) {
+                            for (int i = 0; i < n; i++) {
+                                final float tt = cs * v[i][j] + sn * v[i][p - 1];
+                                v[i][p - 1] = -sn * v[i][j] + cs * v[i][p - 1];
+                                v[i][j] = tt;
+                            }
                         }
                     }
                 }
-            }
-            break;
+                break;
 
-            // Split at negligible s(k).
-            case 2: {
-                float f = e[ k - 1 ];
-                e[ k - 1 ] = 0.0f;
-                for( int j = k; j < p; j++ ) {
-                    final float t	= hypot( s[ j ], f );
-                    final float cs = s[ j ] / t;
-                    final float sn = f / t;
-                    s[ j ] = t;
-                    f = -sn * e[ j ];
-                    e[ j ] = cs * e[ j ];
-                    if( wantu ) {
-                        for( int i = 0; i < m; i++ ) {
-                            final float tt = cs * u[ i ][ j ] + sn * u[ i ][ k - 1 ];
-                            u[ i ][ k - 1 ] = -sn * u[ i ][ j ] + cs * u[ i ][ k - 1 ];
-                            u[ i ][ j ]     = tt;
+                // Split at negligible s(k).
+                case 2: {
+                    float f = e[k - 1];
+                    e[k - 1] = 0.0f;
+                    for (int j = k; j < p; j++) {
+                        final float t = hypot(s[j], f);
+                        final float cs = s[j] / t;
+                        final float sn = f / t;
+                        s[j] = t;
+                        f = -sn * e[j];
+                        e[j] = cs * e[j];
+                        if (wantU) {
+                            for (int i = 0; i < m; i++) {
+                                final float tt = cs * u[i][j] + sn * u[i][k - 1];
+                                u[i][k - 1] = -sn * u[i][j] + cs * u[i][k - 1];
+                                u[i][j] = tt;
+                            }
                         }
                     }
                 }
-            }
-            break;
+                break;
 
-            // Perform one qr step.
-            case 3: {
-                // Calculate the shift.
-                final float scale = Math.max( Math.max( Math.max( Math.max(
-                    Math.abs( s[ p - 1 ]), Math.abs( s[ p - 2 ])), Math.abs( e[ p - 2 ])),
-                    Math.abs( s[ k ])), Math.abs( e[ k ]));
-                final float sp		= s[ p - 1 ] / scale;
-                final float spm1	= s[ p - 2 ] / scale;
-                final float epm1	= e[ p - 2 ] / scale;
-                final float sk		= s[ k ] / scale;
-                final float ek		= e[ k ] / scale;
-                final float b		= ((spm1 + sp) * (spm1 - sp) + epm1 * epm1) / 2.0f;
-                final float c		= (sp * epm1) * (sp * epm1);
-                final float shift;
-                if( (b != 0.0f) || (c != 0.0f) ) {
-                    final float t;
-                    if( b >= 0.0f ) {
-                        t = (float) Math.sqrt(b*b + c);
+                // Perform one qr step.
+                case 3: {
+                    // Calculate the shift.
+                    final float scale = Math.max(Math.max(Math.max(Math.max(
+                            Math.abs(s[p - 1]), Math.abs(s[p - 2])), Math.abs(e[p - 2])),
+                            Math.abs(s[k])), Math.abs(e[k]));
+                    final float sp      = s[p - 1] / scale;
+                    final float spm1    = s[p - 2] / scale;
+                    final float epm1    = e[p - 2] / scale;
+                    final float sk      = s[k] / scale;
+                    final float ek      = e[k] / scale;
+                    final float b       = ((spm1 + sp) * (spm1 - sp) + epm1 * epm1) / 2.0f;
+                    final float c       = (sp * epm1) * (sp * epm1);
+                    final float shift;
+                    if ((b != 0.0f) || (c != 0.0f)) {
+                        final float t;
+                        if (b >= 0.0f) {
+                            t = (float) +Math.sqrt(b * b + c);
+                        } else {
+                            t = (float) -Math.sqrt(b * b + c);
+                        }
+                        shift = c / (b + t);
                     } else {
-                        t = (float) -Math.sqrt(b*b + c);
+                        shift = 0.0f;
                     }
-                    shift = c / (b + t);
-                } else {
-                    shift = 0.0f;
-                }
-                float f = (sk + sp) * (sk - sp) + shift;
-                float g = sk * ek;
+                    float f = (sk + sp) * (sk - sp) + shift;
+                    float g = sk * ek;
 
-                // Chase zeros.
-                for( int j = k; j < (p - 1); j++ ) {
-                    float t	= hypot( f, g );
-                    float cs	= f / t;
-                    float sn	= g / t;
-                    if( j != k ) {
-                        e[ j - 1 ] = t;
-                    }
-                    f			= cs * s[ j ] + sn * e[ j ];
-                    e[ j ]		= cs * e[ j ] - sn * s[ j ];
-                    g			= sn * s[ j + 1 ];
-                    s[ j + 1 ]	= cs * s[ j + 1 ];
-                    if( wantv ) {
-                        for( int i = 0; i < n; i++ ) {
-                            final float tt = cs * v[ i ][ j ] + sn * v[ i ][ j + 1 ];
-                            v[ i ][ j + 1 ] = -sn * v[ i ][ j ] + cs * v[ i ][ j + 1 ];
-                            v[ i ][ j ]     = tt;
+                    // Chase zeros.
+                    for (int j = k; j < (p - 1); j++) {
+                        float t     = hypot(f, g);
+                        float cs    = f / t;
+                        float sn    = g / t;
+                        if (j != k) {
+                            e[j - 1] = t;
+                        }
+                        f           = cs * s[j] + sn * e[j];
+                        e[j]        = cs * e[j] - sn * s[j];
+                        g           = sn * s[j + 1];
+                        s[j + 1]    = cs * s[j + 1];
+                        if (wantV) {
+                            for (int i = 0; i < n; i++) {
+                                final float tt = cs * v[i][j] + sn * v[i][j + 1];
+                                v[i][j + 1] = -sn * v[i][j] + cs * v[i][j + 1];
+                                v[i][j] = tt;
+                            }
+                        }
+                        t           = hypot(f, g);
+                        cs          = f / t;
+                        sn          = g / t;
+                        s[j]        = t;
+                        f           = cs * e[j] + sn * s[j + 1];
+                        s[j + 1]    = -sn * e[j] + cs * s[j + 1];
+                        g           = sn * e[j + 1];
+                        e[j + 1]    = cs * e[j + 1];
+                        if (wantU && (j < (m - 1))) {
+                            for (int i = 0; i < m; i++) {
+                                final float tt = cs * u[i][j] + sn * u[i][j + 1];
+                                u[i][j + 1] = -sn * u[i][j] + cs * u[i][j + 1];
+                                u[i][j] = tt;
+                            }
                         }
                     }
-                    t			= hypot( f, g );
-                    cs			= f / t;
-                    sn			= g / t;
-                    s[ j ]		= t;
-                    f			=  cs * e[ j ] + sn * s[ j + 1 ];
-                    s[ j + 1 ]	= -sn * e[ j ] + cs * s[ j + 1 ];
-                    g			=  sn * e[ j +1 ];
-                    e[ j + 1 ]	=  cs * e[ j + 1 ];
-                    if( wantu && (j < (m - 1)) ) {
-                        for( int i = 0; i < m; i++ ) {
-                            final float tt = cs * u[ i ][ j ] + sn * u[ i ][ j + 1 ];
-                            u[ i ][ j + 1 ] = -sn * u[ i ][ j ] + cs * u[ i ][ j + 1 ];
-                            u[ i ][ j ]     = tt;
-                        }
-                    }
+                    e[p - 2] = f;
+                    iter++;
                 }
-                e[ p - 2 ] = f;
-                iter++;
-            }
-            break;
+                break;
 
-            // Convergence.
-            case 4: {
-                // Make the singular values positive.
-                if( s[ k ] <= 0.0f ) {
-                    s[ k ] = (s[ k ] < 0.0f ? -s[ k ] : 0.0f);
-                    if( wantv ) {
-                        for( int i = 0; i <= pp; i++ ) {
-                            v[ i ][ k ] = -v[ i ][ k ];
+                // Convergence.
+                case 4: {
+                    // Make the singular values positive.
+                    if (s[k] <= 0.0f) {
+                        s[k] = (s[k] < 0.0f ? -s[k] : 0.0f);
+                        if (wantV) {
+                            for (int i = 0; i <= pp; i++) {
+                                v[i][k] = -v[i][k];
+                            }
                         }
                     }
-                }
 
-                // Order the singular values.
-                while( k < pp ) {
-                    if( s[ k ] >= s[ k + 1 ]) break;
-                    float t	= s[ k ];
-                    s[ k ]		= s[ k + 1 ];
-                    s[ k + 1 ]	= t;
-                    if( wantv && (k < (n - 1)) ) {
-                        for( int i = 0; i < n; i++ ) {
-                            t = v[ i ][ k + 1 ];
-                            v[ i ][ k + 1 ] = v[ i ][ k ];
-                            v[ i ][ k ] = t;
+                    // Order the singular values.
+                    while (k < pp) {
+                        if (s[k] >= s[k + 1]) break;
+                        float t     = s[k];
+                        s[k]        = s[k + 1];
+                        s[k + 1]    = t;
+                        if (wantV && (k < (n - 1))) {
+                            for (int i = 0; i < n; i++) {
+                                t = v[i][k + 1];
+                                v[i][k + 1] = v[i][k];
+                                v[i][k] = t;
+                            }
                         }
-                    }
-                    if( wantu && (k < (m - 1)) ) {
-                        for( int i = 0; i < m; i++ ) {
-                            t = u[ i ][ k + 1 ];
-                            u[ i ][ k + 1 ] = u[ i ][ k ];
-                            u[ i ][ k ] = t;
+                        if (wantU && (k < (m - 1))) {
+                            for (int i = 0; i < m; i++) {
+                                t = u[i][k + 1];
+                                u[i][k + 1] = u[i][k];
+                                u[i][k] = t;
+                            }
                         }
+                        k++;
                     }
-                    k++;
-                }
-                iter = 0;
-                progC += p;
-                p--;
+                    iter = 0;
+                    progC += p;
+                    p--;
 //				progC += np;
-                setProgression( progC * progW + progOff );
-            }
-            break;
+                    setProgression(progC * progW + progOff);
+                }
+                break;
             }
         } // while( p > 0 )
 
