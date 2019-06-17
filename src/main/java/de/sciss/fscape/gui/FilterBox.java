@@ -34,12 +34,12 @@ import java.util.StringTokenizer;
 
 /**
  *  Strange hybrid mixture of
- *	a filterbox GUI representation
+ *	a filter-box GUI representation
  *	in the FIR designer and the
  *	actual FIR coefficient calculation.
  *
  *	@todo	windowing should use full windows instead of half wings
- *	@todo	graphical hint for rolloff other than zero
+ *	@todo	graphical hint for roll-off other than zero
  */
 public class FilterBox
         implements CircuitPanel.Box, javax.swing.Icon {
@@ -66,10 +66,6 @@ public class FilterBox
 
     // graphical representation
     private static final Stroke strkLine    = new BasicStroke(0.5f);
-
-//    private static final Paint  pntBack     = new Color(0xFF, 0xFF, 0xFF, 0x7F);
-//    private static final Paint  pntArea     = new Color(0x42, 0x5E, 0x9D, 0x7F);
-//    private static final Paint  pntLine     = Color.black;
 
     private final boolean isDark = UIManager.getBoolean("dark-skin");
     private final        Paint pntBack = isDark ? Color.darkGray  : Color.lightGray;
@@ -128,45 +124,44 @@ public class FilterBox
         overtones	= proto.overtones;
     }
 
-    public Point calcLength( AudioFileDescr ref, int quality )
-    {
-        double		smpRate			= (double) ref.rate;
+    public Point calcLength(AudioFileDescr ref, int quality) {
+        double		smpRate			= ref.rate;
         double		smpPerPeriod;
         int			numPeriods		= 3;
         Point		len;
-        int			delaySmp			= (int) (AudioFileDescr.millisToSamples( ref,
-                                            Param.transform( this.delay, Param.ABS_MS, null, null ).value) + 0.5);
+        int			delaySmp		= (int) (AudioFileDescr.millisToSamples(ref,
+                                            Param.transform(this.delay, Param.ABS_MS, null, null).value) + 0.5);
         int			halfWinSize;
-        double[][]	freqs			= calcFrequencies( smpRate );
-        double[]	sincFreqs		= freqs[ 0 ];
+        double[][]	freqs			= calcFrequencies(smpRate);
+        double[]	sincFreqs		= freqs[0];
         double		minFreq			= smpRate / 2;
 
-        if( sincFreqs.length == 0 ) {	// AllPass
-            len = new Point( 0, 1 + delaySmp );
+        if (sincFreqs.length == 0) {    // AllPass
+            len = new Point(0, 1 + delaySmp);
             return len;
         }
 
-        for( int i = 0; i < sincFreqs.length; i++ ) {
-            if( (sincFreqs[ i ] < minFreq) && (sincFreqs[ i ] > 0.0) ) {
-                minFreq = sincFreqs[ i ];
+        for (int i = 0; i < sincFreqs.length; i++) {
+            if ((sincFreqs[i] < minFreq) && (sincFreqs[i] > 0.0)) {
+                minFreq = sincFreqs[i];
             }
         }
-        smpPerPeriod	= smpRate / minFreq;
+        smpPerPeriod = smpRate / minFreq;
 
-        switch( quality ) {
-        case FIRDesignerDlg.QUAL_MEDIUM:
-            numPeriods	= 6;
-            break;
-        case FIRDesignerDlg.QUAL_GOOD:
-            numPeriods	= 12;
-            break;
-        case FIRDesignerDlg.QUAL_VERYGOOD:
-            numPeriods	= 24;
-            break;
+        switch (quality) {
+            case FIRDesignerDlg.QUAL_MEDIUM:
+                numPeriods = 6;
+                break;
+            case FIRDesignerDlg.QUAL_GOOD:
+                numPeriods = 12;
+                break;
+            case FIRDesignerDlg.QUAL_VERYGOOD:
+                numPeriods = 24;
+                break;
         }
 
         halfWinSize = (int) ((double) numPeriods * smpPerPeriod + 0.5);
-        len			= new Point( halfWinSize, Math.max( 0, halfWinSize - 1 + delaySmp) );
+        len			= new Point(halfWinSize, Math.max(0, halfWinSize - 1 + delaySmp));
 
         return len;
     }
@@ -174,18 +169,17 @@ public class FilterBox
     /**
      *	@param	buf		will initially be completely cleared
      */
-    public void calcIR( AudioFileDescr ref, int quality, int winType, float[] buf, Point totalLength )
-    {
-        final double	smpRate			= (double) ref.rate;
+    public void calcIR(AudioFileDescr ref, int quality, int winType, float[] buf, Point totalLength) {
+        final double	smpRate			= ref.rate;
         final double	freqNorm		= Constants.PI2 / smpRate;
         final double	cosineNorm		= 4.0 / (Math.PI*Math.PI);
-        final int		dlySmp			= (int) (AudioFileDescr.millisToSamples( ref,
-                                            Param.transform( this.delay, Param.ABS_MS, null, null ).value) + 0.5);
+        final int		dlySmp			= (int) (AudioFileDescr.millisToSamples(ref,
+                                            Param.transform(this.delay, Param.ABS_MS, null, null).value) + 0.5);
         final int		off				= totalLength.x + dlySmp;
-        final Param		ampRef			= new Param( 1.0, Param.ABS_AMP );
-        final double[][] freqs			= calcFrequencies( smpRate );
-        final double[]	sincFreqs		= freqs[ 0 ];
-        final double[]	cosineFreqs		= freqs[ 1 ];
+        final Param		ampRef			= new Param(1.0, Param.ABS_AMP);
+        final double[][] freqs			= calcFrequencies(smpRate);
+        final double[]	sincFreqs		= freqs[0];
+        final double[]	cosineFreqs		= freqs[1];
 
         double			sincBase, cosineBase, impPower, coverage, d1, d2, d3;
         int				numPeriods		= 3;
@@ -193,95 +187,88 @@ public class FilterBox
         double			factor			= 1.0;
         double			minFreq			= smpRate / 2;
         float[]			win;
-        double			gainFactor		= Param.transform( this.gain, Param.ABS_AMP, ampRef, null ).value *
-                                          (sign ? -1 : 1);
+        double			gainFactor		= Param.transform(this.gain, Param.ABS_AMP, ampRef, null).value * (sign ? -1 : 1);
 
-        for( int i = 0; i < buf.length; i++ ) {		// clear buf
-            buf[ i ] = 0.0f;
+        for (int i = 0; i < buf.length; i++) {        // clear buf
+            buf[i] = 0.0f;
         }
 
-        if( filterType == FLT_ALLPASS ) {			// -------- allpass --------
-            buf[ off ] = (float) gainFactor;
+        if (filterType == FLT_ALLPASS) {            // -------- all-pass --------
+            buf[off] = (float) gainFactor;
 
-        } else {									// -------- multiband --------
+        } else {									// -------- multi-band --------
 
-            switch( quality ) {
-            case FIRDesignerDlg.QUAL_MEDIUM:
-                numPeriods	= 6;
-                break;
-            case FIRDesignerDlg.QUAL_GOOD:
-                numPeriods	= 12;
-                break;
-            case FIRDesignerDlg.QUAL_VERYGOOD:
-                numPeriods	= 24;
-                break;
+            switch (quality) {
+                case FIRDesignerDlg.QUAL_MEDIUM:
+                    numPeriods = 6;
+                    break;
+                case FIRDesignerDlg.QUAL_GOOD:
+                    numPeriods = 12;
+                    break;
+                case FIRDesignerDlg.QUAL_VERYGOOD:
+                    numPeriods = 24;
+                    break;
             }
 
-            for( int i = 0; i < sincFreqs.length; i++ ) {
-                if( (sincFreqs[ i ] < minFreq) && (sincFreqs[ i ] > 0.0) ) {
-                    minFreq = sincFreqs[ i ];
+            for (int i = 0; i < sincFreqs.length; i++) {
+                if ((sincFreqs[i] < minFreq) && (sincFreqs[i] > 0.0)) {
+                    minFreq = sincFreqs[i];
                 }
             }
-            halfWinSize	= Math.max( 1, (int) ((double) numPeriods * smpRate / minFreq + 0.5) );
+            halfWinSize = Math.max(1, (int) ((double) numPeriods * smpRate / minFreq + 0.5));
 
             // IR = factor * sinc(f1) - factor * sinc(f2) + factor * sinc(f3) etc.
-            if( filterType == FLT_BANDPASS ) {
+            if (filterType == FLT_BANDPASS) {
                 factor = -1.0;
             }
 
             // calc the sincs
             coverage = 0.0;
-            for( int i = 0; i < sincFreqs.length; i++, factor = -factor ) {
-                if( sincFreqs[ i ] <= 0.0 ) continue;
-                sincBase	= freqNorm * sincFreqs[ i ];
-                coverage   += factor   * sincFreqs[ i ];
-                cosineBase	= freqNorm * cosineFreqs[ i ];
+            for (int i = 0; i < sincFreqs.length; i++, factor = -factor) {
+                if (sincFreqs[i] <= 0.0) continue;
+                sincBase = freqNorm * sincFreqs[i];
+                coverage += factor * sincFreqs[i];
+                cosineBase = freqNorm * cosineFreqs[i];
 
-// impPower	= 0.0;
-                for( int j = 1; j < halfWinSize; j++ ) {
+                for (int j = 1; j < halfWinSize; j++) {
                     // sinc-filter
-                    d1				= factor * (Math.sin( sincBase * j ) / (double) j);
+                    d1 = factor * (Math.sin(sincBase * j) / (double) j);
                     // raised cosine modulation
-                    d3				= cosineBase * j;
-                    d2				= cosineNorm * d3 * d3;
-                    d1			   *= (Math.cos( d3 ) / (1.0 - d2));
-                    buf[ off + j ] += (float) d1;
-                    buf[ off - j ] += (float) d1;
-// impPower	   += d1;
+                    d3 = cosineBase * j;
+                    d2 = cosineNorm * d3 * d3;
+                    d1 *= (Math.cos(d3) / (1.0 - d2));
+                    buf[off + j] += (float) d1;
+                    buf[off - j] += (float) d1;
                 }
-                buf[ off ] += (float) (factor * sincBase);	// cosine( 0 ) == 1.0
-// impPower = 2 * impPower + (factor * sincBase);
-// System.out.println( "@"+fc+" Hz: "+impPower );
+                buf[off] += (float) (factor * sincBase);    // cosine( 0 ) == 1.0
             }
-            coverage /= smpRate;		// 0...50% whereby 50% means full energy (no filtering)
+            coverage /= smpRate;        // 0...50% whereby 50% means full energy (no filtering)
 
             // create + apply window, normalize gain
-            win			= Filter.createWindow( halfWinSize, winType );
-            impPower	= 0.0;
-            for( int j = 0; j < halfWinSize; j++ ) {
-                buf[ off + j ] *= win[ j ];
-                buf[ off - j ] *= win[ j ];			// impPower = half-wing impulse power
-                impPower	   += (double) buf[ off + j ] * (double) buf[ off + j ];
+            win = Filter.createWindow(halfWinSize, winType);
+            impPower = 0.0;
+            for (int j = 0; j < halfWinSize; j++) {
+                buf[off + j] *= win[j];
+                buf[off - j] *= win[j];            // impPower = half-wing impulse power
+                impPower += (double) buf[off + j] * (double) buf[off + j];
             }
-            win			= null;
-            impPower   -= ((double) buf[ off ] * (double) buf[ off]) / 2;
-            gainFactor	   *= Math.sqrt( coverage / impPower );
-// System.out.println( "impPower "+impPower +"; coverage "+coverage+"; gain "+gain );
+            win = null;
+            impPower -= ((double) buf[off] * (double) buf[off]) / 2;
+            gainFactor *= Math.sqrt(coverage / impPower);
 
             // apply gain
-            for( int j = 1; j < halfWinSize; j++ ) {
-                buf[ off + j ] *= (float) gainFactor;
-                buf[ off - j ] *= (float) gainFactor;
+            for (int j = 1; j < halfWinSize; j++) {
+                buf[off + j] *= (float) gainFactor;
+                buf[off - j] *= (float) gainFactor;
             }
-            buf[ off ] *= (float) gainFactor;
+            buf[off] *= (float) gainFactor;
 
-        } // if not allpass
+        } // if not all-pass
     }
 
 // -------- private methods --------
 
-    private double[][] calcFrequencies( double smpRate )
-    {
+    private double[][] calcFrequencies(double smpRate) {
         double[]		sincFreqs;
         double[]		cosineFreqs;
         double[][]		result;
@@ -292,87 +279,71 @@ public class FilterBox
         boolean			ot;
         int				numFreq;
 
-        switch( filterType ) {
-        case FLT_LOWPASS:
-        case FLT_HIGHPASS:
-            numFreq						= filterType == FLT_LOWPASS ? 1 : 2;
-            sincFreqs					= new double[ numFreq ];
-            cosineFreqs					= new double[ numFreq ];
-            if( numFreq == 2 ) {
-                sincFreqs[ 0 ]			= smpRate / 2;
-                cosineFreqs[ 0 ]		= 0.0;
-            }
-            p1							= cutOff;
-            p2							= new Param( -Math.abs( rollOff.value / 2 ), rollOff.unit );
-            p3							= new Param( +Math.abs( rollOff.value / 2 ), rollOff.unit );
-            p4							= Param.transform( p2, Param.ABS_HZ, p1, null );
-            p5							= Param.transform( p3, Param.ABS_HZ, p1, null );
-            sincFreqs[ numFreq - 1 ]	= cutOff.value;
-            cosineFreqs[ numFreq - 1 ]	= Math.max( p4.value, p5.value) - Math.min( p4.value, p5.value);
-            break;
+        switch (filterType) {
+            case FLT_LOWPASS:
+            case FLT_HIGHPASS:
+                numFreq = filterType == FLT_LOWPASS ? 1 : 2;
+                sincFreqs   = new double[numFreq];
+                cosineFreqs = new double[numFreq];
+                if (numFreq == 2) {
+                    sincFreqs   [0] = smpRate / 2;
+                    cosineFreqs [0] = 0.0;
+                }
+                p1 = cutOff;
+                p2 = new Param(-Math.abs(rollOff.value / 2), rollOff.unit);
+                p3 = new Param(+Math.abs(rollOff.value / 2), rollOff.unit);
+                p4 = Param.transform(p2, Param.ABS_HZ, p1, null);
+                p5 = Param.transform(p3, Param.ABS_HZ, p1, null);
+                sincFreqs  [numFreq - 1] = cutOff.value;
+                cosineFreqs[numFreq - 1] = Math.max(p4.value, p5.value) - Math.min(p4.value, p5.value);
+                break;
 
-        case FLT_BANDPASS:
-        case FLT_BANDSTOP:
+            case FLT_BANDPASS:
+            case FLT_BANDSTOP:
 
-            p1			= cutOff;
-            p2			= new Param( -Math.abs( bandwidth.value / 2 ), bandwidth.unit );
-            p3			= new Param( +Math.abs( bandwidth.value / 2 ), bandwidth.unit );
-            d			= Param.transform( otLimit, Param.ABS_HZ, cutOff, null ).value;
-            li			= new ArrayList<Param>();
-            neg			= otSpacing.value < 0;
-            ot			= overtones && (otSpacing.value != 0.0);
-            do {
-                p4		= Param.transform( p2, Param.ABS_HZ, p1, null );
-                p5		= Param.transform( p3, Param.ABS_HZ, p1, null );
-                li.add( p4 );
-                li.add( p5 );
-                p1		= Param.transform( otSpacing, Param.ABS_HZ, p1, null );
-            } while( ot && ((neg && (p1.value > d)) ||			// for( ot < limit )
-                           (!neg && (p1.value < d))) );
+                p1  = cutOff;
+                p2  = new Param(-Math.abs(bandwidth.value / 2), bandwidth.unit);
+                p3  = new Param(+Math.abs(bandwidth.value / 2), bandwidth.unit);
+                d   = Param.transform(otLimit, Param.ABS_HZ, cutOff, null).value;
+                li  = new ArrayList<Param>();
+                neg = otSpacing.value < 0;
+                ot  = overtones && (otSpacing.value != 0.0);
+                do {
+                    p4 = Param.transform(p2, Param.ABS_HZ, p1, null);
+                    p5 = Param.transform(p3, Param.ABS_HZ, p1, null);
+                    li.add(p4);
+                    li.add(p5);
+                    p1 = Param.transform(otSpacing, Param.ABS_HZ, p1, null);
+                } while (ot && ((neg && (p1.value > d)) ||            // for( ot < limit )
+                        (!neg && (p1.value < d))));
 
-            if( filterType == FLT_BANDSTOP ) {
-                li.add( new Param( smpRate / 2, Param.ABS_HZ ));
-            }
-            sincFreqs		= new double[ li.size() ];
-            cosineFreqs		= new double[ li.size() ];
-            for( int i = 0; i < sincFreqs.length; i++ ) {
-                sincFreqs[ i ] = li.get( i ).value;
-                cosineFreqs[ i ] = 0.0;	// XXX
-            }
-            break;
+                if (filterType == FLT_BANDSTOP) {
+                    li.add(new Param(smpRate / 2, Param.ABS_HZ));
+                }
+                sincFreqs   = new double[li.size()];
+                cosineFreqs = new double[li.size()];
+                for (int i = 0; i < sincFreqs.length; i++) {
+                    sincFreqs  [i] = li.get(i).value;
+                    cosineFreqs[i] = 0.0;    // XXX
+                }
+                break;
 
-        case FLT_ALLPASS:
-            sincFreqs	= new double[ 0 ];
-            cosineFreqs	= new double[ 1 ];
-            break;
+            case FLT_ALLPASS:
+                sincFreqs   = new double[0];
+                cosineFreqs = new double[1];
+                break;
 
-        default:
-            assert false : filterType;
-            return null;
+            default:
+                assert false : filterType;
+                return null;
         }
 
-        result		= new double[ 2 ][];
-        result[ 0 ]	= sincFreqs;
-        result[ 1 ]	= cosineFreqs;
+        result = new double[2][];
+        result[0] = sincFreqs;
+        result[1] = cosineFreqs;
 
         return result;
     }
-
-/*	protected void processFocusEvent( FocusEvent e )
-    {
-        switch( e.getID()) {
-        case FocusEvent.FOCUS_GAINED:
-            java11hasFocus = true;
-            repaint();
-            break;
-        case FocusEvent.FOCUS_LOST:
-            java11hasFocus = false;
-            repaint();
-            break;
-        }
-        super.processFocusEvent( e );
-    }
-*/
 
 // ------------ CircuitPanel.Box interface ------------
 
@@ -386,31 +357,29 @@ public class FilterBox
         return new FilterBox( this );
     }
 
-    public String toString()
-    {
-        return( String.valueOf( filterType ) + ';' + String.valueOf( sign ) + ';' +
+    public String toString() {
+        return (String.valueOf(filterType) + ';' + sign + ';' +
                 cutOff.toString() + ';' + bandwidth.toString() + ';' + gain.toString() + ';' +
-                delay.toString() + ';' + String.valueOf( overtones ) + ';' +
+                delay.toString() + ';' + overtones + ';' +
                 otLimit.toString() + ';' + otSpacing.toString() + ";" +
-                rollOff.toString() );
+                rollOff.toString());
     }
 
-    public CircuitPanel.Box fromString( String s )
-    {
+    public CircuitPanel.Box fromString(String s) {
         FilterBox		box		= new FilterBox();
-        StringTokenizer strTok	= new StringTokenizer( s, ";" );
+        StringTokenizer strTok	= new StringTokenizer(s, ";");
 
-        box.filterType	= Integer.parseInt( strTok.nextToken() );
-        box.sign		= Boolean.valueOf( strTok.nextToken() ).booleanValue();
-        box.cutOff		= Param.valueOf( strTok.nextToken() );
-        box.bandwidth	= Param.valueOf( strTok.nextToken() );
-        box.gain		= Param.valueOf( strTok.nextToken() );
-        box.delay		= Param.valueOf( strTok.nextToken() );
-        box.overtones	= Boolean.valueOf( strTok.nextToken() ).booleanValue();
-        box.otLimit		= Param.valueOf( strTok.nextToken() );
-        box.otSpacing	= Param.valueOf( strTok.nextToken() );
-        if( strTok.hasMoreTokens() ) { // backwards compatible!
-            box.rollOff	= Param.valueOf( strTok.nextToken() );
+        box.filterType	= Integer.parseInt(strTok.nextToken());
+        box.sign		= Boolean.valueOf(strTok.nextToken());
+        box.cutOff		= Param.valueOf(strTok.nextToken());
+        box.bandwidth	= Param.valueOf(strTok.nextToken());
+        box.gain		= Param.valueOf(strTok.nextToken());
+        box.delay		= Param.valueOf(strTok.nextToken());
+        box.overtones	= Boolean.valueOf(strTok.nextToken());
+        box.otLimit		= Param.valueOf(strTok.nextToken());
+        box.otSpacing	= Param.valueOf(strTok.nextToken());
+        if (strTok.hasMoreTokens()) { // backwards compatible!
+            box.rollOff = Param.valueOf(strTok.nextToken());
         }
 
         return box;

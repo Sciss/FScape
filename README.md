@@ -9,7 +9,7 @@
 
 FScape is a standalone, cross-platform audio rendering software.
 
-FScape is (C)opyright 2001&ndash;2018 by Hanns Holger Rutz. All rights reserved.
+FScape is (C)opyright 2001&ndash;2019 by Hanns Holger Rutz. All rights reserved.
 
 This program is free software; you can redistribute it and/or modify it under the terms of 
 the [GNU General Public License](https://git.iem.at/sciss/FScape/blob/master/LICENSE) v3+.
@@ -27,6 +27,10 @@ Française d’Informatique Musicale (AFIM).
 
 A binary version of FScape for all platforms is provided through 
 [archive.org](https://archive.org/details/FScape) or [GitHub Releases](https://github.com/Sciss/FScape/releases/latest).
+
+__Note:__ A new version of FScape (["next"](https://git.iem.at/sciss/FScape-next)) is being developed based on a UGen graph in Scala. Over time, it will
+accumulate modules translated from FScape 1 as well as new modules. You can find these modules in the file
+`FScape-modules.zip`, a workspace for [Mellite](https://sciss.de/mellite), distributed with the Mellite downloads.
 
 <img src="screenshot.png" alt="screenshot" width="648" height="363"/>
 

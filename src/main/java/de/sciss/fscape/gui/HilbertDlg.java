@@ -431,6 +431,36 @@ topLevel: try {
                 imOverBuf	= new float[ inChanNum ][ fftLength - inputLen ];
             }
 
+            /*
+
+             Q2.10: How do I calculate the coefficients for a Hilbert transformer?
+
+            Updated 6/3/98
+
+            For all the gory details, I suggest the paper: Andrew Reilly and Gordon Frazer and Boualem Boashash:
+            Analytic signal generation---tips and traps, IEEE Transactions on Signal Processing, no. 11, vol. 42,
+            Nov. 1994, pp. 3241-3245.
+
+            For comp.dsp, the gist is:
+
+            1. Design a half-bandwidth real low-pass FIR filter using whatever optimal method you choose, with the
+            principle design criterion being minimization of the maximum attenuation in the band f_s/4 to f_s/2.
+
+            2. Modulate this by exp(2 pi f_s/4 t), so that now your stop-band is the negative frequencies, the
+            pass-band is the positive frequencies, and the roll-off at each end does not extend into the negative
+            frequency band.
+
+            3. either use it as a complex FIR filter, or a pair of I/Q real filters in whatever FIR implementation
+            you have available.
+
+            If your original filter design produced an impulse response with an even number of taps, then the
+            filtering in 3 will introduce a spurious half-sample delay (resampling the real signal component),
+            but that does not matter for many applications, and such filters have other features to recommend them.
+
+            Andrew Reilly [Reilly@zeta.org.au]
+
+             */
+
             // we design a half-nyquist lp filter and shift it up by that freq. to have a real=>analytic filter
             // see comp.dsp algorithms-faq Q2.10
             fltBox.calcIR( inStream, FIRDesignerDlg.QUAL_VERYGOOD, Filter.WIN_BLACKMAN, fftBuf1, fltLength );
@@ -445,6 +475,7 @@ topLevel: try {
             }
             Fourier.realTransform( fftBuf1, fftLength, Fourier.INVERSE );
             // ---- real=>complex + modulation with exp(ismpRate/4 +/- (?) antialias) ----
+            // Note 2019: Reilly/Frazer/Boashash use fs/4; I think the below is bad by using fltShift (0.245 fs)
             // k is chosen so that the filter-centre is zero degrees, otherwise we introduce phase shift
             for( i = fftLength - 1, k = i - fltLength.x, j = fftBuf1.length - 1; i >= 0; i--, k-- ) {
                 d1				= -fltShift * k;
