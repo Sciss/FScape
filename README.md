@@ -4,6 +4,7 @@
 
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Sciss/FScape?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://travis-ci.org/Sciss/FScape.svg?branch=master)](https://travis-ci.org/Sciss/FScape)
+<a href="https://liberapay.com/sciss/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg" height="24"></a>
 
 ## statement
 
@@ -22,6 +23,8 @@ visit [git.iem.at/sciss/FScape](http://git.iem.at/sciss/FScape).
 
 FScape is winner of the 2014 [LoMus award](http://concours.afim-asso.org/) (ex-aequo) by the Association
 Française d’Informatique Musicale (AFIM).
+
+Please consider supporting this project through Liberapay (see badge above) – thank you!
 
 ## downloading
 
