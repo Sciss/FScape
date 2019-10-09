@@ -19,9 +19,11 @@ lazy val commonSettings = Seq(
   javacOptions    ++= basicJavaOpts ++ Seq("-encoding", "utf8", "-Xlint:unchecked", "-target", "1.6"),
   javacOptions in (Compile, doc) := basicJavaOpts,  // does not accept `-encoding` or `target`
   mainClass in Compile := Some("de.sciss.fscape.FScape"),
+  resolvers        += Resolver.sonatypeRepo("snapshots"),
   libraryDependencies ++= Seq(
-    "de.sciss"    %  "submin"             % "0.2.5",
-    "de.sciss"    %  "weblaf"             % "2.1.5",
+    "de.sciss"    %  "submin"             % "0.3.0-SNAPSHOT",
+    "com.weblookandfeel" % "weblaf-core"  % "1.2.11-SNAPSHOT",
+    "com.weblookandfeel" % "weblaf-ui"    % "1.2.11-SNAPSHOT",
     "de.sciss"    %% "desktop-mac"        % "0.10.4",
     "de.sciss"    %% "raphael-icons"      % "1.0.6",
     "de.sciss"    %% "fileutil"           % "1.1.3",
