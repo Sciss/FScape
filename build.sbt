@@ -6,7 +6,7 @@ lazy val baseNameL    = baseName.toLowerCase
 lazy val authorName   = "Hanns Holger Rutz"
 lazy val authorEMail  = "contact@sciss.de"
 
-lazy val basicJavaOpts = Seq("-source", "1.6")
+lazy val basicJavaOpts = Seq("-source", "1.8")
 
 lazy val commonSettings = Seq(
   name             := baseName,
@@ -15,8 +15,8 @@ lazy val commonSettings = Seq(
   description      := "A standalone audio rendering software for time domain and spectral signal processing",
   homepage         := Some(url(s"https://git.iem.at/sciss/${name.value}")),
   licenses         := Seq("GPL v3+" -> url("http://www.gnu.org/licenses/gpl-3.0.txt")),
-  scalaVersion     := "2.11.12",  // note: we want to preserve Java 6 compatibility
-  javacOptions    ++= basicJavaOpts ++ Seq("-encoding", "utf8", "-Xlint:unchecked", "-target", "1.6"),
+  scalaVersion     := "2.12.10",
+  javacOptions    ++= basicJavaOpts ++ Seq("-encoding", "utf8", "-Xlint:unchecked", "-target", "1.8"),
   javacOptions in (Compile, doc) := basicJavaOpts,  // does not accept `-encoding` or `target`
   mainClass in Compile := Some("de.sciss.fscape.FScape"),
   resolvers        += Resolver.sonatypeRepo("snapshots"),
