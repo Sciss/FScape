@@ -285,9 +285,9 @@ if( state != STATE_RUNNING ) setEnabled( true );
         pProgress.setPaint(c);
     }
 
-    public void setText(String t) {
-        pProgress.setProgressionText(t);
-    }
+//    public void setText(String t) {
+//        pProgress.setProgressionText(t);
+//    }
 
 // -------- internal classes --------
 

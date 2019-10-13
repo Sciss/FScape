@@ -52,7 +52,8 @@ public class ProgressPanel
         // Shapes.Picker(p);
         final Shape icnShp = p.createTransformedShape(AffineTransform.getScaleInstance(0.5, 0.5));
 
-        final Color colrNormal      = getForeground ();
+        final Color colrNormal0     = UIManager.getColor("Label.foreground");
+        final Color colrNormal      = colrNormal0 == null ? Color.black : colrNormal0;
         final Color colrDisabled    = new Color(colrNormal.getRGB () & 0xFFFFFF | 0x60000000, true);
 
         Icon icnCancel = new Icon() {
@@ -81,7 +82,19 @@ public class ProgressPanel
         ggCancel = new JButton(icnCancel);
         ggCancel.setEnabled(false);
 
-        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+        final GridBagLayout lay = new GridBagLayout();
+//        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+        setLayout(lay);
+        final GridBagConstraints con = new GridBagConstraints();
+        con.insets  = new Insets(0, 0, 0, 2);
+        lay.setConstraints(lb, con);
+        con.weightx = 1.0;
+        con.fill    = GridBagConstraints.HORIZONTAL;
+        lay.setConstraints(pb, con);
+        con.weightx = 0.0;
+        con.fill    = GridBagConstraints.NONE;
+        lay.setConstraints(ggCancel, con);
+
         add(lb);
         add(pb);
         add(ggCancel);
