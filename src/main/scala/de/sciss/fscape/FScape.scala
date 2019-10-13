@@ -15,8 +15,6 @@ package de.sciss.fscape
 
 import java.awt.{Color, GraphicsEnvironment, Toolkit}
 import java.net.URL
-import javax.swing.plaf.metal.MetalLookAndFeel
-import javax.swing.{ImageIcon, KeyStroke, UIManager}
 
 import de.sciss.desktop.impl.{LogWindowImpl, SwingApplicationImpl, WindowHandlerImpl, WindowImpl}
 import de.sciss.desktop.{Desktop, Escape, KeyStrokes, Menu, OptionPane, Window, WindowHandler}
@@ -27,13 +25,15 @@ import de.sciss.fscape.net.{OSCRoot, OSCRouter, OSCRouterWrapper, RoutedOSCMessa
 import de.sciss.fscape.session.{ModulePanel, Session}
 import de.sciss.fscape.util.PrefsUtil
 import de.sciss.submin.Submin
+import javax.swing.plaf.metal.MetalLookAndFeel
+import javax.swing.{ImageIcon, KeyStroke, SwingUtilities, UIManager}
 import org.pegdown.PegDownProcessor
 
 import scala.collection.breakOut
 import scala.concurrent.Future
 import scala.swing.Swing._
-import scala.swing.event.{Key, MouseClicked}
 import scala.swing._
+import scala.swing.event.Key
 import scala.util.Try
 import scala.util.control.NonFatal
 
@@ -281,6 +281,7 @@ object FScape extends SwingApplicationImpl[Session]("FScape") {
         val version = sys.props.getOrElse("java.runtime.version", "?")
         s"$name (build $version)"
       }
+      // N.B. do not use <hr> element, it causes NPE in javax.swing.text.html.HRuleView.paint
       val html =
         s"""<html><center>
            |<font size=+1><b>About ${App.name}</b></font><p>
@@ -290,24 +291,43 @@ object FScape extends SwingApplicationImpl[Session]("FScape") {
            |This software is published under the GNU General Public License v3+<p>
            |<p>
            |Winner of the 2014 LoMus award (ex aequo).
-           |<p>
-           |<a href="$url">$addr</a>
-           |<p><br><hr>
-           |<i>$jreInfo<i>
+           |<p>&nbsp;<p><br>
+           |<i>$jreInfo</i>
            |""".stripMargin
-      val lb = new Label(html) {
-        // cf. http://stackoverflow.com/questions/527719/how-to-add-hyperlink-in-jlabel
-        // There is no way to directly register a HyperlinkListener, despite hyper links
-        // being rendered... A simple solution is to accept any mouse click on the label
-        // to open the corresponding website.
-        cursor = java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR)
-        listenTo(mouse.clicks)
-        reactions += {
-          case MouseClicked(_, _, _, 1, false) => Desktop.browseURI(new URL(url).toURI)
-        }
-      }
+      val lb = new Label(html)
+//      {
+//        // cf. http://stackoverflow.com/questions/527719/how-to-add-hyperlink-in-jlabel
+//        // There is no way to directly register a HyperlinkListener, despite hyper links
+//        // being rendered... A simple solution is to accept any mouse click on the label
+//        // to open the corresponding website.
+//        cursor = java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR)
+//        listenTo(mouse.clicks)
+//        reactions += {
+//          case MouseClicked(_, _, _, 1, false) => Desktop.browseURI(new URL(url).toURI)
+//        }
+//      }
 
-      OptionPane.message(message = lb.peer).show(None /* Some(frame) */)
+//      val pane = OptionPane.message(message = lb.peer)
+//      pane.show(None /* Some(frame) */)
+      val box = lb
+
+      def dispose(c: Component): Unit =
+        Option(SwingUtilities.windowForComponent(c.peer)).foreach(_.dispose())
+
+      val entries = List(
+        Button("  Ok  "         )(dispose(box)),
+        Button("Visit Website…" )(Desktop.browseURI(new URL(url).toURI)),
+      )
+
+      val pane = OptionPane(
+        message     = box.peer,
+        optionType  = OptionPane.Options.OkCancel,  // irrelevant
+        messageType = OptionPane.Message.Info,
+        icon        = EmptyIcon, // Logo.icon(128),
+        entries     = entries
+      )
+      pane.showNonModal(title = "About")
+
     }
 
     val gHelp = Group("help", "Help")
