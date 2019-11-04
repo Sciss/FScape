@@ -3,22 +3,31 @@ import com.typesafe.sbt.packager.linux.LinuxPackageMapping
 lazy val baseName     = "FScape"
 lazy val baseNameL    = baseName.toLowerCase
 
+def appName  = baseName
+def appNameL = baseNameL
+
+def appVersion = "1.7.0"
+
 lazy val authorName   = "Hanns Holger Rutz"
 lazy val authorEMail  = "contact@sciss.de"
+
+lazy val appDescription = "A standalone audio rendering software for time domain and spectral signal processing"
+
+lazy val appMainClass = Some("de.sciss.fscape.FScape")
 
 lazy val basicJavaOpts = Seq("-source", "1.8")
 
 lazy val commonSettings = Seq(
   name             := baseName,
-  version          := "1.7.0",
+  version          := appVersion,
   organization     := "de.sciss",
-  description      := "A standalone audio rendering software for time domain and spectral signal processing",
+  description      := appDescription,
   homepage         := Some(url(s"https://git.iem.at/sciss/${name.value}")),
   licenses         := Seq("GPL v3+" -> url("http://www.gnu.org/licenses/gpl-3.0.txt")),
   scalaVersion     := "2.12.10",
   javacOptions    ++= basicJavaOpts ++ Seq("-encoding", "utf8", "-Xlint:unchecked", "-target", "1.8"),
   javacOptions in (Compile, doc) := basicJavaOpts,  // does not accept `-encoding` or `target`
-  mainClass in Compile := Some("de.sciss.fscape.FScape"),
+  mainClass in Compile := appMainClass,
   libraryDependencies ++= Seq(
     "de.sciss"    %  "submin"             % "0.3.1",
     "de.sciss"    %% "desktop-mac"        % "0.10.4",
@@ -33,9 +42,10 @@ lazy val commonSettings = Seq(
 // ---- bundling ----
 
 lazy val assemblySettings = Seq(
+  mainClass       in assembly    := appMainClass,
   test            in assembly    := {},
   target          in assembly    := baseDirectory.value,
-  assemblyJarName in assembly    := s"${name.value}.jar"
+  assemblyJarName in assembly    := s"$baseName.jar"
 )
 
 // ---- build info source generator ----
@@ -78,14 +88,15 @@ lazy val publishSettings = Seq(
 
 //////////////// universal (directory) installer
 lazy val pkgUniversalSettings = Seq(
-  // NOTE: doesn't work on Windows, where we have to
-  // provide manual file `SYSSON_config.txt` instead!
-  javaOptions in Universal ++= Seq(
-    // -J params will be added as jvm parameters
-    "-J-Xmx1024m"
-    // others will be added as app parameters
-    // "-Dproperty=true",
-  ),
+  executableScriptName := appNameL,
+//  // NOTE: doesn't work on Windows, where we have to
+//  // provide manual file `SYSSON_config.txt` instead!
+//  javaOptions in Universal ++= Seq(
+//    // -J params will be added as jvm parameters
+//    "-J-Xmx1024m"
+//    // others will be added as app parameters
+//    // "-Dproperty=true",
+//  ),
   // Since our class path is very very long,
   // we use instead the wild-card, supported
   // by Java 6+. In the packaged script this
@@ -93,14 +104,20 @@ lazy val pkgUniversalSettings = Seq(
   // NOTE: `in Universal` does not work. It therefore
   // also affects debian package building :-/
   // We need this settings for Windows.
-  scriptClasspath /* in Universal */ := Seq("*")
+  scriptClasspath /* in Universal */ := Seq("*"),
+  name        in Linux := appName,
+  packageName in Linux := appNameL,
+  mainClass   in Universal := appMainClass,
+  maintainer  in Universal := s"$authorName <$authorEMail>",
+  target      in Universal := (target in Compile).value,
 )
 
 //////////////// debian installer
-lazy val pkgDebianSettings: Seq[sbt.Def.Setting[_]] = Seq(
-  maintainer in Debian := s"$authorName <$authorEMail>",
-  debianPackageDependencies in Debian += "java7-runtime",
-  packageSummary in Debian := description.value,
+lazy val pkgDebianSettings = Seq(
+  packageName        in Debian := appNameL,
+  packageSummary     in Debian := appDescription,
+  mainClass          in Debian := appMainClass,
+  maintainer         in Debian := s"$authorName <$authorEMail>",
   packageDescription in Debian :=
     """The audio rendering suite FScape consists of around fifty
       | independent modules for rendering audio files. From simple
@@ -112,7 +129,7 @@ lazy val pkgDebianSettings: Seq[sbt.Def.Setting[_]] = Seq(
       |""".stripMargin,
   // include all files in src/debian in the installed base directory
   linuxPackageMappings in Debian ++= {
-    val n     = (name            in Debian).value.toLowerCase
+    val n     = appNameL // (name            in Debian).value.toLowerCase
     val dir   = (sourceDirectory in Debian).value / "debian"
     val f1    = (dir * "*").filter(_.isFile).get  // direct child files inside `debian` folder
     val f2    = ((dir / "doc") * "*").get
@@ -128,7 +145,7 @@ lazy val pkgDebianSettings: Seq[sbt.Def.Setting[_]] = Seq(
   }
 )
 
-lazy val root = Project(id = baseNameL, base = file("."))
+lazy val root = project.withId(baseNameL).in(file("."))
   .enablePlugins(BuildInfoPlugin)
   .enablePlugins(JavaAppPackaging, DebianPlugin)
   .settings(commonSettings)
@@ -138,3 +155,45 @@ lazy val root = Project(id = baseNameL, base = file("."))
   .settings(useNativeZip) // cf. https://github.com/sbt/sbt-native-packager/issues/334
   .settings(pkgDebianSettings)
   .settings(publishSettings)
+  .settings(
+    packageName               in Universal := s"${appNameL}_${version.value}_all",
+    name                      in Debian    := appNameL,
+    debianPackageDependencies in Debian   ++= Seq("java8-runtime"),
+  )
+
+// Determine OS version of JavaFX binaries
+lazy val jfxClassifier = sys.props("os.name") match {
+  case n if n.startsWith("Linux")   => "linux"
+  case n if n.startsWith("Mac")     => "mac"
+  case n if n.startsWith("Windows") => "win"
+  case _ => throw new Exception("Unknown platform!")
+}
+
+def archSuffix: String =
+  sys.props("os.arch") match {
+    case "i386"  | "x86_32" => "x32"
+    case "amd64" | "x86_64" => "x64"
+    case other              => other
+  }
+
+lazy val full = project.withId(s"$baseNameL-full").in(file("full"))
+  .dependsOn(root)
+  .enablePlugins(JavaAppPackaging, DebianPlugin, JlinkPlugin)
+  .settings(commonSettings)
+  .settings(pkgUniversalSettings)
+  .settings(pkgDebianSettings)
+  // disabled so we don't need to install zip.exe on wine:
+  // .settings(useNativeZip) // cf. https://github.com/sbt/sbt-native-packager/issues/334
+  .settings(assemblySettings) // do we need this here?
+//  .settings(appSettings)
+  .settings(
+    name := s"$baseName-full",
+    version := appVersion,
+    jlinkIgnoreMissingDependency := JlinkIgnore.everything, // temporary for testing
+//    jlinkModules += "jdk.unsupported", // needed for Akka
+//    libraryDependencies ++= Seq("base", "swing", "controls", "graphics", "media", "web").map(jfxDep),
+    packageName in Universal := s"${appNameL}-full_${version.value}_${jfxClassifier}_$archSuffix",
+    name                in Debian := s"$appNameL-full",  // this is used for .deb file-name; NOT appName,
+    packageArchitecture in Debian := sys.props("os.arch"), // archSuffix,
+  )
+
