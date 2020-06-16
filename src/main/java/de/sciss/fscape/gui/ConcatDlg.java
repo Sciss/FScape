@@ -2,7 +2,7 @@
  *  ConcatDlg.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2018 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2020 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -702,7 +702,7 @@ System.out.println( "outLen   "+ outLength );
         AudioFile		f		= null;
         AudioFileDescr		stream	= null;
 
-        ParamField		ggSlave;
+        ParamField		ggDependent;
         Param			ref;
 
     // ---- Header lesen ----
@@ -712,13 +712,13 @@ System.out.println( "outLen   "+ outLength );
             f.close();
 
             ref		= new Param( AudioFileDescr.samplesToMillis( stream, stream.length ), Param.ABS_MS );
-            ggSlave = (ParamField) gui.getItemObj( GG_OFFSET );
-            if( ggSlave != null ) {
-                ggSlave.setReference( ref );
+            ggDependent = (ParamField) gui.getItemObj( GG_OFFSET );
+            if( ggDependent != null ) {
+                ggDependent.setReference( ref );
             }
-            ggSlave = (ParamField) gui.getItemObj( GG_LENGTH );
-            if( ggSlave != null ) {
-                ggSlave.setReference( ref );
+            ggDependent = (ParamField) gui.getItemObj( GG_LENGTH );
+            if( ggDependent != null ) {
+                ggDependent.setReference( ref );
             }
         } catch( IOException ignored) {}
     }

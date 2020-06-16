@@ -2,7 +2,7 @@
  *  FreqModDlg.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2018 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2020 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -789,7 +789,7 @@ topLevel: try {
         AudioFile		f		= null;
         AudioFileDescr		stream	= null;
 
-        ParamField		ggSlave;
+        ParamField		ggDependent;
         Param			ref;
 
     // ---- Header lesen ----
@@ -800,9 +800,9 @@ topLevel: try {
 
 //			refInp	= stream;
             ref		= new Param( stream.rate, Param.ABS_HZ );
-            ggSlave = (ParamField) gui.getItemObj( GG_RATEMODDEPTH );
-            if( ggSlave != null ) {
-                ggSlave.setReference( ref );
+            ggDependent = (ParamField) gui.getItemObj( GG_RATEMODDEPTH );
+            if( ggDependent != null ) {
+                ggDependent.setReference( ref );
             }
 
         } catch( IOException e1 ) {

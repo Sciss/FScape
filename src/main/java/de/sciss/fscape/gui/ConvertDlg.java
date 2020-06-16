@@ -2,7 +2,7 @@
  *  ConvertDlg.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2018 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2020 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -535,7 +535,7 @@ public class ConvertDlg
         int					overlap			= pr.intg[ PRS_OVERLAP ];
         float				loFreq			= 0.0f;
         float				hiFreq;
-        final float			masterTune		= 440.0f;		// XXX let user pick it
+        final float			principalTune   = 440.0f;		// XXX let user pick it
         int					shorty;
         float				floaty;
         float				gain			= 1.0f;			// gain abs amp
@@ -649,11 +649,11 @@ topLevel: try {
                         bands--;
                         // what we are doing here: Anhand der Bandbreite und Sampling-Rate die Frequenz
                         // des untersten Bandes errechnen und ggf. nach unten so anpassen, dass die
-                        // Tuning Frequenz (masterTune=440 Hz) erreicht wird
+                        // Tuning Frequenz (principalTune=440 Hz) erreicht wird
                         freqScale	= freqScales[ pr.intg[ PRS_BANDWIDTH ]];
                         loFreq		= (float) (smpRate / (2 * Math.pow( freqScale, bands - 1 )));
-                        m			= (int) Math.ceil( Math.log( masterTune / loFreq ) / Math.log( freqScale ));
-                        loFreq		= (float) (masterTune / Math.pow( freqScale, m ));
+                        m			= (int) Math.ceil( Math.log( principalTune / loFreq ) / Math.log( freqScale ));
+                        loFreq		= (float) (principalTune / Math.pow( freqScale, m ));
                         hiFreq		= (float) (loFreq * Math.pow( freqScale, bands - 1 ));
 
                         // Sin/Cos Tabellen anlegen

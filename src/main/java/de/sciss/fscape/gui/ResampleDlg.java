@@ -2,7 +2,7 @@
  *  ResampleDlg.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2018 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2020 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -855,7 +855,7 @@ public class ResampleDlg
         AudioFile		f;
         AudioFileDescr	stream;
 
-        ParamField		ggSlave;
+        ParamField		ggDependent;
         Param			ref;
 
     // ---- Header lesen ----
@@ -866,14 +866,14 @@ public class ResampleDlg
 
             refInp = stream;
             ref = new Param(AudioFileDescr.samplesToMillis(stream, stream.length), Param.ABS_MS);
-            ggSlave = (ParamField) gui.getItemObj(GG_LENGTH);
-            if (ggSlave != null) {
-                ggSlave.setReference(ref);
+            ggDependent = (ParamField) gui.getItemObj(GG_LENGTH);
+            if (ggDependent != null) {
+                ggDependent.setReference(ref);
             }
             ref = new Param(stream.rate, Param.ABS_HZ);
-            ggSlave = (ParamField) gui.getItemObj(GG_RATE);
-            if (ggSlave != null) {
-                ggSlave.setReference(ref);
+            ggDependent = (ParamField) gui.getItemObj(GG_RATE);
+            if (ggDependent != null) {
+                ggDependent.setReference(ref);
             }
             rateLenInterference();
 

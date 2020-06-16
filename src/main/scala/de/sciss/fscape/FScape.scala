@@ -2,7 +2,7 @@
  *  FScape.scala
  *  (FScape)
  *
- *  Copyright (c) 2001-2018 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2020 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -287,7 +287,7 @@ object FScape extends SwingApplicationImpl[Session]("FScape") {
            |<font size=+1><b>About ${App.name}</b></font><p>
            |Version $version<p>
            |<p>
-           |Copyright (c) 2001&ndash;2018 Hanns Holger Rutz.<p>
+           |Copyright (c) 2001&ndash;2020 Hanns Holger Rutz.<p>
            |This software is published under the GNU General Public License v3+<p>
            |<p>
            |Winner of the 2014 LoMus award (ex aequo).

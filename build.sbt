@@ -6,7 +6,7 @@ lazy val baseNameL    = baseName.toLowerCase
 def appName  = baseName
 def appNameL = baseNameL
 
-def appVersion = "1.7.0"
+def appVersion = "1.7.1-SNAPSHOT"
 
 lazy val authorName   = "Hanns Holger Rutz"
 lazy val authorEMail  = "contact@sciss.de"
@@ -24,16 +24,16 @@ lazy val commonSettings = Seq(
   description      := appDescription,
   homepage         := Some(url(s"https://git.iem.at/sciss/${name.value}")),
   licenses         := Seq("GPL v3+" -> url("http://www.gnu.org/licenses/gpl-3.0.txt")),
-  scalaVersion     := "2.12.10",
+  scalaVersion     := "2.12.11",
   javacOptions    ++= basicJavaOpts ++ Seq("-encoding", "utf8", "-Xlint:unchecked", "-target", "1.8"),
   javacOptions in (Compile, doc) := basicJavaOpts,  // does not accept `-encoding` or `target`
   mainClass in Compile := appMainClass,
   libraryDependencies ++= Seq(
-    "de.sciss"    %  "submin"             % "0.3.1",
-    "de.sciss"    %% "desktop-mac"        % "0.10.4",
+    "de.sciss"    %  "submin"             % "0.3.4",
+    "de.sciss"    %% "desktop-mac"        % "0.10.6",
     "de.sciss"    %% "raphael-icons"      % "1.0.6",
     "de.sciss"    %% "fileutil"           % "1.1.3",
-    "de.sciss"    %  "scisslib"           % "1.1.1",
+    "de.sciss"    %  "scisslib"           % "1.1.2",
     "de.sciss"    %  "netutil"            % "1.1.0",
     "org.pegdown" %  "pegdown"            % "1.6.0"
   )

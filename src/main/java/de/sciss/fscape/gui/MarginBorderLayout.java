@@ -1,13 +1,26 @@
+/*
+ *  MarginBorderLayout.java
+ *  (FScape)
+ *
+ *  Copyright (c) 2001-2020 Hanns Holger Rutz. All rights reserved.
+ *
+ *  This software is published under the GNU General Public License v3+
+ *
+ *
+ *	For further information, please contact Hanns Holger Rutz at
+ *	contact@sciss.de
+ */
+
 package de.sciss.fscape.gui;
 
 import java.awt.*;
 
 /** 
- * F*cking BorderLayout has all relevant fields private, so
+ * BorderLayout has all relevant fields private, so
  * we essential have to duplicate all functionality.
  */
 public class MarginBorderLayout implements LayoutManager2 {
-    private Insets  margin;
+    private final Insets  margin;
     private int     hGap;
     private int     vGap;
 
@@ -180,26 +193,28 @@ public class MarginBorderLayout implements LayoutManager2 {
     private Component getChild(String key, boolean ltr) {
         Component result = null;
 
-        if (key.equals(NORTH)) {
-            result = (firstLine != null) ? firstLine : north;
-        }
-        else if (key.equals(SOUTH)) {
-            result = (lastLine != null) ? lastLine : south;
-        }
-        else if (key.equals(WEST)) {
-            result = ltr ? firstItem : lastItem;
-            if (result == null) {
-                result = west;
-            }
-        }
-        else if (key.equals(EAST)) {
-            result = ltr ? lastItem : firstItem;
-            if (result == null) {
-                result = east;
-            }
-        }
-        else if (key.equals(CENTER)) {
-            result = center;
+        switch (key) {
+            case NORTH:
+                result = (firstLine != null) ? firstLine : north;
+                break;
+            case SOUTH:
+                result = (lastLine != null) ? lastLine : south;
+                break;
+            case WEST:
+                result = ltr ? firstItem : lastItem;
+                if (result == null) {
+                    result = west;
+                }
+                break;
+            case EAST:
+                result = ltr ? lastItem : firstItem;
+                if (result == null) {
+                    result = east;
+                }
+                break;
+            case CENTER:
+                result = center;
+                break;
         }
         if (result != null && !result.isVisible()) {
             result = null;
@@ -227,26 +242,36 @@ public class MarginBorderLayout implements LayoutManager2 {
 
         /* Assign the component to one of the known regions of the layout.
          */
-            if ("Center".equals(name)) {
-                center = comp;
-            } else if ("North".equals(name)) {
-                north = comp;
-            } else if ("South".equals(name)) {
-                south = comp;
-            } else if ("East".equals(name)) {
-                east = comp;
-            } else if ("West".equals(name)) {
-                west = comp;
-            } else if (BEFORE_FIRST_LINE.equals(name)) {
-                firstLine = comp;
-            } else if (AFTER_LAST_LINE.equals(name)) {
-                lastLine = comp;
-            } else if (BEFORE_LINE_BEGINS.equals(name)) {
-                firstItem = comp;
-            } else if (AFTER_LINE_ENDS.equals(name)) {
-                lastItem = comp;
-            } else {
-                throw new IllegalArgumentException("cannot add to layout: unknown constraint: " + name);
+            switch (name) {
+                case "Center":
+                    center = comp;
+                    break;
+                case "North":
+                    north = comp;
+                    break;
+                case "South":
+                    south = comp;
+                    break;
+                case "East":
+                    east = comp;
+                    break;
+                case "West":
+                    west = comp;
+                    break;
+                case BEFORE_FIRST_LINE:
+                    firstLine = comp;
+                    break;
+                case AFTER_LAST_LINE:
+                    lastLine = comp;
+                    break;
+                case BEFORE_LINE_BEGINS:
+                    firstItem = comp;
+                    break;
+                case AFTER_LINE_ENDS:
+                    lastItem = comp;
+                    break;
+                default:
+                    throw new IllegalArgumentException("cannot add to layout: unknown constraint: " + name);
             }
         }
     }
