@@ -3,7 +3,7 @@
 # FScape
 
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Sciss/FScape?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Build Status](https://travis-ci.org/Sciss/FScape.svg?branch=master)](https://travis-ci.org/Sciss/FScape)
+[![Build Status](https://travis-ci.org/Sciss/FScape.svg?branch=main)](https://travis-ci.org/Sciss/FScape)
 <a href="https://liberapay.com/sciss/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg" height="24"></a>
 
 ## statement
@@ -13,7 +13,7 @@ FScape is a standalone, cross-platform audio rendering software.
 FScape is (C)opyright 2001&ndash;2020 by Hanns Holger Rutz. All rights reserved.
 
 This program is free software; you can redistribute it and/or modify it under the terms of 
-the [GNU General Public License](https://git.iem.at/sciss/FScape/blob/master/LICENSE) v3+.
+the [GNU General Public License](https://git.iem.at/sciss/FScape/blob/main/LICENSE) v3+.
 
 This program is distributed in the hope that it will be useful, but _without any warranty_ without even the implied
 warranty of _merchantability_ or _fitness for a particular purpose_. See the GNU General Public License for more details.
