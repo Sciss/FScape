@@ -6,35 +6,59 @@
 </head>
 <body>
 <h1>Introduction</h1>
-<blockquote></blockquote><em>FScape was celebrating its tenth anniversary in 2010! Hurray...</em></blockquote>
 <P>
-The development of FScape began in the year 2000. It leads like a red thread throughout my musical work, by conceiving sound as a 'clay', a flexible, sculptural mass. Originally it started as an extension to Tom Erbe's SoundHack, providing 'spectral operators'. Today FScape consists of around fifty independent modules for rendering audio files. From simple utilities such as separating channels, normalising, cutting and splicing sounds, through various DSP and filtering algorithms to more complex algorithmic units which take a sound, analyse it, and rearrange it in new forms. Many of the processes and their ways of parametrisation are unique.
+    The development of FScape began in the year 2000. It leads like a red thread throughout my musical work, by
+    conceiving sound as a 'clay', a flexible, sculptural mass. Originally it started as an extension to Tom Erbe's
+    SoundHack, providing 'spectral operators'. Today FScape consists of around fifty independent
+    <strong>modules</strong> for <strong>rendering</strong> audio files. From simple utilities such as separating
+    channels, normalising, cutting and splicing sounds, through various DSP and filtering algorithms to more complex
+    algorithmic units which take a sound, analyse it, and rearrange it in new forms. Many of the processes and their
+    ways of parametrisation are unique.
 </P><P>
-A peculiarity is the fact that all modules operate in non real-time. This allows on the one hand to access the sounds in a non linear fashion, but also facilitates complex calculations which even today would not be possible in real-time speed. There are many processes, however, which run hundred times faster than real-time, opening interesting applications for the embedding (using an OSC interface) of FScape in real-time improvisation or installations. For instance, in my piece «Inter-Play / Re-Sound», parts of the past improvisation&mdash;which is record continuously&mdash;are picked out, transformed and re-injected, after only a few seconds of processing, as new material for the ongoing piece.
+    A peculiarity is the fact that all modules operate in <strong>non real-time</strong>. You select parameters
+    (and often input audio files), press "Render", and wait for the transformation to be carried out and written to
+    an output audio file. This allows on the one hand
+    to access the sounds in a non linear fashion, but also facilitates complex calculations which even today would not
+    be possible in real-time speed. There are many processes, however, which run hundred times faster than real-time,
+    opening interesting applications for the embedding (using an OSC interface) of FScape in real-time improvisation or
+    installations. For instance, in my piece «Inter-Play / Re-Sound», parts of the past improvisation&mdash;which is
+    record continuously&mdash;are picked out, transformed and re-injected, after only a few seconds of processing, as new
+    material for the ongoing piece.
 </P><P>
-Although many modules have close relationships with particular pieces I wrote, they nevertheless form a universal toolkit for any work on concrete sounds. FScape is used by composers worldwide and is also suitable for teaching, as the basic setup is fairly simple and some modules quickly provide rewarding results with minimum prior knowledge. At the same time, the repertoire is virtually unlimited, as the modules can be combined in ever new ways (e.g. a sound could be first translated into the Fourier domain before applying other algorithms which you would normally reason about in the time domain, or processes could be repeated over and over again).
+    Although many modules have close relationships with particular pieces I wrote, they nevertheless form a universal
+    toolkit for any work on concrete sounds. FScape is used by composers worldwide and is also suitable for teaching,
+    as the basic setup is fairly simple and some modules quickly provide rewarding results with minimum prior
+    knowledge. At the same time, the repertoire is virtually unlimited, as the modules can be combined in ever new
+    ways (e.g. a sound could be first translated into the Fourier domain before applying other algorithms which you
+    would normally reason about in the time domain, or processes could be repeated over and over again).
 </P>
 <h3>Basics - Quick Start</h3>
 <P>
-When you launch FScape a small window appears on your screen, the "main window". To do something useful, you will have a number of existing sound files or recordings that you wish to process. You never open sound files directly in FScape. Instead you create an instance of the desired processing module. The module has its dedicated window within which you can specify the input and output sound files.
+    When you launch FScape a small window appears on your screen, the "main window". To do something useful, you will
+    have a number of existing audio files or recordings that you wish to process. You <strong>never open audio files
+    directly</strong> in FScape. Instead you create an instance of the desired processing module, using the menu
+    "New Module". The module has its dedicated window within which you can specify the input and output audio files.
 </P>
 <UL>
     <LI>All actions can be invoked from the menu bar.</LI>
     <LI>All algorithms are accessed from the "New Modules" menu.</LI>
     <LI>Click the main window's close gadget or choose "Quit" from the "File" menu to exit.</LI>
-    <LI>The preferences are accessed from the application or "Edit" menu.</LI>
+    <LI>The preferences are accessed from the application or "Edit" menu (Linux, Windows) or the application
+        menu (Mac).</LI>
     <LI>A list of open windows appears in the "Windows" menu.</LI>
 </UL>
 <P>
-It is important that you adjust the preferences when you first use FScape. The temporary folder must be pointing to a location with sufficient space for creating the swap files during processing. You will also want to specify your preferred sound file format here.
+    It is important that you adjust the preferences when you first use FScape. The temporary folder must be pointing
+    to a location with sufficient space for creating the swap files during processing. You will also want to specify
+    your preferred audio file format here.
 </P>
 <H3>Philosophy</h3>
 <p>
-All modules are presented as 'process windows'. Usually input and output files are chosen
-in the top region. Below you find algorithm dependant parameters. Hitting the "Render" button at the bottom will launch
-the module, i.e. input data is read, processed and written to the output file. Most modules are designed to work
-with files of arbitrary length and arbitrary number of channels. <!-- Refer to the <A HREF="filing.html">file
-i/o section</A> for details. -->
+    All modules are presented as 'process windows'. Usually input and output files are chosen
+    in the top region. Below you find algorithm dependant parameters. Hitting the "Render" button at the bottom will
+    launch the module, i.e. input data is read, processed and written to the output file. Most modules are designed
+    to work with files of arbitrary length and arbitrary number of channels.
+    <!-- Refer to the <A HREF="filing.html">file i/o section</A> for details. -->
 </P>
 </BODY>
 </HTML>

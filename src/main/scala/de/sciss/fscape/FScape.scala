@@ -2,7 +2,7 @@
  *  FScape.scala
  *  (FScape)
  *
- *  Copyright (c) 2001-2020 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2021 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -13,9 +13,6 @@
 
 package de.sciss.fscape
 
-import java.awt.{Color, GraphicsEnvironment, Toolkit}
-import java.net.URL
-
 import de.sciss.desktop.impl.{LogWindowImpl, SwingApplicationImpl, WindowHandlerImpl, WindowImpl}
 import de.sciss.desktop.{Desktop, Escape, KeyStrokes, Menu, OptionPane, Window, WindowHandler}
 import de.sciss.file._
@@ -24,12 +21,15 @@ import de.sciss.fscape.impl.DocumentHandlerImpl
 import de.sciss.fscape.net.{OSCRoot, OSCRouter, OSCRouterWrapper, RoutedOSCMessage}
 import de.sciss.fscape.session.{ModulePanel, Session}
 import de.sciss.fscape.util.PrefsUtil
+import de.sciss.io.IOUtil
 import de.sciss.submin.Submin
-import javax.swing.plaf.metal.MetalLookAndFeel
-import javax.swing.{ImageIcon, KeyStroke, SwingUtilities, UIManager}
 import org.pegdown.PegDownProcessor
 
-import scala.collection.breakOut
+import java.awt.{Color, GraphicsEnvironment, Toolkit}
+import java.net.URL
+import java.util.Locale
+import javax.swing.plaf.metal.MetalLookAndFeel
+import javax.swing.{ImageIcon, JFileChooser, KeyStroke, SwingUtilities, UIManager}
 import scala.concurrent.Future
 import scala.swing.Swing._
 import scala.swing._
@@ -47,7 +47,7 @@ object FScape extends SwingApplicationImpl[Session]("FScape") {
 
   override lazy val windowHandler: WindowHandler = new WindowHandlerImpl(this, menuFactory) {
     override def usesNativeDecoration: Boolean = {
-      val res = userPrefs[Boolean](PrefsUtil.KEY_LAF_WINDOWS).getOrElse(false)
+      val res = userPrefs.apply[Boolean](PrefsUtil.KEY_LAF_WINDOWS).getOrElse(false)
       // println(s"deco = $res")
       !res
     }
@@ -91,6 +91,16 @@ object FScape extends SwingApplicationImpl[Session]("FScape") {
   private[this] def setLookAndFeel(className: String): Unit =
     UIManager.setLookAndFeel(className)
 
+  override def main(args: Array[String]): Unit = {
+    try {
+      // all UI and number formatters assume US locale
+      Locale.setDefault(Locale.US)
+    } catch {
+      case _: Exception => ()
+    }
+    super.main(args)
+  }
+
   override protected def init(): Unit = {
     try {
       userPrefs.getOrElse[String](PrefsUtil.KEY_LAF_TYPE, "") match {
@@ -98,7 +108,23 @@ object FScape extends SwingApplicationImpl[Session]("FScape") {
         case PrefsUtil.VALUE_LAF_TYPE_METAL   => setLookAndFeel(classOf[MetalLookAndFeel].getName)
         case other =>
           val isDark = other == PrefsUtil.VALUE_LAF_TYPE_SUBMIN_DARK
+          println(s"Submin.install($isDark)")
           Submin.install(isDark)
+          try {
+            new JFileChooser()
+          } catch {
+            case t: Throwable =>
+              print("Exception: ")
+              var e = t
+              while (e != null) {
+                println(s"${e.getClass.getSimpleName} - ${e.getMessage}")
+                e.getStackTrace.foreach { se =>
+                  println(s"  $se")
+                }
+                e = e.getCause
+                if (e != null) print("Caused by: ")
+              }
+          }
         // case _ => // do not explicitly set look-and-feel
       }
     } catch {
@@ -130,6 +156,8 @@ object FScape extends SwingApplicationImpl[Session]("FScape") {
     Application.clipboard   = Toolkit.getDefaultToolkit.getSystemClipboard
     Application.installDir  = FScape.installDir
 
+    println(s"DESKTOP ${de.sciss.desktop.BuildInfo.version}")
+
     // --- osc ----
     // warning : sequence is crucial
     oscServer = new OSCRoot(Escape.prefsPeer(userPrefs / OSCRoot.DEFAULT_NODE), 0x4653)
@@ -139,6 +167,74 @@ object FScape extends SwingApplicationImpl[Session]("FScape") {
     val f = new MainWindow
     f.front()
     oscServer.init()
+
+    // check that temporary directory is valid (issue 12).
+    // returns `false` is a dialog was shown
+    def checkTmpDir(): Boolean = {
+      val pref = IOUtil.getUserPrefs
+      val key  = IOUtil.KEY_TEMPDIR
+      val dir0 = pref.get(key, "")
+      def dirDefault = sys.props("java.io.tmpdir")
+      if (dir0.isEmpty) {
+        pref.put(key, dirDefault)
+        true
+      } else {
+        val dir1 = new File(dir0)
+        val tmpDirOk = dir1.isDirectory && dir1.canWrite
+        if (!tmpDirOk) {
+          val entries = Seq("Use default", "Edit preferences")
+          val pane = OptionPane(
+            message     =
+              s"""The temporary folder cannot be accessed:
+                 |'$dir0'
+                 |The system's default folder is
+                 |'$dirDefault'
+                 |""".stripMargin,
+            optionType  = OptionPane.Options.OkCancel,  // irrelevant
+            messageType = OptionPane.Message.Warning,
+            icon        = EmptyIcon, // Logo.icon(128),
+            entries     = entries,
+          )
+          pane.show(title = "Temporary Folder").id match {
+            case 0 =>     // use default
+              pref.put(key, dirDefault)
+            case 1 =>     // edit preferences
+              ActionPreferences()
+            case _ => ()  // cancelled
+          }
+        }
+        tmpDirOk
+      }
+    }
+
+    if (checkTmpDir()) {
+      val pref  = userPrefs.apply[Boolean](PrefsUtil.KEY_NOTIFIED_FSCAPE2)
+      val b0    = pref.getOrElse(false)
+      if (!b0) {
+        val entries = Seq("Ok", "Visit Mellite...")
+        val pane = OptionPane(
+          message =
+            """Did you know FScape keeps being developed in a new
+              |workspace version for the computer music environment
+              |Mellite? As of June 2021, this "next" version is not
+              |yet feature complete, but it already contains
+              |several new modules not available in "classic"
+              |FScape.
+              |""".stripMargin,
+          optionType  = OptionPane.Options.OkCancel,  // irrelevant
+          messageType = OptionPane.Message.Info,
+          icon        = EmptyIcon, // Logo.icon(128),
+          entries     = entries,
+        )
+        val res = pane.show(title = "Did you know...")
+        pref.put(true)  // don't bother the user again
+        res.id match {
+          case 1 =>  // visit website
+            Desktop.browseURI(new URL("https://www.sciss.de/mellite/").toURI)
+          case _ => ()
+        }
+      }
+    }
   }
 
   private type ItemConfig   = (String, String, Option[KeyStroke])
@@ -214,9 +310,9 @@ object FScape extends SwingApplicationImpl[Session]("FScape") {
     ))
   )
 
-  private lazy val moduleNames: Map[String, String] = modules.flatMap { case (_, _, vec) =>
+  private lazy val moduleNames: Map[String, String] = modules.iterator.flatMap { case (_, _, vec) =>
     vec.map { case (key, n, _) => (key, n) }
-  } (breakOut)
+  } .toMap
 
   def moduleName(key: String): String = moduleNames.getOrElse(key, key)
 

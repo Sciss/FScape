@@ -1,5 +1,7 @@
 package de.sciss.desktop
 
+import java.util.prefs
+
 object Escape {
-  def prefsPeer(p: Preferences) = p.peer
+  def prefsPeer(p: Preferences): prefs.Preferences = p.peer
 }

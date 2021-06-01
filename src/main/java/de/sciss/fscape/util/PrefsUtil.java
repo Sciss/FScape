@@ -2,7 +2,7 @@
  *  PrefsUtil.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2020 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2021 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -121,6 +121,13 @@ public class PrefsUtil
     public static final String KEY_BACKUP			= "makebackups";
 
     public static final String KEY_BAKDIR			= "backupdir";
+
+    /**
+     *  Value: Boolean
+     *
+     *  `true` when the user has been notified about the existence of FScape 2
+     */
+    public static final String KEY_NOTIFIED_FSCAPE2 = "notified-fscape2"; // boolean
 
     /**
      * Value: String of "native", "metal", "web", "submin"

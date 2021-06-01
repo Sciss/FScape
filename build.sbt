@@ -6,7 +6,7 @@ lazy val baseNameL    = baseName.toLowerCase
 def appName  = baseName
 def appNameL = baseNameL
 
-def appVersion = "1.7.1-SNAPSHOT"
+def appVersion = "1.8.0"
 
 lazy val authorName   = "Hanns Holger Rutz"
 lazy val authorEMail  = "contact@sciss.de"
@@ -17,25 +17,39 @@ lazy val appMainClass = Some("de.sciss.fscape.FScape")
 
 lazy val basicJavaOpts = Seq("-source", "1.8")
 
+lazy val deps = new {
+  val main = new {
+    val desktop  = "0.11.4-SNAPSHOT"
+    val fileUtil = "1.1.5"
+    val netUtil  = "1.1.0"
+    val pegDown  = "1.6.0"
+    val raphael  = "1.0.7"
+    val scissLib = "1.1.5"
+    val submin   = "0.3.4"
+  }
+}
+
 lazy val commonSettings = Seq(
   name             := baseName,
   version          := appVersion,
   organization     := "de.sciss",
   description      := appDescription,
-  homepage         := Some(url(s"https://git.iem.at/sciss/${name.value}")),
+  homepage         := Some(url(s"https://github.com/Sciss/${name.value}")),
   licenses         := Seq("GPL v3+" -> url("http://www.gnu.org/licenses/gpl-3.0.txt")),
-  scalaVersion     := "2.12.11",
+  scalaVersion     := "2.13.5",
   javacOptions    ++= basicJavaOpts ++ Seq("-encoding", "utf8", "-Xlint:unchecked", "-target", "1.8"),
   javacOptions in (Compile, doc) := basicJavaOpts,  // does not accept `-encoding` or `target`
   mainClass in Compile := appMainClass,
   libraryDependencies ++= Seq(
-    "de.sciss"    %  "submin"             % "0.3.4",
-    "de.sciss"    %% "desktop-mac"        % "0.10.6",
-    "de.sciss"    %% "raphael-icons"      % "1.0.6",
-    "de.sciss"    %% "fileutil"           % "1.1.3",
-    "de.sciss"    %  "scisslib"           % "1.1.2",
-    "de.sciss"    %  "netutil"            % "1.1.0",
-    "org.pegdown" %  "pegdown"            % "1.6.0"
+    "de.sciss"    %  "submin"             % deps.main.submin,
+    "de.sciss"    %% "desktop-core"       % deps.main.desktop,
+    "de.sciss"    %% "desktop-linux"      % deps.main.desktop,
+    "de.sciss"    %% "desktop-mac"        % deps.main.desktop,
+    "de.sciss"    %% "raphael-icons"      % deps.main.raphael,
+    "de.sciss"    %% "fileutil"           % deps.main.fileUtil,
+    "de.sciss"    %  "scisslib"           % deps.main.scissLib,
+    "de.sciss"    %  "netutil"            % deps.main.netUtil,
+    "org.pegdown" %  "pegdown"            % deps.main.pegDown,
   )
 )
 
@@ -73,8 +87,8 @@ lazy val publishSettings = Seq(
   pomIncludeRepository := { _ => false },
   pomExtra := { val n = name.value
 <scm>
-  <url>git@git.iem.at:sciss/{n}.git</url>
-  <connection>scm:git:git@git.iem.at:sciss/{n}.git</connection>
+  <url>git@github.com:Sciss/{n}.git</url>
+  <connection>scm:git:git@github.com:Sciss/{n}.git</connection>
 </scm>
 <developers>
   <developer>

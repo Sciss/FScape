@@ -2,7 +2,7 @@
  *  PrefsFrame.java
  *  (FScape)
  *
- *  Copyright (c) 2001-2020 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2021 Hanns Holger Rutz. All rights reserved.
  *
  *  This software is published under the GNU General Public License v3+
  *
@@ -32,6 +32,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.prefs.Preferences;
 
 /**
@@ -42,6 +43,15 @@ import java.util.prefs.Preferences;
 public class PrefsPanel
         extends JPanel {
     private static final ParamSpace spcIntegerFromZero = new ParamSpace(0, Double.POSITIVE_INFINITY, 1, 0, 0, 0);
+
+    private void checkTmpDir(JLabel lb, File tmpDir) {
+        final Preferences prefs = IOUtil.getUserPrefs();
+        final String key        = IOUtil.KEY_TEMPDIR;
+        final File tmpDir0      = new File(prefs.get(key, ""));
+        final File tmpDir1      = tmpDir == null ? tmpDir0 : tmpDir;
+        final boolean tmpDirOk  = tmpDir1.isDirectory() && tmpDir1.canWrite();
+        lb.setForeground(tmpDirOk ? null : Color.red);
+    }
 
     /**
      *  Creates a new preferences frame
@@ -78,39 +88,43 @@ public class PrefsPanel
         row		= 0;
         prefs   = IOUtil.getUserPrefs();
         key		= IOUtil.KEY_TEMPDIR;
-        lb		= new JLabel("Temporary Folder:", SwingConstants.TRAILING );
-        tab.gridAdd( lb, 0, row );
-        ggPath	= new PrefPathField( PathField.TYPE_FOLDER, "Temporary Folder");
-        ggPath.setPreferences( prefs, key );
-        tab.gridAdd( ggPath, 1, row );
+        final JLabel lbTmpDir = new JLabel("Temporary Folder:", SwingConstants.TRAILING);
+        tab.gridAdd(lbTmpDir, 0, row);
+        ggPath	= new PrefPathField(PathField.TYPE_FOLDER, "Temporary Folder");
+        ggPath.setPreferences(prefs, key);
+        ggPath.addPathListener(e -> {
+            checkTmpDir(lbTmpDir, e.getPath());
+        });
+        checkTmpDir(lbTmpDir, null);
+        tab.gridAdd(ggPath, 1, row);
 
         row++;
-        prefs   = userPrefs;
-        lb		= new JLabel("Default Audio File Format:", SwingConstants.TRAILING );
-        tab.gridAdd( lb, 0, row );
-        b		= Box.createHorizontalBox();
+        prefs = userPrefs;
+        lb = new JLabel("Default Audio File Format:", SwingConstants.TRAILING);
+        tab.gridAdd(lb, 0, row);
+        b = Box.createHorizontalBox();
         ggChoice = new PrefComboBox();
-        for( int i = 0; i < GenericFile.TYPES_SOUND.length; i++ ) {
-            ggChoice.addItem( new StringItem( GenericFile.getFileTypeStr( GenericFile.TYPES_SOUND[ i ]), GenericFile.getTypeDescr( GenericFile.TYPES_SOUND[ i ])));
+        for (int i = 0; i < GenericFile.TYPES_SOUND.length; i++) {
+            ggChoice.addItem(new StringItem(GenericFile.getFileTypeStr(GenericFile.TYPES_SOUND[i]), GenericFile.getTypeDescr(GenericFile.TYPES_SOUND[i])));
         }
-        key		= "audioFileType";
-        ggChoice.setPreferences( prefs, key );
-        b.add( ggChoice );
+        key = "audioFileType";
+        ggChoice.setPreferences(prefs, key);
+        b.add(ggChoice);
         ggChoice = new PrefComboBox();
-        for( int i = 0; i < PathField.SNDRES_NUM; i++ ) {
-            ggChoice.addItem( new StringItem( PathField.getSoundResID( i ), PathField.getSoundResDescr( i )));
+        for (int i = 0; i < PathField.SNDRES_NUM; i++) {
+            ggChoice.addItem(new StringItem(PathField.getSoundResID(i), PathField.getSoundResDescr(i)));
         }
-        key		= "audioFileRes";
-        ggChoice.setPreferences( prefs, key );
-        b.add( ggChoice );
+        key = "audioFileRes";
+        ggChoice.setPreferences(prefs, key);
+        b.add(ggChoice);
         ggChoice = new PrefComboBox();
-        for( int i = 0; i < PathField.SNDRATE_NUM; i++ ) {
-            ggChoice.addItem( new StringItem( PathField.getSoundRateID( i ), PathField.getSoundRateDescr( i )));
+        for (int i = 0; i < PathField.SNDRATE_NUM; i++) {
+            ggChoice.addItem(new StringItem(PathField.getSoundRateID(i), PathField.getSoundRateDescr(i)));
         }
-        key		= "audioFileRate";
-        ggChoice.setPreferences( prefs, key );
-        b.add( ggChoice );
-        tab.gridAdd( b, 1, row, -1, 1 );
+        key = "audioFileRate";
+        ggChoice.setPreferences(prefs, key);
+        b.add(ggChoice);
+        tab.gridAdd(b, 1, row, -1, 1);
 
         row++;
         prefs   = userPrefs;
