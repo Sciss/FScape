@@ -6,7 +6,7 @@ lazy val baseNameL    = baseName.toLowerCase
 def appName  = baseName
 def appNameL = baseNameL
 
-def appVersion = "1.8.1"
+lazy val appVersion = "1.8.1"
 
 lazy val authorName   = "Hanns Holger Rutz"
 lazy val authorEMail  = "contact@sciss.de"
