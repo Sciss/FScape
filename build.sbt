@@ -6,7 +6,7 @@ lazy val baseNameL    = baseName.toLowerCase
 def appName  = baseName
 def appNameL = baseNameL
 
-def appVersion = "1.8.0"
+def appVersion = "1.8.1"
 
 lazy val authorName   = "Hanns Holger Rutz"
 lazy val authorEMail  = "contact@sciss.de"
@@ -19,7 +19,7 @@ lazy val basicJavaOpts = Seq("-source", "1.8")
 
 lazy val deps = new {
   val main = new {
-    val desktop  = "0.11.4-SNAPSHOT"
+    val desktop  = "0.11.3"
     val fileUtil = "1.1.5"
     val netUtil  = "1.1.0"
     val pegDown  = "1.6.0"
@@ -36,7 +36,7 @@ lazy val commonSettings = Seq(
   description      := appDescription,
   homepage         := Some(url(s"https://github.com/Sciss/${name.value}")),
   licenses         := Seq("GPL v3+" -> url("http://www.gnu.org/licenses/gpl-3.0.txt")),
-  scalaVersion     := "2.13.5",
+  scalaVersion     := "2.13.6",
   javacOptions    ++= basicJavaOpts ++ Seq("-encoding", "utf8", "-Xlint:unchecked", "-target", "1.8"),
   javacOptions in (Compile, doc) := basicJavaOpts,  // does not accept `-encoding` or `target`
   mainClass in Compile := appMainClass,
@@ -204,7 +204,7 @@ lazy val full = project.withId(s"$baseNameL-full").in(file("full"))
     name := s"$baseName-full",
     version := appVersion,
     jlinkIgnoreMissingDependency := JlinkIgnore.everything, // temporary for testing
-//    jlinkModules += "jdk.unsupported", // needed for Akka
+    jlinkModules += "jdk.unsupported", // needed for JFileChooser / WebLaF
 //    libraryDependencies ++= Seq("base", "swing", "controls", "graphics", "media", "web").map(jfxDep),
     packageName in Universal := s"${appNameL}-full_${version.value}_${jfxClassifier}_$archSuffix",
     name                in Debian := s"$appNameL-full",  // this is used for .deb file-name; NOT appName,

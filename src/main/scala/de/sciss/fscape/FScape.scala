@@ -29,7 +29,7 @@ import java.awt.{Color, GraphicsEnvironment, Toolkit}
 import java.net.URL
 import java.util.Locale
 import javax.swing.plaf.metal.MetalLookAndFeel
-import javax.swing.{ImageIcon, JFileChooser, KeyStroke, SwingUtilities, UIManager}
+import javax.swing.{ImageIcon, KeyStroke, SwingUtilities, UIManager}
 import scala.concurrent.Future
 import scala.swing.Swing._
 import scala.swing._
@@ -108,23 +108,23 @@ object FScape extends SwingApplicationImpl[Session]("FScape") {
         case PrefsUtil.VALUE_LAF_TYPE_METAL   => setLookAndFeel(classOf[MetalLookAndFeel].getName)
         case other =>
           val isDark = other == PrefsUtil.VALUE_LAF_TYPE_SUBMIN_DARK
-          println(s"Submin.install($isDark)")
+//          println(s"Submin.install($isDark)")
           Submin.install(isDark)
-          try {
-            new JFileChooser()
-          } catch {
-            case t: Throwable =>
-              print("Exception: ")
-              var e = t
-              while (e != null) {
-                println(s"${e.getClass.getSimpleName} - ${e.getMessage}")
-                e.getStackTrace.foreach { se =>
-                  println(s"  $se")
-                }
-                e = e.getCause
-                if (e != null) print("Caused by: ")
-              }
-          }
+//          try {
+//            new JFileChooser()
+//          } catch {
+//            case t: Throwable =>
+//              print("Exception: ")
+//              var e = t
+//              while (e != null) {
+//                println(s"${e.getClass.getSimpleName} - ${e.getMessage}")
+//                e.getStackTrace.foreach { se =>
+//                  println(s"  $se")
+//                }
+//                e = e.getCause
+//                if (e != null) print("Caused by: ")
+//              }
+//          }
         // case _ => // do not explicitly set look-and-feel
       }
     } catch {
@@ -156,7 +156,7 @@ object FScape extends SwingApplicationImpl[Session]("FScape") {
     Application.clipboard   = Toolkit.getDefaultToolkit.getSystemClipboard
     Application.installDir  = FScape.installDir
 
-    println(s"DESKTOP ${de.sciss.desktop.BuildInfo.version}")
+//    println(s"DESKTOP ${de.sciss.desktop.BuildInfo.version}")
 
     // --- osc ----
     // warning : sequence is crucial
